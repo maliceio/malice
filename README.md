@@ -4,7 +4,7 @@
 [![License][license]](http://www.apache.org/licenses/LICENSE-2.0)
 [![GoDoc](https://godoc.org/github.com/blacktop/go-malice?status.svg)](https://godoc.org/github.com/blacktop/go-malice)
 [![Build Status][travis-badge]](https://travis-ci.org/blacktop/go-malice)
-[![Join the chat at https://gitter.im/blacktop/go-malice](gitter-badge)](gitter-link)
+[![Gitter Chat][gitter-badge]](gitter-link)
 
 VirusTotal Wanna Be - Now with 100% more Hipster
 
@@ -16,5 +16,5 @@ I have been told that every serious information security team designs there own 
 [malice-logo]: https://raw.githubusercontent.com/blacktop/go-malice/master/docs/logo/malice.png
 [travis-badge]: https://travis-ci.org/blacktop/malice.svg?branch=master
 [gitter-badge]: https://badges.gitter.im/blacktop/go-malice.svg
-[gitter-link]: https://gitter.im/blacktop/go-malice?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[gitter-link]: https://gitter.im/blacktop/go-malice
 [license]: https://img.shields.io/badge/licence-Apache%202-blue.svg

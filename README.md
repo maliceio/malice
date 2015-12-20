@@ -1,6 +1,8 @@
 ![malice logo][malice-logo]
 
 # go-malice
+
+[![Join the chat at https://gitter.im/blacktop/go-malice](https://badges.gitter.im/blacktop/go-malice.svg)](https://gitter.im/blacktop/go-malice?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License][license]](http://www.apache.org/licenses/LICENSE-2.0)
 [![GoDoc](https://godoc.org/github.com/blacktop/go-malice?status.svg)](https://godoc.org/github.com/blacktop/go-malice)
 [![Build Status][travis-badge]](https://travis-ci.org/blacktop/go-malice)

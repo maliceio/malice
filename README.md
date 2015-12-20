@@ -1,12 +1,10 @@
 ![malice logo][malice-logo]
 
-# go-malice
+### VirusTotal Wanna Be - Now with 100% more Hipster
 [![License][license]](http://www.apache.org/licenses/LICENSE-2.0)
 [![GoDoc](https://godoc.org/github.com/blacktop/go-malice?status.svg)](https://godoc.org/github.com/blacktop/go-malice)
 [![Build Status][travis-badge]](https://travis-ci.org/blacktop/go-malice)
 [![Gitter Chat][gitter-badge]](gitter-link)
-
-VirusTotal Wanna Be - Now with 100% more Hipster
 
 Malice's mission is to be a free open source version of VirusTotal that anyone can use at any scale from an independent researcher to a fortune 500 company.
 

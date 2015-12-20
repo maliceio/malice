@@ -1,3 +1,5 @@
+![malice logo][malice-logo]
+
 # go-malice
 [![License][license]](http://www.apache.org/licenses/LICENSE-2.0)
 [![GoDoc](https://godoc.org/github.com/blacktop/go-malice?status.svg)](https://godoc.org/github.com/blacktop/go-malice)

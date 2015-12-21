@@ -1,5 +1,5 @@
 ![malice logo][malice-logo]
-
+# malice
 [![Build Status][travis-badge]](https://travis-ci.org/blacktop/go-malice)
 [![GoDoc](https://godoc.org/github.com/blacktop/go-malice?status.svg)](https://godoc.org/github.com/blacktop/go-malice)
 [![Gitter Chat][gitter-badge]](gitter-link)

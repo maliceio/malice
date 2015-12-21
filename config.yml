@@ -10,3 +10,6 @@ malice:
 
   db:
     path: malice.db
+
+  env: development
+  # env: production

@@ -10,10 +10,11 @@ import (
 // Config represents the configuration information.
 type Config struct {
 	Malice struct {
-		URL      string     `yaml:"url"`
-		AdminURL string     `yaml:"admin_url"`
-		Email    SMTPServer `yaml:"email"`
-		DB       Database   `yaml:"db"`
+		URL         string     `yaml:"url"`
+		AdminURL    string     `yaml:"admin_url"`
+		Email       SMTPServer `yaml:"email"`
+		DB          Database   `yaml:"db"`
+		Environment string     `yaml:"env"`
 	}
 }
 
@@ -37,13 +38,14 @@ type Database struct {
 // 	DBPath   string     `json:"dbpath"`
 // }
 
+// Conf represents the Malice runtime configuration
 var Conf Config
 
 func init() {
 	// Get the config file
-	config_file, err := ioutil.ReadFile("./config.yml")
+	config, err := ioutil.ReadFile("./config.yml")
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	yaml.Unmarshal(config_file, &Conf)
+	yaml.Unmarshal(config, &Conf)
 }

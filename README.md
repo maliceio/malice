@@ -19,7 +19,7 @@ Malice will have binary releases for all platforms.
 ### Usage
 ```bash
 NAME:
-   malice - Open Source Malware Anaylsis Framework
+   malice - Open Source Malware Analysis Framework
 
 USAGE:
    malice [global options] command [command options] [arguments...]

@@ -33,7 +33,7 @@ func main() {
 	app := cli.NewApp()
 	app.EnableBashCompletion = true
 	app.Name = "malice"
-	app.Usage = "Open Source Malware Anaylsis Framework"
+	app.Usage = "Open Source Malware Analysis Framework"
 	app.Author = "blacktop"
 	app.Email = "https://github.com/blacktop"
 	app.Version = "0.1.0"

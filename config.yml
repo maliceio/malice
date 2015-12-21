@@ -1,0 +1,12 @@
+malice:
+  url: 0.0.0.0:80
+  admin_url: 127.0.0.1:3333
+
+  email:
+    host: smtp.example.com
+    port: 25
+    user: username
+    pass: password
+
+  db:
+    path: malice.db

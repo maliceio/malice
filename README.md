@@ -2,7 +2,7 @@
 # malice
 [![Build Status][travis-badge]](https://travis-ci.org/blacktop/go-malice)
 [![GoDoc](https://godoc.org/github.com/blacktop/go-malice?status.svg)](https://godoc.org/github.com/blacktop/go-malice)
-[![Gitter Chat][gitter-badge]](gitter-link)
+[![Gitter Chat][gitter-badge]][gitter-link]
 [![License][license]](http://www.apache.org/licenses/LICENSE-2.0)
 
 Malice's mission is to be a free open source version of VirusTotal that anyone can use at any scale from an independent researcher to a fortune 500 company.

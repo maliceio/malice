@@ -52,7 +52,7 @@ Copyright (c) 2013 - 2015 **blacktop** Joshua Maine
 
 <!-- Links -->
 [malice-logo]: https://raw.githubusercontent.com/blacktop/go-malice/master/docs/logo/malice.png
-[travis-badge]: https://travis-ci.org/blacktop/malice.svg?branch=master
+[travis-badge]: https://travis-ci.org/blacktop/go-malice.svg?branch=master
 [gitter-badge]: https://badges.gitter.im/blacktop/go-malice.svg
 [gitter-link]: https://gitter.im/blacktop/go-malice
 [license]: https://img.shields.io/badge/licence-Apache%202-blue.svg

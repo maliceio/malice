@@ -2,7 +2,9 @@ binary:
   - nsrl:
       enabled: yes
       image: blacktop/nsrl
+      mime: *
 document:
   - pdfid:
       enabled: no
       image: blacktop/pdfid
+      mime: application/pdf

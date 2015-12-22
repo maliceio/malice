@@ -1,10 +1,10 @@
 package plugin
 
 import (
-	"gopkg.in/yaml.v2"
-
 	"io/ioutil"
 	"log"
+
+	"gopkg.in/yaml.v2"
 )
 
 // Plugins represents the configuration information.
@@ -39,4 +39,5 @@ func init() {
 		log.Fatalf("error: %v", err)
 	}
 	yaml.Unmarshal(plugins, &Plugin)
+	config, err := toml.LoadFile("config.toml")
 }

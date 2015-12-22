@@ -1,0 +1,8 @@
+binary:
+  - nsrl:
+      enabled: yes
+      image: blacktop/nsrl
+document:
+  - pdfid:
+      enabled: no
+      image: blacktop/pdfid

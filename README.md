@@ -46,6 +46,9 @@ GLOBAL OPTIONS:
 
 Find a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to [file an issue](https://github.com/blacktop/go-malice/issues/new) and I'll get right on it.
 
+### Credits
+I want to give a big shout out to [jordan-wright](http://jordan-wright.com), I am using his program [gophish](https://github.com/jordan-wright/gophish) as a template to get me started with the Malice rewrite.  Jordan has an amazing sense of style and his code is elegant and beautiful.  I aspire to be on his level someday.
+
 ### License
 Apache License (Version 2.0)  
 Copyright (c) 2013 - 2015 **blacktop** Joshua Maine

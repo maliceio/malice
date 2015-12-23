@@ -1,9 +1,11 @@
-package plugin
+package plugins
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 
+	"github.com/pelletier/go-toml"
 	"gopkg.in/yaml.v2"
 )
 
@@ -40,4 +42,5 @@ func init() {
 	}
 	yaml.Unmarshal(plugins, &Plugin)
 	config, err := toml.LoadFile("config.toml")
+	fmt.Println(config)
 }

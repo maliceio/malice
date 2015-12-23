@@ -3,6 +3,7 @@ binary:
       enabled: yes
       image: blacktop/nsrl
       mime: *
+
 document:
   - pdfid:
       enabled: no

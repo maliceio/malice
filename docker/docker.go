@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/blacktop/go-malice/config"
-	"github.com/docker/docker/pkg/units"
+	"github.com/docker/docker/vendor/src/github.com/docker/go-units"
 	"github.com/fsouza/go-dockerclient"
 )
 
@@ -57,6 +57,7 @@ func StartELK() (*docker.Container, error) {
 	return cont, err
 }
 
+//info prints out list of docker images and containers
 func info() {
 	var created string
 	var size string

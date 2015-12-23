@@ -12,4 +12,7 @@ malice:
     path: malice.db
 
   env: development
+
+  docker:
+    endpoint: tcp://192.168.99.100:2376
   # env: production

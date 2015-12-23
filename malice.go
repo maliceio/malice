@@ -6,6 +6,7 @@ import (
 	log "github.com/blacktop/docker-nsrl/nsrl/Godeps/_workspace/src/github.com/Sirupsen/logrus"
 	"github.com/blacktop/docker-nsrl/nsrl/Godeps/_workspace/src/github.com/codegangsta/cli"
 	"github.com/blacktop/go-malice/config"
+	doc "github.com/blacktop/go-malice/docker"
 	// "github.com/gorilla/handlers"
 	// "github.com/jordan-wright/gophish/controllers"
 	// "github.com/jordan-wright/gophish/models"
@@ -53,6 +54,7 @@ func main() {
 			},
 			Usage: "start web api",
 			Action: func(c *cli.Context) {
+				cont, err := doc.startELK()
 				// searchFloom(c.Args(), c.Bool("verbose"))
 				// Setup the global variables and settings
 				// err := models.Setup()

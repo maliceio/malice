@@ -10,33 +10,32 @@ import (
 // Config represents the configuration information.
 type Config struct {
 	Malice struct {
-		URL         string     `yaml:"url"`
+		URL         string
 		AdminURL    string     `yaml:"admin_url"`
 		Email       SMTPServer `yaml:"email"`
 		DB          Database   `yaml:"db"`
 		Environment string     `yaml:"env"`
+		Docker      Docker
 	}
 }
 
 // SMTPServer represents the Email configuration details
 type SMTPServer struct {
-	Host     string `yaml:"host"`
-	Port     string `yaml:"port"`
-	User     string `yaml:"user"`
-	Password string `yaml:"password"`
+	Host     string
+	Port     string
+	User     string
+	Password string
 }
 
 // Database represents the Database configuration details
 type Database struct {
-	Path string `yaml:"path"`
+	Path string
 }
 
-// type Config struct {
-// 	AdminURL string     `json:"admin_url"`
-// 	PhishURL string     `json:"phish_url"`
-// 	SMTP     SMTPServer `json:"smtp"`
-// 	DBPath   string     `json:"dbpath"`
-// }
+// Docker represents the Docker configuration details
+type Docker struct {
+	Endpoint string
+}
 
 // Conf represents the Malice runtime configuration
 var Conf Config

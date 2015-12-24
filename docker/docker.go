@@ -3,12 +3,9 @@ package docker
 import (
 	"fmt"
 	"os"
-	"regexp"
-	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/blacktop/go-malice/config"
-	"github.com/docker/docker/vendor/src/github.com/docker/go-units"
 	"github.com/fsouza/go-dockerclient"
 )
 
@@ -87,93 +84,4 @@ func StartELK() (*docker.Container, error) {
 	}
 
 	return cont, err
-}
-
-//Info prints out list of docker images and containers
-func Info() (err error) {
-	var created string
-	var size string
-	// var err = nil
-
-	// client, _ := docker.NewTLSClient(endpoint, cert, key, ca)
-
-	imgs, _ := client.ListImages(docker.ListImagesOptions{All: false})
-	fmt.Println("Listing All Images=================================")
-	for _, img := range imgs {
-		// fmt.Println("ID: ", img.ID)
-		fmt.Println("RepoTags: ", img.RepoTags[0])
-		created = units.HumanDuration(time.Now().UTC().Sub(time.Unix(img.Created, 0))) + " ago"
-		size = units.HumanSize(float64(img.Size))
-		fmt.Println("Created: ", created)
-		fmt.Println("Size: ", size)
-		// fmt.Println("VirtualSize: ", img.VirtualSize)
-		// fmt.Println("ParentId: ", img.ParentID)
-	}
-	containers, _ := client.ListContainers(docker.ListContainersOptions{All: true})
-	fmt.Println("Listing All Containers==========================================")
-	for _, container := range containers {
-		// fmt.Println("ID: ", container.ID)
-		fmt.Println("Image: ", container.Image)
-		fmt.Println("Command: ", container.Command)
-		created = units.HumanDuration(time.Now().UTC().Sub(time.Unix(container.Created, 0))) + " ago"
-		fmt.Println("Created: ", created)
-		fmt.Println("Status: ", container.Status)
-		fmt.Println("Ports: ", container.Ports)
-		// fmt.Println("Created: ", container.SizeRootFs)
-		// fmt.Println("Created: ", container.SizeRw)
-	}
-	return err
-}
-
-// ContainerExists returns APIContainers containers list and true
-// if the container name exists, otherwise false.
-func ContainerExists(name string) (docker.APIContainers, bool) {
-	return ParseContainers(name, true)
-}
-
-// ContainerRunning returns APIContainers containers list and true
-// if the container name exists and is running, otherwise false.
-func ContainerRunning(name string) (docker.APIContainers, bool) {
-	return ParseContainers(name, false)
-}
-
-// ParseContainers parses the containers
-func ParseContainers(name string, all bool) (docker.APIContainers, bool) {
-	log.WithFields(log.Fields{
-		"env": config.Conf.Malice.Environment,
-	}).Debug("Searching for container: ", name)
-	containers := listContainers(all)
-
-	r := regexp.MustCompile(name)
-
-	if len(containers) != 0 {
-		for _, container := range containers {
-			for _, n := range container.Names {
-				if r.MatchString(n) {
-					log.WithFields(log.Fields{
-						"env": config.Conf.Malice.Environment,
-					}).Debug("Container FOUND: ", name)
-
-					return container, true
-				}
-			}
-		}
-	}
-
-	log.WithFields(log.Fields{
-		"env": config.Conf.Malice.Environment,
-	}).Debug("Container NOT Found: ", name)
-
-	return docker.APIContainers{}, false
-}
-
-func listContainers(all bool) []docker.APIContainers {
-	var containers []docker.APIContainers
-
-	containerList, _ := client.ListContainers(docker.ListContainersOptions{All: all})
-	for _, container := range containerList {
-		containers = append(containers, container)
-	}
-
-	return containers
 }

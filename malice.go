@@ -7,30 +7,28 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/blacktop/go-malice/config"
 	"github.com/blacktop/go-malice/docker"
-	"github.com/blacktop/go-malice/plugins"
 	"github.com/codegangsta/cli"
-	// "./docker"
+
 	// "github.com/gorilla/handlers"
 	// "github.com/jordan-wright/gophish/controllers"
 	// "github.com/jordan-wright/gophish/models"
 )
 
 func init() {
-
 	if config.Conf.Malice.Environment == "production" {
 		// Log as JSON instead of the default ASCII formatter.
 		log.SetFormatter(&log.JSONFormatter{})
+		// Only log the warning severity or above.
+		log.SetLevel(log.InfoLevel)
 		// log.SetFormatter(&logstash.LogstashFormatter{Type: "malice"})
 	} else {
 		// Log as ASCII formatter.
 		log.SetFormatter(&log.TextFormatter{})
+		// Only log the warning severity or above.
+		log.SetLevel(log.DebugLevel)
 	}
-
 	// Output to stderr instead of stdout, could also be a file.
 	log.SetOutput(os.Stdout)
-
-	// Only log the warning severity or above.
-	log.SetLevel(log.InfoLevel)
 }
 
 func main() {
@@ -58,12 +56,20 @@ func main() {
 			Usage: "start web api",
 			Action: func(c *cli.Context) {
 				// cont, err := plugins.startELK()
-				fmt.Println(plugins.Plugin.Bin.Name)
+				// fmt.Println(plugins.Plugin.Bin.Name)
+				// err := docker.Info()
+				// if err != nil {
+				// 	log.Println("error: ", err)
+				// }
 				cont, err := docker.StartELK()
 				if err != nil {
-					fmt.Printf("start error = %s\n", err)
+					fmt.Printf("StartELK error = %s\n", err)
 				}
-				fmt.Println("ELK Container ID: ", cont.ID)
+				log.WithFields(log.Fields{
+					"id":   cont.ID,
+					"name": cont.Name,
+					"env":  config.Conf.Malice.Environment,
+				}).Info("ELK Container Started")
 				// searchFloom(c.Args(), c.Bool("verbose"))
 				// Setup the global variables and settings
 				// err := models.Setup()

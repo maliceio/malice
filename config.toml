@@ -1,29 +1,61 @@
-# This is a TOML document. Boom.
+# Copyright (c) 2013 - 2015 blacktop Joshua Maine, All Rights Reserved.
+# See LICENSE for license information.
 
-title = "TOML Example"
+title = "Malice Runtime Configuration"
 
-[owner]
-name = "Tom Preston-Werner"
-organization = "GitHub"
-bio = "GitHub Cofounder & CEO\nLikes tater tots and beer."
-dob = 1979-05-27T07:32:00Z # First class dates? Why not?
+[author]
+name = "blacktop"
+# organization = "GitHub"
+# bio = "GitHub Cofounder & CEO\nLikes tater tots and beer."
+# dob = 1979-05-27T07:32:00Z # First class dates? Why not?
+
+[web]
+url = "0.0.0.0:80"
+admin_url = "127.0.0.1:3333"
+
+[email]
+host = "smtp.example.com"
+port = 25
+user = "username"
+pass = "password"
 
 [database]
+path = "malice.db"
 server = "192.168.1.1"
 ports = [ 8001, 8001, 8002 ]
 connection_max = 5000
 enabled = true
 
-[servers]
+[enviroment]
+run = "development"
+# run = "production"
 
-  # You can indent as you please. Tabs or spaces. TOML don't care.
-  [servers.alpha]
-  ip = "10.0.0.1"
-  dc = "eqdc10"
+[docker]
+endpoint = "tcp://192.168.99.100:2376"
 
-  [servers.beta]
-  ip = "10.0.0.2"
-  dc = "eqdc10"
+#######################################################################################################################
+# PLUGIN Configuration ################################################################################################
+#######################################################################################################################
+
+[plugins]
+
+  [plugins.nsrl]
+  enabled = true
+  description = "NSRL Database Hash Search"
+  category = "binary"
+  image = "blacktop/nsrl"
+  mime = "*"
+
+  [plugins.pdfid]
+  enabled = false
+  description = "PDFiD - tool to triage PDF documents"
+  category = "document"
+  image = "blacktop/pdfid"
+  mime = "application/pdf"
+
+#######################################################################################################################
+#######################################################################################################################
+#######################################################################################################################
 
 [clients]
 data = [ ["gamma", "delta"], [1, 2] ] # just an update to make sure parsers support it

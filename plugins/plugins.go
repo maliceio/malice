@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"time"
 
-	"github.com/pelletier/go-toml"
+	"github.com/BurntSushi/toml"
+	// "github.com/pelletier/go-toml"
 	"gopkg.in/yaml.v2"
 )
 
@@ -31,8 +33,46 @@ type DocumantPlugin struct {
 	}
 }
 
+type tomlConfig struct {
+	Title   string
+	Owner   ownerInfo
+	DB      database `toml:"database"`
+	Plugins map[string]plugin
+	Clients clients
+}
+
+type ownerInfo struct {
+	Name string
+	Org  string `toml:"organization"`
+	Bio  string
+	DOB  time.Time
+}
+
+type database struct {
+	Server  string
+	Ports   []int
+	ConnMax int `toml:"connection_max"`
+	Enabled bool
+}
+
+type plugin struct {
+	Enabled     bool
+	Category    string
+	Description string
+	Image       string
+	Mime        string
+}
+
+type clients struct {
+	Data  [][]interface{}
+	Hosts []string
+}
+
 // Plugin represents the Malice regiestered Plugins
 var Plugin Plugins
+
+// Conf represents the Malice regiestered Plugins
+var Conf tomlConfig
 
 func init() {
 	// Get the config file
@@ -41,6 +81,23 @@ func init() {
 		log.Fatalf("error: %v", err)
 	}
 	yaml.Unmarshal(plugins, &Plugin)
-	config, err := toml.LoadFile("config.toml")
-	fmt.Println(config)
+
+	// ###############################################################
+	if _, err := toml.DecodeFile("./config.toml", &Conf); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+}
+
+// ListEnabledPlugins lists all enabled plugins
+func ListEnabledPlugins() {
+	plugins := Conf.Plugins
+	for name, plugin := range plugins {
+		if plugin.Enabled {
+			fmt.Println("Name: ", name)
+			fmt.Println("Description: ", plugin.Description)
+			fmt.Println("Image: ", plugin.Image)
+			fmt.Println("Category: ", plugin.Category)
+			fmt.Println("Mime: ", plugin.Mime)
+		}
+	}
 }

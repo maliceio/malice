@@ -55,12 +55,7 @@ func main() {
 			},
 			Usage: "start web api",
 			Action: func(c *cli.Context) {
-				// cont, err := plugins.startELK()
-				// fmt.Println(plugins.Plugin.Bin.Name)
-				// err := docker.Info()
-				// if err != nil {
-				// 	log.Println("error: ", err)
-				// }
+				// NOTE: Starting ELK container. I might use this to store data from Malice
 				cont, err := docker.StartELK()
 				if err != nil {
 					fmt.Printf("StartELK error = %s\n", err)

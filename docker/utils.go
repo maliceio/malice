@@ -2,6 +2,8 @@ package docker
 
 import (
 	"fmt"
+	"net/url"
+	"strings"
 
 	"github.com/blacktop/go-malice/config"
 
@@ -29,6 +31,15 @@ func init() {
 	}
 	// Output to stderr instead of stdout, could also be a file.
 	log.SetOutput(os.Stdout)
+}
+
+// PingDockerClient pings docker client to see if it is up or not.
+func PingDockerClient() error {
+	err := client.Ping()
+	if err != nil {
+		log.Errorln(err)
+	}
+	return nil
 }
 
 //Info prints out list of docker images and containers
@@ -160,4 +171,20 @@ func listImages() []docker.APIImages {
 	}
 
 	return images
+}
+
+// parseDockerEndoint returns ip and port from docker endpoint string
+func parseDockerEndoint(endpoint string) (string, string, error) {
+
+	u, err := url.Parse(endpoint)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	hostParts := strings.Split(u.Host, ":")
+	if len(hostParts) != 2 {
+		return "", "", fmt.Errorf("Unalbe to parse endpoint: %s", endpoint)
+	}
+
+	return hostParts[0], hostParts[1], nil
 }

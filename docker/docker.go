@@ -12,15 +12,19 @@ import (
 // NOTE: https://github.com/eris-ltd/eris-cli/blob/master/perform/docker_run.go
 
 var (
-	endpoint  = config.Conf.Malice.Docker.Endpoint
-	path      = os.Getenv("DOCKER_CERT_PATH")
-	ca        = fmt.Sprintf("%s/ca.pem", path)
-	cert      = fmt.Sprintf("%s/cert.pem", path)
-	key       = fmt.Sprintf("%s/key.pem", path)
-	client, _ = docker.NewTLSClient(endpoint, cert, key, ca)
+	endpoint    = os.Getenv("DOCKER_HOST")
+	ip          string
+	port        string
+	path        = os.Getenv("DOCKER_CERT_PATH")
+	ca          = fmt.Sprintf("%s/ca.pem", path)
+	cert        = fmt.Sprintf("%s/cert.pem", path)
+	key         = fmt.Sprintf("%s/key.pem", path)
+	client      *docker.Client
+	clientError error
 )
 
 func init() {
+	var err error
 	if config.Conf.Malice.Environment == "production" {
 		// Log as JSON instead of the default ASCII formatter.
 		log.SetFormatter(&log.JSONFormatter{})
@@ -35,18 +39,48 @@ func init() {
 	}
 	// Output to stderr instead of stdout, could also be a file.
 	log.SetOutput(os.Stdout)
+	// fmt.Println(os.GOOS)
+
+	if endpoint != "" {
+		endpoint = config.Conf.Malice.Docker.Endpoint
+	}
+
+	ip, port, err = parseDockerEndoint(endpoint)
+	if err != nil {
+		log.Error(err)
+	}
+
+	client, clientError = docker.NewTLSClient(endpoint, cert, key, ca)
+	// Make sure we can connect to the docker client
+	if clientError != nil {
+		log.WithFields(log.Fields{
+			"env":      config.Conf.Malice.Environment,
+			"endpoint": endpoint,
+		}).Error("Unable to connect to docker client")
+		os.Exit(2)
+	}
+}
+
+//GetIP returns IP of docker client
+func GetIP() string {
+	return ip
 }
 
 // StartELK creates an ELK container from the image blacktop/elk
 func StartELK() (*docker.Container, error) {
 	// client, _ := docker.NewTLSClient(endpoint, cert, key, ca)
-	elkContainer, exists := ContainerExists("elk")
+	err := PingDockerClient()
+	if err != nil {
+		return nil, err
+	}
+	_, exists := ContainerExists("elk")
 
 	if exists {
 		log.WithFields(log.Fields{
 			"exisits": exists,
-			"id":      elkContainer.ID,
-			"env":     config.Conf.Malice.Environment,
+			// "id":      elkContainer.ID,
+			"env": config.Conf.Malice.Environment,
+			"url": "http://" + ip,
 		}).Info("ELK is already running...")
 		os.Exit(0)
 	}

@@ -61,9 +61,12 @@ func main() {
 					fmt.Printf("StartELK error = %s\n", err)
 				}
 				log.WithFields(log.Fields{
-					"id":   cont.ID,
-					"name": cont.Name,
-					"env":  config.Conf.Malice.Environment,
+					// "id":   cont.ID,
+					"url":      "http://" + docker.GetIP(),
+					"username": "admin",
+					"password": "admin",
+					"name":     cont.Name,
+					"env":      config.Conf.Malice.Environment,
 				}).Info("ELK Container Started")
 				// searchFloom(c.Args(), c.Bool("verbose"))
 				// Setup the global variables and settings

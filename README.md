@@ -17,27 +17,27 @@ Malice will have binary releases for all platforms.
 
 
 ### Usage
-```bash
-NAME:
-   malice - Open Source Malware Analysis Framework
+```
+Usage: malice [OPTIONS] COMMAND [arg...]
 
-USAGE:
-   malice [global options] command [command options] [arguments...]
+Open Source Malware Analysis Framework
 
-VERSION:
-   0.1.0
+Version: 0.1.0-alpha, build HEAD
 
-AUTHOR(S):
-   blacktop <https://github.com/blacktop>
+Author:
+  blacktop - <https://github.com/blacktop>
 
-COMMANDS:
-   web		start web api
-   help, h	Shows a list of commands or help for one command
+Options:
+  --debug, -D	Enable debug mode [$MALICE_DEBUG]
+  --help, -h	show help
+  --version, -v	print the version
 
-GLOBAL OPTIONS:
-   --help, -h			show help
-   --generate-bash-completion
-   --version, -v		print the version
+Commands:
+  elk	Start an ELK docker container
+  web	options for web app
+  help	Shows a list of commands or help for one command
+
+Run 'malice COMMAND --help' for more information on a command.
 ```
 
 ### Documentation

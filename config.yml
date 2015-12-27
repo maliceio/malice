@@ -13,6 +13,13 @@ malice:
 
   env: development
   # env: production
-  
+
   docker:
     endpoint: tcp://192.168.99.100:2376
+
+  log:
+    filename: malice.log
+    maxsize: 10
+    maxage: 30
+    maxbackups: 7
+    localtime: false

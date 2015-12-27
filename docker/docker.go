@@ -6,6 +6,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/blacktop/go-malice/config"
+	// "github.com/blacktop/go-malice/docker/utils"
 	"github.com/fsouza/go-dockerclient"
 )
 
@@ -13,14 +14,14 @@ import (
 
 var (
 	endpoint    = os.Getenv("DOCKER_HOST")
-	ip          string
-	port        string
 	path        = os.Getenv("DOCKER_CERT_PATH")
 	ca          = fmt.Sprintf("%s/ca.pem", path)
 	cert        = fmt.Sprintf("%s/cert.pem", path)
 	key         = fmt.Sprintf("%s/key.pem", path)
 	client      *docker.Client
 	clientError error
+	ip          string
+	port        string
 )
 
 func init() {
@@ -56,7 +57,7 @@ func init() {
 		log.WithFields(log.Fields{
 			"env":      config.Conf.Malice.Environment,
 			"endpoint": endpoint,
-		}).Error("Unable to connect to docker client")
+		}).Fatal("Unable to connect to docker client")
 		os.Exit(2)
 	}
 }
@@ -68,12 +69,14 @@ func GetIP() string {
 
 // StartELK creates an ELK container from the image blacktop/elk
 func StartELK() (*docker.Container, error) {
-	// client, _ := docker.NewTLSClient(endpoint, cert, key, ca)
-	err := PingDockerClient()
+
+	err := PingDockerClient(client)
 	if err != nil {
-		return nil, err
+		log.Fatalln(err)
+		os.Exit(2)
 	}
-	_, exists := ContainerExists("elk")
+
+	_, exists, err := ContainerExists(client, "elk")
 
 	if exists {
 		log.WithFields(log.Fields{
@@ -109,12 +112,12 @@ func StartELK() (*docker.Container, error) {
 
 	cont, err := client.CreateContainer(createContOps)
 	if err != nil {
-		fmt.Printf("create error = %s\n", err)
+		log.WithFields(log.Fields{"env": config.Conf.Malice.Environment}).Errorf("CreateContainer error = %s\n", err)
 	}
 
 	err = client.StartContainer(cont.ID, nil)
 	if err != nil {
-		fmt.Printf("start error = %s\n", err)
+		log.WithFields(log.Fields{"env": config.Conf.Malice.Environment}).Errorf("StartContainer error = %s\n", err)
 	}
 
 	return cont, err

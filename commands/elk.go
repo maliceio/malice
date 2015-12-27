@@ -34,7 +34,8 @@ func cmdELK() error {
 
 	log.WithFields(log.Fields{
 		// "id":   cont.ID,
-		"url":      "http://" + docker.GetIP(),
+		"ip": docker.GetIP(),
+		// "url":      "http://" + docker.GetIP(),
 		"username": "admin",
 		"password": "admin",
 		"name":     cont.Name,

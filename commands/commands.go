@@ -2,6 +2,8 @@ package commands
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/codegangsta/cli"
 )
@@ -42,4 +44,9 @@ var Commands = []cli.Command{
 			}
 		},
 	},
+}
+
+// CmdNotFound outputs a formatted command not found message
+func CmdNotFound(c *cli.Context, command string) {
+	log.Fatalf("%s: '%s' is not a %s command. See '%s --help'.", c.App.Name, command, c.App.Name, os.Args[0])
 }

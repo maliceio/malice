@@ -1,6 +1,9 @@
 package docker
 
 import (
+	"bytes"
+	"io"
+
 	"github.com/blacktop/go-malice/config"
 
 	"os"
@@ -25,6 +28,36 @@ func init() {
 	}
 	// Output to stderr instead of stdout, could also be a file.
 	log.SetOutput(os.Stdout)
+}
+
+// PullImage pulls docker image:tag
+func PullImage(client *docker.Client, name string, tag string) error {
+	var buf bytes.Buffer
+	var writer io.Writer
+
+	writer = os.Stdout
+
+	opts := docker.PullImageOptions{
+		Repository: name,
+		// Registry      string
+		Tag:          tag,
+		OutputStream: writer,
+		// RawJSONStream bool      `qs:"-"`
+	}
+
+	auth := docker.AuthConfiguration{
+	// Username      string `json:"username,omitempty"`
+	// Password      string `json:"password,omitempty"`
+	// Email         string `json:"email,omitempty"`
+	// ServerAddress string `json:"serveraddress,omitempty"`
+	}
+
+	err := client.PullImage(opts, auth)
+	if err != nil {
+		log.Error(err)
+	}
+	log.Debug(buf)
+	return nil
 }
 
 // ImageExists returns APIImages images list and true
@@ -57,7 +90,7 @@ func ParseImages(client *docker.Client, name string) (*docker.APIImages, bool, e
 
 	log.WithFields(log.Fields{
 		"env": config.Conf.Malice.Environment,
-	}).Debug("Container NOT Found: ", name)
+	}).Debug("Image NOT Found: ", name)
 
 	return nil, false, nil
 	// return docker.APIImages{}, false, nil

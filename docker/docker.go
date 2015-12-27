@@ -2,6 +2,7 @@ package docker
 
 import (
 	"fmt"
+	"io"
 	"os"
 
 	log "github.com/Sirupsen/logrus"
@@ -88,6 +89,22 @@ func StartELK() (*docker.Container, error) {
 		os.Exit(0)
 	}
 
+	_, exists, err = ImageExists(client, "blacktop/elk")
+	if exists {
+		log.WithFields(log.Fields{
+			"exisits": exists,
+			// "id":      elkContainer.ID,
+			"env": config.Conf.Malice.Environment,
+		}).Info("Image `blacktop/elk` already pulled.")
+	} else {
+		log.WithFields(log.Fields{
+			"exisits": exists,
+			"env":     config.Conf.Malice.Environment}).Info("Pulling Image `blacktop/elk`")
+		err := PullImage(client, "blacktop/elk", "latest")
+		if err != nil {
+			log.Error(err)
+		}
+	}
 	createContConf := docker.Config{
 		Image: "blacktop/elk",
 	}
@@ -121,4 +138,32 @@ func StartELK() (*docker.Container, error) {
 	}
 
 	return cont, err
+}
+
+// LogContainer tails container logs to terminal
+func LogContainer(cont *docker.Container) {
+	var writer io.Writer
+	var eWriter io.Writer
+
+	writer = os.Stdout
+	eWriter = os.Stderr
+
+	opts := docker.LogsOptions{
+		Container:    cont.ID,
+		OutputStream: writer,
+		ErrorStream:  eWriter,
+		Follow:       true,
+		Stdout:       true,
+		Stderr:       true,
+		// Since:        0,
+		Timestamps: false,
+		// Tail:         false,
+
+		RawTerminal: false, // Usually true when the container contains a TTY.
+	}
+
+	err := client.Logs(opts)
+	if err != nil {
+		log.Error(err)
+	}
 }

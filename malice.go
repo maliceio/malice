@@ -41,7 +41,7 @@ func main() {
 	app.Email = "https://github.com/blacktop"
 
 	app.Commands = commands.Commands
-	app.CommandNotFound = cmdNotFound
+	app.CommandNotFound = commands.CmdNotFound
 	app.Usage = "Open Source Malware Analysis Framework"
 	app.Version = version.FullVersion()
 	// app.EnableBashCompletion = true
@@ -59,8 +59,4 @@ func main() {
 	if err := app.Run(os.Args); err != nil {
 		log.Error(err)
 	}
-}
-
-func cmdNotFound(c *cli.Context, command string) {
-	log.Fatalf("%s: '%s' is not a %s command. See '%s --help'.", c.App.Name, command, c.App.Name, os.Args[0])
 }

@@ -18,8 +18,8 @@ var Commands = []cli.Command{
 	},
 	{
 		Name:    "web",
-		Aliases: []string{"r"},
-		Usage:   "options for task templates",
+		Aliases: []string{"w"},
+		Usage:   "options for web app",
 		Subcommands: []cli.Command{
 			{
 				Name:   "start",

@@ -1,8 +1,6 @@
 package docker
 
 import (
-	"fmt"
-
 	"github.com/blacktop/go-malice/config"
 
 	"os"
@@ -50,7 +48,7 @@ func ParseContainers(client *docker.Client, name string, all bool) (*docker.APIC
 	if err != nil {
 		return nil, false, err
 	}
-	fmt.Println("containers: ", containers)
+
 	r := regexp.MustCompile(name)
 
 	if len(containers) != 0 {

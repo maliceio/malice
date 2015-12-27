@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/blacktop/go-malice/commands"
 	"github.com/blacktop/go-malice/config"
-	"github.com/blacktop/go-malice/docker"
+	"github.com/blacktop/go-malice/version"
 	"github.com/codegangsta/cli"
 
 	// "github.com/gorilla/handlers"
@@ -31,73 +33,95 @@ func init() {
 	log.SetOutput(os.Stdout)
 }
 
+// AppHelpTemplate custom app help template
+var AppHelpTemplate = `Usage: {{.Name}} {{if .Flags}}[OPTIONS] {{end}}COMMAND [arg...]
+
+{{.Usage}}
+
+Version: {{.Version}}{{if or .Author .Email}}
+
+Author:{{if .Author}}
+  {{.Author}}{{if .Email}} - <{{.Email}}>{{end}}{{else}}
+  {{.Email}}{{end}}{{end}}
+{{if .Flags}}
+Options:
+  {{range .Flags}}{{.}}
+  {{end}}{{end}}
+Commands:
+  {{range .Commands}}{{.Name}}{{with .ShortName}}, {{.}}{{end}}{{ "\t" }}{{.Usage}}
+  {{end}}
+Run '{{.Name}} COMMAND --help' for more information on a command.
+`
+
+// CommandHelpTemplate custom command help template
+var CommandHelpTemplate = `Usage: malice {{.Name}}{{if .Flags}} [OPTIONS]{{end}} [arg...]
+{{.Usage}}{{if .Description}}
+
+Description:
+   {{.Description}}{{end}}{{if .Flags}}
+
+Options:
+   {{range .Flags}}
+   {{.}}{{end}}{{ end }}
+`
+
+func setDebugOutputLevel() {
+	// TODO: I'm not really a fan of this method and really would rather
+	// use -v / --verbose TBQH
+	for _, f := range os.Args {
+		if f == "-D" || f == "--debug" || f == "-debug" {
+			log.SetLevel(log.DebugLevel)
+		}
+	}
+
+	debugEnv := os.Getenv("MALICE_DEBUG")
+	if debugEnv != "" {
+		showDebug, err := strconv.ParseBool(debugEnv)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error parsing boolean value from MALICE_DEBUG: %s\n", err)
+			os.Exit(1)
+		}
+		if showDebug {
+			log.SetLevel(log.DebugLevel)
+		}
+	}
+}
+
 func main() {
+	cli.AppHelpTemplate = AppHelpTemplate
+	cli.CommandHelpTemplate = CommandHelpTemplate
 	app := cli.NewApp()
-	app.EnableBashCompletion = true
+
 	app.Name = "malice"
-	app.Usage = "Open Source Malware Analysis Framework"
 	app.Author = "blacktop"
 	app.Email = "https://github.com/blacktop"
-	app.Version = "0.1.0"
-	// app.Action = func(c *cli.Context) {
-	// 	// fmt.Println(c.Bool("verbose"))
-	// 	// fmt.Println(c.String("test"))
-	// 	// println("Hello friend!")
-	// }
-	app.Commands = []cli.Command{
-		{
-			Name: "web",
-			Flags: []cli.Flag{
-				cli.BoolFlag{
-					Name:  "verbose, v",
-					Usage: "Show more output",
-				},
-			},
-			Usage: "start web api",
-			Action: func(c *cli.Context) {
-				// NOTE: Starting ELK container. I might use this to store data from Malice
-				cont, err := docker.StartELK()
-				if err != nil {
-					fmt.Printf("StartELK error = %s\n", err)
-				}
-				log.WithFields(log.Fields{
-					// "id":   cont.ID,
-					"url":      "http://" + docker.GetIP(),
-					"username": "admin",
-					"password": "admin",
-					"name":     cont.Name,
-					"env":      config.Conf.Malice.Environment,
-				}).Info("ELK Container Started")
-				// searchFloom(c.Args(), c.Bool("verbose"))
-				// Setup the global variables and settings
-				// err := models.Setup()
-				// if err != nil {
-				// 	fmt.Println(err)
-				// }
-				// Start the web servers
-				log.WithFields(log.Fields{
-					"env": config.Conf.Malice.Environment,
-					"url": "http://" + config.Conf.Malice.AdminURL,
-				}).Info("Admin server started...")
-				// go http.ListenAndServe(config.Conf.AdminURL, handlers.CombinedLoggingHandler(os.Stdout, controllers.CreateAdminRouter()))
-				log.WithFields(log.Fields{
-					"env": config.Conf.Malice.Environment,
-					"url": "http://" + config.Conf.Malice.URL,
-				}).Info("Malice server started...")
-				// http.ListenAndServe(config.Conf.PhishURL, handlers.CombinedLoggingHandler(os.Stdout, controllers.CreatePhishingRouter()))
 
-			},
-			// BashComplete: func(c *cli.Context) {
-			// 	// This will complete if no args are passed
-			// 	if len(c.Args()) > 0 {
-			// 		return
-			// 	}
-			// 	for _, t := range tasks {
-			// 		fmt.Println(t)
-			// 	}
-			// },
+	app.Commands = commands.Commands
+	app.CommandNotFound = cmdNotFound
+	app.Usage = "Open Source Malware Analysis Framework"
+	app.Version = version.FullVersion()
+	app.EnableBashCompletion = true
+
+	log.Debug("Malice Version: ", app.Version)
+
+	app.Flags = []cli.Flag{
+		cli.BoolFlag{
+			Name:  "debug, D",
+			Usage: "Enable debug mode",
 		},
 	}
 
-	app.Run(os.Args)
+	if err := app.Run(os.Args); err != nil {
+		log.Error(err)
+	}
+}
+
+func cmdNotFound(c *cli.Context, command string) {
+	log.Fatalf(
+		"%s: '%s' is not a %s command. See '%s --help'.",
+		c.App.Name,
+		command,
+		c.App.Name,
+		os.Args[0],
+	)
 }

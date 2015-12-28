@@ -1,4 +1,4 @@
-package docker
+package maldocker
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/blacktop/go-malice/config"
-	// "github.com/blacktop/go-malice/docker/utils"
+	// "github.com/blacktop/go-malice/libmalice/maldocker/utils"
 	"github.com/fsouza/go-dockerclient"
 )
 
@@ -42,7 +42,7 @@ func init() {
 	log.SetOutput(os.Stdout)
 	// fmt.Println(os.GOOS)
 
-	if endpoint != "" {
+	if endpoint == "" {
 		endpoint = config.Conf.Malice.Docker.Endpoint
 	}
 
@@ -57,7 +57,15 @@ func init() {
 		log.WithFields(log.Fields{
 			"env":      config.Conf.Malice.Environment,
 			"endpoint": endpoint,
-		}).Fatal("Unable to connect to docker client")
+		}).Error("Unable to connect to docker client")
+		log.Info("Please install docker-machine by running: \n",
+			"\t   - brew install docker-machine\n",
+			"\t   - docker-machine create -d virtualbox dev\n",
+			"\t   - eval $(docker-machine env dev)\n",
+		)
+		// TODO Decide if I want to make docker machines or rely on use to create their own.
+		// log.Info("Trying to create new docker-machine: ", "test")
+		// MakeDockerMachine("test")
 		os.Exit(2)
 	}
 }

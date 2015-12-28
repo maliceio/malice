@@ -5,7 +5,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/blacktop/go-malice/config"
-	"github.com/blacktop/go-malice/docker"
+	"github.com/blacktop/go-malice/libmalice/maldocker"
 )
 
 func init() {
@@ -27,13 +27,13 @@ func init() {
 
 func cmdELK(logs bool) {
 
-	cont, err := docker.StartELK(logs)
+	cont, err := maldocker.StartELK(logs)
 	assert(err)
 
 	log.WithFields(log.Fields{
 		// "id":   cont.ID,
-		"ip": docker.GetIP(),
-		// "url":      "http://" + docker.GetIP(),
+		"ip": maldocker.GetIP(),
+		// "url":      "http://" + maldocker.GetIP(),
 		"username": "admin",
 		"password": "admin",
 		"name":     cont.Name,

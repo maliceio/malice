@@ -8,6 +8,12 @@ import (
 	"github.com/codegangsta/cli"
 )
 
+func assert(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 var tasks = []string{"start", "stop"}
 
 // Commands are the codegangsta/cli commands for Malice
@@ -16,7 +22,13 @@ var Commands = []cli.Command{
 		Name:        "elk",
 		Usage:       "Start an ELK docker container",
 		Description: "Argument is what port to bind to.",
-		Action:      func(c *cli.Context) { cmdELK() },
+		Flags: []cli.Flag{
+			cli.BoolFlag{
+				Name:  "logs",
+				Usage: "Display the Logs from the ELK Container",
+			},
+		},
+		Action: func(c *cli.Context) { cmdELK(c.Bool("logs")) },
 	},
 	{
 		Name:    "web",

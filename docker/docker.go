@@ -2,7 +2,6 @@ package docker
 
 import (
 	"fmt"
-	"io"
 	"os"
 
 	log "github.com/Sirupsen/logrus"
@@ -63,19 +62,21 @@ func init() {
 	}
 }
 
+func assert(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 //GetIP returns IP of docker client
 func GetIP() string {
 	return ip
 }
 
 // StartELK creates an ELK container from the image blacktop/elk
-func StartELK() (*docker.Container, error) {
+func StartELK(logs bool) (cont *docker.Container, err error) {
 
-	err := PingDockerClient(client)
-	if err != nil {
-		log.Fatalln(err)
-		os.Exit(2)
-	}
+	assert(PingDockerClient(client))
 
 	_, exists, err := ContainerExists(client, "elk")
 
@@ -100,10 +101,8 @@ func StartELK() (*docker.Container, error) {
 		log.WithFields(log.Fields{
 			"exisits": exists,
 			"env":     config.Conf.Malice.Environment}).Info("Pulling Image `blacktop/elk`")
-		err := PullImage(client, "blacktop/elk", "latest")
-		if err != nil {
-			log.Error(err)
-		}
+
+		assert(PullImage(client, "blacktop/elk", "latest"))
 	}
 	createContConf := docker.Config{
 		Image: "blacktop/elk",
@@ -127,7 +126,7 @@ func StartELK() (*docker.Container, error) {
 		HostConfig: &createContHostConfig,
 	}
 
-	cont, err := client.CreateContainer(createContOps)
+	cont, err = client.CreateContainer(createContOps)
 	if err != nil {
 		log.WithFields(log.Fields{"env": config.Conf.Malice.Environment}).Errorf("CreateContainer error = %s\n", err)
 	}
@@ -137,33 +136,28 @@ func StartELK() (*docker.Container, error) {
 		log.WithFields(log.Fields{"env": config.Conf.Malice.Environment}).Errorf("StartContainer error = %s\n", err)
 	}
 
-	return cont, err
+	if logs {
+		LogContainer(cont)
+	}
+
+	return
 }
 
 // LogContainer tails container logs to terminal
 func LogContainer(cont *docker.Container) {
-	var writer io.Writer
-	var eWriter io.Writer
-
-	writer = os.Stdout
-	eWriter = os.Stderr
 
 	opts := docker.LogsOptions{
 		Container:    cont.ID,
-		OutputStream: writer,
-		ErrorStream:  eWriter,
+		OutputStream: os.Stdout,
+		ErrorStream:  os.Stderr,
 		Follow:       true,
 		Stdout:       true,
 		Stderr:       true,
 		// Since:        0,
 		Timestamps: false,
 		// Tail:         false,
-
 		RawTerminal: false, // Usually true when the container contains a TTY.
 	}
 
-	err := client.Logs(opts)
-	if err != nil {
-		log.Error(err)
-	}
+	assert(client.Logs(opts))
 }

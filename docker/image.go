@@ -1,9 +1,6 @@
 package docker
 
 import (
-	"bytes"
-	"io"
-
 	"github.com/blacktop/go-malice/config"
 
 	"os"
@@ -31,18 +28,14 @@ func init() {
 }
 
 // PullImage pulls docker image:tag
-func PullImage(client *docker.Client, name string, tag string) error {
-	var buf bytes.Buffer
-	var writer io.Writer
-
-	writer = os.Stdout
+func PullImage(client *docker.Client, name string, tag string) (err error) {
 
 	opts := docker.PullImageOptions{
 		Repository: name,
 		// Registry      string
 		Tag:          tag,
-		OutputStream: writer,
-		// RawJSONStream bool      `qs:"-"`
+		OutputStream: os.Stdout,
+		// RawJSONStream: true,
 	}
 
 	auth := docker.AuthConfiguration{
@@ -52,12 +45,9 @@ func PullImage(client *docker.Client, name string, tag string) error {
 	// ServerAddress string `json:"serveraddress,omitempty"`
 	}
 
-	err := client.PullImage(opts, auth)
-	if err != nil {
-		log.Error(err)
-	}
-	log.Debug(buf)
-	return nil
+	err = client.PullImage(opts, auth)
+
+	return
 }
 
 // ImageExists returns APIImages images list and true

@@ -25,12 +25,10 @@ func init() {
 	log.SetOutput(os.Stdout)
 }
 
-func cmdELK() error {
+func cmdELK(logs bool) {
 
-	cont, err := docker.StartELK()
-	if err != nil {
-		log.Errorf("StartELK error = %s\n", err)
-	}
+	cont, err := docker.StartELK(logs)
+	assert(err)
 
 	log.WithFields(log.Fields{
 		// "id":   cont.ID,
@@ -41,6 +39,4 @@ func cmdELK() error {
 		"name":     cont.Name,
 		"env":      config.Conf.Malice.Environment,
 	}).Info("ELK Container Started")
-
-	return nil
 }

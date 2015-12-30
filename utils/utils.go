@@ -2,15 +2,33 @@ package util
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/mail"
 
+	"github.com/dustin/go-jsonpointer"
 	"github.com/jordan-wright/email"
 	"github.com/jordan-wright/gophish/models"
 )
+
+func assert(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+// ParseJSON returns a JSON value for a given key
+// NOTE: https://godoc.org/github.com/dustin/go-jsonpointer
+func ParseJSON(data []byte, path string) (out string) {
+	var o map[string]interface{}
+	assert(json.Unmarshal(data, &o))
+	out = jsonpointer.Get(o, data).(string)
+	return
+}
 
 // ParseMail takes in an HTTP Request and returns an Email object
 // TODO: This function will likely be changed to take in a []byte

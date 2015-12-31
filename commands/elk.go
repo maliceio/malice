@@ -4,8 +4,8 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/blacktop/go-malice/config"
-	"github.com/blacktop/go-malice/libmalice/maldocker"
+	"github.com/maliceio/malice/config"
+	"github.com/maliceio/malice/libmalice/maldocker"
 )
 
 func init() {

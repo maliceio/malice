@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/blacktop/go-malice/config"
+	"github.com/maliceio/malice/config"
 	lumberjack "gopkg.in/natefinch/lumberjack.v2"
 )
 

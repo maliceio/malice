@@ -7,7 +7,7 @@ RUN apt-get update \
 WORKDIR /malice
 
 # Copy over files
-ADD https://github.com/blacktop/go-malice/archive/master.zip /
+ADD https://github.com/maliceio/malice/archive/master.zip /
 RUN unzip /master.zip && rm /master.zip
 ADD config_docker.json /
 ADD docker-entry.sh /

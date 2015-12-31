@@ -2,95 +2,15 @@ package plugins
 
 import (
 	"fmt"
-	"io/ioutil"
-	"log"
-	"time"
 
-	"github.com/BurntSushi/toml"
-	// "github.com/pelletier/go-toml"
-	"gopkg.in/yaml.v2"
+	"github.com/maliceio/malice/config"
 )
 
-// Plugins represents the configuration information.
-type Plugins struct {
-	Bin BinaryPlugin   `yaml:"binary"`
-	Doc DocumantPlugin `yaml:"document"`
-}
-
-// BinaryPlugin represents the Email configuration details
-type BinaryPlugin struct {
-	Name struct {
-		Enabled string `yaml:"enabled"`
-		Image   string `yaml:"image"`
-	}
-}
-
-// DocumantPlugin represents the Database configuration details
-type DocumantPlugin struct {
-	Name struct {
-		Enabled string `yaml:"enabled"`
-		Image   string `yaml:"image"`
-	}
-}
-
-type tomlConfig struct {
-	Title   string
-	Owner   ownerInfo
-	DB      database `toml:"database"`
-	Plugins map[string]plugin
-	Clients clients
-}
-
-type ownerInfo struct {
-	Name string
-	Org  string `toml:"organization"`
-	Bio  string
-	DOB  time.Time
-}
-
-type database struct {
-	Server  string
-	Ports   []int
-	ConnMax int `toml:"connection_max"`
-	Enabled bool
-}
-
-type plugin struct {
-	Enabled     bool
-	Category    string
-	Description string
-	Image       string
-	Mime        string
-}
-
-type clients struct {
-	Data  [][]interface{}
-	Hosts []string
-}
-
-// Plugin represents the Malice regiestered Plugins
-var Plugin Plugins
-
-// Conf represents the Malice regiestered Plugins
-var Conf tomlConfig
-
-func init() {
-	// Get the config file
-	plugins, err := ioutil.ReadFile("./plugins.yaml")
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	yaml.Unmarshal(plugins, &Plugin)
-
-	// ###############################################################
-	if _, err := toml.DecodeFile("./config.toml", &Conf); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-}
+// "github.com/pelletier/go-toml"
 
 // ListEnabledPlugins lists all enabled plugins
 func ListEnabledPlugins() {
-	plugins := Conf.Plugins
+	plugins := config.TConf.Plugins
 	for name, plugin := range plugins {
 		if plugin.Enabled {
 			fmt.Println("Name: ", name)

@@ -1,7 +1,7 @@
 ![malice logo][malice-logo]
 # malice
-[![Build Status][travis-badge]](https://travis-ci.org/blacktop/go-malice)
-[![GoDoc](https://godoc.org/github.com/blacktop/go-malice?status.svg)](https://godoc.org/github.com/blacktop/go-malice)
+[![Build Status][travis-badge]](https://travis-ci.org/maliceio/malice)
+[![GoDoc](https://godoc.org/github.com/maliceio/malice?status.svg)](https://godoc.org/github.com/maliceio/malice)
 [![Gitter Chat][gitter-badge]][gitter-link]
 [![License][license]](http://www.apache.org/licenses/LICENSE-2.0)
 
@@ -44,7 +44,7 @@ Run 'malice COMMAND --help' for more information on a command.
 
 ### Issues
 
-Find a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to [file an issue](https://github.com/blacktop/go-malice/issues/new) and I'll get right on it.
+Find a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to [file an issue](https://github.com/maliceio/malice/issues/new) and I'll get right on it.
 
 ### Credits
 I want to give a big shout out to [jordan-wright](http://jordan-wright.com), I am using his program [gophish](https://github.com/jordan-wright/gophish) as a template to get me started with the Malice rewrite.  Jordan has an amazing sense of style and his code is elegant and beautiful.  I aspire to be on his level someday.
@@ -54,8 +54,8 @@ Apache License (Version 2.0)
 Copyright (c) 2013 - 2015 **blacktop** Joshua Maine
 
 <!-- Links -->
-[malice-logo]: https://raw.githubusercontent.com/blacktop/go-malice/master/docs/logo/malice.png
-[travis-badge]: https://travis-ci.org/blacktop/go-malice.svg?branch=master
-[gitter-badge]: https://badges.gitter.im/blacktop/go-malice.svg
-[gitter-link]: https://gitter.im/blacktop/go-malice
+[malice-logo]: https://raw.githubusercontent.com/maliceio/malice/master/docs/logo/malice.png
+[travis-badge]: https://travis-ci.org/maliceio/malice.svg?branch=master
+[gitter-badge]: https://badges.gitter.im/maliceio/malice.svg
+[gitter-link]: https://gitter.im/maliceio/malice
 [license]: https://img.shields.io/badge/licence-Apache%202-blue.svg

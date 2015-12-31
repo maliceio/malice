@@ -4,9 +4,9 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/blacktop/go-malice/commands"
-	"github.com/blacktop/go-malice/config"
-	"github.com/blacktop/go-malice/version"
+	"github.com/maliceio/malice/commands"
+	"github.com/maliceio/malice/config"
+	"github.com/maliceio/malice/version"
 	"github.com/codegangsta/cli"
 
 	// "github.com/gorilla/handlers"

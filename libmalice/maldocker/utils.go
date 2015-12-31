@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/blacktop/go-malice/config"
+	"github.com/maliceio/malice/config"
 
 	"os"
 	"time"

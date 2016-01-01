@@ -35,6 +35,7 @@ type Database struct {
 
 // Docker represents the Docker configuration details
 type Docker struct {
+	Name     string `yaml:"machine-name"`
 	Endpoint string
 }
 

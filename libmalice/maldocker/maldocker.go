@@ -3,6 +3,7 @@ package maldocker
 import (
 	"fmt"
 	"os"
+	"runtime"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/config"
@@ -40,7 +41,6 @@ func init() {
 	}
 	// Output to stderr instead of stdout, could also be a file.
 	log.SetOutput(os.Stdout)
-	// fmt.Println(os.GOOS)
 
 	if endpoint == "" {
 		endpoint = config.Conf.Malice.Docker.Endpoint
@@ -54,19 +54,7 @@ func init() {
 	client, clientError = docker.NewTLSClient(endpoint, cert, key, ca)
 	// Make sure we can connect to the docker client
 	if clientError != nil {
-		log.WithFields(log.Fields{
-			"env":      config.Conf.Malice.Environment,
-			"endpoint": endpoint,
-		}).Error("Unable to connect to docker client")
-		log.Info("Please install docker-machine by running: \n",
-			"\t   - brew install docker-machine\n",
-			"\t   - docker-machine create -d virtualbox dev\n",
-			"\t   - eval $(docker-machine env dev)\n",
-		)
-		// TODO Decide if I want to make docker machines or rely on use to create their own.
-		// log.Info("Trying to create new docker-machine: ", "test")
-		// MakeDockerMachine("test")
-		os.Exit(2)
+		handleClientError()
 	}
 }
 
@@ -168,4 +156,27 @@ func LogContainer(cont *docker.Container) {
 	}
 
 	assert(client.Logs(opts))
+}
+
+func handleClientError() {
+	log.WithFields(log.Fields{
+		"env":      config.Conf.Malice.Environment,
+		"endpoint": endpoint,
+	}).Error("Unable to connect to docker client")
+	switch runtime.GOOS {
+	case "darwin":
+		if _, err := os.Stat("/usr/local/bin/docker-machine"); os.IsNotExist(err) {
+			log.Infof("Please install docker-machine by running: \n\t   - brew install docker-machine\n\t   - docker-machine create -d virtualbox %s\n\t   - eval $(docker-machine env %s)\n", config.Conf.Malice.Docker.Name, config.Conf.Malice.Docker.Name)
+		} else {
+			log.Infof("Please start and source the docker-machine env by running: \n\t   - docker-machine start %s\n\t   - eval $(docker-machine env %s)\n", config.Conf.Malice.Docker.Name, config.Conf.Malice.Docker.Name)
+		}
+	case "linux":
+		log.Info("Please start the docker daemon.")
+	case "windows":
+		log.Info("Please install docker-machine and create a malice docker-machine.")
+	}
+	// TODO Decide if I want to make docker machines or rely on use to create their own.
+	// log.Info("Trying to create new docker-machine: ", "test")
+	// MakeDockerMachine("test")
+	os.Exit(2)
 }

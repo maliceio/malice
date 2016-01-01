@@ -15,6 +15,7 @@ malice:
   # env: production
 
   docker:
+    machine-name: dev
     endpoint: tcp://192.168.99.100:2376
 
   log:

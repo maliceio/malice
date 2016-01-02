@@ -10,7 +10,7 @@ import (
 
 // GetEnabledPlugins returns a map[string]plugin of enalbed plugins
 func GetEnabledPlugins() map[string]config.Plugin {
-	var enabled map[string]config.Plugin
+	var enabled = make(map[string]config.Plugin)
 
 	for name, plugin := range config.Conf.Plugins {
 		if plugin.Enabled {

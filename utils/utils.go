@@ -13,6 +13,7 @@ import (
 	"github.com/dustin/go-jsonpointer"
 	"github.com/jordan-wright/email"
 	"github.com/jordan-wright/gophish/models"
+	"github.com/rakyll/magicmime"
 )
 
 func assert(err error) {
@@ -21,12 +22,27 @@ func assert(err error) {
 	}
 }
 
+// GetFileMimeType returns the mime-type of a file path
+func GetFileMimeType(path string) {
+	if err := magicmime.Open(magicmime.MAGIC_MIME_TYPE | magicmime.MAGIC_SYMLINK | magicmime.MAGIC_ERROR); err != nil {
+		log.Fatal(err)
+	}
+	defer magicmime.Close()
+
+	mimetype, err := magicmime.TypeByFile(path)
+	if err != nil {
+		log.Fatalf("error occured during type lookup: %v", err)
+	}
+
+	log.Printf("mime-type: %v", mimetype)
+}
+
 // ParseJSON returns a JSON value for a given key
 // NOTE: https://godoc.org/github.com/dustin/go-jsonpointer
 func ParseJSON(data []byte, path string) (out string) {
 	var o map[string]interface{}
 	assert(json.Unmarshal(data, &o))
-	out = jsonpointer.Get(o, data).(string)
+	out = jsonpointer.Get(o, string(data)).(string)
 	return
 }
 

@@ -19,6 +19,18 @@ var tasks = []string{"start", "stop"}
 // Commands are the codegangsta/cli commands for Malice
 var Commands = []cli.Command{
 	{
+		Name:        "scan",
+		Usage:       "Scan a file",
+		Description: "File to be scanned.",
+		Flags: []cli.Flag{
+			cli.BoolFlag{
+				Name:  "logs",
+				Usage: "Display the Logs of the Plugin containers",
+			},
+		},
+		Action: func(c *cli.Context) { cmdScan(c.Args().First(), c.Bool("logs")) },
+	},
+	{
 		Name:        "elk",
 		Usage:       "Start an ELK docker container",
 		Description: "Argument is what port to bind to.",

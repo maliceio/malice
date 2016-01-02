@@ -2,23 +2,12 @@ package plugins
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/maliceio/malice/config"
 )
 
 // "github.com/pelletier/go-toml"
-
-// GetEnabledPlugins returns a map[string]plugin of enalbed plugins
-func GetEnabledPlugins() map[string]config.Plugin {
-	var enabled = make(map[string]config.Plugin)
-
-	for name, plugin := range config.Conf.Plugins {
-		if plugin.Enabled {
-			enabled[name] = plugin
-		}
-	}
-	return enabled
-}
 
 // ListEnabledPlugins lists all enabled plugins
 func ListEnabledPlugins() {
@@ -45,4 +34,29 @@ func ListAllPlugins() {
 		fmt.Println("Mime: ", plugin.Mime)
 		fmt.Println("---------------------")
 	}
+}
+
+// filterPluginsByEnabled returns a map[string]plugin of plugins
+// that work on the given mime type
+func filterPluginsByMime(mime string) map[string]config.Plugin {
+	var mimeMatch = make(map[string]config.Plugin)
+
+	for name, plugin := range config.Conf.Plugins {
+		if strings.Contains(plugin.Mime, mime) {
+			mimeMatch[name] = plugin
+		}
+	}
+	return mimeMatch
+}
+
+// filterPluginsByEnabled returns a map[string]plugin of enalbed plugins
+func filterPluginsByEnabled() map[string]config.Plugin {
+	var enabled = make(map[string]config.Plugin)
+
+	for name, plugin := range config.Conf.Plugins {
+		if plugin.Enabled {
+			enabled[name] = plugin
+		}
+	}
+	return enabled
 }

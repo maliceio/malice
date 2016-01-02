@@ -45,7 +45,7 @@ func InstallPlugin(plugin *config.Plugin) (err error) {
 	return
 }
 
-// ListEnabledPlugins lists all enabled plugins
+// ListEnabledPlugins lists enabled plugins
 func ListEnabledPlugins(detail bool) {
 	// TODO: Create a template for this kind of output : http://stackoverflow.com/questions/10747054/special-case-treatment-for-the-last-element-of-a-range-in-google-gos-text-templ
 	enabled := filterPluginsByEnabled()
@@ -68,7 +68,7 @@ func ListEnabledPlugins(detail bool) {
 	}
 }
 
-// ListAllPlugins lists all enabled plugins
+// ListAllPlugins lists all plugins
 func ListAllPlugins(detail bool) {
 	plugins := config.Plug.Plugins
 	if detail {

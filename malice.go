@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	if config.Conf.Malice.Environment == "production" {
+	if config.Conf.Environment == "production" {
 		// Log as JSON instead of the default ASCII formatter.
 		log.SetFormatter(&log.JSONFormatter{})
 		// Only log the warning severity or above.

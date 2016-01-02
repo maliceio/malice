@@ -26,37 +26,36 @@ ports = [ 8001, 8001, 8002 ]
 connection_max = 5000
 enabled = true
 
-[enviroment]
-run = "development"
-# run = "production"
+environment = "development"
+# environment = "production"
 
 [docker]
 machine-name = "dev"
 endpoint = "tcp://192.168.99.100:2376"
 
+[logger]
+filename = "malice.log"
+maxsize = 10
+maxage = 30
+maxbackups = 7
+localtime = false
+
 #######################################################################################################################
 # PLUGIN Configuration ################################################################################################
 #######################################################################################################################
 
-[plugins]
+[plugin]
 
-  [plugins.nsrl]
+  [plugin.nsrl]
   enabled = true
   description = "NSRL Database Hash Search"
   category = "binary"
   image = "blacktop/nsrl"
   mime = "*"
 
-  [plugins.pdfid]
+  [plugin.pdfid]
   enabled = false
   description = "PDFiD - tool to triage PDF documents"
   category = "document"
   image = "blacktop/pdfid"
   mime = "application/pdf"
-
-#######################################################################################################################
-#######################################################################################################################
-#######################################################################################################################
-
-[clients]
-data = [ ["gamma", "delta"], [1, 2] ] # just an update to make sure parsers support it

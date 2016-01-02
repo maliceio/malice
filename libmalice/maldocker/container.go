@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	if config.Conf.Malice.Environment == "production" {
+	if config.Conf.Environment == "production" {
 		// Log as JSON instead of the default ASCII formatter.
 		log.SetFormatter(&log.JSONFormatter{})
 		// Only log the warning severity or above.
@@ -42,7 +42,7 @@ func ContainerRunning(client *docker.Client, name string) (*docker.APIContainers
 // ParseContainers parses the containers
 func ParseContainers(client *docker.Client, name string, all bool) (*docker.APIContainers, bool, error) {
 	log.WithFields(log.Fields{
-		"env": config.Conf.Malice.Environment,
+		"env": config.Conf.Environment,
 	}).Debug("Searching for container: ", name)
 	containers, err := listContainers(client, all)
 	if err != nil {
@@ -55,7 +55,7 @@ func ParseContainers(client *docker.Client, name string, all bool) (*docker.APIC
 		for _, container := range containers {
 			for _, n := range container.Names {
 				if r.MatchString(n) {
-					log.WithFields(log.Fields{"env": config.Conf.Malice.Environment}).Debug("Container FOUND: ", name)
+					log.WithFields(log.Fields{"env": config.Conf.Environment}).Debug("Container FOUND: ", name)
 
 					return &container, true, nil
 				}
@@ -64,7 +64,7 @@ func ParseContainers(client *docker.Client, name string, all bool) (*docker.APIC
 	}
 
 	log.WithFields(log.Fields{
-		"env": config.Conf.Malice.Environment,
+		"env": config.Conf.Environment,
 	}).Debug("Container NOT Found: ", name)
 
 	return nil, false, nil

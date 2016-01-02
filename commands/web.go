@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	if config.Conf.Malice.Environment == "production" {
+	if config.Conf.Environment == "production" {
 		// Log as JSON instead of the default ASCII formatter.
 		log.SetFormatter(&log.JSONFormatter{})
 		// Only log the warning severity or above.
@@ -33,15 +33,15 @@ func cmdWebStart() error {
 	// }
 	// Start the web servers
 	log.WithFields(log.Fields{
-		"env": config.Conf.Malice.Environment,
-		"url": "http://" + config.Conf.Malice.AdminURL,
+		"env": config.Conf.Environment,
+		"url": "http://" + config.Conf.Web.AdminURL,
 	}).Info("Admin server started...")
-	// go http.ListenAndServe(config.Conf.AdminURL, handlers.CombinedLoggingHandler(os.Stdout, controllers.CreateAdminRouter()))
+	// go http.ListenAndServe(config.Config.AdminURL, handlers.CombinedLoggingHandler(os.Stdout, controllers.CreateAdminRouter()))
 	log.WithFields(log.Fields{
-		"env": config.Conf.Malice.Environment,
-		"url": "http://" + config.Conf.Malice.URL,
+		"env": config.Conf.Environment,
+		"url": "http://" + config.Conf.Web.URL,
 	}).Info("Malice server started...")
-	// http.ListenAndServe(config.Conf.PhishURL, handlers.CombinedLoggingHandler(os.Stdout, controllers.CreatePhishingRouter()))
+	// http.ListenAndServe(config.Config.PhishURL, handlers.CombinedLoggingHandler(os.Stdout, controllers.CreatePhishingRouter()))
 
 	return nil
 }
@@ -55,13 +55,13 @@ func cmdWebStop() error {
 	// }
 	// Start the web servers
 	log.WithFields(log.Fields{
-		"env": config.Conf.Malice.Environment,
+		"env": config.Conf.Environment,
 	}).Info("Admin server stopped...")
-	// go http.ListenAndServe(config.Conf.AdminURL, handlers.CombinedLoggingHandler(os.Stdout, controllers.CreateAdminRouter()))
+	// go http.ListenAndServe(config.Config.AdminURL, handlers.CombinedLoggingHandler(os.Stdout, controllers.CreateAdminRouter()))
 	log.WithFields(log.Fields{
-		"env": config.Conf.Malice.Environment,
+		"env": config.Conf.Environment,
 	}).Info("Malice server stopped...")
-	// http.ListenAndServe(config.Conf.PhishURL, handlers.CombinedLoggingHandler(os.Stdout, controllers.CreatePhishingRouter()))
+	// http.ListenAndServe(config.Config.PhishURL, handlers.CombinedLoggingHandler(os.Stdout, controllers.CreatePhishingRouter()))
 
 	return nil
 }

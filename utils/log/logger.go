@@ -35,10 +35,10 @@ func InitLogToFile() {
 	// 	Fatalf("error opening file: %v", err)
 	// }
 	out := LumberJackLogger(
-		config.Conf.Malice.Log.Filename,
-		config.Conf.Malice.Log.MaxSize,
-		config.Conf.Malice.Log.MaxBackups,
-		config.Conf.Malice.Log.MaxAge,
+		config.Config.Malice.Log.Filename,
+		config.Config.Malice.Log.MaxSize,
+		config.Config.Malice.Log.MaxBackups,
+		config.Config.Malice.Log.MaxAge,
 	)
 	// defer f.Close()
 	// logrus.SetOutput(os.Stderr)
@@ -51,7 +51,7 @@ func Init() {
 	// Use the Airbrake hook to report errors that have Error severity or above to
 	// an exception tracker. You can create custom hooks, see the Hooks section.
 	//  logrus.AddHook(&log_airbrake.AirbrakeHook{})
-	switch config.Conf.Malice.Environment {
+	switch config.Conf.Environment {
 	case "DEVELOPMENT":
 		InitLogToStdout()
 	case "TEST":
@@ -59,7 +59,7 @@ func Init() {
 	case "PRODUCTION":
 		InitLogToFile()
 	}
-	logrus.Debugf("config.Environment : %s", config.Conf.Malice.Environment)
+	logrus.Debugf("config.Environment : %s", config.Conf.Environment)
 }
 
 // Debug logs a message with debug log level.

@@ -3,6 +3,7 @@ package maldocker
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"runtime"
 
 	log "github.com/Sirupsen/logrus"
@@ -27,7 +28,7 @@ var (
 
 func init() {
 	var err error
-	if config.Conf.Malice.Environment == "production" {
+	if config.Conf.Environment == "production" {
 		// Log as JSON instead of the default ASCII formatter.
 		log.SetFormatter(&log.JSONFormatter{})
 		// Only log the warning severity or above.
@@ -43,7 +44,7 @@ func init() {
 	log.SetOutput(os.Stdout)
 
 	if endpoint == "" {
-		endpoint = config.Conf.Malice.Docker.Endpoint
+		endpoint = config.Conf.Docker.EndPoint
 	}
 
 	ip, port, err = parseDockerEndoint(endpoint)
@@ -80,7 +81,7 @@ func StartELK(logs bool) (cont *docker.Container, err error) {
 		log.WithFields(log.Fields{
 			"exisits": exists,
 			// "id":      elkContainer.ID,
-			"env": config.Conf.Malice.Environment,
+			"env": config.Conf.Environment,
 			"url": "http://" + ip,
 		}).Info("ELK is already running...")
 		os.Exit(0)
@@ -91,12 +92,12 @@ func StartELK(logs bool) (cont *docker.Container, err error) {
 		log.WithFields(log.Fields{
 			"exisits": exists,
 			// "id":      elkContainer.ID,
-			"env": config.Conf.Malice.Environment,
+			"env": config.Conf.Environment,
 		}).Info("Image `blacktop/elk` already pulled.")
 	} else {
 		log.WithFields(log.Fields{
 			"exisits": exists,
-			"env":     config.Conf.Malice.Environment}).Info("Pulling Image `blacktop/elk`")
+			"env":     config.Conf.Environment}).Info("Pulling Image `blacktop/elk`")
 
 		assert(PullImage(client, "blacktop/elk", "latest"))
 	}
@@ -124,12 +125,12 @@ func StartELK(logs bool) (cont *docker.Container, err error) {
 
 	cont, err = client.CreateContainer(createContOps)
 	if err != nil {
-		log.WithFields(log.Fields{"env": config.Conf.Malice.Environment}).Errorf("CreateContainer error = %s\n", err)
+		log.WithFields(log.Fields{"env": config.Conf.Environment}).Errorf("CreateContainer error = %s\n", err)
 	}
 
 	err = client.StartContainer(cont.ID, nil)
 	if err != nil {
-		log.WithFields(log.Fields{"env": config.Conf.Malice.Environment}).Errorf("StartContainer error = %s\n", err)
+		log.WithFields(log.Fields{"env": config.Conf.Environment}).Errorf("StartContainer error = %s\n", err)
 	}
 
 	if logs {
@@ -160,20 +161,24 @@ func LogContainer(cont *docker.Container) {
 
 func handleClientError() {
 	log.WithFields(log.Fields{
-		"env":      config.Conf.Malice.Environment,
+		"env":      config.Conf.Environment,
 		"endpoint": endpoint,
 	}).Error("Unable to connect to docker client")
 	switch runtime.GOOS {
 	case "darwin":
-		if _, err := os.Stat("/usr/local/bin/docker-machine"); os.IsNotExist(err) {
-			log.Infof("Please install docker-machine by running: \n\t   - brew install docker-machine\n\t   - docker-machine create -d virtualbox %s\n\t   - eval $(docker-machine env %s)\n", config.Conf.Malice.Docker.Name, config.Conf.Malice.Docker.Name)
+		if _, err := exec.LookPath("docker-machine"); err != nil {
+			log.Infof("Please install docker-machine by running: \n\tbrew install docker-machine\n\tdocker-machine create -d virtualbox %s\n\teval $(docker-machine env %s)\n", config.Conf.Docker.Name, config.Conf.Docker.Name)
 		} else {
-			log.Infof("Please start and source the docker-machine env by running: \n\t   - docker-machine start %s\n\t   - eval $(docker-machine env %s)\n", config.Conf.Malice.Docker.Name, config.Conf.Malice.Docker.Name)
+			log.Infof("Please start and source the docker-machine env by running: \n\tdocker-machine start %s\n\teval $(docker-machine env %s)\n", config.Conf.Docker.Name, config.Conf.Docker.Name)
 		}
 	case "linux":
 		log.Info("Please start the docker daemon.")
 	case "windows":
-		log.Info("Please install docker-machine and create a malice docker-machine.")
+		if _, err := exec.LookPath("docker-machine.exe"); err != nil {
+			log.Info("Please install docker-machine - https://www.docker.com/docker-toolbox")
+		} else {
+			log.Infof("Please start and source the docker-machine env by running: \n\tdocker-machine start %s\n\teval $(docker-machine env %s)\n", config.Conf.Docker.Name, config.Conf.Docker.Name)
+		}
 	}
 	// TODO Decide if I want to make docker machines or rely on use to create their own.
 	// log.Info("Trying to create new docker-machine: ", "test")

@@ -34,9 +34,9 @@ Options:
 
 Commands:
   scan		Scan a file
-  elk		 Start an ELK docker container
-  web		 Start, Stop Web services
-  plugin	  List, Install or Remove Plugins
+  elk		Start an ELK docker container
+  web		Start, Stop Web services
+  plugin	List, Install or Remove Plugins
   help		Shows a list of commands or help for one command
 
 Run 'malice COMMAND --help' for more information on a command.

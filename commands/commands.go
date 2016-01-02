@@ -56,6 +56,43 @@ var Commands = []cli.Command{
 			}
 		},
 	},
+	{
+		Name:    "plugin",
+		Aliases: []string{"p"},
+		Usage:   "Plugins",
+		Subcommands: []cli.Command{
+			{
+				Name:  "list",
+				Usage: "list enabled installed plugins",
+				Flags: []cli.Flag{
+					cli.BoolFlag{
+						Name:  "all",
+						Usage: "display all installed plugins",
+					},
+				},
+				Action: func(c *cli.Context) { cmdListPlugins(c.Bool("all")) },
+			},
+			{
+				Name:   "install",
+				Usage:  "install plugin",
+				Action: func(c *cli.Context) { cmdInstallPlugin() },
+			},
+			{
+				Name:   "remove",
+				Usage:  "remove plugin",
+				Action: func(c *cli.Context) { cmdRemovePlugin() },
+			},
+		},
+		BashComplete: func(c *cli.Context) {
+			// This will complete if no args are passed
+			if len(c.Args()) > 0 {
+				return
+			}
+			for _, t := range tasks {
+				fmt.Println(t)
+			}
+		},
+	},
 }
 
 // CmdNotFound outputs a formatted command not found message

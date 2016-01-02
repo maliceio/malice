@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/BurntSushi/toml"
@@ -16,7 +15,7 @@ type Configuration struct {
 	Web         webConfig
 	Email       emailConfig
 	DB          databaseConfig    `toml:"database"`
-	Plugins     map[string]plugin `toml:"plugin"`
+	Plugins     map[string]Plugin `toml:"plugin"`
 	Environment string
 	Docker      dockerConfig
 	Logger      loggerConfig
@@ -61,7 +60,7 @@ type loggerConfig struct {
 }
 
 // Plugin represents a single plugin setting.
-type plugin struct {
+type Plugin struct {
 	Enabled     bool
 	Category    string
 	Description string
@@ -82,5 +81,5 @@ func init() {
 	// Get the config file
 	_, err := toml.DecodeFile("./config.toml", &Conf)
 	assert(err)
-	fmt.Println(Conf)
+	// fmt.Println(Conf)
 }

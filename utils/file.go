@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"hash/crc32"
 
-	"github.com/dutchcoders/gossdeep"
+	// "github.com/dutchcoders/gossdeep"
 )
 
 // File is a file object
@@ -83,24 +83,24 @@ func (file *File) GetSHA512(data []byte) (h512Sum string, err error) {
 	return
 }
 
-// GetSsdeep calculates the Files ssdeep
-func (file *File) GetSsdeep(data []byte) (hssdeep string, err error) {
-
-	hssdeep, err = ssdeep.HashFilename(file)
-	if err != nil {
-		return "", err
-	}
-
-	return
-}
-
-// CompareSsdeep returns the percent that two hashes are similar
-func CompareSsdeep(firstHash, secondHash string) (percent int, err error) {
-
-	percent, err = ssdeep.Compare(firstHash, secondHash)
-	if err != nil {
-		return 0, err
-	}
-
-	return
-}
+// // GetSsdeep calculates the Files ssdeep
+// func (file *File) GetSsdeep(data []byte) (hssdeep string, err error) {
+//
+// 	hssdeep, err = ssdeep.HashFilename(file)
+// 	if err != nil {
+// 		return "", err
+// 	}
+//
+// 	return
+// }
+//
+// // CompareSsdeep returns the percent that two hashes are similar
+// func CompareSsdeep(firstHash, secondHash string) (percent int, err error) {
+//
+// 	percent, err = ssdeep.Compare(firstHash, secondHash)
+// 	if err != nil {
+// 		return 0, err
+// 	}
+//
+// 	return
+// }

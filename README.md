@@ -33,9 +33,11 @@ Options:
   --version, -v	print the version
 
 Commands:
-  elk	Start an ELK docker container
-  web	options for web app
-  help	Shows a list of commands or help for one command
+  scan		Scan a file
+  elk		Start an ELK docker container
+  web		Start, stop Web services
+  plugin	List, install or remove Plugins
+  help		Shows a list of commands or help for one command
 
 Run 'malice COMMAND --help' for more information on a command.
 ```

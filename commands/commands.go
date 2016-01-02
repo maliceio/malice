@@ -45,7 +45,7 @@ var Commands = []cli.Command{
 	{
 		Name:    "web",
 		Aliases: []string{"w"},
-		Usage:   "options for web app",
+		Usage:   "Start, stop Web services",
 		Subcommands: []cli.Command{
 			{
 				Name:   "start",
@@ -71,7 +71,7 @@ var Commands = []cli.Command{
 	{
 		Name:    "plugin",
 		Aliases: []string{"p"},
-		Usage:   "Plugins",
+		Usage:   "List, install or remove Plugins",
 		Subcommands: []cli.Command{
 			{
 				Name:  "list",

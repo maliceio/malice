@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	if config.Conf.Environment == "production" {
+	if config.Conf.Environment.Run == "production" {
 		// Log as JSON instead of the default ASCII formatter.
 		log.SetFormatter(&log.JSONFormatter{})
 		// Only log the warning severity or above.
@@ -33,12 +33,12 @@ func cmdWebStart() error {
 	// }
 	// Start the web servers
 	log.WithFields(log.Fields{
-		"env": config.Conf.Environment,
+		"env": config.Conf.Environment.Run,
 		"url": "http://" + config.Conf.Web.AdminURL,
 	}).Info("Admin server started...")
 	// go http.ListenAndServe(config.Config.AdminURL, handlers.CombinedLoggingHandler(os.Stdout, controllers.CreateAdminRouter()))
 	log.WithFields(log.Fields{
-		"env": config.Conf.Environment,
+		"env": config.Conf.Environment.Run,
 		"url": "http://" + config.Conf.Web.URL,
 	}).Info("Malice server started...")
 	// http.ListenAndServe(config.Config.PhishURL, handlers.CombinedLoggingHandler(os.Stdout, controllers.CreatePhishingRouter()))
@@ -55,11 +55,11 @@ func cmdWebStop() error {
 	// }
 	// Start the web servers
 	log.WithFields(log.Fields{
-		"env": config.Conf.Environment,
+		"env": config.Conf.Environment.Run,
 	}).Info("Admin server stopped...")
 	// go http.ListenAndServe(config.Config.AdminURL, handlers.CombinedLoggingHandler(os.Stdout, controllers.CreateAdminRouter()))
 	log.WithFields(log.Fields{
-		"env": config.Conf.Environment,
+		"env": config.Conf.Environment.Run,
 	}).Info("Malice server stopped...")
 	// http.ListenAndServe(config.Config.PhishURL, handlers.CombinedLoggingHandler(os.Stdout, controllers.CreatePhishingRouter()))
 

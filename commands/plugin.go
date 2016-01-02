@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	if config.Conf.Environment == "production" {
+	if config.Conf.Environment.Run == "production" {
 		// Log as JSON instead of the default ASCII formatter.
 		log.SetFormatter(&log.JSONFormatter{})
 		// Only log the warning severity or above.

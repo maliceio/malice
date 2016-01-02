@@ -51,7 +51,7 @@ func Init() {
 	// Use the Airbrake hook to report errors that have Error severity or above to
 	// an exception tracker. You can create custom hooks, see the Hooks section.
 	//  logrus.AddHook(&log_airbrake.AirbrakeHook{})
-	switch config.Conf.Environment {
+	switch config.Conf.Environment.Run {
 	case "DEVELOPMENT":
 		InitLogToStdout()
 	case "TEST":
@@ -59,7 +59,7 @@ func Init() {
 	case "PRODUCTION":
 		InitLogToFile()
 	}
-	logrus.Debugf("config.Environment : %s", config.Conf.Environment)
+	logrus.Debugf("config.Environment : %s", config.Conf.Environment.Run)
 }
 
 // Debug logs a message with debug log level.

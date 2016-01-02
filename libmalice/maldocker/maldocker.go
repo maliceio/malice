@@ -28,7 +28,7 @@ var (
 
 func init() {
 	var err error
-	if config.Conf.Environment == "production" {
+	if config.Conf.Environment.Run == "production" {
 		// Log as JSON instead of the default ASCII formatter.
 		log.SetFormatter(&log.JSONFormatter{})
 		// Only log the warning severity or above.
@@ -53,12 +53,14 @@ func init() {
 	}
 
 	client, clientError = docker.NewTLSClient(endpoint, cert, key, ca)
+
 	// Make sure we can connect to the docker client
 	if clientError != nil {
 		handleClientError()
 	}
 }
 
+// assert error
 func assert(err error) {
 	if err != nil {
 		log.Fatal(err)
@@ -81,7 +83,7 @@ func StartELK(logs bool) (cont *docker.Container, err error) {
 		log.WithFields(log.Fields{
 			"exisits": exists,
 			// "id":      elkContainer.ID,
-			"env": config.Conf.Environment,
+			"env": config.Conf.Environment.Run,
 			"url": "http://" + ip,
 		}).Info("ELK is already running...")
 		os.Exit(0)
@@ -92,12 +94,12 @@ func StartELK(logs bool) (cont *docker.Container, err error) {
 		log.WithFields(log.Fields{
 			"exisits": exists,
 			// "id":      elkContainer.ID,
-			"env": config.Conf.Environment,
+			"env": config.Conf.Environment.Run,
 		}).Info("Image `blacktop/elk` already pulled.")
 	} else {
 		log.WithFields(log.Fields{
 			"exisits": exists,
-			"env":     config.Conf.Environment}).Info("Pulling Image `blacktop/elk`")
+			"env":     config.Conf.Environment.Run}).Info("Pulling Image `blacktop/elk`")
 
 		assert(PullImage(client, "blacktop/elk", "latest"))
 	}
@@ -125,12 +127,12 @@ func StartELK(logs bool) (cont *docker.Container, err error) {
 
 	cont, err = client.CreateContainer(createContOps)
 	if err != nil {
-		log.WithFields(log.Fields{"env": config.Conf.Environment}).Errorf("CreateContainer error = %s\n", err)
+		log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("CreateContainer error = %s\n", err)
 	}
 
 	err = client.StartContainer(cont.ID, nil)
 	if err != nil {
-		log.WithFields(log.Fields{"env": config.Conf.Environment}).Errorf("StartContainer error = %s\n", err)
+		log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("StartContainer error = %s\n", err)
 	}
 
 	if logs {
@@ -161,7 +163,7 @@ func LogContainer(cont *docker.Container) {
 
 func handleClientError() {
 	log.WithFields(log.Fields{
-		"env":      config.Conf.Environment,
+		"env":      config.Conf.Environment.Run,
 		"endpoint": endpoint,
 	}).Error("Unable to connect to docker client")
 	switch runtime.GOOS {

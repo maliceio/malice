@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	if config.Conf.Environment == "production" {
+	if config.Conf.Environment.Run == "production" {
 		// Log as JSON instead of the default ASCII formatter.
 		log.SetFormatter(&log.JSONFormatter{})
 		// Only log the warning severity or above.
@@ -59,7 +59,7 @@ func ImageExists(client *docker.Client, name string) (*docker.APIImages, bool, e
 // ParseImages parses the images
 func ParseImages(client *docker.Client, name string) (*docker.APIImages, bool, error) {
 	log.WithFields(log.Fields{
-		"env": config.Conf.Environment,
+		"env": config.Conf.Environment.Run,
 	}).Debug("Searching for image: ", name)
 	images, err := listImages(client)
 	if err != nil {
@@ -71,7 +71,7 @@ func ParseImages(client *docker.Client, name string) (*docker.APIImages, bool, e
 		for _, image := range images {
 			for _, tag := range image.RepoTags {
 				if r.MatchString(tag) {
-					log.WithFields(log.Fields{"env": config.Conf.Environment}).Debug("Image FOUND: ", name)
+					log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Debug("Image FOUND: ", name)
 					return &image, true, nil
 				}
 			}
@@ -79,7 +79,7 @@ func ParseImages(client *docker.Client, name string) (*docker.APIImages, bool, e
 	}
 
 	log.WithFields(log.Fields{
-		"env": config.Conf.Environment,
+		"env": config.Conf.Environment.Run,
 	}).Debug("Image NOT Found: ", name)
 
 	return nil, false, nil

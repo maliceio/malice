@@ -16,7 +16,7 @@ type Configuration struct {
 	Email       emailConfig
 	DB          databaseConfig    `toml:"database"`
 	Plugins     map[string]Plugin `toml:"plugin"`
-	Environment string
+	Environment envConfig
 	Docker      dockerConfig
 	Logger      loggerConfig
 }
@@ -33,6 +33,7 @@ type webConfig struct {
 }
 
 type databaseConfig struct {
+	Path    string
 	Server  string
 	Ports   []int
 	ConnMax int `toml:"connection_max"`
@@ -44,6 +45,10 @@ type emailConfig struct {
 	port     int
 	Username string `toml:"user"`
 	Password string `toml:"pass"`
+}
+
+type envConfig struct {
+	Run string
 }
 
 type dockerConfig struct {

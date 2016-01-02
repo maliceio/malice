@@ -1,0 +1,22 @@
+# Copyright (c) 2013 - 2015 blacktop Joshua Maine, All Rights Reserved.
+# See LICENSE for license information.
+
+#######################################################################
+# PLUGIN Configuration ################################################
+#######################################################################
+
+[[plugin]]
+  name = "nsrl"
+  enabled = true
+  description = "NSRL Database Hash Search"
+  category = "binary"
+  image = "blacktop/nsrl"
+  mime = "*"
+
+[[plugin]]
+  name = "pdfid"
+  enabled = false
+  description = "PDFiD - tool to triage PDF documents"
+  category = "document"
+  image = "blacktop/pdfid"
+  mime = "application/pdf"

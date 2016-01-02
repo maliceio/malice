@@ -14,8 +14,7 @@ type Configuration struct {
 	Author      authorInfo
 	Web         webConfig
 	Email       emailConfig
-	DB          databaseConfig    `toml:"database"`
-	Plugins     map[string]Plugin `toml:"plugin"`
+	DB          databaseConfig `toml:"database"`
 	Environment envConfig
 	Docker      dockerConfig
 	Logger      loggerConfig
@@ -62,15 +61,6 @@ type loggerConfig struct {
 	MaxAge     int
 	MaxBackups int
 	LocalTime  bool
-}
-
-// Plugin represents a single plugin setting.
-type Plugin struct {
-	Enabled     bool
-	Category    string
-	Description string
-	Image       string
-	Mime        string
 }
 
 func assert(err error) {

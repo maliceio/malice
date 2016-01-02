@@ -81,13 +81,17 @@ var Commands = []cli.Command{
 						Name:  "all",
 						Usage: "display all installed plugins",
 					},
+					cli.BoolFlag{
+						Name:  "detail,d",
+						Usage: "display plugin details",
+					},
 				},
-				Action: func(c *cli.Context) { cmdListPlugins(c.Bool("all")) },
+				Action: func(c *cli.Context) { cmdListPlugins(c.Bool("all"), c.Bool("detail")) },
 			},
 			{
 				Name:   "install",
 				Usage:  "install plugin",
-				Action: func(c *cli.Context) { cmdInstallPlugin() },
+				Action: func(c *cli.Context) { cmdInstallPlugin(c.Args().First()) },
 			},
 			{
 				Name:   "remove",

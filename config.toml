@@ -40,23 +40,3 @@ maxsize = 10
 maxage = 30
 maxbackups = 7
 localtime = false
-
-#######################################################################################################################
-# PLUGIN Configuration ################################################################################################
-#######################################################################################################################
-
-[plugin]
-
-  [plugin.nsrl]
-  enabled = true
-  description = "NSRL Database Hash Search"
-  category = "binary"
-  image = "blacktop/nsrl"
-  mime = "*"
-
-  [plugin.pdfid]
-  enabled = false
-  description = "PDFiD - tool to triage PDF documents"
-  category = "document"
-  image = "blacktop/pdfid"
-  mime = "application/pdf"

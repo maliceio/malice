@@ -25,18 +25,26 @@ func init() {
 	log.SetOutput(os.Stdout)
 }
 
-func cmdListPlugins(all bool) {
+func cmdListPlugins(all bool, detail bool) {
 	if all {
-		plugins.ListAllPlugins()
+		plugins.ListAllPlugins(detail)
 	} else {
-		plugins.ListEnabledPlugins()
+		plugins.ListEnabledPlugins(detail)
 	}
 	// enabled := plugins.GetEnabledPlugins()
 	// fmt.Println(enabled)
 }
 
-func cmdInstallPlugin() {
-
+func cmdInstallPlugin(name string) {
+	testPlugin := config.Plugin{
+		Name:        name,
+		Enabled:     true,
+		Category:    "test",
+		Description: "This is a test plugin",
+		Image:       "blacktop/test",
+		Mime:        "image/png",
+	}
+	plugins.InstallPlugin(&testPlugin)
 }
 
 func cmdRemovePlugin() {

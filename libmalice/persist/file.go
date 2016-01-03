@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha256"
+	"crypto/sha512"
 	"fmt"
 	"hash/crc32"
 	"io/ioutil"
@@ -35,6 +36,7 @@ type File struct {
 // Init initializes the File object
 func (file *File) Init() {
 	if file.Path != "" {
+		file.GetName()
 		file.GetSize()
 		file.getData()
 		file.GetCRC32()
@@ -49,6 +51,26 @@ func (file *File) Init() {
 	}
 }
 
+// GetName returns file name
+func (file *File) GetName() (name string, err error) {
+	fileHandle, err := os.Open(file.Path)
+	if err != nil {
+		return
+	}
+	defer fileHandle.Close()
+
+	stat, err := fileHandle.Stat()
+	if err != nil {
+		return
+	}
+
+	name = stat.Name()
+
+	file.Name = name
+
+	return
+}
+
 // GetSize calculates file Size
 func (file *File) GetSize() (bytes int64, err error) {
 	fileHandle, err := os.Open(file.Path)
@@ -61,7 +83,7 @@ func (file *File) GetSize() (bytes int64, err error) {
 	if err != nil {
 		return
 	}
-
+	stat.Name()
 	bytes = stat.Size()
 
 	file.Size = bytes
@@ -134,10 +156,10 @@ func (file *File) GetSHA256() (h256Sum string, err error) {
 // GetSHA512 calculates the Files sha256sum
 func (file *File) GetSHA512() (h512Sum string, err error) {
 
-	h256 := sha256.New()
-	_, err = h256.Write(file.Data)
+	h512 := sha512.New()
+	_, err = h512.Write(file.Data)
 	assert(err)
-	h512Sum = fmt.Sprintf("%x", h256.Sum(nil))
+	h512Sum = fmt.Sprintf("%x", h512.Sum(nil))
 
 	file.SHA512 = h512Sum
 

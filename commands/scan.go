@@ -5,8 +5,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/config"
-	"github.com/maliceio/malice/libmalice/maldocker"
-	"github.com/maliceio/malice/utils"
+	"github.com/maliceio/malice/libmalice/persist"
 )
 
 func init() {
@@ -28,13 +27,19 @@ func init() {
 
 func cmdScan(path string, logs bool) {
 
-	util.GetFileMimeType(path)
+	file := persist.File{
+		Path: path,
+	}
+
+	// file.Mime, _ = file.GetFileMimeType()
+	// file.GetFileMimeType()
+	file.Init()
+
+	file.PrintFileDetails()
 
 	log.WithFields(log.Fields{
-		// "id":   cont.ID,
-		"ip": maldocker.GetIP(),
-		// "url":      "http://" + maldocker.GetIP(),
+		"mime": file.Mime,
 		"path": path,
 		"env":  config.Conf.Environment.Run,
-	}).Info("ELK Container Started")
+	}).Debug("Mime Type")
 }

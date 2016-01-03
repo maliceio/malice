@@ -5,7 +5,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/config"
-	"github.com/maliceio/malice/plugins"
+	"github.com/maliceio/malice/libmalice/plugins"
 )
 
 func init() {

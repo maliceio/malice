@@ -4,14 +4,10 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/codegangsta/cli"
 	"github.com/maliceio/malice/commands"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/version"
-	"github.com/codegangsta/cli"
-
-	// "github.com/gorilla/handlers"
-	// "github.com/jordan-wright/gophish/controllers"
-	// "github.com/jordan-wright/gophish/models"
 )
 
 func init() {

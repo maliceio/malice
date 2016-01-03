@@ -1,4 +1,4 @@
-package util
+package persit
 
 import (
 	"crypto/md5"
@@ -6,6 +6,9 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"hash/crc32"
+	"log"
+
+	"github.com/rakyll/magicmime"
 
 	// "github.com/dutchcoders/gossdeep"
 )
@@ -81,6 +84,21 @@ func (file *File) GetSHA512(data []byte) (h512Sum string, err error) {
 	h512Sum = fmt.Sprintf("%x", h256.Sum(nil))
 
 	return
+}
+
+// GetFileMimeType returns the mime-type of a file path
+func (file *File) GetFileMimeType(path string) {
+	if err := magicmime.Open(magicmime.MAGIC_MIME_TYPE | magicmime.MAGIC_SYMLINK | magicmime.MAGIC_ERROR); err != nil {
+		log.Fatal(err)
+	}
+	defer magicmime.Close()
+
+	mimetype, err := magicmime.TypeByFile(path)
+	if err != nil {
+		log.Fatalf("error occured during type lookup: %v", err)
+	}
+
+	log.Printf("mime-type: %v", mimetype)
 }
 
 // // GetSsdeep calculates the Files ssdeep

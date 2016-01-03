@@ -1,6 +1,10 @@
 # Copyright (c) 2013 - 2015 blacktop Joshua Maine, All Rights Reserved.
 # See LICENSE for license information.
 
+#######################################################################
+# MALICE Configuration ################################################
+#######################################################################
+
 title = "Malice Runtime Configuration"
 
 [author]
@@ -31,7 +35,7 @@ run = "development"
 # run = "production"
 
 [docker]
-machine-name = "dev"
+machine-name = "machine"
 endpoint = "tcp://192.168.99.100:2376"
 
 [logger]

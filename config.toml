@@ -31,8 +31,8 @@ connection_max = 5000
 enabled = true
 
 [environment]
-# run = "development"
-run = "production"
+run = "development"
+# run = "production"
 
 [docker]
 machine-name = "machine"

@@ -13,7 +13,7 @@ var (
 
 func GetBaseDir() string {
 	if BaseDir == "" {
-		BaseDir = filepath.Join(malutils.GetHomeDir(), ".malice", "machine")
+		BaseDir = filepath.Join(malutils.GetHomeDir(), ".malice")
 	}
 	return BaseDir
 }

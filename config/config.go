@@ -2,8 +2,11 @@ package config
 
 import (
 	"log"
+	"os"
+	"path"
 
 	"github.com/BurntSushi/toml"
+	"github.com/maliceio/malice/libmalice/maldirs"
 )
 
 // "github.com/pelletier/go-toml"
@@ -74,7 +77,15 @@ var Conf Configuration
 
 func init() {
 	// Get the config file
-	_, err := toml.DecodeFile("./config.toml", &Conf)
+	configPath := "./config.toml"
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		configPath = path.Join(maldirs.GetBaseDir(), configPath)
+		if _, err := os.Stat(configPath); os.IsNotExist(err) {
+			assert(err)
+		}
+	}
+
+	_, err := toml.DecodeFile(configPath, &Conf)
 	assert(err)
 	// fmt.Println(Conf)
 }

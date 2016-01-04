@@ -6,11 +6,11 @@ import (
 	"crypto/sha256"
 	"crypto/sha512"
 	"fmt"
-	"hash/crc32"
 	"io/ioutil"
 	"os"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/docker/go-units"
 	"github.com/maliceio/malice/utils/clitable"
 	"github.com/rakyll/magicmime"
 	// "github.com/dutchcoders/gossdeep"
@@ -18,11 +18,12 @@ import (
 
 // File is a file object
 type File struct {
-	Name   string
-	Path   string
-	Valid  bool
-	Size   int64
-	CRC32  string
+	Name  string
+	Path  string
+	Valid bool
+	Size  string
+	// Size   int64
+	// CRC32  string
 	MD5    string
 	SHA1   string
 	SHA256 string
@@ -39,7 +40,7 @@ func (file *File) Init() {
 		file.GetName()
 		file.GetSize()
 		file.getData()
-		file.GetCRC32()
+		// file.GetCRC32()
 		file.GetMD5()
 		file.GetSHA1()
 		file.GetSHA256()
@@ -83,10 +84,10 @@ func (file *File) GetSize() (bytes int64, err error) {
 	if err != nil {
 		return
 	}
-	stat.Name()
+
 	bytes = stat.Size()
 
-	file.Size = bytes
+	file.Size = units.HumanSize(float64(bytes))
 
 	return
 }
@@ -99,20 +100,20 @@ func (file *File) getData() {
 	file.Data = dat
 }
 
-// GetCRC32 calculates the Files CRC32
-func (file *File) GetCRC32() (hCRC32Sum string, err error) {
-
-	var castagnoliTable = crc32.MakeTable(crc32.Castagnoli)
-
-	crc := crc32.New(castagnoliTable)
-	_, err = crc.Write(file.Data)
-	assert(err)
-	hCRC32Sum = fmt.Sprintf("%x", crc.Sum32())
-
-	file.CRC32 = hCRC32Sum
-
-	return
-}
+// // GetCRC32 calculates the Files CRC32
+// func (file *File) GetCRC32() (hCRC32Sum string, err error) {
+//
+// 	var castagnoliTable = crc32.MakeTable(crc32.Castagnoli)
+//
+// 	crc := crc32.New(castagnoliTable)
+// 	_, err = crc.Write(file.Data)
+// 	assert(err)
+// 	hCRC32Sum = fmt.Sprintf("%x", crc.Sum32())
+//
+// 	file.CRC32 = hCRC32Sum
+//
+// 	return
+// }
 
 // GetMD5 calculates the Files md5sum
 func (file *File) GetMD5() (hMd5Sum string, err error) {
@@ -191,7 +192,7 @@ func (file *File) PrintFileDetails() {
 	table.AddRow(map[string]interface{}{"Field": "Path", "Value": file.Path})
 	table.AddRow(map[string]interface{}{"Field": "Valid", "Value": file.Valid})
 	table.AddRow(map[string]interface{}{"Field": "Size", "Value": file.Size})
-	table.AddRow(map[string]interface{}{"Field": "CRC32", "Value": file.CRC32})
+	// table.AddRow(map[string]interface{}{"Field": "CRC32", "Value": file.CRC32})
 	table.AddRow(map[string]interface{}{"Field": "MD5", "Value": file.MD5})
 	table.AddRow(map[string]interface{}{"Field": "SHA1", "Value": file.SHA1})
 	table.AddRow(map[string]interface{}{"Field": "SHA256", "Value": file.SHA256})

@@ -11,7 +11,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/docker/docker/vendor/src/github.com/docker/go-units"
+	"github.com/docker/go-units"
 	"github.com/fsouza/go-dockerclient"
 )
 

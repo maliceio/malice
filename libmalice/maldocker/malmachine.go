@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/docker/machine/commands/mcndirs"
 	"github.com/docker/machine/drivers/virtualbox"
 	"github.com/docker/machine/libmachine"
 )
@@ -14,29 +15,23 @@ import (
 func MakeDockerMachine(host string) {
 	// log.SetDebug(true)
 
-	client := libmachine.NewClient("/tmp/automatic")
+	client := libmachine.NewClient(mcndirs.GetBaseDir())
 
 	hostName := host
 
 	// Set some options on the provider...
-	driver := virtualbox.NewDriver(hostName, "/tmp/automatic")
+	driver := virtualbox.NewDriver(hostName, mcndirs.GetBaseDir())
 	driver.CPU = 2
 	driver.Memory = 2048
 
 	data, err := json.Marshal(driver)
-	if err != nil {
-		log.Fatal(err)
-	}
+	assert(err)
 
 	pluginDriver, err := client.NewPluginDriver("virtualbox", data)
-	if err != nil {
-		log.Fatal(err)
-	}
+	assert(err)
 
 	h, err := client.NewHost(pluginDriver)
-	if err != nil {
-		log.Fatal(err)
-	}
+	assert(err)
 
 	h.HostOptions.EngineOptions.StorageDriver = "overlay"
 
@@ -55,4 +50,42 @@ func MakeDockerMachine(host string) {
 	if err := h.Stop(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+// MachineURL returns the IP of the docker-machine
+func MachineURL(name string) (url string, err error) {
+
+	api := libmachine.NewClient(mcndirs.GetBaseDir())
+
+	host, err := api.Load(name)
+	assert(err)
+	url, err = host.URL()
+	assert(err)
+
+	return
+}
+
+// MachineIP returns the IP of the docker-machine
+func MachineIP(name string) (ip string, err error) {
+
+	api := libmachine.NewClient(mcndirs.GetBaseDir())
+
+	host, err := api.Load(name)
+	assert(err)
+	ip, err = host.Driver.GetIP()
+	assert(err)
+
+	return
+}
+
+// MachineStop stops the docker-machine
+func MachineStop(name string) error {
+
+	api := libmachine.NewClient(mcndirs.GetBaseDir())
+
+	host, err := api.Load(name)
+	assert(err)
+	err = host.Driver.Stop()
+
+	return err
 }

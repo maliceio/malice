@@ -21,7 +21,7 @@ func init() {
 		// Log as ASCII formatter.
 		log.SetFormatter(&log.TextFormatter{})
 		// Only log the warning severity or above.
-		log.SetLevel(log.DebugLevel)
+		log.SetLevel(log.InfoLevel)
 	}
 	// Output to stderr instead of stdout, could also be a file.
 	log.SetOutput(os.Stdout)

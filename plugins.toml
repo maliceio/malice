@@ -14,6 +14,14 @@
   mime = "*"
 
 [[plugin]]
+  name = "fileinfo"
+  enabled = true
+  description = "ssdeep/exiftool/TRiD"
+  category = "all"
+  image = "malice/fileinfo"
+  mime = "*"
+
+[[plugin]]
   name = "pdfid"
   enabled = false
   description = "PDFiD - tool to triage PDF documents"

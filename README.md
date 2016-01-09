@@ -55,7 +55,7 @@ I want to give a big shout out to [jordan-wright](http://jordan-wright.com), I a
 
 ### License
 Apache License (Version 2.0)  
-Copyright (c) 2013 - 2015 **blacktop** Joshua Maine
+Copyright (c) 2013 - 2016 **blacktop** Joshua Maine
 
 <!-- Links -->
 [malice-logo]: https://raw.githubusercontent.com/maliceio/malice/master/docs/logo/malice.png

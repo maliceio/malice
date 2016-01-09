@@ -17,7 +17,7 @@
   name = "fileinfo"
   enabled = true
   description = "ssdeep/exiftool/TRiD"
-  category = "all"
+  category = "metadata"
   image = "malice/fileinfo"
   mime = "*"
 

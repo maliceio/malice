@@ -22,6 +22,22 @@
   mime = "*"
 
 [[plugin]]
+  name = "clamav"
+  enabled = true
+  description = "ClamAV"
+  category = "av"
+  image = "malice/clamav"
+  mime = "*"
+
+[[plugin]]
+  name = "fprot"
+  enabled = true
+  description = "F-PROT AntiVirus"
+  category = "av"
+  image = "malice/fprot"
+  mime = "*"
+
+[[plugin]]
   name = "pdfid"
   enabled = false
   description = "PDFiD - tool to triage PDF documents"

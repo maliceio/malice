@@ -72,6 +72,76 @@ func GetIP() string {
 	return ip
 }
 
+// StartContainer starts a malice docker container
+func StartContainer(name string, image string, logs bool) (cont *docker.Container, err error) {
+
+	assert(PingDockerClient(client))
+
+	_, exists, err := ContainerExists(client, name)
+
+	if exists {
+		log.WithFields(log.Fields{
+			"exisits": exists,
+			"name":    name,
+			// "id":      elkContainer.ID,
+			"env": config.Conf.Environment.Run,
+		}).Info("Container is already running...")
+		os.Exit(0)
+	}
+
+	_, exists, err = ImageExists(client, image)
+	if exists {
+		log.WithFields(log.Fields{
+			"exisits": exists,
+			// "id":      elkContainer.ID,
+			"env": config.Conf.Environment.Run,
+		}).Infof("Image `%s` already pulled.", image)
+	} else {
+		log.WithFields(log.Fields{
+			"exisits": exists,
+			"env":     config.Conf.Environment.Run}).Infof("Pulling Image `%s`", image)
+
+		assert(PullImage(client, image, "latest"))
+	}
+	createContConf := docker.Config{
+		Image: image,
+	}
+
+	// portBindings := map[docker.Port][]docker.PortBinding{
+	// 	"80/tcp":   {{HostIP: "0.0.0.0", HostPort: "80"}},
+	// 	"9200/tcp": {{HostIP: "0.0.0.0", HostPort: "9200"}},
+	// }
+
+	createContHostConfig := docker.HostConfig{
+		// Binds:           []string{"/var/run:/var/run:rw", "/sys:/sys:ro", "/var/lib/docker:/var/lib/docker:ro"},
+		// PortBindings: portBindings,
+		// PublishAllPorts: true,
+		Privileged: false,
+	}
+
+	createContOps := docker.CreateContainerOptions{
+		Name:       name,
+		Config:     &createContConf,
+		HostConfig: &createContHostConfig,
+	}
+
+	cont, err = client.CreateContainer(createContOps)
+	if err != nil {
+		log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("CreateContainer error = %s\n", err)
+	}
+
+	err = client.StartContainer(cont.ID, nil)
+	if err != nil {
+		log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("StartContainer error = %s\n", err)
+	}
+
+	if logs {
+		LogContainer(cont)
+	}
+
+	return
+}
+
 // StartELK creates an ELK container from the image blacktop/elk
 func StartELK(logs bool) (cont *docker.Container, err error) {
 

@@ -10,6 +10,7 @@ import (
 	// "github.com/pelletier/go-toml"
 	"github.com/BurntSushi/toml"
 	"github.com/maliceio/malice/config"
+	"github.com/maliceio/malice/libmalice/maldocker"
 	"github.com/parnurzeal/gorequest"
 )
 
@@ -39,8 +40,10 @@ func init() {
 }
 
 // StartPlugin starts plugin
-func (plugin *Plugin) StartPlugin() {
-
+func (plugin *Plugin) StartPlugin(logs bool) {
+	cont, err := maldocker.StartContainer(plugin.Name, plugin.Image, logs)
+	assert(err)
+	fmt.Println(cont.Name)
 }
 
 func printStatus(resp gorequest.Response, body string, errs []error) {

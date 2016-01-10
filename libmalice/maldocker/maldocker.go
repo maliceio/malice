@@ -103,8 +103,22 @@ func StartContainer(name string, image string, logs bool) (cont *docker.Containe
 
 		assert(PullImage(client, image, "latest"))
 	}
+
 	createContConf := docker.Config{
 		Image: image,
+		// Mounts: []docker.Mount{
+		// 	docker.Mount{
+		// 		Name:        "malware",
+		// 		Source:      "$(pwd)/samples/",
+		// 		Destination: "/malware",
+		// 		Driver:      "local",
+		// 		Mode:        "",
+		// 		RW:          false,
+		// 	},
+		// },
+		Cmd: []string{
+			"EICAR",
+		},
 	}
 
 	// portBindings := map[docker.Port][]docker.PortBinding{

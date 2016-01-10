@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"fmt"
 	"os"
 
 	log "github.com/Sirupsen/logrus"
@@ -36,21 +37,26 @@ func cmdScan(path string, logs bool) {
 	// file.Mime, _ = file.GetFileMimeType()
 	// file.GetFileMimeType()
 	file.Init()
+
+	log.Info("Looking for plugins that will run on: ", file.Mime)
+	// Iterate over all applicable plugins
 	plugins := plugins.GetPluginsForMime(file.Mime)
-	for _ = range plugins {
-		cont, err := maldocker.StartELK(logs)
+	log.Info("Found these plugins: ", plugins)
+	for _, plugin := range plugins {
+		fmt.Println(plugin.Name)
+		cont, err := plugin.StartPlugin(logs)
 		assert(err)
 
 		log.WithFields(log.Fields{
-			// "id":   cont.ID,
+			"id": cont.ID,
 			"ip": maldocker.GetIP(),
 			// "url":      "http://" + maldocker.GetIP(),
-			"username": "admin",
-			"password": "admin",
-			"name":     cont.Name,
-			"env":      config.Conf.Environment.Run,
-		}).Info("ELK Container Started")
+			"name": cont.Name,
+			"env":  config.Conf.Environment.Run,
+		}).Info("Plugin Container Started")
 	}
+	log.Info("Done with plugins.")
+	// Output File Hashes
 	file.PrintFileDetails()
 
 	log.WithFields(log.Fields{

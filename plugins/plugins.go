@@ -9,6 +9,7 @@ import (
 	"strings"
 	// "github.com/pelletier/go-toml"
 	"github.com/BurntSushi/toml"
+	"github.com/fsouza/go-dockerclient"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/libmalice/maldocker"
 	"github.com/parnurzeal/gorequest"
@@ -40,10 +41,13 @@ func init() {
 }
 
 // StartPlugin starts plugin
-func (plugin *Plugin) StartPlugin(logs bool) {
-	cont, err := maldocker.StartContainer(plugin.Name, plugin.Image, logs)
+func (plugin Plugin) StartPlugin(logs bool) (cont *docker.Container, err error) {
+	cont, err = maldocker.StartContainer(plugin.Name, plugin.Image, logs)
 	assert(err)
+
 	fmt.Println(cont.Name)
+
+	return
 }
 
 func printStatus(resp gorequest.Response, body string, errs []error) {
@@ -149,8 +153,8 @@ func GetPluginsForMime(mime string) []Plugin {
 func filterPluginsByMime(mime string) []Plugin {
 	mimeMatch := []Plugin{}
 
-	for _, plugin := range Plug.Plugins {
-		if strings.Contains(plugin.Mime, mime) {
+	for _, plugin := range filterPluginsByEnabled() {
+		if strings.Contains(plugin.Mime, mime) || strings.Contains(plugin.Mime, "*") {
 			mimeMatch = append(mimeMatch, plugin)
 		}
 	}

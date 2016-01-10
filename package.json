@@ -11,6 +11,7 @@
     "gulp": "^3.9.0",
     "gulp-livereload": "^3.8.1",
     "gulp-sync": "^0.1.4",
+    "gulp-util": "^3.0.7",
     "live-reload": "^1.1.0",
     "node-notifier": "^4.4.0",
     "watch": "^0.17.1"

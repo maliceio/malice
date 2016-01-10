@@ -5,6 +5,7 @@ var notifier   = require('node-notifier');
 var child      = require('child_process');
 var reload     = require('gulp-livereload');
 var sync       = require('gulp-sync')(gulp).sync;
+var util       = require('gulp-util');
 
 var goPath = '/Users/user/src/go/src/github.com/maliceio/malice/**/*.go';
 

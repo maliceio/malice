@@ -34,10 +34,10 @@ func cmdScan(path string, logs bool) {
 		Path: path,
 	}
 
-	// file.Mime, _ = file.GetFileMimeType()
-	// file.GetFileMimeType()
 	file.Init()
-
+	// Output File Hashes
+	fmt.Println(string(file.ToJSON()))
+    
 	log.Debug("Looking for plugins that will run on: ", file.Mime)
 	// Iterate over all applicable plugins
 	plugins := plugins.GetPluginsForMime(file.Mime)
@@ -59,8 +59,7 @@ func cmdScan(path string, logs bool) {
 		assert(err)
 	}
 	log.Debug("Done with plugins.")
-	// Output File Hashes
-	fmt.Println(string(file.ToJSON()))
+
 	// file.PrintFileDetails()
 
 	log.WithFields(log.Fields{

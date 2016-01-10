@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"fmt"
 	"os"
 
 	log "github.com/Sirupsen/logrus"
@@ -59,7 +60,8 @@ func cmdScan(path string, logs bool) {
 	}
 	log.Debug("Done with plugins.")
 	// Output File Hashes
-	file.PrintFileDetails()
+	fmt.Println(string(file.ToJSON()))
+	// file.PrintFileDetails()
 
 	log.WithFields(log.Fields{
 		"mime": file.Mime,

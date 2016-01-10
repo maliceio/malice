@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/sha512"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -18,20 +19,20 @@ import (
 
 // File is a file object
 type File struct {
-	Name  string
-	Path  string
-	Valid bool
-	Size  string
+	Name  string `json:"name"`
+	Path  string `json:"path"`
+	Valid bool   `json:"valid"`
+	Size  string `json:"szie"`
 	// Size   int64
 	// CRC32  string
-	MD5    string
-	SHA1   string
-	SHA256 string
-	SHA512 string
-	Ssdeep string
-	Mime   string
-	Arch   string
-	Data   []byte
+	MD5    string `json:"md5"`
+	SHA1   string `json:"sha1"`
+	SHA256 string `json:"sha256"`
+	SHA512 string `json:"sha512"`
+	// Ssdeep string `json:"ssdeep"`
+	Mime string `json:"mime"`
+	Arch string `json:"arch"`
+	Data []byte `json:"data"`
 }
 
 // Init initializes the File object
@@ -185,6 +186,13 @@ func (file *File) GetFileMimeType() (mimetype string, err error) {
 	return
 }
 
+// ToJSON converts File object to []byte JSON
+func (file *File) ToJSON() []byte {
+	fileJSON, err := json.Marshal(file)
+	assert(err)
+	return fileJSON
+}
+
 // PrintFileDetails prints file details
 func (file *File) PrintFileDetails() {
 	table := clitable.New([]string{"Field", "Value"})
@@ -197,7 +205,7 @@ func (file *File) PrintFileDetails() {
 	table.AddRow(map[string]interface{}{"Field": "SHA1", "Value": file.SHA1})
 	table.AddRow(map[string]interface{}{"Field": "SHA256", "Value": file.SHA256})
 	table.AddRow(map[string]interface{}{"Field": "SHA512", "Value": file.SHA512})
-	table.AddRow(map[string]interface{}{"Field": "Ssdeep", "Value": file.Ssdeep})
+	// table.AddRow(map[string]interface{}{"Field": "Ssdeep", "Value": file.Ssdeep})
 	table.AddRow(map[string]interface{}{"Field": "Mime", "Value": file.Mime})
 	table.Markdown = true
 	table.Print()

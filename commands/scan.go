@@ -52,6 +52,10 @@ func cmdScan(path string, logs bool) {
 			"name": cont.Name,
 			"env":  config.Conf.Environment.Run,
 		}).Debug("Plugin Container Started")
+		// Clean up the Plugin Container
+		// TODO: I want to reuse these containers for speed eventually.
+		err = maldocker.ContainerRemove(cont, false, false)
+		assert(err)
 	}
 	log.Debug("Done with plugins.")
 	// Output File Hashes

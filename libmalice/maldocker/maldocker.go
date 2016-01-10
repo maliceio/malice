@@ -160,7 +160,7 @@ func StartContainer(name string, image string, logs bool) (cont *docker.Containe
 // If volumes is true, the associated volumes are removed with container.
 func ContainerRemove(cont *docker.Container, volumes bool, force bool) error {
 	if plugin, exists, _ := ContainerExists(client, cont.Name); exists {
-		log.Infof("Removing Plugin ID =>\t\t%s\n", plugin.ID)
+		log.Debugf("Removing Plugin ID =>\t\t%s\n", plugin.ID)
 		if err := client.RemoveContainer(docker.RemoveContainerOptions{
 			ID:            plugin.ID,
 			RemoveVolumes: volumes,
@@ -169,7 +169,7 @@ func ContainerRemove(cont *docker.Container, volumes bool, force bool) error {
 			return err
 		}
 	} else {
-		log.Info("Service container does not exist. Cannot remove.")
+		log.Error("Service container does not exist. Cannot remove.")
 	}
 
 	return nil

@@ -30,3 +30,5 @@ malice
 node_modules/
 
 npm-debug.log
+
+.imdone/config.json

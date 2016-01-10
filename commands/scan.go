@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"fmt"
 	"os"
 
 	log "github.com/Sirupsen/logrus"
@@ -43,7 +42,6 @@ func cmdScan(path string, logs bool) {
 	plugins := plugins.GetPluginsForMime(file.Mime)
 	log.Info("Found these plugins: ", plugins)
 	for _, plugin := range plugins {
-		fmt.Println(plugin.Name)
 		cont, err := plugin.StartPlugin(logs)
 		assert(err)
 

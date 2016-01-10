@@ -8,39 +8,44 @@
 title = "Malice Runtime Configuration"
 
 [author]
-name = "blacktop"
-# organization = "GitHub"
-# bio = "GitHub Cofounder & CEO\nLikes tater tots and beer."
-# dob = 1979-05-27T07:32:00Z # First class dates? Why not?
+  name = "blacktop"
+  # organization = "GitHub"
+  # bio = "GitHub Cofounder & CEO\nLikes tater tots and beer."
+  # dob = 1979-05-27T07:32:00Z # First class dates? Why not?
 
 [web]
-url = "0.0.0.0:80"
-admin_url = "127.0.0.1:3333"
+  url = "0.0.0.0:80"
+  admin_url = "127.0.0.1:3333"
 
 [email]
-host = "smtp.example.com"
-port = 25
-user = "username"
-pass = "password"
+  host = "smtp.example.com"
+  port = 25
+  user = "username"
+  pass = "password"
 
 [database]
-path = "malice.db"
-server = "192.168.1.1"
-ports = [ 8001, 8001, 8002 ]
-connection_max = 5000
-enabled = true
+  path = "malice.db"
+  server = "192.168.1.1"
+  ports = [ 8001, 8001, 8002 ]
+  connection_max = 5000
+  enabled = true
 
 [environment]
-run = "development"
-# run = "production"
+  run = "development"
+  # run = "production"
 
 [docker]
-machine-name = "machine"
-endpoint = "tcp://192.168.99.100:2376"
+  machine-name = "machine"
+  endpoint = "tcp://192.168.99.100:2376"
 
 [logger]
-filename = "malice.log"
-maxsize = 10
-maxage = 30
-maxbackups = 7
-localtime = false
+  filename = "malice.log"
+  maxsize = 10
+  maxage = 30
+  maxbackups = 7
+  localtime = false
+
+[proxy]
+  enable = false
+  http = ""
+  https = ""

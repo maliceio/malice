@@ -4,14 +4,32 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+
 	"os"
 	"strings"
 
 	"github.com/BurntSushi/toml"
 	"github.com/maliceio/malice/config"
+	"github.com/parnurzeal/gorequest"
 )
 
 // "github.com/pelletier/go-toml"
+
+func printStatus(resp gorequest.Response, body string, errs []error) {
+	fmt.Println(resp.Status)
+}
+
+// PostResults post plugin results to Malice Webhook
+func PostResults(url string, resultJSON []byte, taskID string) {
+	request := gorequest.New()
+	if config.Conf.Proxy.Enable {
+		request = gorequest.New().Proxy(config.Conf.Proxy.HTTP)
+	}
+	request.Post(url).
+		Set("Task", taskID).
+		Send(resultJSON).
+		End(printStatus)
+}
 
 //InstallPlugin installs a new malice plugin
 func InstallPlugin(plugin *config.Plugin) (err error) {

@@ -21,6 +21,7 @@ type Configuration struct {
 	Environment envConfig
 	Docker      dockerConfig
 	Logger      loggerConfig
+	Proxy       proxyConfig
 }
 
 type authorInfo struct {
@@ -64,6 +65,12 @@ type loggerConfig struct {
 	MaxAge     int
 	MaxBackups int
 	LocalTime  bool
+}
+
+type proxyConfig struct {
+	Enable bool
+	HTTP   string
+	HTTPS  string
 }
 
 func assert(err error) {

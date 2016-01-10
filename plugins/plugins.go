@@ -41,8 +41,8 @@ func init() {
 }
 
 // StartPlugin starts plugin
-func (plugin Plugin) StartPlugin(logs bool) (cont *docker.Container, err error) {
-	cont, err = maldocker.StartContainer(plugin.Name, plugin.Image, logs)
+func (plugin Plugin) StartPlugin(sample string, logs bool) (cont *docker.Container, err error) {
+	cont, err = maldocker.StartContainer(sample, plugin.Name, plugin.Image, logs)
 	assert(err)
 
 	// fmt.Println(cont.Name)

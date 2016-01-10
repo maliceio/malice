@@ -43,7 +43,7 @@ func cmdScan(path string, logs bool) {
 	plugins := plugins.GetPluginsForMime(file.Mime)
 	log.Debug("Found these plugins: ", plugins)
 	for _, plugin := range plugins {
-		cont, err := plugin.StartPlugin(logs)
+		cont, err := plugin.StartPlugin(file.SHA256, logs)
 		assert(err)
 
 		log.WithFields(log.Fields{

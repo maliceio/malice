@@ -8,6 +8,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/config"
+	"github.com/maliceio/malice/libmalice/maldirs"
 	// "github.com/maliceio/malice/libmalice/maldocker/utils"
 	"github.com/fsouza/go-dockerclient"
 )
@@ -73,7 +74,7 @@ func GetIP() string {
 }
 
 // StartContainer starts a malice docker container
-func StartContainer(name string, image string, logs bool) (cont *docker.Container, err error) {
+func StartContainer(sample string, name string, image string, logs bool) (cont *docker.Container, err error) {
 
 	assert(PingDockerClient(client))
 
@@ -106,18 +107,18 @@ func StartContainer(name string, image string, logs bool) (cont *docker.Containe
 
 	createContConf := docker.Config{
 		Image: image,
-		// Mounts: []docker.Mount{
-		// 	docker.Mount{
-		// 		Name:        "malware",
-		// 		Source:      "$(pwd)/samples/",
-		// 		Destination: "/malware",
-		// 		Driver:      "local",
-		// 		Mode:        "",
-		// 		RW:          false,
-		// 	},
-		// },
+		Mounts: []docker.Mount{
+			docker.Mount{
+				Name:        "malware",
+				Source:      "$(pwd)/samples/",
+				Destination: "/malware",
+				Driver:      "local",
+				Mode:        "",
+				RW:          false,
+			},
+		},
 		Cmd: []string{
-			"EICAR",
+			sample,
 		},
 	}
 
@@ -127,6 +128,7 @@ func StartContainer(name string, image string, logs bool) (cont *docker.Containe
 	// }
 
 	createContHostConfig := docker.HostConfig{
+		Binds: []string{maldirs.GetSampledsDir() + ":/malware:ro"},
 		// Binds:           []string{"/var/run:/var/run:rw", "/sys:/sys:ro", "/var/lib/docker:/var/lib/docker:ro"},
 		// PortBindings: portBindings,
 		// PublishAllPorts: true,

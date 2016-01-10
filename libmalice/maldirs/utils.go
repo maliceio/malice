@@ -7,8 +7,9 @@ import (
 	"github.com/maliceio/malice/libmalice/malutils"
 )
 
+// NOTE: export MALICE_STORAGE_PATH=$(pwd)
 var (
-	BaseDir = os.Getenv("MACHINE_STORAGE_PATH")
+	BaseDir = os.Getenv("MALICE_STORAGE_PATH")
 )
 
 func GetBaseDir() string {
@@ -16,6 +17,10 @@ func GetBaseDir() string {
 		BaseDir = filepath.Join(malutils.GetHomeDir(), ".malice")
 	}
 	return BaseDir
+}
+
+func GetSampledsDir() string {
+	return filepath.Join(GetBaseDir(), "samples")
 }
 
 func GetMachineDir() string {

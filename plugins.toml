@@ -15,7 +15,7 @@
 
 [[plugin]]
   name = "fileinfo"
-  enabled = false
+  enabled = true
   description = "ssdeep/exiftool/TRiD"
   category = "metadata"
   image = "malice/fileinfo"

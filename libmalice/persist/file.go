@@ -9,9 +9,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/go-units"
+	"github.com/maliceio/malice/libmalice/maldirs"
+	"github.com/maliceio/malice/libmalice/malutils"
 	"github.com/maliceio/malice/utils/clitable"
 	"github.com/rakyll/magicmime"
 	// "github.com/dutchcoders/gossdeep"
@@ -47,10 +50,24 @@ func (file *File) Init() {
 		file.GetSHA256()
 		file.GetSHA512()
 		file.GetFileMimeType()
+		file.CopyToSamples()
 		file.Data = nil
 	} else {
 		log.Fatalf("error occured during file.Init() because file.Path was not set.")
 	}
+}
+
+// CopyToSamples copys input file to samples folder
+func (file *File) CopyToSamples() error {
+
+	// Make .malice directory if it doesn't exist
+	if _, err := os.Stat(maldirs.GetSampledsDir()); os.IsNotExist(err) {
+		os.MkdirAll(maldirs.GetSampledsDir(), 0777)
+	}
+
+	err := malutils.CopyFile(file.Path, path.Join(maldirs.GetSampledsDir(), file.SHA256))
+	assert(err)
+	return err
 }
 
 // GetName returns file name

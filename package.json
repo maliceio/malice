@@ -1,0 +1,32 @@
+{
+  "name": "malice",
+  "version": "0.1.0",
+  "description": "Open Source Malware Analysis Framework",
+  "main": "gulpfile.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {
+    "go-watch": "0.0.1",
+    "gulp": "^3.9.0",
+    "gulp-livereload": "^3.8.1",
+    "gulp-sync": "^0.1.4",
+    "live-reload": "^1.1.0",
+    "node-notifier": "^4.4.0",
+    "watch": "^0.17.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maliceio/malice.git"
+  },
+  "author": "blacktop",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/maliceio/malice/issues"
+  },
+  "homepage": "https://github.com/maliceio/malice#readme"
+}

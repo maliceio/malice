@@ -5,7 +5,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/config"
-	"github.com/maliceio/malice/libmalice/plugins"
+	"github.com/maliceio/malice/plugins"
 )
 
 func init() {
@@ -36,7 +36,7 @@ func cmdListPlugins(all bool, detail bool) {
 }
 
 func cmdInstallPlugin(name string) {
-	testPlugin := config.Plugin{
+	testPlugin := plugins.Plugin{
 		Name:        name,
 		Enabled:     true,
 		Category:    "test",

@@ -7,13 +7,41 @@ import (
 
 	"os"
 	"strings"
-
+	// "github.com/pelletier/go-toml"
 	"github.com/BurntSushi/toml"
 	"github.com/maliceio/malice/config"
 	"github.com/parnurzeal/gorequest"
 )
 
-// "github.com/pelletier/go-toml"
+// Plugin represents a single plugin setting.
+type Plugin struct {
+	Name        string `toml:"name"`
+	Enabled     bool   `toml:"enabled"`
+	Category    string `toml:"category"`
+	Description string `toml:"description"`
+	Image       string `toml:"image"`
+	Mime        string `toml:"mime"`
+}
+
+// PluginConfiguration represents the malice runtime plugins.
+type PluginConfiguration struct {
+	Plugins []Plugin `toml:"plugin"`
+}
+
+// Plug represents the Malice runtime configuration
+var Plug PluginConfiguration
+
+func init() {
+	// Get the config file
+	_, err := toml.DecodeFile("./plugins.toml", &Plug)
+	assert(err)
+	// fmt.Println(Plug)
+}
+
+// StartPlugin starts plugin
+func (plugin *Plugin) StartPlugin() {
+
+}
 
 func printStatus(resp gorequest.Response, body string, errs []error) {
 	fmt.Println(resp.Status)
@@ -32,11 +60,11 @@ func PostResults(url string, resultJSON []byte, taskID string) {
 }
 
 //InstallPlugin installs a new malice plugin
-func InstallPlugin(plugin *config.Plugin) (err error) {
+func InstallPlugin(plugin *Plugin) (err error) {
 
-	var newPlugin = config.PluginConfiguration{
-		[]config.Plugin{
-			config.Plugin{
+	var newPlugin = PluginConfiguration{
+		[]Plugin{
+			Plugin{
 				Name:        plugin.Name,
 				Enabled:     plugin.Enabled,
 				Category:    plugin.Category,
@@ -88,7 +116,7 @@ func ListEnabledPlugins(detail bool) {
 
 // ListAllPlugins lists all plugins
 func ListAllPlugins(detail bool) {
-	plugins := config.Plug.Plugins
+	plugins := Plug.Plugins
 	if detail {
 		for idx, plugin := range plugins {
 			fmt.Println("Name: ", plugin.Name)
@@ -108,12 +136,17 @@ func ListAllPlugins(detail bool) {
 	}
 }
 
+// GetPluginsForMime will return all plugins that can consume the mime type file
+func GetPluginsForMime(mime string) []Plugin {
+	return filterPluginsByMime(mime)
+}
+
 // filterPluginsByEnabled returns a map[string]plugin of plugins
 // that work on the given mime type
-func filterPluginsByMime(mime string) []config.Plugin {
-	mimeMatch := []config.Plugin{}
+func filterPluginsByMime(mime string) []Plugin {
+	mimeMatch := []Plugin{}
 
-	for _, plugin := range config.Plug.Plugins {
+	for _, plugin := range Plug.Plugins {
 		if strings.Contains(plugin.Mime, mime) {
 			mimeMatch = append(mimeMatch, plugin)
 		}
@@ -122,10 +155,10 @@ func filterPluginsByMime(mime string) []config.Plugin {
 }
 
 // filterPluginsByEnabled returns a map[string]plugin of enalbed plugins
-func filterPluginsByEnabled() []config.Plugin {
-	enabled := []config.Plugin{}
+func filterPluginsByEnabled() []Plugin {
+	enabled := []Plugin{}
 
-	for _, plugin := range config.Plug.Plugins {
+	for _, plugin := range Plug.Plugins {
 		if plugin.Enabled {
 			enabled = append(enabled, plugin)
 		}

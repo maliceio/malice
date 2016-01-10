@@ -5,7 +5,9 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/config"
+	"github.com/maliceio/malice/libmalice/maldocker"
 	"github.com/maliceio/malice/libmalice/persist"
+	"github.com/maliceio/malice/plugins"
 )
 
 func init() {
@@ -34,7 +36,21 @@ func cmdScan(path string, logs bool) {
 	// file.Mime, _ = file.GetFileMimeType()
 	// file.GetFileMimeType()
 	file.Init()
+	plugins := plugins.GetPluginsForMime(file.Mime)
+	for _ = range plugins {
+		cont, err := maldocker.StartELK(logs)
+		assert(err)
 
+		log.WithFields(log.Fields{
+			// "id":   cont.ID,
+			"ip": maldocker.GetIP(),
+			// "url":      "http://" + maldocker.GetIP(),
+			"username": "admin",
+			"password": "admin",
+			"name":     cont.Name,
+			"env":      config.Conf.Environment.Run,
+		}).Info("ELK Container Started")
+	}
 	file.PrintFileDetails()
 
 	log.WithFields(log.Fields{

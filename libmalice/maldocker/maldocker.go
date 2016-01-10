@@ -95,11 +95,11 @@ func StartContainer(name string, image string, logs bool) (cont *docker.Containe
 			"exisits": exists,
 			// "id":      elkContainer.ID,
 			"env": config.Conf.Environment.Run,
-		}).Infof("Image `%s` already pulled.", image)
+		}).Debugf("Image `%s` already pulled.", image)
 	} else {
 		log.WithFields(log.Fields{
 			"exisits": exists,
-			"env":     config.Conf.Environment.Run}).Infof("Pulling Image `%s`", image)
+			"env":     config.Conf.Environment.Run}).Debugf("Pulling Image `%s`", image)
 
 		assert(PullImage(client, image, "latest"))
 	}
@@ -154,6 +154,25 @@ func StartContainer(name string, image string, logs bool) (cont *docker.Containe
 	}
 
 	return
+}
+
+// ContainerRemove removes the `cont` container unforcedly.
+// If volumes is true, the associated volumes are removed with container.
+func ContainerRemove(cont *docker.Container, volumes bool, force bool) error {
+	if plugin, exists, _ := ContainerExists(client, cont.Name); exists {
+		log.Infof("Removing Plugin ID =>\t\t%s\n", plugin.ID)
+		if err := client.RemoveContainer(docker.RemoveContainerOptions{
+			ID:            plugin.ID,
+			RemoveVolumes: volumes,
+			Force:         force,
+		}); err != nil {
+			return err
+		}
+	} else {
+		log.Info("Service container does not exist. Cannot remove.")
+	}
+
+	return nil
 }
 
 // StartELK creates an ELK container from the image blacktop/elk

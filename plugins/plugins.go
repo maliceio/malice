@@ -45,8 +45,7 @@ func (plugin Plugin) StartPlugin(logs bool) (cont *docker.Container, err error) 
 	cont, err = maldocker.StartContainer(plugin.Name, plugin.Image, logs)
 	assert(err)
 
-	fmt.Println(cont.Name)
-
+	// fmt.Println(cont.Name)
 	return
 }
 

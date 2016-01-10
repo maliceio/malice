@@ -37,10 +37,10 @@ func cmdScan(path string, logs bool) {
 	// file.GetFileMimeType()
 	file.Init()
 
-	log.Info("Looking for plugins that will run on: ", file.Mime)
+	log.Debug("Looking for plugins that will run on: ", file.Mime)
 	// Iterate over all applicable plugins
 	plugins := plugins.GetPluginsForMime(file.Mime)
-	log.Info("Found these plugins: ", plugins)
+	log.Debug("Found these plugins: ", plugins)
 	for _, plugin := range plugins {
 		cont, err := plugin.StartPlugin(logs)
 		assert(err)
@@ -51,9 +51,9 @@ func cmdScan(path string, logs bool) {
 			// "url":      "http://" + maldocker.GetIP(),
 			"name": cont.Name,
 			"env":  config.Conf.Environment.Run,
-		}).Info("Plugin Container Started")
+		}).Debug("Plugin Container Started")
 	}
-	log.Info("Done with plugins.")
+	log.Debug("Done with plugins.")
 	// Output File Hashes
 	file.PrintFileDetails()
 

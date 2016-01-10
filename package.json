@@ -6,10 +6,9 @@
   "directories": {
     "doc": "docs"
   },
-  "dependencies": {
+  "devDependencies": {
     "gulp": "^3.9.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -10,7 +10,7 @@ gulp.task('compilepkg', function() {
       {
         templateData: {
           stripPath: function(filePath) {
-            var subPath = filePath.substring(process.cwd().length +5);
+            var subPath = filePath.substring(process.cwd().length + 5);
             var pkg = subPath.substring(0, subPath.lastIndexOf(path.sep));
             return pkg;
           }
@@ -20,5 +20,9 @@ gulp.task('compilepkg', function() {
 });
 
 gulp.task('watch', function() {
+  gulp.watch(goPath, ['compilepkg']);
+});
+
+gulp.task('default', function() {
   gulp.watch(goPath, ['compilepkg']);
 });

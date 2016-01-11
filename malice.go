@@ -56,3 +56,11 @@ func main() {
 		log.Error(err)
 	}
 }
+
+// NEXT: Get plugins to return JSON or Markdown tables
+// NEXT: Get plugins to POST JSON to malice webhook which pipes it to ELK Container
+// NEXT: Binpack config/plugins.toml into Malice to write out to .malice dir on first run
+// NEXT: Check if file already exists then display stored results
+// NEXT: Rewrite to reuse containers instead of spawning new one all the time (will speed up AV)
+// NEXT: Rewrite Plugins into goroutines for speed
+// NEXT: Cleanup code, docker/plugin/container/ etc utils !!!

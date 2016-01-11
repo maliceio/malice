@@ -23,10 +23,10 @@ func GetSampledsDir() string {
 	return filepath.Join(GetBaseDir(), "samples")
 }
 
-func GetMachineDir() string {
-	return filepath.Join(GetBaseDir(), "machines")
+func GetPluginsDir() string {
+	return filepath.Join(GetBaseDir(), "plugins")
 }
 
-func GetMachineCertDir() string {
-	return filepath.Join(GetBaseDir(), "certs")
+func GetConfigDir() string {
+	return filepath.Join(GetBaseDir(), "config")
 }

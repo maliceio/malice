@@ -36,6 +36,7 @@ func cmdScan(path string, logs bool) {
 
 	file.Init()
 	// Output File Hashes
+    log.Debug("[File]")
 	fmt.Println(string(file.ToJSON()))
     
 	log.Debug("Looking for plugins that will run on: ", file.Mime)
@@ -43,6 +44,7 @@ func cmdScan(path string, logs bool) {
 	plugins := plugins.GetPluginsForMime(file.Mime)
 	log.Debug("Found these plugins: ", plugins)
 	for _, plugin := range plugins {
+        log.Debugf("[%s]\n", plugin.Name)
 		cont, err := plugin.StartPlugin(file.SHA256, logs)
 		assert(err)
 

@@ -25,7 +25,7 @@ type File struct {
 	Name  string `json:"name"`
 	Path  string `json:"path"`
 	Valid bool   `json:"valid"`
-	Size  string `json:"szie"`
+	Size  string `json:"size"`
 	// Size   int64
 	// CRC32  string
 	MD5    string `json:"md5"`

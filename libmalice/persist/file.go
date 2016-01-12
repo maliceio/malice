@@ -13,6 +13,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/go-units"
+	er "github.com/maliceio/malice/libmalice/errors"
 	"github.com/maliceio/malice/libmalice/maldirs"
 	"github.com/maliceio/malice/libmalice/malutils"
 	"github.com/maliceio/malice/utils/clitable"
@@ -66,7 +67,7 @@ func (file *File) CopyToSamples() error {
 	}
 
 	err := malutils.CopyFile(file.Path, path.Join(maldirs.GetSampledsDir(), file.SHA256))
-	assert(err)
+	er.CheckError(err)
 	return err
 }
 
@@ -114,7 +115,7 @@ func (file *File) GetSize() (bytes int64, err error) {
 // TODO: This is probably pretty dumb to keep this data in memory
 func (file *File) getData() {
 	dat, err := ioutil.ReadFile(file.Path)
-	assert(err)
+	er.CheckError(err)
 	file.Data = dat
 }
 
@@ -125,7 +126,7 @@ func (file *File) getData() {
 //
 // 	crc := crc32.New(castagnoliTable)
 // 	_, err = crc.Write(file.Data)
-// 	assert(err)
+// 	er.CheckError(err)
 // 	hCRC32Sum = fmt.Sprintf("%x", crc.Sum32())
 //
 // 	file.CRC32 = hCRC32Sum
@@ -138,7 +139,7 @@ func (file *File) GetMD5() (hMd5Sum string, err error) {
 
 	hmd5 := md5.New()
 	_, err = hmd5.Write(file.Data)
-	assert(err)
+	er.CheckError(err)
 	hMd5Sum = fmt.Sprintf("%x", hmd5.Sum(nil))
 
 	file.MD5 = hMd5Sum
@@ -151,7 +152,7 @@ func (file *File) GetSHA1() (h1Sum string, err error) {
 
 	h1 := sha1.New()
 	_, err = h1.Write(file.Data)
-	assert(err)
+	er.CheckError(err)
 	h1Sum = fmt.Sprintf("%x", h1.Sum(nil))
 
 	file.SHA1 = h1Sum
@@ -164,7 +165,7 @@ func (file *File) GetSHA256() (h256Sum string, err error) {
 
 	h256 := sha256.New()
 	_, err = h256.Write(file.Data)
-	assert(err)
+	er.CheckError(err)
 	h256Sum = fmt.Sprintf("%x", h256.Sum(nil))
 
 	file.SHA256 = h256Sum
@@ -177,7 +178,7 @@ func (file *File) GetSHA512() (h512Sum string, err error) {
 
 	h512 := sha512.New()
 	_, err = h512.Write(file.Data)
-	assert(err)
+	er.CheckError(err)
 	h512Sum = fmt.Sprintf("%x", h512.Sum(nil))
 
 	file.SHA512 = h512Sum
@@ -206,7 +207,7 @@ func (file *File) GetFileMimeType() (mimetype string, err error) {
 // ToJSON converts File object to []byte JSON
 func (file *File) ToJSON() []byte {
 	fileJSON, err := json.Marshal(file)
-	assert(err)
+	er.CheckError(err)
 	return fileJSON
 }
 
@@ -260,9 +261,3 @@ func (file *File) PrintFileDetails() {
 //
 // 	return
 // }
-
-func assert(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}

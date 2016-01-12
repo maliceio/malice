@@ -8,12 +8,6 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-func assert(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 var tasks = []string{"start", "stop"}
 
 // Commands are the codegangsta/cli commands for Malice

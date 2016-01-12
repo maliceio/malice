@@ -3,7 +3,6 @@ package plugins
 import (
 	"bytes"
 	"fmt"
-	"log"
 
 	"os"
 	"strings"
@@ -11,6 +10,7 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/maliceio/malice/config"
+	er "github.com/maliceio/malice/libmalice/errors"
 	"github.com/maliceio/malice/libmalice/maldocker"
 	"github.com/parnurzeal/gorequest"
 )
@@ -36,14 +36,14 @@ var Plug PluginConfiguration
 func init() {
 	// Get the config file
 	_, err := toml.DecodeFile("./plugins.toml", &Plug)
-	assert(err)
+	er.CheckError(err)
 	// fmt.Println(Plug)
 }
 
 // StartPlugin starts plugin
 func (plugin Plugin) StartPlugin(sample string, logs bool) (cont *docker.Container, err error) {
 	cont, err = maldocker.StartContainer(sample, plugin.Name, plugin.Image, logs)
-	assert(err)
+	er.CheckError(err)
 
 	// fmt.Println(cont.Name)
 	return
@@ -82,7 +82,7 @@ func InstallPlugin(plugin *Plugin) (err error) {
 	}
 
 	buf := new(bytes.Buffer)
-	assert(toml.NewEncoder(buf).Encode(newPlugin))
+	er.CheckError(toml.NewEncoder(buf).Encode(newPlugin))
 	fmt.Println(buf.String())
 	// open plugin config file
 	f, err := os.OpenFile("./plugins.toml", os.O_APPEND|os.O_WRONLY, 0600)
@@ -170,10 +170,4 @@ func filterPluginsByEnabled() []Plugin {
 		}
 	}
 	return enabled
-}
-
-func assert(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
 }

@@ -1,11 +1,11 @@
 package config
 
 import (
-	"log"
 	"os"
 	"path"
 
 	"github.com/BurntSushi/toml"
+	er "github.com/maliceio/malice/libmalice/errors"
 	"github.com/maliceio/malice/libmalice/maldirs"
 )
 
@@ -73,12 +73,6 @@ type proxyConfig struct {
 	HTTPS  string
 }
 
-func assert(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 // Conf represents the Malice runtime configuration
 var Conf Configuration
 
@@ -88,11 +82,11 @@ func init() {
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
 		configPath = path.Join(maldirs.GetBaseDir(), configPath)
 		if _, err := os.Stat(configPath); os.IsNotExist(err) {
-			assert(err)
+			er.CheckError(err)
 		}
 	}
 
 	_, err := toml.DecodeFile(configPath, &Conf)
-	assert(err)
+	er.CheckError(err)
 	// fmt.Println(Conf)
 }

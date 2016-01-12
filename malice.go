@@ -1,33 +1,45 @@
 package main
 
 import (
+	"fmt"
 	"os"
+	"strconv"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+
 	"github.com/maliceio/malice/commands"
-	"github.com/maliceio/malice/config"
+	er "github.com/maliceio/malice/libmalice/errors"
+	"github.com/maliceio/malice/libmalice/logger"
 	"github.com/maliceio/malice/version"
 )
 
 func init() {
-	if config.Conf.Environment.Run == "production" {
-		// Log as JSON instead of the default ASCII formatter.
-		log.SetFormatter(&log.JSONFormatter{})
-		// Only log the warning severity or above.
-		log.SetLevel(log.InfoLevel)
-		// log.SetFormatter(&logstash.LogstashFormatter{Type: "malice"})
-	} else {
-		// Log as ASCII formatter.
-		log.SetFormatter(&log.TextFormatter{})
-		// Only log the warning severity or above.
-		log.SetLevel(log.InfoLevel)
+	logger.Init()
+}
+
+func setDebugOutputLevel() {
+	for _, f := range os.Args {
+		if f == "-D" || f == "--debug" || f == "-debug" {
+			log.SetLevel(log.DebugLevel)
+		}
 	}
-	// Output to stderr instead of stdout, could also be a file.
-	log.SetOutput(os.Stdout)
+
+	debugEnv := os.Getenv("MALICE_DEBUG")
+	if debugEnv != "" {
+		showDebug, err := strconv.ParseBool(debugEnv)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error parsing boolean value from MALICE_DEBUG: %s\n", err)
+			os.Exit(1)
+		}
+		if showDebug {
+			log.SetLevel(log.DebugLevel)
+		}
+	}
 }
 
 func main() {
+	setDebugOutputLevel()
 	cli.AppHelpTemplate = commands.AppHelpTemplate
 	cli.CommandHelpTemplate = commands.CommandHelpTemplate
 	app := cli.NewApp()
@@ -52,7 +64,6 @@ func main() {
 		},
 	}
 
-	if err := app.Run(os.Args); err != nil {
-		log.Error(err)
-	}
+	err := app.Run(os.Args)
+	er.CheckError(err)
 }

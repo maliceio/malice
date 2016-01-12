@@ -6,6 +6,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/config"
+	er "github.com/maliceio/malice/libmalice/errors"
 	"github.com/maliceio/malice/libmalice/maldocker"
 	"github.com/maliceio/malice/libmalice/persist"
 	"github.com/maliceio/malice/plugins"
@@ -36,17 +37,17 @@ func cmdScan(path string, logs bool) {
 
 	file.Init()
 	// Output File Hashes
-    log.Debug("[File]")
+	log.Debug("[File]")
 	fmt.Println(string(file.ToJSON()))
-    
+
 	log.Debug("Looking for plugins that will run on: ", file.Mime)
 	// Iterate over all applicable plugins
 	plugins := plugins.GetPluginsForMime(file.Mime)
 	log.Debug("Found these plugins: ", plugins)
 	for _, plugin := range plugins {
-        log.Debugf("[%s]\n", plugin.Name)
+		log.Debugf("[%s]\n", plugin.Name)
 		cont, err := plugin.StartPlugin(file.SHA256, logs)
-		assert(err)
+		er.CheckError(err)
 
 		log.WithFields(log.Fields{
 			"id": cont.ID,
@@ -58,7 +59,7 @@ func cmdScan(path string, logs bool) {
 		// Clean up the Plugin Container
 		// TODO: I want to reuse these containers for speed eventually.
 		err = maldocker.ContainerRemove(cont, false, false)
-		assert(err)
+		er.CheckError(err)
 	}
 	log.Debug("Done with plugins.")
 

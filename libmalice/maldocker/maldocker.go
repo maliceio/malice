@@ -8,6 +8,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/config"
+	er "github.com/maliceio/malice/libmalice/errors"
 	"github.com/maliceio/malice/libmalice/maldirs"
 	// "github.com/maliceio/malice/libmalice/maldocker/utils"
 	"github.com/fsouza/go-dockerclient"
@@ -29,42 +30,19 @@ var (
 
 func init() {
 	var err error
-	if config.Conf.Environment.Run == "production" {
-		// Log as JSON instead of the default ASCII formatter.
-		log.SetFormatter(&log.JSONFormatter{})
-		// Only log the warning severity or above.
-		log.SetLevel(log.InfoLevel)
-		// log.SetFormatter(&logstash.LogstashFormatter{Type: "malice"})
-	} else {
-		// Log as ASCII formatter.
-		log.SetFormatter(&log.TextFormatter{})
-		// Only log the warning severity or above.
-		log.SetLevel(log.DebugLevel)
-	}
-	// Output to stderr instead of stdout, could also be a file.
-	log.SetOutput(os.Stdout)
 
 	if endpoint == "" {
 		endpoint = config.Conf.Docker.EndPoint
 	}
 
 	ip, port, err = parseDockerEndoint(endpoint)
-	if err != nil {
-		log.Error(err)
-	}
+	er.CheckError(err)
 
 	client, clientError = docker.NewTLSClient(endpoint, cert, key, ca)
 
 	// Make sure we can connect to the docker client
 	if clientError != nil {
 		handleClientError()
-	}
-}
-
-// assert error
-func assert(err error) {
-	if err != nil {
-		log.Fatal(err)
 	}
 }
 
@@ -76,7 +54,7 @@ func GetIP() string {
 // StartContainer starts a malice docker container
 func StartContainer(sample string, name string, image string, logs bool) (cont *docker.Container, err error) {
 
-	assert(PingDockerClient(client))
+	er.CheckError(PingDockerClient(client))
 
 	_, exists, err := ContainerExists(client, name)
 
@@ -102,7 +80,7 @@ func StartContainer(sample string, name string, image string, logs bool) (cont *
 			"exisits": exists,
 			"env":     config.Conf.Environment.Run}).Debugf("Pulling Image `%s`", image)
 
-		assert(PullImage(client, image, "latest"))
+		er.CheckError(PullImage(client, image, "latest"))
 	}
 
 	createContConf := docker.Config{
@@ -180,7 +158,7 @@ func ContainerRemove(cont *docker.Container, volumes bool, force bool) error {
 // StartELK creates an ELK container from the image blacktop/elk
 func StartELK(logs bool) (cont *docker.Container, err error) {
 
-	assert(PingDockerClient(client))
+	er.CheckError(PingDockerClient(client))
 
 	_, exists, err := ContainerExists(client, "elk")
 
@@ -206,7 +184,7 @@ func StartELK(logs bool) (cont *docker.Container, err error) {
 			"exisits": exists,
 			"env":     config.Conf.Environment.Run}).Info("Pulling Image `blacktop/elk`")
 
-		assert(PullImage(client, "blacktop/elk", "latest"))
+		er.CheckError(PullImage(client, "blacktop/elk", "latest"))
 	}
 	createContConf := docker.Config{
 		Image: "blacktop/elk",
@@ -263,7 +241,7 @@ func LogContainer(cont *docker.Container) {
 		RawTerminal: false, // Usually true when the container contains a TTY.
 	}
 
-	assert(client.Logs(opts))
+	er.CheckError(client.Logs(opts))
 }
 
 func handleClientError() {

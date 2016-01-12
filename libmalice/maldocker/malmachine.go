@@ -9,6 +9,7 @@ import (
 	"github.com/docker/machine/commands/mcndirs"
 	"github.com/docker/machine/drivers/virtualbox"
 	"github.com/docker/machine/libmachine"
+	er "github.com/maliceio/malice/libmalice/errors"
 )
 
 // MakeDockerMachine creates a new docker host via docker-machine
@@ -25,13 +26,13 @@ func MakeDockerMachine(host string) {
 	driver.Memory = 2048
 
 	data, err := json.Marshal(driver)
-	assert(err)
+	er.CheckError(err)
 
 	pluginDriver, err := client.NewPluginDriver("virtualbox", data)
-	assert(err)
+	er.CheckError(err)
 
 	h, err := client.NewHost(pluginDriver)
-	assert(err)
+	er.CheckError(err)
 
 	h.HostOptions.EngineOptions.StorageDriver = "overlay"
 
@@ -58,9 +59,9 @@ func MachineURL(name string) (url string, err error) {
 	api := libmachine.NewClient(mcndirs.GetBaseDir())
 
 	host, err := api.Load(name)
-	assert(err)
+	er.CheckError(err)
 	url, err = host.URL()
-	assert(err)
+	er.CheckError(err)
 
 	return
 }
@@ -71,9 +72,9 @@ func MachineIP(name string) (ip string, err error) {
 	api := libmachine.NewClient(mcndirs.GetBaseDir())
 
 	host, err := api.Load(name)
-	assert(err)
+	er.CheckError(err)
 	ip, err = host.Driver.GetIP()
-	assert(err)
+	er.CheckError(err)
 
 	return
 }
@@ -84,7 +85,7 @@ func MachineStop(name string) error {
 	api := libmachine.NewClient(mcndirs.GetBaseDir())
 
 	host, err := api.Load(name)
-	assert(err)
+	er.CheckError(err)
 	err = host.Driver.Stop()
 
 	return err

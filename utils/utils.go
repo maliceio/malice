@@ -4,25 +4,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/mail"
 
 	"github.com/dustin/go-jsonpointer"
 	"github.com/jordan-wright/email"
+	er "github.com/maliceio/malice/libmalice/errors"
 )
-
-func assert(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
 
 // ParseJSON returns a JSON value for a given key
 // NOTE: https://godoc.org/github.com/dustin/go-jsonpointer
 func ParseJSON(data []byte, path string) (out string) {
 	var o map[string]interface{}
-	assert(json.Unmarshal(data, &o))
+	er.CheckError(json.Unmarshal(data, &o))
 	out = jsonpointer.Get(o, string(data)).(string)
 	return
 }

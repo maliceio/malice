@@ -5,6 +5,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/config"
+	er "github.com/maliceio/malice/libmalice/errors"
 	"github.com/maliceio/malice/libmalice/maldocker"
 )
 
@@ -28,7 +29,7 @@ func init() {
 func cmdELK(logs bool) {
 
 	cont, err := maldocker.StartELK(logs)
-	assert(err)
+	er.CheckError(err)
 
 	log.WithFields(log.Fields{
 		// "id":   cont.ID,

@@ -23,10 +23,10 @@ import (
 
 // File is a file object
 type File struct {
-	Name  string `json:"name"`
-	Path  string `json:"path"`
-	Valid bool   `json:"valid"`
-	Size  string `json:"size"`
+	Name string `json:"name"`
+	Path string `json:"path"`
+	// Valid bool   `json:"valid"`
+	Size string `json:"size"`
 	// Size   int64
 	// CRC32  string
 	MD5    string `json:"md5"`
@@ -35,7 +35,7 @@ type File struct {
 	SHA512 string `json:"sha512"`
 	// Ssdeep string `json:"ssdeep"`
 	Mime string `json:"mime"`
-	Arch string `json:"arch"`
+	// Arch string `json:"arch"`
 	Data []byte `json:"data"`
 }
 
@@ -216,7 +216,7 @@ func (file *File) PrintFileDetails() {
 	table := clitable.New([]string{"Field", "Value"})
 	table.AddRow(map[string]interface{}{"Field": "Name", "Value": file.Name})
 	table.AddRow(map[string]interface{}{"Field": "Path", "Value": file.Path})
-	table.AddRow(map[string]interface{}{"Field": "Valid", "Value": file.Valid})
+	// table.AddRow(map[string]interface{}{"Field": "Valid", "Value": file.Valid})
 	table.AddRow(map[string]interface{}{"Field": "Size", "Value": file.Size})
 	// table.AddRow(map[string]interface{}{"Field": "CRC32", "Value": file.CRC32})
 	table.AddRow(map[string]interface{}{"Field": "MD5", "Value": file.MD5})

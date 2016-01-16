@@ -8,6 +8,7 @@ import (
 	"strings"
 	// "github.com/pelletier/go-toml"
 	"github.com/BurntSushi/toml"
+	"github.com/crackcomm/go-clitable"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/maliceio/malice/config"
 	er "github.com/maliceio/malice/libmalice/errors"
@@ -102,17 +103,18 @@ func ListEnabledPlugins(detail bool) {
 	// TODO: Create a template for this kind of output : http://stackoverflow.com/questions/10747054/special-case-treatment-for-the-last-element-of-a-range-in-google-gos-text-templ
 	enabled := filterPluginsByEnabled()
 	if detail {
-		for idx, plugin := range enabled {
-			fmt.Println("Name: ", plugin.Name)
-			fmt.Println("Description: ", plugin.Description)
-			fmt.Println("Enabled: ", plugin.Enabled)
-			fmt.Println("Image: ", plugin.Image)
-			fmt.Println("Category: ", plugin.Category)
-			fmt.Println("Mime: ", plugin.Mime)
-			if idx+1 < len(enabled) && len(enabled) != 1 {
-				fmt.Println("---------------------")
-			}
-		}
+		ToMarkDownTable(enabled)
+		// for idx, plugin := range enabled {
+		// 	fmt.Println("Name: ", plugin.Name)
+		// 	fmt.Println("Description: ", plugin.Description)
+		// 	fmt.Println("Enabled: ", plugin.Enabled)
+		// 	fmt.Println("Image: ", plugin.Image)
+		// 	fmt.Println("Category: ", plugin.Category)
+		// 	fmt.Println("Mime: ", plugin.Mime)
+		// 	if idx+1 < len(enabled) && len(enabled) != 1 {
+		// 		fmt.Println("---------------------")
+		// 	}
+		// }
 	} else {
 		for _, plugin := range enabled {
 			fmt.Println(plugin.Name)
@@ -124,22 +126,41 @@ func ListEnabledPlugins(detail bool) {
 func ListAllPlugins(detail bool) {
 	plugins := Plug.Plugins
 	if detail {
-		for idx, plugin := range plugins {
-			fmt.Println("Name: ", plugin.Name)
-			fmt.Println("Description: ", plugin.Description)
-			fmt.Println("Enabled: ", plugin.Enabled)
-			fmt.Println("Image: ", plugin.Image)
-			fmt.Println("Category: ", plugin.Category)
-			fmt.Println("Mime: ", plugin.Mime)
-			if idx+1 < len(plugins) && len(plugins) != 1 {
-				fmt.Println("---------------------")
-			}
-		}
+		ToMarkDownTable(plugins)
+		// for idx, plugin := range plugins {
+		// 	fmt.Println("Name: ", plugin.Name)
+		// 	fmt.Println("Description: ", plugin.Description)
+		// 	fmt.Println("Enabled: ", plugin.Enabled)
+		// 	fmt.Println("Image: ", plugin.Image)
+		// 	fmt.Println("Category: ", plugin.Category)
+		// 	fmt.Println("Mime: ", plugin.Mime)
+		// 	if idx+1 < len(plugins) && len(plugins) != 1 {
+		// 		fmt.Println("---------------------")
+		// 	}
+		// }
 	} else {
 		for _, plugin := range plugins {
 			fmt.Println(plugin.Name)
 		}
 	}
+}
+
+// ToMarkDownTable prints plugins out as Markdown table
+func ToMarkDownTable(plugins []Plugin) {
+	// fmt.Println("#### Exiftool")
+	table := clitable.New([]string{"Name", "Description", "Enabled", "Image", "Category", "Mime"})
+	for _, plugin := range plugins {
+		table.AddRow(map[string]interface{}{
+			"Name":        plugin.Name,
+			"Description": plugin.Description,
+			"Enabled":     plugin.Enabled,
+			"Image":       plugin.Image,
+			"Category":    plugin.Category,
+			"Mime":        plugin.Mime,
+		})
+	}
+	table.Markdown = true
+	table.Print()
 }
 
 // GetPluginsForMime will return all plugins that can consume the mime type file

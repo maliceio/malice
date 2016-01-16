@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -8,7 +9,6 @@ import (
 
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
-	"github.com/maliceio/malice/data"
 	er "github.com/maliceio/malice/libmalice/errors"
 	"github.com/maliceio/malice/libmalice/maldirs"
 )
@@ -106,7 +106,9 @@ func Load() {
 		// er.CheckErrorNoStackWithMessage(err, "NOT FOUND")
 		configPath = path.Join(maldirs.GetBaseDir(), configPath)
 		if _, err := os.Stat(configPath); os.IsNotExist(err) {
-			configData, err := data.Asset("config.toml")
+			fmt.Println("I WOULD LOAD ASSET HERE")
+			configData, err := Asset("config.toml")
+			// configData, err := data.Asset("config.toml")
 			er.CheckError(err)
 			er.CheckError(ioutil.WriteFile(configPath, configData, 0644))
 		}

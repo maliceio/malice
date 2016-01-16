@@ -104,17 +104,6 @@ func ListEnabledPlugins(detail bool) {
 	enabled := filterPluginsByEnabled()
 	if detail {
 		ToMarkDownTable(enabled)
-		// for idx, plugin := range enabled {
-		// 	fmt.Println("Name: ", plugin.Name)
-		// 	fmt.Println("Description: ", plugin.Description)
-		// 	fmt.Println("Enabled: ", plugin.Enabled)
-		// 	fmt.Println("Image: ", plugin.Image)
-		// 	fmt.Println("Category: ", plugin.Category)
-		// 	fmt.Println("Mime: ", plugin.Mime)
-		// 	if idx+1 < len(enabled) && len(enabled) != 1 {
-		// 		fmt.Println("---------------------")
-		// 	}
-		// }
 	} else {
 		for _, plugin := range enabled {
 			fmt.Println(plugin.Name)
@@ -127,17 +116,6 @@ func ListAllPlugins(detail bool) {
 	plugins := Plug.Plugins
 	if detail {
 		ToMarkDownTable(plugins)
-		// for idx, plugin := range plugins {
-		// 	fmt.Println("Name: ", plugin.Name)
-		// 	fmt.Println("Description: ", plugin.Description)
-		// 	fmt.Println("Enabled: ", plugin.Enabled)
-		// 	fmt.Println("Image: ", plugin.Image)
-		// 	fmt.Println("Category: ", plugin.Category)
-		// 	fmt.Println("Mime: ", plugin.Mime)
-		// 	if idx+1 < len(plugins) && len(plugins) != 1 {
-		// 		fmt.Println("---------------------")
-		// 	}
-		// }
 	} else {
 		for _, plugin := range plugins {
 			fmt.Println(plugin.Name)
@@ -147,7 +125,6 @@ func ListAllPlugins(detail bool) {
 
 // ToMarkDownTable prints plugins out as Markdown table
 func ToMarkDownTable(plugins []Plugin) {
-	// fmt.Println("#### Exiftool")
 	table := clitable.New([]string{"Name", "Description", "Enabled", "Image", "Category", "Mime"})
 	for _, plugin := range plugins {
 		table.AddRow(map[string]interface{}{

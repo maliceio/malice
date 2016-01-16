@@ -44,6 +44,57 @@ Commands:
 Run 'malice COMMAND --help' for more information on a command.
 ```
 
+### Example Output
+#### File
+| Field  | Value                                                                                                                            |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| Name   | blaze-inferno.jpg                                                                                                                |
+| Path   | ~/Downloads/blaze-inferno.jpg                                                                                          |
+| Size   | 426.2 kB                                                                                                                         |
+| MD5    | 6f7864266c0b64a5d1c287a6e643bd9c                                                                                                 |
+| SHA1   | e91e6b62bc573d8082a1ff14a2f2c08de0d2dab9                                                                                         |
+| SHA256 | 1d3fd5b9208d1b9d3e1a5eb6f59155c680224e433561c2f07026c15b00ed7c2e                                                                 |
+| SHA512 | 830a63f06c7f846a90c7c290dc31c6684e7beddf411652047ddc416e8a5f49b9176dda84fc22a8e7465cdd8d1bb37cc9231537ed2c1f29291c045335b8ed8091 |
+| Mime   | image/jpeg                                                                                                                       |
+#### SSDeep
+12288:grD2gFS5bvBRjQ68MufQjHRpUY6FHzglE3r:gX2AS5DBRsKBIcy
+
+#### TRiD
+ -  55.5% (.JPG) JFIF-EXIF JPEG Bitmap (5000/1/1)
+ -  33.3% (.JPG) JPEG bitmap (3000/1)
+ -  11.1% (.MP3) MP3 audio (1000/1)
+
+#### Exiftool
+| Field                   | Value                                   |
+| ----------------------- | --------------------------------------- |
+| Bits Per Sample         | 8                                       |
+| Exif Byte Order         | Little-endian (Intel, II)               |
+| Image Height            | 800                                     |
+| File Type               | JPEG                                    |
+| Image Size              | 800x800                                 |
+| ExifTool Version Number | 10.09                                   |
+| Color Transform         | YCbCr                                   |
+| MIME Type               | image/jpeg                              |
+| File Type Extension     | jpg                                     |
+| Color Components        | 3                                       |
+| File Size               | 416 kB                                  |
+| DCT Encode Version      | 100                                     |
+| Encoding Process        | Baseline DCT, Huffman coding            |
+| Megapixels              | 0.640                                   |
+| Creator Tool            | Adobe Photoshop CS6 (Macintosh)         |
+| Image Width             | 800                                     |
+| Quality                 | 60%                                     |
+| APP14 Flags 1           | (none)                                  |
+| APP14 Flags 0           | [14], Encoded with Blend=1 downsampling |
+#### ClamAV
+| Infected | Result | Engine | Known   | Updated  |
+| -------- | ------ | ------ | ------- | -------- |
+| false    |        | 0.99   | 4218998 | 20160115 |
+#### F-PROT
+| Infected | Result | Engine    | Updated      |
+| -------- | ------ | --------- | ------------ |
+| false    |        | 4.6.5.141 | 201601140816 |
+---
 ### Documentation
 
 ### Issues
@@ -56,7 +107,7 @@ Minimum Viable Product
 > To be able to scan malware on OSX via cli and have the results either sent to stdout as Markdown tables or store results in ELK with an arbitrary amount of registered Malice plugins.
 
 ### TODO
- - [ ] [Get plugins to return JSON or Markdown tables due:2016-02-17](#Week:0)
+ - [x] [Get plugins to return JSON or Markdown tables due:2016-02-17](#Week:0)
  - [ ] [Get plugins to POST JSON to malice webhook which pipes it to ELK Container due:2016-02-17](#Week:0)
  - [ ] [Binpack config/plugins.toml into Malice to write out to .malice dir on first run due:2016-02-17](#Week:10)
  - [ ] [Check if file already exists then display stored results due:2016-02-17](#Week:20)

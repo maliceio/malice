@@ -12,11 +12,11 @@ import (
 	"path"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/crackcomm/go-clitable"
 	"github.com/docker/go-units"
 	er "github.com/maliceio/malice/libmalice/errors"
 	"github.com/maliceio/malice/libmalice/maldirs"
 	"github.com/maliceio/malice/libmalice/malutils"
-	"github.com/maliceio/malice/utils/clitable"
 	"github.com/rakyll/magicmime"
 	// "github.com/dutchcoders/gossdeep"
 )
@@ -209,6 +209,22 @@ func (file *File) ToJSON() []byte {
 	fileJSON, err := json.Marshal(file)
 	er.CheckError(err)
 	return fileJSON
+}
+
+// ToMarkdownTable converts File object Markdown table
+func (file *File) ToMarkdownTable() {
+	fmt.Println("#### File")
+	table := clitable.New([]string{"Field", "Value"})
+	table.AddRow(map[string]interface{}{"Field": "Name", "Value": file.Name})
+	table.AddRow(map[string]interface{}{"Field": "Path", "Value": file.Path})
+	table.AddRow(map[string]interface{}{"Field": "Size", "Value": file.Size})
+	table.AddRow(map[string]interface{}{"Field": "MD5", "Value": file.MD5})
+	table.AddRow(map[string]interface{}{"Field": "SHA1", "Value": file.SHA1})
+	table.AddRow(map[string]interface{}{"Field": "SHA256", "Value": file.SHA256})
+	table.AddRow(map[string]interface{}{"Field": "SHA512", "Value": file.SHA512})
+	table.AddRow(map[string]interface{}{"Field": "Mime", "Value": file.Mime})
+	table.Markdown = true
+	table.Print()
 }
 
 // PrintFileDetails prints file details

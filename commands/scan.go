@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"fmt"
 	"os"
 
 	log "github.com/Sirupsen/logrus"
@@ -38,7 +37,8 @@ func cmdScan(path string, logs bool) {
 	file.Init()
 	// Output File Hashes
 	log.Debug("[File]")
-	fmt.Println(string(file.ToJSON()))
+	file.ToMarkdownTable()
+	// fmt.Println(string(file.ToJSON()))
 
 	log.Debug("Looking for plugins that will run on: ", file.Mime)
 	// Iterate over all applicable plugins

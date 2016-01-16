@@ -96,6 +96,7 @@ func StartContainer(sample string, name string, image string, logs bool) (cont *
 			},
 		},
 		Cmd: []string{
+			"-t",
 			sample,
 		},
 	}

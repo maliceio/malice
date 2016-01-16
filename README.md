@@ -106,14 +106,7 @@ Minimum Viable Product
 > To be able to scan malware on OSX via cli and have the results either sent to stdout as Markdown tables or store results in ELK with an arbitrary amount of registered Malice plugins.
 
 ### TODO
- - [x] [Get plugins to return JSON or Markdown tables due:2016-02-17](#Week:0)
- - [ ] [Get plugins to POST JSON to malice webhook which pipes it to ELK Container due:2016-02-17](#Week:0)
- - [x] [Binpack config/plugins.toml into Malice to write out to .malice dir on first run due:2016-02-17](#Week:10)
- - [ ] [Check if file already exists then display stored results due:2016-02-17](#Week:20)
- - [ ] [Rewrite to reuse containers instead of spawning new one all the time (will speed up AV) due:2016-02-17](#Week:30)
- - [ ] [Rewrite Plugins into goroutines for speed due:2016-02-17](#Week:40)
- - [ ] [Cleanup code, docker/plugin/container/ etc utils !!! due:2016-02-17](#Week:50)
-
+ - [ ] Figure out how to do Windows AV ? :confounded:
 
 ### Credits
 I want to give a big shout out to [jordan-wright](http://jordan-wright.com), I am using his program [gophish](https://github.com/jordan-wright/gophish) as a template to get me started with the Malice rewrite.  Jordan has an amazing sense of style and his code is elegant and beautiful.  I aspire to be on his level someday.

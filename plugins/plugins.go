@@ -3,15 +3,20 @@ package plugins
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
+	"path"
 
 	"os"
 	"strings"
 	// "github.com/pelletier/go-toml"
 	"github.com/BurntSushi/toml"
+	log "github.com/Sirupsen/logrus"
 	"github.com/crackcomm/go-clitable"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/maliceio/malice/config"
+	"github.com/maliceio/malice/data"
 	er "github.com/maliceio/malice/libmalice/errors"
+	"github.com/maliceio/malice/libmalice/maldirs"
 	"github.com/maliceio/malice/libmalice/maldocker"
 	"github.com/parnurzeal/gorequest"
 )
@@ -34,11 +39,22 @@ type PluginConfiguration struct {
 // Plug represents the Malice runtime configuration
 var Plug PluginConfiguration
 
-func init() {
-	// Get the config file
-	_, err := toml.DecodeFile("./plugins.toml", &Plug)
+// Load plugins.toml into Plug var
+func Load() {
+	// Get the plugin file
+	pluginPath := "./plugins.toml"
+	if _, err := os.Stat(pluginPath); os.IsNotExist(err) {
+		// er.CheckErrorNoStackWithMessage(err, "NOT FOUND")
+		pluginPath = path.Join(maldirs.GetBaseDir(), pluginPath)
+		if _, err := os.Stat(pluginPath); os.IsNotExist(err) {
+			pluginData, err := data.Asset("plugins.toml")
+			er.CheckError(err)
+			er.CheckError(ioutil.WriteFile(pluginPath, pluginData, 0644))
+		}
+	}
+	log.Debug("Plugin Config: ", pluginPath)
+	_, err := toml.DecodeFile(pluginPath, &Plug)
 	er.CheckError(err)
-	// fmt.Println(Plug)
 }
 
 // StartPlugin starts plugin
@@ -64,6 +80,14 @@ func PostResults(url string, resultJSON []byte, taskID string) {
 		Set("Task", taskID).
 		Send(resultJSON).
 		End(printStatus)
+}
+
+// RefreshPlugins performs a docker pull on all registered plugins checking for updates
+func RefreshPlugins() {
+	plugins := filterPluginsByEnabled()
+	for _ = range plugins {
+		// maldocker.PullImage(plugin.Image, "latest")
+	}
 }
 
 //InstallPlugin installs a new malice plugin

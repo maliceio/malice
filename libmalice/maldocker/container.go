@@ -3,29 +3,11 @@ package maldocker
 import (
 	"github.com/maliceio/malice/config"
 
-	"os"
 	"regexp"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/fsouza/go-dockerclient"
 )
-
-func init() {
-	if config.Conf.Environment.Run == "production" {
-		// Log as JSON instead of the default ASCII formatter.
-		log.SetFormatter(&log.JSONFormatter{})
-		// Only log the warning severity or above.
-		log.SetLevel(log.InfoLevel)
-		// log.SetFormatter(&logstash.LogstashFormatter{Type: "malice"})
-	} else {
-		// Log as ASCII formatter.
-		log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
-		// Only log the warning severity or above.
-		log.SetLevel(log.DebugLevel)
-	}
-	// Output to stderr instead of stdout, could also be a file.
-	log.SetOutput(os.Stdout)
-}
 
 // ContainerExists returns APIContainers containers list and true
 // if the container name exists, otherwise false.

@@ -1,10 +1,14 @@
 package config
 
 import (
+	"io/ioutil"
 	"os"
+
 	"path"
 
 	"github.com/BurntSushi/toml"
+	log "github.com/Sirupsen/logrus"
+	"github.com/maliceio/malice/data"
 	er "github.com/maliceio/malice/libmalice/errors"
 	"github.com/maliceio/malice/libmalice/maldirs"
 )
@@ -76,16 +80,38 @@ type proxyConfig struct {
 // Conf represents the Malice runtime configuration
 var Conf Configuration
 
-func init() {
+// func init() {
+// 	// Get the config file
+// 	configPath := "./config.toml"
+// 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+// 		er.CheckErrorNoStackWithMessage(err, "NOT FOUND")
+// 		configPath = path.Join(maldirs.GetBaseDir(), configPath)
+// 		if _, err := os.Stat(configPath); os.IsNotExist(err) {
+// 			data, err = Asset("data/config.toml")
+// 			er.CheckError(err)
+// 			er.CheckError(ioutil.WriteFile(configPath, data, 0644))
+// 		}
+// 	}
+//
+// 	_, err := toml.DecodeFile(configPath, &Conf)
+// 	er.CheckError(err)
+// 	fmt.Println(Conf)
+// }
+
+// Load config.toml into Conf var
+func Load() {
 	// Get the config file
 	configPath := "./config.toml"
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		// er.CheckErrorNoStackWithMessage(err, "NOT FOUND")
 		configPath = path.Join(maldirs.GetBaseDir(), configPath)
 		if _, err := os.Stat(configPath); os.IsNotExist(err) {
+			configData, err := data.Asset("config.toml")
 			er.CheckError(err)
+			er.CheckError(ioutil.WriteFile(configPath, configData, 0644))
 		}
 	}
-
+	log.Debug("Malice Config: ", configPath)
 	_, err := toml.DecodeFile(configPath, &Conf)
 	er.CheckError(err)
 	// fmt.Println(Conf)

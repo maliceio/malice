@@ -46,16 +46,15 @@ Run 'malice COMMAND --help' for more information on a command.
 
 ### Example Output
 #### File
-| Field  | Value                                                                                                                            |
-| ------ | -------------------------------------------------------------------------------------------------------------------------------- |
-| Name   | blaze-inferno.jpg                                                                                                                |
-| Path   | ~/Downloads/blaze-inferno.jpg                                                                                          |
-| Size   | 426.2 kB                                                                                                                         |
-| MD5    | 6f7864266c0b64a5d1c287a6e643bd9c                                                                                                 |
-| SHA1   | e91e6b62bc573d8082a1ff14a2f2c08de0d2dab9                                                                                         |
-| SHA256 | 1d3fd5b9208d1b9d3e1a5eb6f59155c680224e433561c2f07026c15b00ed7c2e                                                                 |
-| SHA512 | 830a63f06c7f846a90c7c290dc31c6684e7beddf411652047ddc416e8a5f49b9176dda84fc22a8e7465cdd8d1bb37cc9231537ed2c1f29291c045335b8ed8091 |
-| Mime   | image/jpeg                                                                                                                       |
+| Field  | Value                                                            |
+| ------ | ---------------------------------------------------------------- |
+| Name   | blaze-inferno.jpg                                                |
+| Path   | /Users/user/Downloads/blaze-inferno.jpg                          |
+| Size   | 426.2 kB                                                         |
+| MD5    | 6f7864266c0b64a5d1c287a6e643bd9c                                 |
+| SHA1   | e91e6b62bc573d8082a1ff14a2f2c08de0d2dab9                         |
+| SHA256 | 1d3fd5b9208d1b9d3e1a5eb6f59155c680224e433561c2f07026c15b00ed7c2e |
+| Mime   | image/jpeg                                                       |
 #### SSDeep
 12288:grD2gFS5bvBRjQ68MufQjHRpUY6FHzglE3r:gX2AS5DBRsKBIcy
 
@@ -67,25 +66,25 @@ Run 'malice COMMAND --help' for more information on a command.
 #### Exiftool
 | Field                   | Value                                   |
 | ----------------------- | --------------------------------------- |
-| Bits Per Sample         | 8                                       |
-| Exif Byte Order         | Little-endian (Intel, II)               |
-| Image Height            | 800                                     |
-| File Type               | JPEG                                    |
-| Image Size              | 800x800                                 |
-| ExifTool Version Number | 10.09                                   |
-| Color Transform         | YCbCr                                   |
-| MIME Type               | image/jpeg                              |
-| File Type Extension     | jpg                                     |
-| Color Components        | 3                                       |
-| File Size               | 416 kB                                  |
-| DCT Encode Version      | 100                                     |
-| Encoding Process        | Baseline DCT, Huffman coding            |
-| Megapixels              | 0.640                                   |
 | Creator Tool            | Adobe Photoshop CS6 (Macintosh)         |
-| Image Width             | 800                                     |
-| Quality                 | 60%                                     |
-| APP14 Flags 1           | (none)                                  |
+| Encoding Process        | Baseline DCT, Huffman coding            |
+| MIME Type               | image/jpeg                              |
+| Bits Per Sample         | 8                                       |
+| Color Components        | 3                                       |
 | APP14 Flags 0           | [14], Encoded with Blend=1 downsampling |
+| File Type Extension     | jpg                                     |
+| DCT Encode Version      | 100                                     |
+| Image Width             | 800                                     |
+| Image Size              | 800x800                                 |
+| Exif Byte Order         | Little-endian (Intel, II)               |
+| Quality                 | 60%                                     |
+| Color Transform         | YCbCr                                   |
+| ExifTool Version Number | 10.09                                   |
+| Megapixels              | 0.640                                   |
+| File Size               | 416 kB                                  |
+| File Type               | JPEG                                    |
+| APP14 Flags 1           | (none)                                  |
+| Image Height            | 800                                     |
 #### ClamAV
 | Infected | Result | Engine | Known   | Updated  |
 | -------- | ------ | ------ | ------- | -------- |

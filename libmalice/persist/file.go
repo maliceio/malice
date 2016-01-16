@@ -221,7 +221,7 @@ func (file *File) ToMarkdownTable() {
 	table.AddRow(map[string]interface{}{"Field": "MD5", "Value": file.MD5})
 	table.AddRow(map[string]interface{}{"Field": "SHA1", "Value": file.SHA1})
 	table.AddRow(map[string]interface{}{"Field": "SHA256", "Value": file.SHA256})
-	table.AddRow(map[string]interface{}{"Field": "SHA512", "Value": file.SHA512})
+	// table.AddRow(map[string]interface{}{"Field": "SHA512", "Value": file.SHA512})
 	table.AddRow(map[string]interface{}{"Field": "Mime", "Value": file.Mime})
 	table.Markdown = true
 	table.Print()

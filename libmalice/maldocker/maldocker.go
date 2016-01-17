@@ -80,7 +80,7 @@ func StartContainer(sample string, name string, image string, logs bool) (cont *
 			"exisits": exists,
 			"env":     config.Conf.Environment.Run}).Debugf("Pulling Image `%s`", image)
 
-		er.CheckError(PullImage(client, image, "latest"))
+		er.CheckError(PullImage(image, "latest"))
 	}
 
 	createContConf := docker.Config{
@@ -185,7 +185,7 @@ func StartELK(logs bool) (cont *docker.Container, err error) {
 			"exisits": exists,
 			"env":     config.Conf.Environment.Run}).Info("Pulling Image `blacktop/elk`")
 
-		er.CheckError(PullImage(client, "blacktop/elk", "latest"))
+		er.CheckError(PullImage("blacktop/elk", "latest"))
 	}
 	createContConf := docker.Config{
 		Image: "blacktop/elk",

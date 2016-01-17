@@ -35,7 +35,7 @@ title = "Malice Runtime Configuration"
   # run = "production"
 
 [docker]
-  machine-name = "machine"
+  machine-name = "malice"
   endpoint = "tcp://192.168.99.100:2376"
 
 [logger]

@@ -12,7 +12,7 @@ import (
 )
 
 // PullImage pulls docker image:tag
-func PullImage(client *docker.Client, name string, tag string) (err error) {
+func PullImage(name string, tag string) (err error) {
 
 	opts := docker.PullImageOptions{
 		Repository: name,

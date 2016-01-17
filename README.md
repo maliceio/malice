@@ -14,9 +14,17 @@ Malice will have binary releases for all platforms.
 **If you are building from source, please note that Malice requires Go v1.5 or above!**
 
 ### Setup
-On OSX install [docker-machine](https://docs.docker.com/machine/install-machine/) via [homebrew](http://brew.sh)
- - brew install docker-machine
- - docker-machine create -d virtualbox malice
+To Run on OSX
+ - Install [Homebrew](http://brew.sh)
+
+```bash
+$ brew install caskroom/cask/brew-cask
+$ brew cask install virtualbox
+$ brew install docker
+$ brew install docker-machine
+$ docker-machine create --driver virtualbox malice
+$ eval $(docker-machine env malice)
+```
 
 ### Usage
 ```

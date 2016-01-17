@@ -82,12 +82,18 @@ func PostResults(url string, resultJSON []byte, taskID string) {
 		End(printStatus)
 }
 
-// RefreshPlugins performs a docker pull on all registered plugins checking for updates
-func RefreshPlugins() {
-	plugins := filterPluginsByEnabled()
-	for _ = range plugins {
-		// maldocker.PullImage(plugin.Image, "latest")
+// UpdateAllPlugins performs a docker pull on all registered plugins checking for updates
+func UpdateAllPlugins() {
+	plugins := Plug.Plugins
+	for _, plugin := range plugins {
+		maldocker.PullImage(plugin.Image, "latest")
 	}
+}
+
+// UpdatePlugin performs a docker pull on all registered plugins checking for updates
+func (plugin Plugin) UpdatePlugin() {
+	err := maldocker.PullImage(plugin.Image, "latest")
+	er.CheckError(err)
 }
 
 //InstallPlugin installs a new malice plugin
@@ -162,6 +168,18 @@ func ToMarkDownTable(plugins []Plugin) {
 	}
 	table.Markdown = true
 	table.Print()
+}
+
+// GetPluginByName will return plugin for the given name
+func GetPluginByName(name string) Plugin {
+
+	for _, plugin := range Plug.Plugins {
+		if strings.EqualFold(plugin.Name, name) {
+			return plugin
+		}
+	}
+
+	return Plugin{}
 }
 
 // GetPluginsForMime will return all plugins that can consume the mime type file

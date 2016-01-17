@@ -71,7 +71,7 @@ __plugin() {
 # ----------------------
 local -a _1st_arguments
 _1st_arguments=(
-   'scan:Scan a file:scan:file:_files' \
+   'scan:Scan a file' \
    'elk:Start an ELK docker container' \
    'web:Start, Stop Web services' \
    'plugin:List, Install or Remove Plugins' \

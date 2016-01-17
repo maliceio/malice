@@ -53,12 +53,7 @@ __plugin() {
           '--all:display all installed plugins'
         )
         _describe -t list_options 'list options' list_options && ret=0
-        __get_plugins
         ;;
-          # _arguments \
-          #     '(-d --detail)'{-d,--detail}'[display plugin details]' \
-          #     '--all[display all installed plugins]' \
-          #     '(-):plugin: __get_plugins' && ret=0
       (install)
         __search_plugins && ret=0
       ;;

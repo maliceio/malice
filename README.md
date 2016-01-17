@@ -92,4 +92,5 @@ Copyright (c) 2013 - 2016 **blacktop** Joshua Maine
 [travis-badge]: https://travis-ci.org/maliceio/malice.svg?branch=master
 [gitter-badge]: https://badges.gitter.im/maliceio/malice.svg
 [gitter-link]: https://gitter.im/maliceio/malice
-[license]: https://img.shields.io/badge/licence-Apache%202-blue.svg
+[license]: https://img.shields.io/badge/licence-Apache%202.0-blue.svg
+<!-- [license]: https://img.shields.io/github/license/maliceio/malice.svg -->

@@ -9,6 +9,10 @@ import (
 	lumberjack "gopkg.in/natefinch/lumberjack.v2"
 )
 
+func init() {
+	InitLogToStdout(logrus.InfoLevel)
+}
+
 // LumberJackLogger add LumberJack logging hook for Elasticsearch
 func LumberJackLogger(filePath string, maxSize int, maxBackups int, maxAge int) *lumberjack.Logger {
 	return &lumberjack.Logger{
@@ -48,7 +52,7 @@ func InitLogToFile() {
 
 // Init logrus
 func Init() {
-
+	config.Load()
 	switch config.Conf.Environment.Run {
 	case "development":
 		InitLogToStdout(logrus.InfoLevel)

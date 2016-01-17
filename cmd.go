@@ -9,16 +9,18 @@ import (
 	"github.com/codegangsta/cli"
 
 	"github.com/maliceio/malice/commands"
-	"github.com/maliceio/malice/config"
 	er "github.com/maliceio/malice/libmalice/errors"
 	"github.com/maliceio/malice/libmalice/logger"
 	"github.com/maliceio/malice/plugins"
 	"github.com/maliceio/malice/version"
 )
 
-// func init() {
-// 	logger.Init()
-// }
+func init() {
+	// config.Load()
+	logger.Init()
+	setDebugOutputLevel()
+	plugins.Load()
+}
 
 func setDebugOutputLevel() {
 	for _, f := range os.Args {
@@ -42,14 +44,12 @@ func setDebugOutputLevel() {
 
 // Init initializes Malice
 func Init() {
-	config.Load()
-	logger.Init()
-	setDebugOutputLevel()
-	plugins.Load()
+
 }
 
 func main() {
 	Init()
+	// setDebugOutputLevel()
 	cli.AppHelpTemplate = commands.AppHelpTemplate
 	cli.CommandHelpTemplate = commands.CommandHelpTemplate
 	app := cli.NewApp()

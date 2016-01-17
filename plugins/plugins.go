@@ -42,12 +42,12 @@ var Plug PluginConfiguration
 // Load plugins.toml into Plug var
 func Load() {
 	// Get the plugin file
-	pluginPath := "./plugins.toml"
+	pluginPath := "./data/plugins.toml"
 	if _, err := os.Stat(pluginPath); os.IsNotExist(err) {
 		// er.CheckErrorNoStackWithMessage(err, "NOT FOUND")
 		pluginPath = path.Join(maldirs.GetBaseDir(), pluginPath)
 		if _, err := os.Stat(pluginPath); os.IsNotExist(err) {
-			pluginData, err := data.Asset("plugins.toml")
+			pluginData, err := data.Asset("data/plugins.toml")
 			er.CheckError(err)
 			er.CheckError(ioutil.WriteFile(pluginPath, pluginData, 0644))
 		}

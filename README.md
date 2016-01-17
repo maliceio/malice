@@ -52,6 +52,15 @@ Commands:
 Run 'malice COMMAND --help' for more information on a command.
 ```
 
+### Plugins (and growing)
+| Name     | Description                          | Enabled | Image           | Category | Mime            |
+| -------- | ------------------------------------ | ------- | --------------- | -------- | --------------- |
+| nsrl     | NSRL Database Hash Search            | false   | blacktop/nsrl   | binary   | *               |
+| fileinfo | ssdeep/TRiD/exiftool                 | true    | malice/fileinfo | metadata | *               |
+| clamav   | ClamAV                               | true    | malice/clamav   | av       | *               |
+| fprot    | F-PROT AntiVirus                     | true    | malice/fprot    | av       | *               |
+| pdfid    | PDFiD - tool to triage PDF documents | false   | blacktop/pdfid  | document | application/pdf |
+
 ### Example Output
 #### File
 | Field  | Value                                                            |

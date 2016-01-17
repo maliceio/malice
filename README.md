@@ -52,66 +52,12 @@ Commands:
 Run 'malice COMMAND --help' for more information on a command.
 ```
 
-### Plugins (and growing)
-| Name     | Description                          | Enabled | Image           | Category | Mime            |
-| -------- | ------------------------------------ | ------- | --------------- | -------- | --------------- |
-| nsrl     | NSRL Database Hash Search            | false   | blacktop/nsrl   | binary   | *               |
-| fileinfo | ssdeep/TRiD/exiftool                 | true    | malice/fileinfo | metadata | *               |
-| clamav   | ClamAV                               | true    | malice/clamav   | av       | *               |
-| fprot    | F-PROT AntiVirus                     | true    | malice/fprot    | av       | *               |
-| pdfid    | PDFiD - tool to triage PDF documents | false   | blacktop/pdfid  | document | application/pdf |
-
-### Example Output
-#### File
-| Field  | Value                                                            |
-| ------ | ---------------------------------------------------------------- |
-| Name   | blaze-inferno.jpg                                                |
-| Path   | /Users/user/Downloads/blaze-inferno.jpg                          |
-| Size   | 426.2 kB                                                         |
-| MD5    | 6f7864266c0b64a5d1c287a6e643bd9c                                 |
-| SHA1   | e91e6b62bc573d8082a1ff14a2f2c08de0d2dab9                         |
-| SHA256 | 1d3fd5b9208d1b9d3e1a5eb6f59155c680224e433561c2f07026c15b00ed7c2e |
-| Mime   | image/jpeg                                                       |
-#### SSDeep
-12288:grD2gFS5bvBRjQ68MufQjHRpUY6FHzglE3r:gX2AS5DBRsKBIcy
-
-#### TRiD
- -  55.5% (.JPG) JFIF-EXIF JPEG Bitmap (5000/1/1)
- -  33.3% (.JPG) JPEG bitmap (3000/1)
- -  11.1% (.MP3) MP3 audio (1000/1)
-
-#### Exiftool
-| Field                   | Value                                   |
-| ----------------------- | --------------------------------------- |
-| Creator Tool            | Adobe Photoshop CS6 (Macintosh)         |
-| Encoding Process        | Baseline DCT, Huffman coding            |
-| MIME Type               | image/jpeg                              |
-| Bits Per Sample         | 8                                       |
-| Color Components        | 3                                       |
-| APP14 Flags 0           | [14], Encoded with Blend=1 downsampling |
-| File Type Extension     | jpg                                     |
-| DCT Encode Version      | 100                                     |
-| Image Width             | 800                                     |
-| Image Size              | 800x800                                 |
-| Exif Byte Order         | Little-endian (Intel, II)               |
-| Quality                 | 60%                                     |
-| Color Transform         | YCbCr                                   |
-| ExifTool Version Number | 10.09                                   |
-| Megapixels              | 0.640                                   |
-| File Size               | 416 kB                                  |
-| File Type               | JPEG                                    |
-| APP14 Flags 1           | (none)                                  |
-| Image Height            | 800                                     |
-#### ClamAV
-| Infected | Result | Engine | Known   | Updated  |
-| -------- | ------ | ------ | ------- | -------- |
-| false    |        | 0.99   | 4218998 | 20160115 |
-#### F-PROT
-| Infected | Result | Engine    | Updated      |
-| -------- | ------ | --------- | ------------ |
-| false    |        | 4.6.5.141 | 201601140816 |
----
 ### Documentation
+#### Plugins
+ - [Plugins List (and growing)](https://github.com/maliceio/malice/wiki/Plugins)
+
+#### Examples
+ - [Examples](https://github.com/maliceio/malice/wiki/Examples)
 
 ### Issues
 

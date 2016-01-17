@@ -86,7 +86,7 @@ func Load() {
 	configPath := "./data/config.toml"
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
 		// er.CheckErrorNoStackWithMessage(err, "NOT FOUND")
-		configPath = path.Join(maldirs.GetBaseDir(), configPath)
+		configPath = path.Join(maldirs.GetBaseDir(), "./config.toml")
 		if _, err := os.Stat(configPath); os.IsNotExist(err) {
 			configData, err := data.Asset("data/config.toml")
 			er.CheckError(err)

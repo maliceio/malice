@@ -45,7 +45,7 @@ func Load() {
 	pluginPath := "./data/plugins.toml"
 	if _, err := os.Stat(pluginPath); os.IsNotExist(err) {
 		// er.CheckErrorNoStackWithMessage(err, "NOT FOUND")
-		pluginPath = path.Join(maldirs.GetBaseDir(), pluginPath)
+		pluginPath = path.Join(maldirs.GetBaseDir(), "./plugins.toml")
 		if _, err := os.Stat(pluginPath); os.IsNotExist(err) {
 			pluginData, err := data.Asset("data/plugins.toml")
 			er.CheckError(err)

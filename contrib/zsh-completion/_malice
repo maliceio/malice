@@ -1,6 +1,9 @@
 #compdef malice
 
+integer ret=1
 typeset -A opt_args
+
+local opts_help='(: -)--help[Print usage]'
 
 local -a _1st_arguments
 _1st_arguments=(
@@ -12,9 +15,9 @@ _1st_arguments=(
 )
 
 _arguments \
-  '(--debug)--debug[Enable debug mode \[$MALICE_DEBUG\]]' \
-  '(--help)--help[Print help message]' \
-  '(--version)--version[Print version]' \
+  '(- :)'{-D,--debug}'[Enable debug mode \[$MALICE_DEBUG\]]' \
+  '(- :)'{-h,--help}'[show help]' \
+  '(- :)'{-v,--version}'[print the version]' \
   '*:: :->subcmds' && return 0
 
 if (( CURRENT == 1 )); then
@@ -58,12 +61,24 @@ __get_plugins() {
 }
 
 case "$words[1]" in
-  scan)
-    __scan ;;
-  elk)
-    __elk ;;
-  web)
-    __web ;;
+  (scan)
+    _arguments \
+        $opts_help
+    __scan && ret=0
+    ;;
+  (elk)
+    _arguments \
+        $opts_help
+    __elk && ret=0
+    ;;
+  (web)
+    _arguments \
+        $opts_help
+    __web && ret=0
+    ;;
   plugin)
-    __plugin ;;
+    _arguments \
+        $opts_help
+    __plugin && ret=0
+    ;;
 esac

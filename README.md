@@ -13,6 +13,15 @@ Malice will have binary releases for all platforms.
 
 **If you are building from source, please note that Malice requires Go v1.5 or above!**
 
+```bash
+$ go get -u github.com/maliceio/malice
+```
+If you have have [zsh](http://www.zsh.org/) and installed it via [homebrew](http://brew.sh) you can do this as well:
+```bash
+$ cd $GOPATH/src/github.com/maliceio/malice/contrib/zsh-completion
+$ bash install.sh
+```
+
 ### Setup
 To Run on OSX
  - Install [Homebrew](http://brew.sh)

@@ -1,0 +1,105 @@
+#compdef malice
+# ------------------------------------------------------------------------------
+# Description
+# -----------
+#
+#  Completion script for Malice (https://github.com/maliceio/malice).
+#
+# ------------------------------------------------------------------------------
+# Authors
+# -------
+#
+#  * blacktop (https://github.com/blacktop)
+#
+# ------------------------------------------------------------------------------
+
+# helper function for completing available plugins
+__plugins() {
+
+  declare -a plugins_cmd
+  # plugins_cmd=($(malice plugin list --all|tail +2|awk '{print $1":"$3"("$4")"}'))
+  plugins_cmd=($(malice plugin list --all))
+  _describe 'plugins' plugins_cmd
+}
+
+# subcommands
+local -a _malice_cmds
+local -a _scan_cmds
+local -a _plugin_cmds
+
+_malice_cmds=(
+   'scan:Scan a file' \
+   'elk:Start an ELK docker container' \
+   'web:Start, Stop Web services' \
+   'plugin:List, Install or Remove Plugins' \
+   'help:Shows a list of commands or help for one command'
+)
+
+_scan_cmds=(
+   'start:start web application' \
+   'stop:stop web application'
+)
+
+_plugin_cmds=(
+   'list:list enabled installed plugins' \
+   'install:install plugin' \
+   'remove:remove plugin'
+)
+
+# subcommand completion functions
+__scan() {
+  _arguments \
+    '--logs[Display the Logs of the Plugin containers]'
+}
+
+__help() {
+  _values 'Get help for subcommand' \
+    'scan' \
+    'elk' \
+    'web' \
+    'plugin' \
+}
+
+__elk() {
+  _arguments \
+    '--logs[Display the Logs from the ELK Container]'
+}
+
+__web() {
+  __machines
+  _arguments \
+    '--swarm[Display the Swarm config instead of the Docker daemon]' \
+    '--shell[environment to be configured for specified shell]' \
+    {--unset,-u}'[Unset variables instead of setting them]' \
+    '--no-proxy[Add machine IP to NO_PROXY environment variable]'
+}
+
+__plugin() {
+  __plugins
+  _arguments \
+    {--detail,-d}'[display plugin details]' \
+    '--all[display all installed plugins]'
+}
+
+# common args
+_arguments \
+  {--debug,-D}'[Enable debug mode [$MALICE_DEBUG]]' \
+  {--help,-h}'[show help]' \
+  {--version,-v}'[print the version]' \
+  '*:: :->command'
+
+if (( CURRENT == 1 )); then
+  _describe -t commands 'malice command' _malice_cmds
+fi
+
+local -a _command_args
+case "$words[1]" in
+  scan)
+    __scan ;;
+  elk)
+    __elk ;;
+  web)
+    __web ;;
+  plugin)
+    __plugin ;;
+esac

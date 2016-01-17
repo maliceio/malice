@@ -1,13 +1,13 @@
 var gulp = require('gulp');
 var path = require('path');
 var shell = require('gulp-shell');
-var notifier   = require('node-notifier');
-var child      = require('child_process');
-var reload     = require('gulp-livereload');
-var sync       = require('gulp-sync')(gulp).sync;
-var util       = require('gulp-util');
+var notifier = require('node-notifier');
+var child = require('child_process');
+var reload = require('gulp-livereload');
+var sync = require('gulp-sync')(gulp).sync;
+var util = require('gulp-util');
 
-var goPath = '/Users/user/src/go/src/github.com/maliceio/malice/**/*.go';
+var goPath = process.env.GOPATH + "/src/github.com/maliceio/malice/**/*.go";
 
 gulp.task('server:build', function() {
   var build = child.spawnSync('go', ['install']);
@@ -37,27 +37,19 @@ gulp.task('server:watch', function() {
   ], ['server:spawn']);
 
   /* Rebuild and restart application server */
-  gulp.watch([
-    '*/**/*.go',
-  ], sync([
-    'server:build',
-  ], 'server'));
+  gulp.watch(['*/**/*.go', goPath],
+    sync(['server:build', ], 'server'));
 });
 
-gulp.task('build', [
-  'server:build'
-]);
+gulp.task('build', ['server:build']);
 
 /*
  * Start asset and server watchdogs and initialize livereload.
  */
-gulp.task('watch', [
-  'server:build'
-], function() {
+gulp.task('watch', ['server:build'], function() {
   reload.listen();
-  return gulp.start([
-    'server:watch',
-  ]);
+  console.log(goPath);
+  return gulp.start(['server:watch', ]);
 });
 
 gulp.task('default', ['build']);

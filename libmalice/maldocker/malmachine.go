@@ -16,7 +16,7 @@ import (
 func MakeDockerMachine(host string) {
 	// log.SetDebug(true)
 
-	client := libmachine.NewClient(mcndirs.GetBaseDir())
+	client := libmachine.NewClient(mcndirs.GetBaseDir(), mcndirs.GetMachineCertDir())
 
 	hostName := host
 
@@ -28,10 +28,11 @@ func MakeDockerMachine(host string) {
 	data, err := json.Marshal(driver)
 	er.CheckError(err)
 
-	pluginDriver, err := client.NewPluginDriver("virtualbox", data)
-	er.CheckError(err)
+	// pluginDriver, err := client.NewPluginDriver("virtualbox", data)
+	// er.CheckError(err)
 
-	h, err := client.NewHost(pluginDriver)
+	h, err := client.NewHost("virtualbox", data)
+	// h, err := client.NewHost(pluginDriver)
 	er.CheckError(err)
 
 	h.HostOptions.EngineOptions.StorageDriver = "overlay"
@@ -56,7 +57,7 @@ func MakeDockerMachine(host string) {
 // MachineURL returns the IP of the docker-machine
 func MachineURL(name string) (url string, err error) {
 
-	api := libmachine.NewClient(mcndirs.GetBaseDir())
+	api := libmachine.NewClient(mcndirs.GetBaseDir(), mcndirs.GetMachineCertDir())
 
 	host, err := api.Load(name)
 	er.CheckError(err)
@@ -69,7 +70,7 @@ func MachineURL(name string) (url string, err error) {
 // MachineIP returns the IP of the docker-machine
 func MachineIP(name string) (ip string, err error) {
 
-	api := libmachine.NewClient(mcndirs.GetBaseDir())
+	api := libmachine.NewClient(mcndirs.GetBaseDir(), mcndirs.GetMachineCertDir())
 
 	host, err := api.Load(name)
 	er.CheckError(err)
@@ -82,7 +83,7 @@ func MachineIP(name string) (ip string, err error) {
 // MachineStop stops the docker-machine
 func MachineStop(name string) error {
 
-	api := libmachine.NewClient(mcndirs.GetBaseDir())
+	api := libmachine.NewClient(mcndirs.GetBaseDir(), mcndirs.GetMachineCertDir())
 
 	host, err := api.Load(name)
 	er.CheckError(err)

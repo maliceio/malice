@@ -31,7 +31,7 @@ $ brew install caskroom/cask/brew-cask
 $ brew cask install virtualbox
 $ brew install docker
 $ brew install docker-machine
-$ docker-machine create --driver virtualbox malice
+$ docker-machine create --driver virtualbox --engine-storage-driver overlay malice
 $ eval $(docker-machine env malice)
 ```
 

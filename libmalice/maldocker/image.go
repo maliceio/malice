@@ -1,8 +1,10 @@
 package maldocker
 
 import (
+	"io"
 	"os"
 
+	"github.com/docker/docker/pkg/jsonmessage"
 	"github.com/maliceio/malice/config"
 
 	"regexp"
@@ -14,11 +16,12 @@ import (
 // PullImage pulls docker image:tag
 func PullImage(name string, tag string) (err error) {
 
+	var out io.Writer
 	opts := docker.PullImageOptions{
 		Repository: name,
 		// Registry      string
 		Tag:          tag,
-		OutputStream: os.Stdout,
+		OutputStream: out,
 		// RawJSONStream: true,
 	}
 
@@ -28,7 +31,7 @@ func PullImage(name string, tag string) (err error) {
 	// Email         string `json:"email,omitempty"`
 	// ServerAddress string `json:"serveraddress,omitempty"`
 	}
-
+	jsonmessage.DisplayJSONMessagesStream(out, os.Stdout, cli.outFd, true, nil)
 	err = client.PullImage(opts, auth)
 
 	return

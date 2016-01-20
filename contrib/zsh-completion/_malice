@@ -58,8 +58,10 @@ __plugin() {
         __search_plugins && ret=0
       ;;
       (update)
-        _arguments \
-          '--all[update all installed plugins]'
+        local update_options; update_options=(
+        '--all:update all installed plugins'
+        )
+        _describe -t update_options 'update options' update_options
         __get_plugins && ret=0
       ;;
       (remove)

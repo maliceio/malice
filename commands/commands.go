@@ -92,6 +92,17 @@ var Commands = []cli.Command{
 				Usage:  "remove plugin",
 				Action: func(c *cli.Context) { cmdRemovePlugin() },
 			},
+			{
+				Name:  "update",
+				Usage: "update plugin",
+				Flags: []cli.Flag{
+					cli.BoolFlag{
+						Name:  "all",
+						Usage: "update all installed plugins",
+					},
+				},
+				Action: func(c *cli.Context) { cmdUpdatePlugin(c.Args().First(), c.Bool("all")) },
+			},
 		},
 		BashComplete: func(c *cli.Context) {
 			// This will complete if no args are passed

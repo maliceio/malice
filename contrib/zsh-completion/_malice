@@ -58,6 +58,8 @@ __plugin() {
         __search_plugins && ret=0
       ;;
       (update)
+        _arguments \
+          '--all[update all installed plugins]'
         __get_plugins && ret=0
       ;;
       (remove)

@@ -1,10 +1,12 @@
 package maldocker
 
 import (
-	"io"
+	"fmt"
 	"os"
 
 	"github.com/docker/docker/pkg/jsonmessage"
+	dockerAPI "github.com/docker/engine-api/client"
+	"github.com/docker/engine-api/types"
 	"github.com/maliceio/malice/config"
 
 	"regexp"
@@ -14,27 +16,38 @@ import (
 )
 
 // PullImage pulls docker image:tag
-func PullImage(name string, tag string) (err error) {
+func PullImage(imageName string, imageTag string) (err error) {
 
-	var out io.Writer
-	opts := docker.PullImageOptions{
-		Repository: name,
-		// Registry      string
-		Tag:          tag,
-		OutputStream: out,
-		// RawJSONStream: true,
+	cli, err := dockerAPI.NewEnvClient()
+	if err != nil {
+		panic(err)
 	}
 
-	auth := docker.AuthConfiguration{
-	// Username      string `json:"username,omitempty"`
-	// Password      string `json:"password,omitempty"`
-	// Email         string `json:"email,omitempty"`
-	// ServerAddress string `json:"serveraddress,omitempty"`
+	options := types.ContainerListOptions{All: true}
+	containers, err := cli.ContainerList(options)
+	if err != nil {
+		panic(err)
 	}
-	jsonmessage.DisplayJSONMessagesStream(out, os.Stdout, cli.outFd, true, nil)
-	err = client.PullImage(opts, auth)
 
-	return
+	for _, c := range containers {
+		fmt.Println(c.ID)
+	}
+
+	pullOptions := types.ImagePullOptions{
+		ImageID: imageName,
+		Tag:     imageTag,
+		// RegistryAuth: encodedAuth,
+	}
+
+	responseBody, err := cli.ImagePull(pullOptions, nil)
+	if err != nil {
+		panic(err)
+	}
+	defer responseBody.Close()
+
+	jsonmessage.DisplayJSONMessagesStream(responseBody, os.Stdout, os.Stdout.Fd(), true, nil)
+
+	return err
 }
 
 // ImageExists returns APIImages images list and true

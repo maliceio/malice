@@ -4,26 +4,8 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/plugins"
 )
-
-func init() {
-	if config.Conf.Environment.Run == "production" {
-		// Log as JSON instead of the default ASCII formatter.
-		log.SetFormatter(&log.JSONFormatter{})
-		// Only log the warning severity or above.
-		log.SetLevel(log.InfoLevel)
-		// log.SetFormatter(&logstash.LogstashFormatter{Type: "malice"})
-	} else {
-		// Log as ASCII formatter.
-		log.SetFormatter(&log.TextFormatter{})
-		// Only log the warning severity or above.
-		log.SetLevel(log.DebugLevel)
-	}
-	// Output to stderr instead of stdout, could also be a file.
-	log.SetOutput(os.Stdout)
-}
 
 func cmdListPlugins(all bool, detail bool) {
 	if all {
@@ -36,6 +18,7 @@ func cmdListPlugins(all bool, detail bool) {
 }
 
 func cmdInstallPlugin(name string) {
+
 	testPlugin := plugins.Plugin{
 		Name:        name,
 		Enabled:     true,
@@ -49,4 +32,17 @@ func cmdInstallPlugin(name string) {
 
 func cmdRemovePlugin() {
 
+}
+
+func cmdUpdatePlugin(name string, all bool) {
+
+	if all {
+		plugins.UpdateAllPlugins()
+	} else {
+		if name == "" {
+			log.Error("Please enter a valid plugin name.")
+			os.Exit(1)
+		}
+		plugins.GetPluginByName(name).UpdatePlugin()
+	}
 }

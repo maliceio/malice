@@ -58,7 +58,7 @@ func Load() {
 }
 
 // StartPlugin starts plugin
-func (plugin Plugin) StartPlugin(client maldocker.Docker, sample string, logs bool) (types.ContainerJSONBase, error) {
+func (plugin Plugin) StartPlugin(client *maldocker.Docker, sample string, logs bool) (types.ContainerJSONBase, error) {
 	contJSON, err := client.StartContainer(sample, plugin.Name, plugin.Image, logs)
 	er.CheckError(err)
 
@@ -82,7 +82,7 @@ func PostResults(url string, resultJSON []byte, taskID string) {
 }
 
 // UpdateAllPlugins performs a docker pull on all registered plugins checking for updates
-func UpdateAllPlugins(client maldocker.Docker) {
+func UpdateAllPlugins(client *maldocker.Docker) {
 	plugins := Plug.Plugins
 	for _, plugin := range plugins {
 		client.PullImage(plugin.Image, "latest")
@@ -90,7 +90,7 @@ func UpdateAllPlugins(client maldocker.Docker) {
 }
 
 // UpdatePlugin performs a docker pull on all registered plugins checking for updates
-func (plugin Plugin) UpdatePlugin(client maldocker.Docker) {
+func (plugin Plugin) UpdatePlugin(client *maldocker.Docker) {
 	client.PullImage(plugin.Image, "latest")
 }
 

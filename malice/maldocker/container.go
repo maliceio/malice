@@ -109,12 +109,11 @@ func (client *Docker) StartContainer(sample string, name string, image string, l
 // If volumes is true, the associated volumes are removed with container.
 // If links is true, the associated links are removed with container.
 // If force is true, the container will be destroyed with extreme prejudice.
-func (client *Docker) RemoveContainer(cont types.Container, volumes bool, links bool, force bool) {
+func (client *Docker) RemoveContainer(cont types.ContainerJSONBase, volumes bool, links bool, force bool) error {
 	// check if container exists
-	// TODO: check if Names[0] returns what I think it does.
-	if plugin, exists, err := client.ContainerExists(cont.Names[0]); exists {
+	if plugin, exists, err := client.ContainerExists(cont.Name); exists {
 		er.CheckError(err)
-		log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Debug("Removing Plugin container: ", cont.Names[0])
+		log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Debug("Removing Plugin container: ", cont.Name)
 		err := client.Client.ContainerRemove(types.ContainerRemoveOptions{
 			ContainerID:   plugin.ID,
 			RemoveVolumes: volumes,
@@ -122,10 +121,11 @@ func (client *Docker) RemoveContainer(cont types.Container, volumes bool, links 
 			Force:         force,
 		})
 		er.CheckError(err)
-	} else {
-		// container not found
-		log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Error("Plugin container does not exist. Cannot remove.")
+		return err
 	}
+	// container not found
+	log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Error("Plugin container does not exist. Cannot remove.")
+	return nil
 }
 
 // ContainerInspect returns types.ContainerJSON from Container ID

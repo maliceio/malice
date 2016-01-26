@@ -41,7 +41,7 @@ func cmdScan(path string, logs bool) {
 		}).Debug("Plugin Container Started")
 		// Clean up the Plugin Container
 		// TODO: I want to reuse these containers for speed eventually.
-		err = docker.ContainerRemove(cont, false, false)
+		err = docker.RemoveContainer(cont, false, false, false)
 		er.CheckError(err)
 	}
 	log.Debug("Done with plugins.")

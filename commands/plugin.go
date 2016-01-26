@@ -4,6 +4,7 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/maliceio/malice/malice/maldocker"
 	"github.com/maliceio/malice/plugins"
 )
 
@@ -35,14 +36,14 @@ func cmdRemovePlugin() {
 }
 
 func cmdUpdatePlugin(name string, all bool) {
-
+	docker := maldocker.NewDockerClient()
 	if all {
-		plugins.UpdateAllPlugins()
+		plugins.UpdateAllPlugins(docker)
 	} else {
 		if name == "" {
 			log.Error("Please enter a valid plugin name.")
 			os.Exit(1)
 		}
-		plugins.GetPluginByName(name).UpdatePlugin()
+		plugins.GetPluginByName(name).UpdatePlugin(docker)
 	}
 }

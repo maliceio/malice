@@ -4,7 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/maliceio/malice/libmalice/malutils"
+	"github.com/maliceio/malice/malice/malutils"
 )
 
 // NOTE: export MALICE_STORAGE_PATH=$(pwd)

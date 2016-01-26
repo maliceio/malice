@@ -12,12 +12,12 @@ import (
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
 	"github.com/crackcomm/go-clitable"
-	"github.com/fsouza/go-dockerclient"
+	"github.com/docker/engine-api/types"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/data"
-	er "github.com/maliceio/malice/libmalice/errors"
-	"github.com/maliceio/malice/libmalice/maldirs"
-	"github.com/maliceio/malice/libmalice/maldocker"
+	er "github.com/maliceio/malice/malice/errors"
+	"github.com/maliceio/malice/malice/maldirs"
+	"github.com/maliceio/malice/malice/maldocker"
 	"github.com/parnurzeal/gorequest"
 )
 
@@ -58,12 +58,11 @@ func Load() {
 }
 
 // StartPlugin starts plugin
-func (plugin Plugin) StartPlugin(sample string, logs bool) (cont *docker.Container, err error) {
-	cont, err = maldocker.StartContainer(sample, plugin.Name, plugin.Image, logs)
+func (plugin Plugin) StartPlugin(client maldocker.Docker, sample string, logs bool) (types.ContainerJSONBase, error) {
+	contJSON, err := client.StartContainer(sample, plugin.Name, plugin.Image, logs)
 	er.CheckError(err)
 
-	// fmt.Println(cont.Name)
-	return
+	return contJSON, err
 }
 
 func printStatus(resp gorequest.Response, body string, errs []error) {
@@ -83,17 +82,16 @@ func PostResults(url string, resultJSON []byte, taskID string) {
 }
 
 // UpdateAllPlugins performs a docker pull on all registered plugins checking for updates
-func UpdateAllPlugins() {
+func UpdateAllPlugins(client maldocker.Docker) {
 	plugins := Plug.Plugins
 	for _, plugin := range plugins {
-		maldocker.PullImage(plugin.Image, "latest")
+		client.PullImage(plugin.Image, "latest")
 	}
 }
 
 // UpdatePlugin performs a docker pull on all registered plugins checking for updates
-func (plugin Plugin) UpdatePlugin() {
-	err := maldocker.PullImage(plugin.Image, "latest")
-	er.CheckError(err)
+func (plugin Plugin) UpdatePlugin(client maldocker.Docker) {
+	client.PullImage(plugin.Image, "latest")
 }
 
 //InstallPlugin installs a new malice plugin

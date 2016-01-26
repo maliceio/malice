@@ -9,7 +9,7 @@ import (
 
 	"github.com/dustin/go-jsonpointer"
 	"github.com/jordan-wright/email"
-	er "github.com/maliceio/malice/libmalice/errors"
+	er "github.com/maliceio/malice/malice/errors"
 )
 
 // ParseJSON returns a JSON value for a given key

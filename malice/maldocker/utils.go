@@ -9,27 +9,25 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/go-units"
-	"github.com/fsouza/go-dockerclient"
+	er "github.com/maliceio/malice/malice/errors"
 )
 
-// PingDockerClient pings docker client to see if it is up or not.
-func PingDockerClient(client *docker.Client) error {
-	err := client.Ping()
+// Ping pings docker client to see if it is up or not by checking Info.
+func (client *Docker) Ping() bool {
+	_, err := client.Client.Info()
 	if err != nil {
-		log.Fatal(err)
+		er.CheckError(err)
+		return false
 	}
-	return nil
+	return true
 }
 
 //Info prints out list of docker images and containers
-func Info(client *docker.Client) (err error) {
+func (client *Docker) Info() (err error) {
 	var created string
 	var size string
-	// var err = nil
 
-	// client, _ := docker.NewTLSClient(endpoint, cert, key, ca)
-
-	imgs, _ := client.ListImages(docker.ListImagesOptions{All: false})
+	imgs, _ := client.listImages(false)
 	fmt.Println("Listing All Images=================================")
 	for _, img := range imgs {
 		// fmt.Println("ID: ", img.ID)
@@ -41,7 +39,7 @@ func Info(client *docker.Client) (err error) {
 		// fmt.Println("VirtualSize: ", img.VirtualSize)
 		// fmt.Println("ParentId: ", img.ParentID)
 	}
-	containers, _ := client.ListContainers(docker.ListContainersOptions{All: true})
+	containers, _ := client.listContainers(true)
 	fmt.Println("Listing All Containers==========================================")
 	for _, container := range containers {
 		// fmt.Println("ID: ", container.ID)

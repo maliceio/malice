@@ -25,7 +25,6 @@ _testmain.go
 
 install/certs/
 *.pem
-malice
 
 node_modules/
 

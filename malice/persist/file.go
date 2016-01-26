@@ -14,9 +14,9 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/crackcomm/go-clitable"
 	"github.com/docker/go-units"
-	er "github.com/maliceio/malice/libmalice/errors"
-	"github.com/maliceio/malice/libmalice/maldirs"
-	"github.com/maliceio/malice/libmalice/malutils"
+	er "github.com/maliceio/malice/malice/errors"
+	"github.com/maliceio/malice/malice/maldirs"
+	"github.com/maliceio/malice/malice/malutils"
 	"github.com/rakyll/magicmime"
 	// "github.com/dutchcoders/gossdeep"
 )

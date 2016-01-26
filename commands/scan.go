@@ -1,34 +1,17 @@
 package commands
 
 import (
-	"os"
-
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/config"
-	er "github.com/maliceio/malice/libmalice/errors"
-	"github.com/maliceio/malice/libmalice/maldocker"
-	"github.com/maliceio/malice/libmalice/persist"
+	er "github.com/maliceio/malice/malice/errors"
+	"github.com/maliceio/malice/malice/maldocker"
+	"github.com/maliceio/malice/malice/persist"
 	"github.com/maliceio/malice/plugins"
 )
 
-func init() {
-	if config.Conf.Environment.Run == "production" {
-		// Log as JSON instead of the default ASCII formatter.
-		log.SetFormatter(&log.JSONFormatter{})
-		// Only log the warning severity or above.
-		log.SetLevel(log.InfoLevel)
-		// log.SetFormatter(&logstash.LogstashFormatter{Type: "malice"})
-	} else {
-		// Log as ASCII formatter.
-		log.SetFormatter(&log.TextFormatter{})
-		// Only log the warning severity or above.
-		log.SetLevel(log.DebugLevel)
-	}
-	// Output to stderr instead of stdout, could also be a file.
-	log.SetOutput(os.Stdout)
-}
-
 func cmdScan(path string, logs bool) {
+
+	docker := maldocker.NewDockerClient()
 
 	file := persist.File{
 		Path: path,
@@ -46,19 +29,19 @@ func cmdScan(path string, logs bool) {
 	log.Debug("Found these plugins: ", plugins)
 	for _, plugin := range plugins {
 		log.Debugf("[%s]\n", plugin.Name)
-		cont, err := plugin.StartPlugin(file.SHA256, logs)
+		cont, err := plugin.StartPlugin(docker, file.SHA256, logs)
 		er.CheckError(err)
 
 		log.WithFields(log.Fields{
 			"id": cont.ID,
-			"ip": maldocker.GetIP(),
+			"ip": docker.GetIP(),
 			// "url":      "http://" + maldocker.GetIP(),
 			"name": cont.Name,
 			"env":  config.Conf.Environment.Run,
 		}).Debug("Plugin Container Started")
 		// Clean up the Plugin Container
 		// TODO: I want to reuse these containers for speed eventually.
-		err = maldocker.ContainerRemove(cont, false, false)
+		err = docker.ContainerRemove(cont, false, false)
 		er.CheckError(err)
 	}
 	log.Debug("Done with plugins.")

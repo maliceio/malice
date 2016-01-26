@@ -9,8 +9,8 @@ import (
 	"github.com/codegangsta/cli"
 
 	"github.com/maliceio/malice/commands"
-	er "github.com/maliceio/malice/libmalice/errors"
-	"github.com/maliceio/malice/libmalice/logger"
+	er "github.com/maliceio/malice/malice/errors"
+	"github.com/maliceio/malice/malice/logger"
 	"github.com/maliceio/malice/plugins"
 	"github.com/maliceio/malice/version"
 )

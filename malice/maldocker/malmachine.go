@@ -9,7 +9,7 @@ import (
 	"github.com/docker/machine/commands/mcndirs"
 	"github.com/docker/machine/drivers/virtualbox"
 	"github.com/docker/machine/libmachine"
-	er "github.com/maliceio/malice/libmalice/errors"
+	er "github.com/maliceio/malice/malice/errors"
 )
 
 // MakeDockerMachine creates a new docker host via docker-machine

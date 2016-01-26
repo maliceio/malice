@@ -9,8 +9,8 @@ import (
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/data"
-	er "github.com/maliceio/malice/libmalice/errors"
-	"github.com/maliceio/malice/libmalice/maldirs"
+	er "github.com/maliceio/malice/malice/errors"
+	"github.com/maliceio/malice/malice/maldirs"
 )
 
 // "github.com/pelletier/go-toml"

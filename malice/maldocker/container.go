@@ -4,10 +4,12 @@ import (
 	"errors"
 	"os"
 
+	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/docker/engine-api/types"
 	"github.com/docker/engine-api/types/container"
 	"github.com/docker/engine-api/types/network"
 	"github.com/docker/engine-api/types/strslice"
+	"github.com/docker/go-connections/nat"
 	"github.com/maliceio/malice/config"
 	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/maldirs"
@@ -95,9 +97,10 @@ func (client *Docker) StartContainer(sample string, name string, image string, l
 			log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("StartContainer error = %s\n", err)
 		}
 
-		// if logs {
-		// 	LogContainer(contResponse.ID)
-		// }
+		if logs {
+			client.LogContainer(contResponse.ID)
+		}
+
 		contJSON, err := client.ContainerInspect(contResponse.ID)
 		er.CheckError(err)
 		return contJSON, err
@@ -126,6 +129,26 @@ func (client *Docker) RemoveContainer(cont types.ContainerJSONBase, volumes bool
 	// container not found
 	log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Error("Plugin container does not exist. Cannot remove.")
 	return nil
+}
+
+// LogContainer tails container logs to terminal
+func (client *Docker) LogContainer(contID string) {
+
+	options := types.ContainerLogsOptions{
+		ContainerID: contID,
+		ShowStdout:  true,
+		ShowStderr:  true,
+		// Since       string
+		// Timestamps  bool
+		Follow: true,
+		// Tail        string
+	}
+
+	logs, err := client.Client.ContainerLogs(options)
+	defer logs.Close()
+	er.CheckError(err)
+
+	_, err = stdcopy.StdCopy(os.Stdout, os.Stderr, logs)
 }
 
 // ContainerInspect returns types.ContainerJSON from Container ID
@@ -179,4 +202,65 @@ func (client *Docker) listContainers(all bool) ([]types.Container, error) {
 		return nil, err
 	}
 	return containers, nil
+}
+
+// StartELK creates an ELK container from the image blacktop/elk
+func (client *Docker) StartELK(logs bool) (types.ContainerJSONBase, error) {
+	name := "elk"
+	image := "blacktop/elk"
+
+	if client.Ping() {
+		if _, exists, _ := client.ContainerExists(name); exists {
+			log.WithFields(log.Fields{
+				"exisits": exists,
+				"name":    name,
+				"env":     config.Conf.Environment.Run,
+				"url":     "http://" + client.ip,
+			}).Info("Container is already running...")
+			os.Exit(0)
+		}
+		if _, exists, _ := client.ImageExists(image); exists {
+			log.WithFields(log.Fields{
+				"exisits": exists,
+				"env":     config.Conf.Environment.Run,
+			}).Debugf("Image `%s` already pulled.", image)
+		} else {
+			log.WithFields(log.Fields{
+				"exisits": exists,
+				"env":     config.Conf.Environment.Run}).Debugf("Pulling Image `%s`", image)
+			client.PullImage(image, "latest")
+		}
+
+		createContConf := &container.Config{
+			Image: image,
+		}
+		portBindings := nat.PortMap{
+			"80/tcp":   {{HostIP: "0.0.0.0", HostPort: "80"}},
+			"9200/tcp": {{HostIP: "0.0.0.0", HostPort: "9200"}},
+		}
+		hostConfig := &container.HostConfig{
+			PortBindings: portBindings,
+			Privileged:   false,
+		}
+		networkingConfig := &network.NetworkingConfig{}
+
+		contResponse, err := client.Client.ContainerCreate(createContConf, hostConfig, networkingConfig, name)
+		if err != nil {
+			log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("CreateContainer error = %s\n", err)
+		}
+
+		err = client.Client.ContainerStart(contResponse.ID)
+		if err != nil {
+			log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("StartContainer error = %s\n", err)
+		}
+
+		if logs {
+			client.LogContainer(contResponse.ID)
+		}
+
+		contJSON, err := client.ContainerInspect(contResponse.ID)
+		er.CheckError(err)
+		return contJSON, err
+	}
+	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")
 }

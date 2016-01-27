@@ -12,7 +12,7 @@ func cmdELK(logs bool) {
 	docker := maldocker.NewDockerClient()
 
 	// contJSON, err := &docker StartELK(logs)
-	contJSON, err := docker.StartContainer("", "elk", "blacktop/elk", logs)
+	contJSON, err := docker.StartELK(logs)
 	er.CheckError(err)
 
 	log.WithFields(log.Fields{

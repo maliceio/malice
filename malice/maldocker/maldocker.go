@@ -25,18 +25,41 @@ func NewDockerClient() *Docker {
 	var client *docker.Client
 	var ip, port string
 	var err error
+
 	// create docker client base on OS
 	switch runtime.GOOS {
 	case "darwin", "windows":
-		ip, port, err = parseDockerEndoint(os.Getenv("DOCKER_HOST"))
-		er.CheckError(err)
-		client, err = docker.NewEnvClient()
-		handleClientError(err)
+		// Create a new Client from Env
+		if _, exists := os.LookupEnv("DOCKER_HOST"); exists {
+			ip, port, err = parseDockerEndoint(os.Getenv("DOCKER_HOST"))
+			er.CheckError(err)
+			client, err = docker.NewEnvClient()
+			if err != nil {
+				log.Fatal(err)
+			}
+		} else {
+			// Create a new Client from config.Conf.Docker.EndPoint
+			ip, port, err = parseDockerEndoint(config.Conf.Docker.EndPoint)
+			er.CheckError(err)
+			defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
+			client, err = docker.NewClient(config.Conf.Docker.EndPoint, "v1.22", nil, defaultHeaders)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
 	case "linux":
 		defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
 		client, err = docker.NewClient("unix:///var/run/docker.sock", "v1.22", nil, defaultHeaders)
-		handleClientError(err)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
+	// Check if client can connect
+	_, err = client.Info()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return &Docker{
 		Client: client,
 		ip:     ip,
@@ -75,92 +98,3 @@ func handleClientError(dockerError error) {
 		os.Exit(2)
 	}
 }
-
-// LogContainer tails container logs to terminal
-// func LogContainer(cont *docker.Container) {
-//
-// 	opts := docker.LogsOptions{
-// 		Container:    cont.ID,
-// 		OutputStream: os.Stdout,
-// 		ErrorStream:  os.Stderr,
-// 		Follow:       true,
-// 		Stdout:       true,
-// 		Stderr:       true,
-// 		// Since:        0,
-// 		Timestamps: false,
-// 		// Tail:         false,
-// 		RawTerminal: false, // Usually true when the container contains a TTY.
-// 	}
-//
-// 	er.CheckError(client.Logs(opts))
-// }
-
-// StartELK creates an ELK container from the image blacktop/elk
-// func StartELK(logs bool) (cont *docker.Container, err error) {
-//
-// 	er.CheckError(PingDockerClient(client))
-//
-// 	_, exists, err := ContainerExists(client, "elk")
-//
-// 	if exists {
-// 		log.WithFields(log.Fields{
-// 			"exisits": exists,
-// 			// "id":      elkContainer.ID,
-// 			"env": config.Conf.Environment.Run,
-// 			"url": "http://" + ip,
-// 		}).Info("ELK is already running...")
-// 		os.Exit(0)
-// 	}
-//
-// 	_, exists, err = ImageExists(client, "blacktop/elk")
-// 	if exists {
-// 		log.WithFields(log.Fields{
-// 			"exisits": exists,
-// 			// "id":      elkContainer.ID,
-// 			"env": config.Conf.Environment.Run,
-// 		}).Info("Image `blacktop/elk` already pulled.")
-// 	} else {
-// 		log.WithFields(log.Fields{
-// 			"exisits": exists,
-// 			"env":     config.Conf.Environment.Run}).Info("Pulling Image `blacktop/elk`")
-//
-// 		er.CheckError(PullImage("blacktop/elk", "latest"))
-// 	}
-// 	createContConf := docker.Config{
-// 		Image: "blacktop/elk",
-// 	}
-//
-// 	portBindings := map[docker.Port][]docker.PortBinding{
-// 		"80/tcp":   {{HostIP: "0.0.0.0", HostPort: "80"}},
-// 		"9200/tcp": {{HostIP: "0.0.0.0", HostPort: "9200"}},
-// 	}
-//
-// 	createContHostConfig := docker.HostConfig{
-// 		// Binds:           []string{"/var/run:/var/run:rw", "/sys:/sys:ro", "/var/lib/docker:/var/lib/docker:ro"},
-// 		PortBindings: portBindings,
-// 		// PublishAllPorts: true,
-// 		Privileged: false,
-// 	}
-//
-// 	createContOps := docker.CreateContainerOptions{
-// 		Name:       "elk",
-// 		Config:     &createContConf,
-// 		HostConfig: &createContHostConfig,
-// 	}
-//
-// 	cont, err = client.CreateContainer(createContOps)
-// 	if err != nil {
-// 		log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("CreateContainer error = %s\n", err)
-// 	}
-//
-// 	err = client.StartContainer(cont.ID, nil)
-// 	if err != nil {
-// 		log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("StartContainer error = %s\n", err)
-// 	}
-//
-// 	if logs {
-// 		LogContainer(cont)
-// 	}
-//
-// 	return
-// }

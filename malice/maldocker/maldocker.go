@@ -26,7 +26,7 @@ func NewDockerClient() *Docker {
 	var ip, port string
 	var err error
 
-	// create docker client base on OS
+	// Create docker client based on OS
 	switch runtime.GOOS {
 	case "darwin", "windows":
 		// Create a new Client from Env
@@ -57,7 +57,8 @@ func NewDockerClient() *Docker {
 	// Check if client can connect
 	_, err = client.Info()
 	if err != nil {
-		log.Fatal(err)
+		handleClientError(err)
+		// log.Fatal(err)
 	}
 
 	return &Docker{
@@ -79,9 +80,14 @@ func handleClientError(dockerError error) {
 		switch runtime.GOOS {
 		case "darwin":
 			if _, err := exec.LookPath("docker-machine"); err != nil {
-				log.Infof("Please install docker-machine by running: \n\tbrew install docker-machine\n\tdocker-machine create -d virtualbox %s\n\teval $(docker-machine env %s)\n", config.Conf.Docker.Name, config.Conf.Docker.Name)
+				log.Info("Please install docker-machine by running: ")
+				log.Info(" - brew install docker-machine")
+				log.Infof(" - brew install docker-machine\n\tdocker-machine create -d virtualbox %s", config.Conf.Docker.Name)
+				log.Infof(" - eval $(docker-machine env %s)", config.Conf.Docker.Name)
 			} else {
-				log.Infof("Please start and source the docker-machine env by running: \n\tdocker-machine start %s\n\teval $(docker-machine env %s)\n", config.Conf.Docker.Name, config.Conf.Docker.Name)
+				log.Info("Please start and source the docker-machine env by running: ")
+				log.Infof(" - docker-machine start %s", config.Conf.Docker.Name)
+				log.Infof(" - eval $(docker-machine env %s)", config.Conf.Docker.Name)
 			}
 		case "linux":
 			log.Info("Please start the docker daemon.")
@@ -89,7 +95,9 @@ func handleClientError(dockerError error) {
 			if _, err := exec.LookPath("docker-machine.exe"); err != nil {
 				log.Info("Please install docker-machine - https://www.docker.com/docker-toolbox")
 			} else {
-				log.Infof("Please start and source the docker-machine env by running: \n\tdocker-machine start %s\n\teval $(docker-machine env %s)\n", config.Conf.Docker.Name, config.Conf.Docker.Name)
+				log.Info("Please start and source the docker-machine env by running: ")
+				log.Infof(" - docker-machine start %", config.Conf.Docker.Name)
+				log.Infof(" - eval $(docker-machine env %s)", config.Conf.Docker.Name)
 			}
 		}
 		// TODO Decide if I want to make docker machines or rely on use to create their own.

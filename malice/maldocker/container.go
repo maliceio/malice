@@ -43,21 +43,6 @@ func (client *Docker) StartContainer(sample string, name string, image string, l
 			client.PullImage(image, "latest")
 		}
 
-		// createContConf := docker.Config{
-		// 	Image: image,
-		// 	Mounts: []docker.Mount{
-		// 		docker.Mount{
-		// 			Name:        "malware",
-		// 			Source:      "$(pwd)/samples/",
-		// 			Destination: "/malware",
-		// 			Driver:      "local",
-		// 			Mode:        "",
-		// 			RW:          false,
-		// 		},
-		// 	},
-		// 	Cmd: []string{"-t",sample},
-		// }
-
 		createContConf := &container.Config{
 			Image: image,
 			Cmd:   strslice.New("-t", sample),
@@ -67,25 +52,6 @@ func (client *Docker) StartContainer(sample string, name string, image string, l
 			Privileged: false,
 		}
 		networkingConfig := &network.NetworkingConfig{}
-
-		// portBindings := map[docker.Port][]docker.PortBinding{
-		// 	"80/tcp":   {{HostIP: "0.0.0.0", HostPort: "80"}},
-		// 	"9200/tcp": {{HostIP: "0.0.0.0", HostPort: "9200"}},
-		// }
-
-		// createContHostConfig := docker.HostConfig{
-		// 	Binds: []string{maldirs.GetSampledsDir() + ":/malware:ro"},
-		// 	// Binds:           []string{"/var/run:/var/run:rw", "/sys:/sys:ro", "/var/lib/docker:/var/lib/docker:ro"},
-		// 	// PortBindings: portBindings,
-		// 	// PublishAllPorts: true,
-		// 	Privileged: false,
-		// }
-
-		// createContOps := docker.CreateContainerOptions{
-		// 	Name:       name,
-		// 	Config:     &createContConf,
-		// 	HostConfig: &createContHostConfig,
-		// }
 
 		contResponse, err := client.Client.ContainerCreate(createContConf, hostConfig, networkingConfig, name)
 		if err != nil {

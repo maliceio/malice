@@ -100,7 +100,7 @@ func handleClientError(dockerError error) {
 				log.Infof(" - eval $(docker-machine env %s)", config.Conf.Docker.Name)
 			}
 		}
-		// TODO Decide if I want to make docker machines or rely on use to create their own.
+		// TODO Decide if I want to make docker machines or rely on user to create their own.
 		// log.Info("Trying to create new docker-machine: ", "test")
 		// MakeDockerMachine("test")
 		os.Exit(2)

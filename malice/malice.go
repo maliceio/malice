@@ -1,4 +1,4 @@
-package libmalice
+package malice
 
 import (
 	"github.com/docker/machine/libmachine/drivers"
@@ -9,7 +9,7 @@ import (
 
 type API interface {
 	persist.Store
-	persist.PluginDriverFactory
+	// persist.PluginDriverFactory
 	NewHost(drivers.Driver) (*host.Host, error)
 	Create(h *host.Host) error
 }

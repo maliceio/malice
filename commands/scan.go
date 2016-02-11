@@ -2,7 +2,6 @@ package commands
 
 import (
 	"os"
-	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/config"
@@ -40,29 +39,29 @@ func cmdScan(path string, logs bool) {
 
 		for _, plugin := range plugins {
 			log.Debugf(">>>>> RUNNING Plugin: %s >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", plugin.Name)
-			go func() {
-				// Start Plugin Container
-				// TODO: don't use the default of true for --logs
-				cont, err := plugin.StartPlugin(docker, file.SHA256, true)
-				er.CheckError(err)
+			// go func() {
+			// Start Plugin Container
+			// TODO: don't use the default of true for --logs
+			cont, err := plugin.StartPlugin(docker, file.SHA256, true)
+			er.CheckError(err)
 
-				log.WithFields(log.Fields{
-					"id": cont.ID,
-					"ip": docker.GetIP(),
-					// "url":      "http://" + maldocker.GetIP(),
-					"name": cont.Name,
-					"env":  config.Conf.Environment.Run,
-				}).Debug("Plugin Container Started")
+			log.WithFields(log.Fields{
+				"id": cont.ID,
+				"ip": docker.GetIP(),
+				// "url":      "http://" + maldocker.GetIP(),
+				"name": cont.Name,
+				"env":  config.Conf.Environment.Run,
+			}).Debug("Plugin Container Started")
 
-				err = docker.RemoveContainer(cont, false, false, false)
-				er.CheckError(err)
-			}()
+			err = docker.RemoveContainer(cont, false, false, false)
+			er.CheckError(err)
+			// }()
 			// Clean up the Plugin Container
 			// TODO: I want to reuse these containers for speed eventually.
 
-			time.Sleep(10 * time.Millisecond)
+			// time.Sleep(10 * time.Millisecond)
 		}
-		time.Sleep(15 * time.Second)
+		// time.Sleep(60 * time.Second)
 		log.Debug("Done with plugins.")
 	} else {
 		log.Error("Please supply a valid file to scan.")

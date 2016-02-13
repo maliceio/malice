@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/mail"
+	"strings"
 
 	"github.com/dustin/go-jsonpointer"
 	"github.com/jordan-wright/email"
@@ -32,4 +34,32 @@ func ParseMail(r *http.Request) (email.Email, error) {
 	body, err := ioutil.ReadAll(m.Body)
 	e.HTML = body
 	return e, err
+}
+
+// AskForConfirmation prompts user for yes/no response
+func AskForConfirmation() bool {
+	var response string
+	_, err := fmt.Scanln(&response)
+	if err != nil {
+		log.Fatal(err)
+	}
+	okayResponses := []string{"y", "yes"}
+	nokayResponses := []string{"n", "no"}
+	if stringInSlice(strings.ToLower(response), okayResponses) {
+		return true
+	}
+	if stringInSlice(strings.ToLower(response), nokayResponses) {
+		return false
+	}
+	fmt.Println("Please type yes or no and then press enter:")
+	return AskForConfirmation()
+}
+
+func stringInSlice(a string, list []string) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
 }

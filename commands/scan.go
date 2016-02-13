@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"fmt"
 	"os"
 
 	log "github.com/Sirupsen/logrus"
@@ -9,6 +10,7 @@ import (
 	"github.com/maliceio/malice/malice/maldocker"
 	"github.com/maliceio/malice/malice/persist"
 	"github.com/maliceio/malice/plugins"
+	"github.com/maliceio/malice/utils"
 )
 
 func cmdScan(path string, logs bool) {
@@ -20,6 +22,16 @@ func cmdScan(path string, logs bool) {
 
 		docker := maldocker.NewDockerClient()
 
+		if plugins.InstalledPluginsCheck(docker) {
+			log.Debug("All enabled plugins are installed.")
+		} else {
+			// Prompt user to install all plugins?
+			fmt.Println("All enabled plugins not installed would you like to install them now? (yes/no)\n[Warning] This can take a while if it is the first time you have ran Malice.")
+			if util.AskForConfirmation() {
+				plugins.UpdateAllPlugins(docker)
+			}
+		}
+
 		file := persist.File{
 			Path: path,
 		}
@@ -30,8 +42,8 @@ func cmdScan(path string, logs bool) {
 		// fmt.Println(string(file.ToJSON()))
 
 		log.Debug("Looking for plugins that will run on: ", file.Mime)
-		// Iterate over all applicable plugins
-		plugins := plugins.GetPluginsForMime(file.Mime)
+		// Iterate over all applicable installed plugins
+		plugins := plugins.GetPluginsForMime(docker, file.Mime, true)
 		log.Debug("Found these plugins: ")
 		for _, plugin := range plugins {
 			log.Debugf(" - %v", plugin.Name)

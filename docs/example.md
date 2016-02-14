@@ -21,52 +21,52 @@
 #### Exiftool
 | Field                   | Value                                           |
 | ----------------------- | ----------------------------------------------- |
-| Initialized Data Size   | 20480                                           |
-| Entry Point             | 0x5a46                                          |
-| Subsystem               | Windows GUI                                     |
-| Original File Name      | IEXPLORE.EXE                                    |
-| Special Build           |                                                 |
-| File Version Number     | 6.0.2930.2180                                   |
-| Product Version Number  | 6.0.2930.2180                                   |
-| File OS                 | Unknown (0)                                     |
-| Uninitialized Data Size | 0                                               |
-| Character Set           | Unicode                                         |
-| Internal Name           | iexplore                                        |
-| Legal Trademarks        |                                                 |
-| Private Build           |                                                 |
-| Product Name            | Microsoft(R) Windows(R) Operating System        |
-| File Subtype            | 0                                               |
-| Company Name            | Microsoft Corporation                           |
-| MIME Type               | application/octet-stream                        |
-| PE Type                 | PE32                                            |
-| Linker Version          | 6.0                                             |
-| Code Size               | 20480                                           |
-| File Flags              | Private build                                   |
 | Legal Copyright         | (C) Microsoft Corporation. All rights reserved. |
-| File Size               | 40 kB                                           |
-| File Type               | Win32 EXE                                       |
+| Product Version Number  | 6.0.2930.2180                                   |
 | File Flags Mask         | 0x003f                                          |
 | Object File Type        | Unknown                                         |
-| File Version            | 6.00.2900.2180 (xpsp_sp2_rtm.040803-2158)       |
+| Internal Name           | iexplore                                        |
 | Subsystem Version       | 4.0                                             |
-| Language Code           | Neutral                                         |
-| File Description        | Internet Explorer                               |
 | Comments                |                                                 |
-| Product Version         | 6.00.2900.2180                                  |
+| Company Name            | Microsoft Corporation                           |
+| Legal Trademarks        |                                                 |
 | ExifTool Version Number | 10.09                                           |
+| File Size               | 40 kB                                           |
 | File Type Extension     | exe                                             |
 | Machine Type            | Intel 386 or later, and compatibles             |
-| OS Version              | 4.0                                             |
+| MIME Type               | application/octet-stream                        |
+| Code Size               | 20480                                           |
+| Uninitialized Data Size | 0                                               |
+| Language Code           | Neutral                                         |
+| PE Type                 | PE32                                            |
+| Linker Version          | 6.0                                             |
+| File Description        | Internet Explorer                               |
+| File Version            | 6.00.2900.2180 (xpsp_sp2_rtm.040803-2158)       |
 | Image Version           | 0.0                                             |
-#### F-PROT
-| Infected | Result | Engine    | Updated      |
-| -------- | ------ | --------- | ------------ |
-| false    |        | 4.6.5.141 | 201602090313 |
-#### ClamAV
-| Infected | Result               | Engine | Known   | Updated  |
-| -------- | -------------------- | ------ | ------- | -------- |
-| true     | Win.Trojan.Backspace | 0.99   | 4252497 | 20160209 |
+| File Flags              | Private build                                   |
+| Private Build           |                                                 |
+| Product Name            | Microsoft(R) Windows(R) Operating System        |
+| Character Set           | Unicode                                         |
+| Product Version         | 6.00.2900.2180                                  |
+| File Type               | Win32 EXE                                       |
+| Initialized Data Size   | 20480                                           |
+| File Version Number     | 6.0.2930.2180                                   |
+| File OS                 | Unknown (0)                                     |
+| Original File Name      | IEXPLORE.EXE                                    |
+| Special Build           |                                                 |
+| Entry Point             | 0x5a46                                          |
+| OS Version              | 4.0                                             |
+| Subsystem               | Windows GUI                                     |
+| File Subtype            | 0                                               |
 #### AVG
-| Infected | Result                | Version   | Updated                         |
-| -------- | --------------------- | --------- | ------------------------------- |
-| true     | Found Win32/DH{YQMT?} | 13.0.3114 | Tue, 09 Feb 2016 02:02:00 +0000 |
+| Infected | Result                | Engine    | Updated |
+| -------- | --------------------- | --------- | ------- |
+| true     | Found Win32/DH{YQMT?} | 13.0.3114 | 2016213 |
+#### ClamAV
+| Infected | Result               | Engine | Updated  |
+| -------- | -------------------- | ------ | -------- |
+| true     | Win.Trojan.Backspace | 0.99   | 20160214 |
+#### F-PROT
+| Infected | Result | Engine    | Updated |
+| -------- | ------ | --------- | ------- |
+| false    |        | 4.6.5.141 | 2016213 |

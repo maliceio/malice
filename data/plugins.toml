@@ -9,8 +9,8 @@
   name = "nsrl"
   enabled = false
   description = "NSRL Database Hash Search"
-  category = "binary"
-  image = "blacktop/nsrl"
+  category = "intel"
+  image = "malice/nsrl"
   mime = "*"
 
 [[plugin]]

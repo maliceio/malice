@@ -63,10 +63,10 @@ Run 'malice COMMAND --help' for more information on a command.
 
 ### Documentation
 #### Plugins
- - [Plugins List (and growing)](https://github.com/maliceio/malice/wiki/Plugins)
+ - [Plugins List (and growing)](https://github.com/maliceio/malice/blob/master/docs/plugins.md)
 
 #### Examples
- - [Examples](https://github.com/maliceio/malice/wiki/Examples)
+ - [Examples](https://github.com/maliceio/malice/blob/master/docs/example.md)
 
 ### Issues
 

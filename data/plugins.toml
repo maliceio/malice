@@ -14,6 +14,14 @@
   mime = "*"
 
 [[plugin]]
+  name = "virustotal"
+  enabled = false
+  description = "VirusTotal - files scan and hash lookup"
+  category = "intel"
+  image = "malice/virustotal"
+  mime = "*"
+
+[[plugin]]
   name = "fileinfo"
   enabled = true
   description = "ssdeep/TRiD/exiftool"

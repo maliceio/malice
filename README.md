@@ -53,6 +53,7 @@ Options:
 
 Commands:
   scan		Scan a file
+  lookup	Look up a file hash
   elk		Start an ELK docker container
   web		Start, Stop Web services
   plugin	List, Install or Remove Plugins

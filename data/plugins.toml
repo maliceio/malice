@@ -77,6 +77,14 @@
   mime = "*"
 
 [[plugin]]
+  name = "pe"
+  enabled = false
+  description = "PE - tool to triage portable executables"
+  category = "exe"
+  image = "malice/pe"
+  mime = "application/x-dosexec "
+
+[[plugin]]
   name = "pdf"
   enabled = false
   description = "PDF - tool to triage PDF documents"

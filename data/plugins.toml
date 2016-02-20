@@ -20,8 +20,7 @@
   description = "VirusTotal - files scan and hash lookup"
   category = "intel"
   image = "malice/virustotal"
-  # Set upload to `true` if you want to upload sample to virustotal.com
-  upload = false
+  upload = false # Set upload to `true` if you want to upload sample to virustotal.com
   apikey = ""
   cmd = "lookup"
   mime = "hash"
@@ -33,6 +32,15 @@
   description = "ShadowServer - hash lookup"
   category = "intel"
   image = "malice/shadow-server"
+  mime = "hash"
+  hashtypes = [ "md5", "sha1" ]
+
+[[plugin]]
+  name = "team-cymru"
+  enabled = false
+  description = "TeamCymru - hash lookup"
+  category = "intel"
+  image = "malice/team-cymru"
   mime = "hash"
   hashtypes = [ "md5", "sha1" ]
 
@@ -69,9 +77,17 @@
   mime = "*"
 
 [[plugin]]
-  name = "pdfid"
+  name = "pdf"
   enabled = false
-  description = "PDFiD - tool to triage PDF documents"
+  description = "PDF - tool to triage PDF documents"
   category = "document"
-  image = "blacktop/pdfid"
+  image = "malice/pdf"
   mime = "application/pdf"
+
+[[plugin]]
+  name = "javascript"
+  enabled = false
+  description = "Javascript - tool to triage JS scripts"
+  category = "document"
+  image = "malice/javascript"
+  mime = "application/javascript"

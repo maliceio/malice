@@ -5,13 +5,12 @@ import (
 	"strings"
 
 	"github.com/crackcomm/go-clitable"
-	"github.com/maliceio/malice/malice/maldocker"
 )
 
 // ListEnabledPlugins lists enabled plugins
 func ListEnabledPlugins(detail bool) {
 	// TODO: Create a template for this kind of output : http://stackoverflow.com/questions/10747054/special-case-treatment-for-the-last-element-of-a-range-in-google-gos-text-templ
-	enabled := filterPluginsByEnabled()
+	enabled := getEnabled(Plugs.Plugins)
 	if detail {
 		ToMarkDownTable(enabled)
 	} else {
@@ -23,7 +22,7 @@ func ListEnabledPlugins(detail bool) {
 
 // ListAllPlugins lists all plugins
 func ListAllPlugins(detail bool) {
-	plugins := Plug.Plugins
+	plugins := Plugs.Plugins
 	if detail {
 		ToMarkDownTable(plugins)
 	} else {
@@ -52,30 +51,49 @@ func ToMarkDownTable(plugins []Plugin) {
 
 // GetPluginByName will return plugin for the given name
 func GetPluginByName(name string) Plugin {
-
-	for _, plugin := range Plug.Plugins {
+	for _, plugin := range Plugs.Plugins {
 		if strings.EqualFold(plugin.Name, name) {
 			return plugin
 		}
 	}
-
 	return Plugin{}
 }
 
-// GetPluginsForMime will return all plugins that can consume the mime type file
-func GetPluginsForMime(client *maldocker.Docker, mime string, installed bool) []Plugin {
-	if installed {
-		return filterPluginsByInstalled(client, mime)
+// GetIntelPlugins will return all Intel plugins
+func GetIntelPlugins(enabled bool) []Plugin {
+	if enabled {
+		// fmt.Printf("%#v\n", filterPluginsByIntel(Plugs.Plugins))
+		return getIntel(getEnabled(getInstalled()))
 	}
-	return filterPluginsByMime(mime)
+	return getIntel(getInstalled())
 }
 
-// filterPluginsByEnabled returns a map[string]plugin of enalbed plugins
-func filterPluginsByInstalled(client *maldocker.Docker, mime string) []Plugin {
-	installed := []Plugin{}
+// GetPluginsForMime will return all plugins that can consume the mime type file
+func GetPluginsForMime(mime string, enabled bool) []Plugin {
+	if enabled {
+		return getMime(mime, getEnabled(getInstalled()))
+	}
+	return getMime(mime, getInstalled())
+}
 
-	for _, plugin := range filterPluginsByMime(mime) {
-		if _, exists, _ := client.ImageExists(plugin.Image); exists {
+func getIntel(plugins []Plugin) []Plugin {
+	intel := []Plugin{}
+	if plugins == nil {
+		plugins = Plugs.Plugins
+	}
+	for _, plugin := range plugins {
+		if strings.Contains(plugin.Category, "intel") {
+			intel = append(intel, plugin)
+		}
+	}
+	return intel
+}
+
+// getInstalled returns a map[string]plugin of installed plugins
+func getInstalled() []Plugin {
+	installed := []Plugin{}
+	for _, plugin := range Plugs.Plugins {
+		if plugin.Installed {
 			installed = append(installed, plugin)
 		}
 	}
@@ -84,10 +102,12 @@ func filterPluginsByInstalled(client *maldocker.Docker, mime string) []Plugin {
 
 // filterPluginsByEnabled returns a map[string]plugin of plugins
 // that work on the given mime type
-func filterPluginsByMime(mime string) []Plugin {
+func getMime(mime string, plugins []Plugin) []Plugin {
 	mimeMatch := []Plugin{}
-
-	for _, plugin := range filterPluginsByEnabled() {
+	if plugins == nil {
+		plugins = Plugs.Plugins
+	}
+	for _, plugin := range plugins {
 		if strings.Contains(plugin.Mime, mime) || strings.Contains(plugin.Mime, "*") {
 			mimeMatch = append(mimeMatch, plugin)
 		}
@@ -95,11 +115,13 @@ func filterPluginsByMime(mime string) []Plugin {
 	return mimeMatch
 }
 
-// filterPluginsByEnabled returns a map[string]plugin of enalbed plugins
-func filterPluginsByEnabled() []Plugin {
+// getEnabled returns a map[string]plugin of enabled plugins
+func getEnabled(plugins []Plugin) []Plugin {
 	enabled := []Plugin{}
-
-	for _, plugin := range Plug.Plugins {
+	if plugins == nil {
+		plugins = Plugs.Plugins
+	}
+	for _, plugin := range Plugs.Plugins {
 		if plugin.Enabled {
 			enabled = append(enabled, plugin)
 		}

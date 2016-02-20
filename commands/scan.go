@@ -41,9 +41,11 @@ func cmdScan(path string, logs bool) {
 		file.ToMarkdownTable()
 		// fmt.Println(string(file.ToJSON()))
 
+		// plugins.RunIntelPlugins(docker, file, true)
+
 		log.Debug("Looking for plugins that will run on: ", file.Mime)
 		// Iterate over all applicable installed plugins
-		plugins := plugins.GetPluginsForMime(docker, file.Mime, true)
+		plugins := plugins.GetPluginsForMime(file.Mime, true)
 		log.Debug("Found these plugins: ")
 		for _, plugin := range plugins {
 			log.Debugf(" - %v", plugin.Name)

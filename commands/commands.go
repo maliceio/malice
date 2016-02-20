@@ -2,9 +2,9 @@ package commands
 
 import (
 	"fmt"
-	"log"
 	"os"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 )
 
@@ -23,6 +23,24 @@ var Commands = []cli.Command{
 			},
 		},
 		Action: func(c *cli.Context) { cmdScan(c.Args().First(), c.Bool("logs")) },
+	},
+	{
+		Name:        "lookup",
+		Usage:       "Look up a file hash",
+		Description: "Hash to be queried.",
+		Flags: []cli.Flag{
+			cli.BoolFlag{
+				Name:  "logs",
+				Usage: "Display the Logs of the Plugin containers",
+			},
+		},
+		Action: func(c *cli.Context) {
+			if c.Args().Present() {
+				cmdLookUp(c.Args().First(), c.Bool("logs"))
+			} else {
+				log.Fatal(fmt.Errorf("Please supply a MD5/SHA1 hash to query."))
+			}
+		},
 	},
 	{
 		Name:        "elk",

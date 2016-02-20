@@ -1,4 +1,38 @@
-### Example Output
+### Example LookUp Output
+
+#### virustotal
+| Ratio | Link                                                                                                                          | API    | Scanned                |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------- | ------ | ---------------------- |
+| 95%   | [link](https://www.virustotal.com/file/371d99fc5514f5a9816b4ec844cb816c52460a41b8e5d14bac1cb7bee57e0b1f/analysis/1312464222/) | Public | Sat 2016Feb20 05:35:15 |
+#### shadow-server
+##### AntiVirus
+ - FirstSeen: 6/15/2010 3:09AM
+ - LastSeen: 6/15/2010 3:09AM
+
+| Vendor           | Signature                  |
+| ---------------- | -------------------------- |
+| G-Data           | Trojan.Generic.2609117     |
+| NOD32            | Win32/AutoRun.VB.JP        |
+| Norman           | Suspicious_Gen2.SKLJ       |
+| QuickHeal        | Worm.VB.at                 |
+| Sophos           | Troj/DwnLdr-HQY            |
+| VBA32            | Trojan.VBO.011858          |
+| AVG7             | Downloader.Generic9.URM    |
+| DrWeb            | Win32.HLLW.Autoruner.6014  |
+| F-Secure         | Worm:W32/Revois.gen!A      |
+| Ikarus           | Trojan-Downloader.Win32.VB |
+| Kaspersky        | Trojan.Win32.Cosmu.nyl     |
+| McAfee           | Generic                    |
+| TrendMicro       | TROJ_DLOADR.SMM            |
+| AntiVir          | WORM/VB.NVA                |
+| Clam             | Trojan.Downloader-50691    |
+| Vexira           | Trojan.DL.VB.EEDT          |
+| VirusBuster      | Worm.VB.FMYJ               |
+| Avast-Commercial | Win32:Zbot-LRA             |
+| F-Prot6          | W32/Worm.BAOX              |
+| Panda            | W32/OverDoom.A             |
+
+### Example Scan Output
 
 #### File
 | Field  | Value                                                                    |

@@ -10,16 +10,21 @@ import (
 	"github.com/maliceio/malice/data"
 	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/maldirs"
+	"github.com/maliceio/malice/malice/maldocker"
 )
 
 // Plugin represents a single plugin setting.
 type Plugin struct {
-	Name        string `toml:"name"`
-	Enabled     bool   `toml:"enabled"`
-	Category    string `toml:"category"`
-	Description string `toml:"description"`
-	Image       string `toml:"image"`
-	Mime        string `toml:"mime"`
+	Name        string   `toml:"name"`
+	Enabled     bool     `toml:"enabled"`
+	Category    string   `toml:"category"`
+	Description string   `toml:"description"`
+	Image       string   `toml:"image"`
+	APIKey      string   `toml:"apikey"`
+	Mime        string   `toml:"mime"`
+	HashTypes   []string `toml:"hashtypes"`
+	Cmd         string   `toml:"cmd"`
+	Installed   bool
 }
 
 // Configuration represents the malice runtime plugins.
@@ -27,8 +32,8 @@ type Configuration struct {
 	Plugins []Plugin `toml:"plugin"`
 }
 
-// Plug represents the Malice runtime configuration
-var Plug Configuration
+// Plugs represents the Malice runtime configuration
+var Plugs Configuration
 
 // Load plugins.toml into Plug var
 func Load() {
@@ -44,6 +49,17 @@ func Load() {
 		}
 	}
 	log.Debug("Plugin Config: ", pluginPath)
-	_, err := toml.DecodeFile(pluginPath, &Plug)
+	_, err := toml.DecodeFile(pluginPath, &Plugs)
+	setInstalledFlag()
+	// fmt.Printf("%#v\n", Plugs)
 	er.CheckError(err)
+}
+
+func setInstalledFlag() {
+	docker := maldocker.NewDockerClient()
+	for i, plugin := range Plugs.Plugins {
+		if _, exists, _ := docker.ImageExists(plugin.Image); exists {
+			Plugs.Plugins[i].Installed = true
+		}
+	}
 }

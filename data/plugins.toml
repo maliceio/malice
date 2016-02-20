@@ -15,11 +15,25 @@
 
 [[plugin]]
   name = "virustotal"
-  enabled = false
+  enabled = true
   description = "VirusTotal - files scan and hash lookup"
   category = "intel"
   image = "malice/virustotal"
-  mime = "*"
+  # Set upload to `true` if you want to upload sample to virustotal.com
+  upload = false
+  apikey = ""
+  cmd = "lookup"
+  mime = "hash"
+  hashtypes = [ "md5", "sha1", "sha256" ]
+
+[[plugin]]
+  name = "shadow-server"
+  enabled = true
+  description = "ShadowServer - hash lookup"
+  category = "intel"
+  image = "malice/shadow-server"
+  mime = "hash"
+  hashtypes = [ "md5", "sha1" ]
 
 [[plugin]]
   name = "fileinfo"

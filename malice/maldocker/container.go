@@ -20,7 +20,7 @@ import (
 )
 
 // StartContainer starts a malice docker container
-func (client *Docker) StartContainer(sample string, name string, image string, logs bool) (types.ContainerJSONBase, error) {
+func (client *Docker) StartContainer(cmd *strslice.StrSlice, name string, image string, logs bool) (types.ContainerJSONBase, error) {
 
 	if client.Ping() {
 		if _, exists, _ := client.ContainerExists(name); exists {
@@ -45,8 +45,11 @@ func (client *Docker) StartContainer(sample string, name string, image string, l
 
 		createContConf := &container.Config{
 			Image: image,
-			Cmd:   strslice.New("-t", sample),
+			Cmd:   cmd,
+			Env:   []string{"MALICE_VT_API=" + os.Getenv("MALICE_VT_API")},
 		}
+		// fmt.Printf("%#v\n", createContConf.Cmd)
+		// fmt.Printf("%#v\n", createContConf.Env)
 		hostConfig := &container.HostConfig{
 			Binds:      []string{maldirs.GetSampledsDir() + ":/malware:ro"},
 			Privileged: false,

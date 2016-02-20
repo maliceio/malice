@@ -11,7 +11,8 @@
   description = "NSRL Database Hash Search"
   category = "intel"
   image = "malice/nsrl"
-  mime = "*"
+  mime = "hash"
+  hashtypes = [ "md5" ]
 
 [[plugin]]
   name = "virustotal"

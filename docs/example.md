@@ -94,6 +94,14 @@
 | OS Version              | 4.0                                             |
 | Subsystem               | Windows GUI                                     |
 | File Subtype            | 0                                               |
+#### yara
+| Rule                                   | Description                                 | Offset | Data                                 | Tags |
+| -------------------------------------- | ------------------------------------------- | ------ | ------------------------------------ | ---- |
+| _Microsoft_Visual_Cpp_v50v60_MFC_      | Microsoft Visual C++ v5.0/v6.0 (MFC)        | 5204   | U���                                 |      |
+| _Borland_Delphi_v60__v70_              | Borland Delphi v6.0 - v7.0                  | 5204   | U��                                  |      |
+| _dUP_v2x_Patcher__wwwdiablo2oo2cjbnet_ | dUP v2.x Patcher --> www.diablo2oo2.cjb.net | 78     | This program cannot be run in DOS mo |      |
+| _Free_Pascal_v106_                     | Free Pascal v1.06                           | 14866  | ���@O�k                            |      |
+| _Armadillo_v171_                       | Armadillo v1.71                             | 23110  | U��j�h b@h�[@d�                      |      |
 #### AVG
 | Infected | Result                | Engine    | Updated |
 | -------- | --------------------- | --------- | ------- |

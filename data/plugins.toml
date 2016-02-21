@@ -53,6 +53,14 @@
   mime = "*"
 
 [[plugin]]
+  name = "yara"
+  enabled = false
+  description = "YARA Scan"
+  category = "general"
+  image = "malice/yara"
+  mime = "*"
+
+[[plugin]]
   name = "avg"
   enabled = true
   description = "AVG AntiVirus"

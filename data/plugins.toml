@@ -54,7 +54,7 @@
 
 [[plugin]]
   name = "yara"
-  enabled = false
+  enabled = true
   description = "YARA Scan"
   category = "av"
   image = "malice/yara"

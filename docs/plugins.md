@@ -1,12 +1,16 @@
 ### Plugin List
 
-| Name          | Description                             | Enabled | Image                | Category | Mime            |
-| ------------- | --------------------------------------- | ------- | -------------------- | -------- | --------------- |
-| nsrl          | NSRL Database Hash Search               | false   | malice/nsrl          | intel    | *               |
-| virustotal    | VirusTotal - files scan and hash lookup | false   | malice/virustotal    | intel    | *               |
-| shadow-server | ShadowServer - hash lookup              | false   | malice/shadow-server | intel    | *               |
-| fileinfo      | ssdeep/TRiD/exiftool                    | true    | malice/fileinfo      | metadata | *               |
-| avg           | AVG AntiVirus                           | true    | malice/avg           | av       | *               |
-| clamav        | ClamAV                                  | true    | malice/clamav        | av       | *               |
-| fprot         | F-PROT AntiVirus                        | true    | malice/fprot         | av       | *               |
-| pdfid         | PDFiD - tool to triage PDF documents    | false   | blacktop/pdfid       | document | application/pdf |
+| Name          | Description                              | Enabled | Image                | Category | Mime                   |
+| ------------- | ---------------------------------------- | ------- | -------------------- | -------- | ---------------------- |
+| nsrl          | NSRL Database Hash Search                | false   | malice/nsrl          | intel    | hash                   |
+| virustotal    | VirusTotal - files scan and hash lookup  | true    | malice/virustotal    | intel    | hash                   |
+| shadow-server | ShadowServer - hash lookup               | true    | malice/shadow-server | intel    | hash                   |
+| team-cymru    | TeamCymru - hash lookup                  | false   | malice/team-cymru    | intel    | hash                   |
+| fileinfo      | ssdeep/TRiD/exiftool                     | true    | malice/fileinfo      | metadata | *                      |
+| yara          | YARA Scan                                | true    | malice/yara          | av       | *                      |
+| avg           | AVG AntiVirus                            | true    | malice/avg           | av       | *                      |
+| clamav        | ClamAV                                   | true    | malice/clamav        | av       | *                      |
+| fprot         | F-PROT AntiVirus                         | true    | malice/fprot         | av       | *                      |
+| pe            | PE - tool to triage portable executables | false   | malice/pe            | exe      | application/x-dosexec  |
+| pdf           | PDF - tool to triage PDF documents       | false   | malice/pdf           | document | application/pdf        |
+| javascript    | Javascript - tool to triage JS scripts   | false   | malice/javascript    | document | application/javascript |

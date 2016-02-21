@@ -56,7 +56,7 @@
   name = "yara"
   enabled = false
   description = "YARA Scan"
-  category = "general"
+  category = "av"
   image = "malice/yara"
   mime = "*"
 

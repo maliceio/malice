@@ -9,7 +9,9 @@
 | fileinfo      | ssdeep/TRiD/exiftool                     | true    | malice/fileinfo      | metadata | *                      |
 | yara          | YARA Scan                                | true    | malice/yara          | av       | *                      |
 | avg           | AVG AntiVirus                            | true    | malice/avg           | av       | *                      |
+| bitdefender   | Bitdefender AntiVirus                    | true    | malice/bitdefender   | av       | *                      |
 | clamav        | ClamAV                                   | true    | malice/clamav        | av       | *                      |
+| comodo        | Comodo AntiVirus                         | true    | malice/comodo        | av       | *                      |
 | fprot         | F-PROT AntiVirus                         | true    | malice/fprot         | av       | *                      |
 | pe            | PE - tool to triage portable executables | false   | malice/pe            | exe      | application/x-dosexec  |
 | pdf           | PDF - tool to triage PDF documents       | false   | malice/pdf           | document | application/pdf        |

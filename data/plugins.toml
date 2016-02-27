@@ -69,11 +69,27 @@
   mime = "*"
 
 [[plugin]]
+  name = "bitdefender"
+  enabled = true
+  description = "Bitdefender AntiVirus"
+  category = "av"
+  image = "malice/bitdefender"
+  mime = "*"
+
+[[plugin]]
   name = "clamav"
   enabled = true
   description = "ClamAV"
   category = "av"
   image = "malice/clamav"
+  mime = "*"
+
+[[plugin]]
+  name = "comodo"
+  enabled = true
+  description = "Comodo AntiVirus"
+  category = "av"
+  image = "malice/comodo"
   mime = "*"
 
 [[plugin]]

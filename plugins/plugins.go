@@ -116,6 +116,7 @@ func (plugin Plugin) UpdatePlugin(client *maldocker.Docker) {
 func UpdateAllPlugins(client *maldocker.Docker) {
 	plugins := Plugs.Plugins
 	for _, plugin := range plugins {
+		fmt.Println("[Updating Plugin] ===> ", plugin.Name)
 		client.PullImage(plugin.Image, "latest")
 	}
 }

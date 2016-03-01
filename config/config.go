@@ -3,6 +3,7 @@ package config
 import (
 	"io/ioutil"
 	"os"
+	"time"
 
 	"path"
 
@@ -61,6 +62,7 @@ type envConfig struct {
 type dockerConfig struct {
 	Name     string `toml:"machine-name"`
 	EndPoint string
+	Timeout  time.Duration
 }
 
 type loggerConfig struct {

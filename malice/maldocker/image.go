@@ -2,6 +2,9 @@ package maldocker
 
 import (
 	"os"
+	"time"
+
+	"golang.org/x/net/context"
 
 	"github.com/docker/docker/pkg/jsonmessage"
 	"github.com/docker/engine-api/types"
@@ -16,13 +19,16 @@ import (
 // PullImage pulls docker image:tag
 func (client *Docker) PullImage(id string, tag string) {
 
+	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+	defer cancel()
+
 	pullOptions := types.ImagePullOptions{
 		ImageID: id,
 		Tag:     tag,
 		// RegistryAuth: encodedAuth,
 	}
 
-	responseBody, err := client.Client.ImagePull(pullOptions, nil)
+	responseBody, err := client.Client.ImagePull(ctx, pullOptions, nil)
 	defer responseBody.Close()
 	er.CheckError(err)
 

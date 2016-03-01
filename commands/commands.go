@@ -55,9 +55,8 @@ var Commands = []cli.Command{
 		Action: func(c *cli.Context) { cmdELK(c.Bool("logs")) },
 	},
 	{
-		Name:    "web",
-		Aliases: []string{"w"},
-		Usage:   "Start, Stop Web services",
+		Name:  "web",
+		Usage: "Start, Stop Web services",
 		Subcommands: []cli.Command{
 			{
 				Name:   "start",
@@ -81,9 +80,8 @@ var Commands = []cli.Command{
 		},
 	},
 	{
-		Name:    "plugin",
-		Aliases: []string{"p"},
-		Usage:   "List, Install or Remove Plugins",
+		Name:  "plugin",
+		Usage: "List, Install or Remove Plugins",
 		Subcommands: []cli.Command{
 			{
 				Name:  "list",

@@ -18,7 +18,7 @@ import (
 
 // StartPlugin starts plugin
 func (plugin Plugin) StartPlugin(client *maldocker.Docker, sample string, logs bool) (types.ContainerJSONBase, error) {
-	contJSON, err := client.StartContainer(strslice.New("-t", sample), plugin.Name, plugin.Image, logs)
+	contJSON, err := client.StartContainer(strslice.StrSlice{"-t", sample}, plugin.Name, plugin.Image, logs)
 	er.CheckError(err)
 
 	return contJSON, err
@@ -30,10 +30,10 @@ func RunIntelPlugins(client *maldocker.Docker, hash string, logs bool) {
 	var err error
 	for _, plugin := range GetIntelPlugins(true) {
 		if plugin.Cmd != "" {
-			cont, err = client.StartContainer(strslice.New("-t", plugin.Cmd, hash), plugin.Name, plugin.Image, logs)
+			cont, err = client.StartContainer(strslice.StrSlice{"-t", plugin.Cmd, hash}, plugin.Name, plugin.Image, logs)
 			er.CheckError(err)
 		} else {
-			cont, err = client.StartContainer(strslice.New("-t", hash), plugin.Name, plugin.Image, logs)
+			cont, err = client.StartContainer(strslice.StrSlice{"-t", hash}, plugin.Name, plugin.Image, logs)
 			er.CheckError(err)
 		}
 		log.WithFields(log.Fields{

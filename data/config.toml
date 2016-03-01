@@ -37,6 +37,7 @@ title = "Malice Runtime Configuration"
 [docker]
   machine-name = "malice"
   endpoint = "tcp://192.168.99.100:2376"
+  timeout = 90
 
 [logger]
   filename = "malice.log"

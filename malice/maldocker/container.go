@@ -3,6 +3,9 @@ package maldocker
 import (
 	"errors"
 	"os"
+	"time"
+
+	"golang.org/x/net/context"
 
 	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/docker/engine-api/types"
@@ -20,7 +23,7 @@ import (
 )
 
 // StartContainer starts a malice docker container
-func (client *Docker) StartContainer(cmd *strslice.StrSlice, name string, image string, logs bool) (types.ContainerJSONBase, error) {
+func (client *Docker) StartContainer(cmd strslice.StrSlice, name string, image string, logs bool) (types.ContainerJSONBase, error) {
 
 	if client.Ping() {
 		if _, exists, _ := client.ContainerExists(name); exists {
@@ -103,6 +106,9 @@ func (client *Docker) RemoveContainer(cont types.ContainerJSONBase, volumes bool
 // LogContainer tails container logs to terminal
 func (client *Docker) LogContainer(contID string) {
 
+	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+	defer cancel()
+
 	options := types.ContainerLogsOptions{
 		ContainerID: contID,
 		ShowStdout:  true,
@@ -113,7 +119,7 @@ func (client *Docker) LogContainer(contID string) {
 		// Tail        string
 	}
 
-	logs, err := client.Client.ContainerLogs(options)
+	logs, err := client.Client.ContainerLogs(ctx, options)
 	defer logs.Close()
 	er.CheckError(err)
 

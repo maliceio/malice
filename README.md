@@ -15,6 +15,7 @@ Malice will have binary releases for all platforms.
 
 ```bash
 $ go get -u github.com/maliceio/malice
+$ godep restore
 ```
 If you have have [zsh](http://www.zsh.org/) and installed it via [homebrew](http://brew.sh) you can do this as well:
 ```bash

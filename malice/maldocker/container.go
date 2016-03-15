@@ -46,6 +46,9 @@ func (client *Docker) StartContainer(cmd strslice.StrSlice, name string, image s
 			client.PullImage(image, "latest")
 		}
 
+		ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+		defer cancel()
+
 		createContConf := &container.Config{
 			Image: image,
 			Cmd:   cmd,
@@ -59,12 +62,12 @@ func (client *Docker) StartContainer(cmd strslice.StrSlice, name string, image s
 		}
 		networkingConfig := &network.NetworkingConfig{}
 
-		contResponse, err := client.Client.ContainerCreate(createContConf, hostConfig, networkingConfig, name)
+		contResponse, err := client.Client.ContainerCreate(ctx, createContConf, hostConfig, networkingConfig, name)
 		if err != nil {
 			log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("CreateContainer error = %s\n", err)
 		}
 
-		err = client.Client.ContainerStart(contResponse.ID)
+		err = client.Client.ContainerStart(ctx, contResponse.ID)
 		if err != nil {
 			log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("StartContainer error = %s\n", err)
 		}
@@ -85,11 +88,13 @@ func (client *Docker) StartContainer(cmd strslice.StrSlice, name string, image s
 // If links is true, the associated links are removed with container.
 // If force is true, the container will be destroyed with extreme prejudice.
 func (client *Docker) RemoveContainer(cont types.ContainerJSONBase, volumes bool, links bool, force bool) error {
+	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+	defer cancel()
 	// check if container exists
 	if plugin, exists, err := client.ContainerExists(cont.Name); exists {
 		er.CheckError(err)
 		log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Debug("Removing Plugin container: ", cont.Name)
-		err := client.Client.ContainerRemove(types.ContainerRemoveOptions{
+		err := client.Client.ContainerRemove(ctx, types.ContainerRemoveOptions{
 			ContainerID:   plugin.ID,
 			RemoveVolumes: volumes,
 			RemoveLinks:   links,
@@ -129,7 +134,9 @@ func (client *Docker) LogContainer(contID string) {
 // ContainerInspect returns types.ContainerJSON from Container ID
 // if the container name exists, otherwise false.
 func (client *Docker) ContainerInspect(id string) (types.ContainerJSONBase, error) {
-	contJSON, err := client.Client.ContainerInspect(id)
+	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+	defer cancel()
+	contJSON, err := client.Client.ContainerInspect(ctx, id)
 	return *contJSON.ContainerJSONBase, err
 }
 
@@ -171,8 +178,10 @@ func (client *Docker) ParseContainers(name string, all bool) (types.Container, b
 
 // listContainers returns array of types.Containers and error
 func (client *Docker) listContainers(all bool) ([]types.Container, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+	defer cancel()
 	options := types.ContainerListOptions{All: all}
-	containers, err := client.Client.ContainerList(options)
+	containers, err := client.Client.ContainerList(ctx, options)
 	if err != nil {
 		return nil, err
 	}
@@ -206,6 +215,9 @@ func (client *Docker) StartELK(logs bool) (types.ContainerJSONBase, error) {
 			client.PullImage(image, "latest")
 		}
 
+		ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+		defer cancel()
+
 		createContConf := &container.Config{
 			Image: image,
 		}
@@ -219,12 +231,12 @@ func (client *Docker) StartELK(logs bool) (types.ContainerJSONBase, error) {
 		}
 		networkingConfig := &network.NetworkingConfig{}
 
-		contResponse, err := client.Client.ContainerCreate(createContConf, hostConfig, networkingConfig, name)
+		contResponse, err := client.Client.ContainerCreate(ctx, createContConf, hostConfig, networkingConfig, name)
 		if err != nil {
 			log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("CreateContainer error = %s\n", err)
 		}
 
-		err = client.Client.ContainerStart(contResponse.ID)
+		err = client.Client.ContainerStart(ctx, contResponse.ID)
 		if err != nil {
 			log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("StartContainer error = %s\n", err)
 		}

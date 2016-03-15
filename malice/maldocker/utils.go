@@ -5,16 +5,22 @@ import (
 	"net/url"
 	"strings"
 
+	"golang.org/x/net/context"
+
 	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/go-units"
+	"github.com/maliceio/malice/config"
 	er "github.com/maliceio/malice/malice/errors"
 )
 
 // Ping pings docker client to see if it is up or not by checking Info.
 func (client *Docker) Ping() bool {
-	_, err := client.Client.Info()
+	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+	defer cancel()
+
+	_, err := client.Client.Info(ctx)
 	if err != nil {
 		er.CheckError(err)
 		return false

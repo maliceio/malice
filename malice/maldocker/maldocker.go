@@ -4,6 +4,9 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"time"
+
+	"golang.org/x/net/context"
 
 	log "github.com/Sirupsen/logrus"
 	docker "github.com/docker/engine-api/client"
@@ -54,8 +57,12 @@ func NewDockerClient() *Docker {
 			log.Fatal(err)
 		}
 	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+	defer cancel()
+
 	// Check if client can connect
-	_, err = client.Info()
+	_, err = client.Info(ctx)
 	if err != nil {
 		handleClientError(err)
 		// log.Fatal(err)

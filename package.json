@@ -10,6 +10,7 @@
     "go-watch": "0.0.1",
     "gulp": "^3.9.0",
     "gulp-livereload": "^3.8.1",
+    "gulp-shell": "^0.5.2",
     "gulp-sync": "^0.1.4",
     "gulp-util": "^3.0.7",
     "live-reload": "^1.1.0",

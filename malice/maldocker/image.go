@@ -61,13 +61,15 @@ func (client *Docker) ImageExists(name string) (types.Image, bool, error) {
 }
 
 func (client *Docker) listImages(all bool) ([]types.Image, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+	defer cancel()
 
 	options := types.ImageListOptions{
 		All: all,
 		// MatchName string
 		// Filters   filters.Args
 	}
-	imageList, err := client.Client.ImageList(options)
+	imageList, err := client.Client.ImageList(ctx, options)
 	if err != nil {
 		log.Error(err)
 		return nil, err

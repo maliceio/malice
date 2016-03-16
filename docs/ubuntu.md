@@ -30,7 +30,7 @@ $ go install
 ```
 #### Download All Malice Plugins
 ```bash
-$ cd $HOME
+$ cd $HOME/src/github.com/maliceio/malice  # This is a BUG, I don't know why you need to be in this directory for it to work  
 $ malice plugin update --all
 ```
 > **NOTE:** pulling down all of the plugins can take a long time depending on your network speed.
@@ -38,6 +38,7 @@ $ malice plugin update --all
 #### Run Malice
 ```bash
 $ export MALICE_VT_API=<YOUR API KEY>
+$ cd $HOME/src/github.com/maliceio/malice
 $ malice
 ```
 > **NOTE:** Malice has just created a `.malice` in your home directory.  This is used to store the `config/plugin` info as well as to store the **samples** that you scan.

@@ -40,7 +40,7 @@ $ malice plugin update --all
 $ export MALICE_VT_API=<YOUR API KEY>
 $ malice
 ```
-> **NOTE:** Malice has just created a `.malice` in your home directory.  This is used to store the config/plugin info as well as to store the samples that you scan.
+> **NOTE:** Malice has just created a `.malice` in your home directory.  This is used to store the `config/plugin` info as well as to store the **samples** that you scan.
 
 ```bash
 Usage: malice [OPTIONS] COMMAND [arg...]

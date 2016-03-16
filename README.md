@@ -9,11 +9,10 @@ Malice's mission is to be a free open source version of VirusTotal that anyone c
 
 ### Install
 
-Malice will have binary releases for all platforms.
-
-**If you are building from source, please note that Malice requires Go v1.5 or above!**
+Malice will have binary releases for all platforms soon.
 
 ```bash
+$ go get github.com/tools/godep
 $ go get -u github.com/maliceio/malice
 $ godep restore
 ```
@@ -30,6 +29,7 @@ To Run on OSX
 ```bash
 $ brew install caskroom/cask/brew-cask
 $ brew cask install virtualbox
+$ brew install libmagic
 $ brew install docker
 $ brew install docker-machine
 $ docker-machine create --driver virtualbox --engine-storage-driver overlay malice
@@ -64,6 +64,9 @@ Run 'malice COMMAND --help' for more information on a command.
 ```
 
 ### Documentation
+#### Install
+ - [Ubuntu](https://github.com/maliceio/malice/blob/master/docs/ubuntu.md)
+
 #### Plugins
  - [Plugins List (and growing)](https://github.com/maliceio/malice/blob/master/docs/plugins.md)
 

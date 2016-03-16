@@ -34,6 +34,8 @@ $ go install
 $ cd $HOME
 $ malice plugin update --all
 ```
+> **NOTE:** pulling down all of the plugins can take a long time depending on your network speed.
+
 #### Run Malice
 ```bash
 $ export MALICE_VT_API=<YOUR API KEY>

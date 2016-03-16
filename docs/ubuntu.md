@@ -5,6 +5,9 @@
 $ sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable
 $ sudo apt-get update
 $ sudo apt-get install golang
+# You should add these two lines to you .bashrc file.
+$ export GOPATH=$HOME  
+$ export PATH=$PATH:$GOPATH/bin
 ```
 #### Install Docker
 ```bash
@@ -15,27 +18,26 @@ $ sudo echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main
 " > /etc/apt/sources.list.d/docker.list
 $ sudo apt-get update
 $ sudo apt-get install docker-engine
+$ sudo usermod -aG docker $USER  # You might have to logout for change to take effect
 ```
 #### Install Malice
 ```bash
 $ sudo apt-get install libmagic-dev build-essential
-$ export GOPATH=$HOME
-$ export PATH=$PATH:$GOPATH/bin
 $ go get github.com/tools/godep
 $ go get -u github.com/maliceio/malice
-$ godep restore  # This might not be needed with Go 1.6+
 $ cd ~/src/github.com/maliceio/malice
-$ sudo -E go install
+$ godep restore  # This might not be needed with Go 1.6+
+$ go install
 ```
 #### Download All Malice Plugins
 ```bash
-$ cd $HOME 
-$ sudo bin/malice plugin update --all
+$ cd $HOME
+$ malice plugin update --all
 ```
 #### Run Malice
 ```bash
 $ export MALICE_VT_API=<YOUR API KEY>
-$ sudo bin/malice
+$ malice
 ```
 > **NOTE:** Malice has just created a `.malice` in your home directory.  This is used to store the config/plugin info as well as to store the samples that you scan.
 

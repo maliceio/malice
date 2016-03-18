@@ -1,7 +1,14 @@
 language: go
-
+sudo: false
 go:
+  - 1.5.3
+  - 1.6
   - tip
+
+env:
+  global:
+    - GOARCH=amd64
+    - GO15VENDOREXPERIMENT=1
 
 branches:
   only:
@@ -10,5 +17,3 @@ branches:
 install: make deps
 script:
   - make test
-
-sudo: false

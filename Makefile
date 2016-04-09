@@ -1,55 +1,23 @@
-GOTOOLS=\
-	github.com/tools/godep \
-	github.com/mitchellh/gox \
-	golang.org/x/tools/cmd/cover \
-	golang.org/x/tools/cmd/vet \
-	github.com/jteeuwen/go-bindata/... \
-	github.com/elazarl/go-bindata-assetfs/...
-# DEPS = $(shell go list -f '{{range .TestImports}}{{.}} {{end}}' ./...)
-PACKAGES = $(shell go list ./...)
-VETARGS?=-asmdecl -atomic -bool -buildtags -copylocks -methods \
-         -nilfunc -printf -rangeloops -shift -structtags -unsafeptr
-VERSION?=$(shell awk -F\" '/^const Version/ { print $$2; exit }' version.go)
+NAME=malice
+ARCH=$(shell uname -m)
+VERSION=0.1.0-alpha
 
-all: deps static-assets
-
-# bin generates the releaseable binaries for Vault
-bin: generate
-	@sh -c "'$(CURDIR)/scripts/build.sh'"
-
-# dev creates binaries for testing Vault locally. These are put
-# into ./bin/ as well as $GOPATH/bin
-dev: generate
-	@MALICE_DEV=1 sh -c "'$(CURDIR)/scripts/build.sh'"
-
-start:
-	echo Starting malice machine
+build:
+	# mkdir -p build/Linux  && GOOS=linux  go build -ldflags "-X main.Version=$(VERSION)" -o build/Linux/$(NAME)
+	mkdir -p build/Darwin && GOOS=darwin go build -ldflags "-X main.Version=$(VERSION)" -o build/Darwin/$(NAME)
 
 deps:
-	@echo "--> Installing build dependencies"
-	@go get -v $(GOTOOLS)
-	# @go get -d -v ./... $(DEPS)
+	go get -u github.com/progrium/gh-release/...
+	go get -u -f github.com/tools/godep
+	go get || true
 
-vet:
-	@go tool vet 2>/dev/null ; if [ $$? -eq 3 ]; then \
-		go get golang.org/x/tools/cmd/vet; \
-	fi
-	@echo "--> Running go tool vet $(VETARGS) ."
-	@go tool vet $(VETARGS) . ; if [ $$? -eq 1 ]; then \
-		echo ""; \
-		echo "Vet found suspicious constructs. Please check the reported constructs"; \
-		echo "and fix them if necessary before submitting the code for reviewal."; \
-	fi
+# test: build
+# 	tests/shunit2 tests/*.sh
 
-# generate runs `go generate` to build the dynamically generated source files
-generate: deps
-	find . -type f -name '.DS_Store' -delete
-	go generate ./...
+release: build
+	rm -rf release && mkdir release
+	# tar -zcf release/$(NAME)_$(VERSION)_linux_$(ARCH).tgz -C build/Linux $(NAME)
+	tar -zcf release/$(NAME)_$(VERSION)_darwin_$(ARCH).tgz -C build/Darwin $(NAME)
+	gh-release create maliceio/$(NAME) $(VERSION) $(shell git rev-parse --abbrev-ref HEAD) v$(VERSION)
 
-# generates the static web ui
-static-assets: deps
-	@echo "--> Generating static assets"
-	@go-bindata -pkg data ./data/
-	@mv bindata.go data/
-
-.PHONY: all bin dev dist cov deps test vet web web-push generate test-nodep static-assets
+.PHONY: release build

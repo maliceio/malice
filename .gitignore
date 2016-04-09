@@ -32,3 +32,5 @@ npm-debug.log
 
 .imdone/config.json
 samples/*
+release/
+build/

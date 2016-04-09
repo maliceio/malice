@@ -85,9 +85,6 @@ Minimum Viable Product
 ### TODO
  - [ ] Figure out how to do Windows AV ? :confounded:
 
-### Credits
-I want to give a big shout out to [jordan-wright](http://jordan-wright.com), I am using his program [gophish](https://github.com/jordan-wright/gophish) as a template to get me started with the Malice rewrite.  Jordan has an amazing sense of style and his code is elegant and beautiful.  I aspire to be on his level someday.
-
 ### License
 Apache License (Version 2.0)  
 Copyright (c) 2013 - 2016 **blacktop** Joshua Maine

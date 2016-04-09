@@ -11,10 +11,6 @@ deps:
 	go get -u -f github.com/tools/godep
 	go get || true
 
-test: deps build
-	echo "Built" || true
-# 	tests/shunit2 tests/*.sh
-
 release: build
 	rm -rf release && mkdir release
 	# tar -zcf release/$(NAME)_$(VERSION)_linux_$(ARCH).tgz -C build/Linux $(NAME)
@@ -26,4 +22,4 @@ destroy:
 	rm -rf build
 	gh-release destroy maliceio/$(NAME) $(VERSION) $(shell git rev-parse --abbrev-ref HEAD) v$(VERSION)
 
-.PHONY: release build destroy
+.PHONY: release build destroy test

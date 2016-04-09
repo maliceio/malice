@@ -11,7 +11,8 @@ deps:
 	go get -u -f github.com/tools/godep
 	go get || true
 
-# test: build
+test: deps build
+	echo "Built" || true
 # 	tests/shunit2 tests/*.sh
 
 release: build

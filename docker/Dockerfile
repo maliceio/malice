@@ -12,14 +12,20 @@ RUN apk-install -t build-deps go git mercurial build-base file-dev \
   && go version \
   && go get \
   && go build -ldflags "-X main.Version=$(cat VERSION) -X main.BuildTime=$(date -u +%Y%m%d)" -o /bin/malice \
+  && echo "Copy malice config files..." \
+  && cp /go/src/github.com/maliceio/malice/data/config.toml /malice/config \
+  && cp /go/src/github.com/maliceio/malice/data/plugins.toml /malice/config \
   && rm -rf /go \
   && apk del --purge build-deps
 
-VOLUME ["/malice/data"]
+ENV MALICE_STORAGE_PATH /malice
+
+VOLUME ["/malice/config"]
+VOLUME ["/malice/samples"]
 
 EXPOSE 80 443 9200 9300
 
-WORKDIR /malware
+WORKDIR /malware/samples
 
 ENTRYPOINT ["/bin/malice"]
 

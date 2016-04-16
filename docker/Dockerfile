@@ -2,6 +2,7 @@ FROM gliderlabs/alpine:edge
 
 MAINTAINER blacktop, https://github.com/blacktop
 
+RUN apk-install file
 RUN apk-install -t build-deps go git mercurial build-base file-dev \
   && set -x \
   && echo "Building info Go binary..." \

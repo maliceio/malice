@@ -1,4 +1,4 @@
-FROM gliderlabs/alpine
+FROM gliderlabs/alpine:edge
 
 MAINTAINER blacktop, https://github.com/blacktop
 
@@ -23,5 +23,3 @@ WORKDIR /malware
 ENTRYPOINT ["/bin/malice"]
 
 CMD ["--help"]
-
-# CMD ["/usr/bin/supervisord"]

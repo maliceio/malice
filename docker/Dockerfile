@@ -26,7 +26,7 @@ VOLUME ["/malice/samples"]
 
 EXPOSE 80 443 9200 9300
 
-WORKDIR /malware/samples
+WORKDIR /malice/samples
 
 ENTRYPOINT ["/bin/malice"]
 

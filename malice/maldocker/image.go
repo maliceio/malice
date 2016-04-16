@@ -22,13 +22,7 @@ func (client *Docker) PullImage(id string, tag string) {
 	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
 	defer cancel()
 
-	pullOptions := types.ImagePullOptions{
-		ImageID: id,
-		Tag:     tag,
-		// RegistryAuth: encodedAuth,
-	}
-
-	responseBody, err := client.Client.ImagePull(ctx, pullOptions, nil)
+	responseBody, err := client.Client.ImagePull(ctx, id, types.ImagePullOptions{})
 	defer responseBody.Close()
 	er.CheckError(err)
 
@@ -61,15 +55,15 @@ func (client *Docker) ImageExists(name string) (types.Image, bool, error) {
 }
 
 func (client *Docker) listImages(all bool) ([]types.Image, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
-	defer cancel()
+	// ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+	// defer cancel()
 
 	options := types.ImageListOptions{
 		All: all,
 		// MatchName string
 		// Filters   filters.Args
 	}
-	imageList, err := client.Client.ImageList(ctx, options)
+	imageList, err := client.Client.ImageList(context.Background(), options)
 	if err != nil {
 		log.Error(err)
 		return nil, err

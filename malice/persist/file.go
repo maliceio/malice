@@ -66,9 +66,13 @@ func (file *File) CopyToSamples() error {
 		os.MkdirAll(maldirs.GetSampledsDir(), 0777)
 	}
 
-	err := malutils.CopyFile(file.Path, path.Join(maldirs.GetSampledsDir(), file.SHA256))
-	er.CheckError(err)
-	return err
+	if _, err := os.Stat(path.Join(maldirs.GetSampledsDir(), file.SHA256)); os.IsNotExist(err) {
+		err := malutils.CopyFile(file.Path, path.Join(maldirs.GetSampledsDir(), file.SHA256))
+		er.CheckError(err)
+		return err
+	}
+
+	return nil
 }
 
 // GetName returns file name
@@ -198,6 +202,9 @@ func (file *File) GetFileMimeType() (mimetype string, err error) {
 	if err != nil {
 		log.Fatalf("error occured during type lookup: %v", err)
 	}
+
+	// filetype := http.DetectContentType(file.Data)
+	// file.Mime = filetype
 
 	file.Mime = mimetype
 	// log.Printf("mime-type: %v", mimetype)

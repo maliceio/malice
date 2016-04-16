@@ -94,8 +94,7 @@ func (client *Docker) RemoveContainer(cont types.ContainerJSONBase, volumes bool
 	if plugin, exists, err := client.ContainerExists(cont.Name); exists {
 		er.CheckError(err)
 		log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Debug("Removing Plugin container: ", cont.Name)
-		err := client.Client.ContainerRemove(ctx, types.ContainerRemoveOptions{
-			ContainerID:   plugin.ID,
+		err := client.Client.ContainerRemove(ctx, plugin.ID, types.ContainerRemoveOptions{
 			RemoveVolumes: volumes,
 			RemoveLinks:   links,
 			Force:         force,
@@ -115,20 +114,20 @@ func (client *Docker) LogContainer(contID string) {
 	defer cancel()
 
 	options := types.ContainerLogsOptions{
-		ContainerID: contID,
-		ShowStdout:  true,
-		ShowStderr:  true,
+		ShowStdout: true,
+		ShowStderr: true,
 		// Since       string
 		// Timestamps  bool
 		Follow: true,
 		// Tail        string
 	}
 
-	logs, err := client.Client.ContainerLogs(ctx, options)
+	logs, err := client.Client.ContainerLogs(ctx, contID, options)
 	defer logs.Close()
 	er.CheckError(err)
 
 	_, err = stdcopy.StdCopy(os.Stdout, os.Stderr, logs)
+	er.CheckError(err)
 }
 
 // ContainerInspect returns types.ContainerJSON from Container ID

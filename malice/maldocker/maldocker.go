@@ -4,7 +4,6 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
-	"time"
 
 	"golang.org/x/net/context"
 
@@ -31,7 +30,7 @@ func NewDockerClient() *Docker {
 
 	// Create docker client based on OS
 	switch runtime.GOOS {
-	case "darwin", "windows":
+	case "windows":
 		// Create a new Client from Env
 		if _, exists := os.LookupEnv("DOCKER_HOST"); exists {
 			ip, port, err = parseDockerEndoint(os.Getenv("DOCKER_HOST"))
@@ -50,19 +49,22 @@ func NewDockerClient() *Docker {
 				log.Fatal(err)
 			}
 		}
-	case "linux":
+	case "darwin", "linux":
 		defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
 		client, err = docker.NewClient("unix:///var/run/docker.sock", "v1.22", nil, defaultHeaders)
+		log.Debug(client)
+		log.Debug(err)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
-	defer cancel()
+	// ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+	// defer cancel()
 
 	// Check if client can connect
-	_, err = client.Info(ctx)
+	_, err = client.Info(context.Background())
+	log.Debug(err)
 	if err != nil {
 		handleClientError(err)
 		// log.Fatal(err)

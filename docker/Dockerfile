@@ -2,11 +2,11 @@ FROM gliderlabs/alpine
 
 MAINTAINER blacktop, https://github.com/blacktop
 
-RUN apk-install -t build-deps go git mercurial file-dev \
+RUN apk-install -t build-deps go git mercurial build-base file-dev \
   && set -x \
   && echo "Building info Go binary..." \
   && git clone https://github.com/maliceio/malice.git /go/src/github.com/maliceio/malice \
-  && cd /go/src/github.com/maliceio/malice \  
+  && cd /go/src/github.com/maliceio/malice \
   && export GOPATH=/go \
   && go version \
   && go get \

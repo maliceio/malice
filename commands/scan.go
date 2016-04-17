@@ -22,6 +22,12 @@ func cmdScan(path string, logs bool) {
 
 		docker := maldocker.NewDockerClient()
 
+		if _, exists, _ := docker.VolumeExists("malice"); !exists {
+			log.Debug("Volume malice not found.")
+			// docker.CreateVolume("malice")
+		}
+		log.Debug("Volume malice found.")
+
 		if plugins.InstalledPluginsCheck(docker) {
 			log.Debug("All enabled plugins are installed.")
 		} else {

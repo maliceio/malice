@@ -15,7 +15,7 @@ type API interface {
 }
 
 type Client struct {
-	*persist.PluginStore
+	// *persist.PluginStore
 	IsDebug        bool
 	SSHClientType  ssh.ClientType
 	GithubAPIToken string

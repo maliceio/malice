@@ -62,6 +62,13 @@ func NewDockerClient() *Docker {
 	// ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
 	// defer cancel()
 
+	// vols, err := client.VolumeList(context.Background(), filters.Args{})
+	// for _, volume := range vols.Volumes {
+	// 	if strings.Contains(volume.Name, "malice") {
+	// 		fmt.Printf("%#v", volume)
+	// 	}
+	// }
+
 	// Check if client can connect
 	_, err = client.Info(context.Background())
 	log.Debug(err)

@@ -5,6 +5,11 @@
 [![Gitter Chat][gitter-badge]][gitter-link]
 [![License][license]](http://www.apache.org/licenses/LICENSE-2.0)
 
+[![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)][hub]
+[![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)][hub]
+[![Image Size](https://img.shields.io/imagelayers/image-size/malice/engine/latest.svg)](https://imagelayers.io/?images=malice/engine:latest)
+[![Image Layers](https://img.shields.io/imagelayers/layers/malice/engine/latest.svg)](https://imagelayers.io/?images=malice/engine:latest)
+
 Malice's mission is to be a free open source version of VirusTotal that anyone can use at any scale from an independent researcher to a fortune 500 company.
 
 ### Install
@@ -94,3 +99,4 @@ Copyright (c) 2013 - 2016 **blacktop** Joshua Maine
 [gitter-badge]: https://badges.gitter.im/maliceio/malice.svg
 [gitter-link]: https://gitter.im/maliceio/malice
 [license]: https://img.shields.io/badge/licence-Apache%202.0-blue.svg
+[hub]: https://hub.docker.com/r/malice/engine/

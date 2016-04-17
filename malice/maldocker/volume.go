@@ -19,6 +19,23 @@ func (client *Docker) VolumeExists(name string) (*types.Volume, bool, error) {
 	return client.ParseVolumes(name, true)
 }
 
+// CreateVolume creates a docker volume with the given name
+// returns: Volume, error
+func (client *Docker) CreateVolume(name string) (types.Volume, error) {
+	options := types.VolumeCreateRequest{
+		Name: name, // Name is the requested name of the volume
+		// Driver     string            // Driver is the name of the driver that should be used to create the volume
+		// DriverOpts map[string]string // DriverOpts holds the driver specific options to use for when creating the volume.
+		// Labels     map[string]string // Labels holds metadata specific to the volume being created.
+	}
+	vol, err := client.Client.VolumeCreate(context.Background(), options)
+	log.WithFields(log.Fields{
+		"name": name,
+		"env":  config.Conf.Environment.Run,
+	}).Info("Created Volume: ", name)
+	return vol, err
+}
+
 // ParseVolumes parses the volumes
 func (client *Docker) ParseVolumes(name string, all bool) (*types.Volume, bool, error) {
 	// list volumes

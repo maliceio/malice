@@ -53,7 +53,6 @@ func NewDockerClient() *Docker {
 		defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
 		client, err = docker.NewClient("unix:///var/run/docker.sock", "v1.22", nil, defaultHeaders)
 		log.Debug(client)
-		log.Debug(err)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -71,7 +70,6 @@ func NewDockerClient() *Docker {
 
 	// Check if client can connect
 	_, err = client.Info(context.Background())
-	log.Debug(err)
 	if err != nil {
 		handleClientError(err)
 		// log.Fatal(err)

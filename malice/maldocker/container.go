@@ -15,7 +15,6 @@ import (
 	"github.com/docker/go-connections/nat"
 	"github.com/maliceio/malice/config"
 	er "github.com/maliceio/malice/malice/errors"
-	"github.com/maliceio/malice/malice/maldirs"
 
 	"regexp"
 
@@ -56,8 +55,14 @@ func (client *Docker) StartContainer(cmd strslice.StrSlice, name string, image s
 		}
 		// fmt.Printf("%#v\n", createContConf.Cmd)
 		// fmt.Printf("%#v\n", createContConf.Env)
+
+		binds := []string{
+			"malice:/malware:ro",
+		}
+
 		hostConfig := &container.HostConfig{
-			Binds:      []string{maldirs.GetSampledsDir() + ":/malware:ro"},
+			// Binds:      []string{maldirs.GetSampledsDir() + ":/malware:ro"},
+			Binds:      binds,
 			Privileged: false,
 		}
 		networkingConfig := &network.NetworkingConfig{}

@@ -22,9 +22,11 @@ func cmdScan(path string, logs bool) {
 
 		docker := maldocker.NewDockerClient()
 
+		// Check for existance of malice volume
 		if _, exists, _ := docker.VolumeExists("malice"); !exists {
 			log.Debug("Volume malice not found.")
-			// docker.CreateVolume("malice")
+			_, err := docker.CreateVolume("malice")
+			er.CheckError(err)
 		}
 		log.Debug("Volume malice found.")
 

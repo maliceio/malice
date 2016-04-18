@@ -27,7 +27,7 @@ $ cd $GOPATH/src/github.com/maliceio/malice/contrib/zsh-completion
 $ bash install.sh
 ```
 
-### Setup
+### Setup Docker
 To Run on OSX
  - Install [Homebrew](http://brew.sh)
 
@@ -40,6 +40,7 @@ $ brew install docker-machine
 $ docker-machine create --driver virtualbox --engine-storage-driver overlay malice
 $ eval $(docker-machine env malice)
 ```
+Or install **Docker for Mac** if you can get a [beta invite](https://beta.docker.com).
 
 ### Usage
 ```
@@ -67,6 +68,16 @@ Commands:
 
 Run 'malice COMMAND --help' for more information on a command.
 ```
+
+### Usage (Docker in Docker)
+```bash
+docker run -v /var/run/docker.sock:/var/run/docker.sock \
+           -v malice:/malice/samples \
+           -v `pwd`:/cases:ro \
+           -e MALICE_VT_API=$MALICE_VT_API \
+           malice/engine scan /cases/<FILE>
+```
+> NOTE: This command will work with **Docker for Mac** or on Linux.
 
 ### Documentation
 #### Install

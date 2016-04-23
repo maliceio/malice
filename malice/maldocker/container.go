@@ -229,7 +229,13 @@ func (client *Docker) StartELK(logs bool) (types.ContainerJSONBase, error) {
 			"80/tcp":   {{HostIP: "0.0.0.0", HostPort: "80"}},
 			"9200/tcp": {{HostIP: "0.0.0.0", HostPort: "9200"}},
 		}
+
+		binds := []string{
+			"malice:/usr/share/elasticsearch/data",
+		}
+
 		hostConfig := &container.HostConfig{
+			Binds:        binds,
 			PortBindings: portBindings,
 			Privileged:   false,
 		}

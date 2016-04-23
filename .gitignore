@@ -34,3 +34,5 @@ npm-debug.log
 samples/*
 release/
 build/
+.vscode/
+debug

@@ -63,6 +63,7 @@ type dockerConfig struct {
 	Name     string `toml:"machine-name"`
 	EndPoint string
 	Timeout  time.Duration
+	Binds    string
 }
 
 type loggerConfig struct {

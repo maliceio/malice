@@ -19,7 +19,7 @@ import (
 // StartPlugin starts plugin
 func (plugin Plugin) StartPlugin(client *maldocker.Docker, sample string, logs bool) (types.ContainerJSONBase, error) {
 
-	binds := []string{"malice:/malware:ro"}
+	binds := []string{config.Conf.Docker.Binds}
 	env := plugin.getPluginEnv()
 	// env := []string{"MALICE_VT_API=" + os.Getenv("MALICE_VT_API")}
 
@@ -68,6 +68,7 @@ func RunIntelPlugins(client *maldocker.Docker, hash string, logs bool) {
 			)
 			er.CheckError(err)
 		}
+
 		log.WithFields(log.Fields{
 			"id": cont.ID,
 			"ip": client.GetIP(),

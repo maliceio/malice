@@ -24,6 +24,7 @@ type Plugin struct {
 	Mime        string   `toml:"mime"`
 	HashTypes   []string `toml:"hashtypes"`
 	Cmd         string   `toml:"cmd"`
+	Env         []string `toml:"env"`
 	Installed   bool
 }
 

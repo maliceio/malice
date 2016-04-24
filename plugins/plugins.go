@@ -18,7 +18,20 @@ import (
 
 // StartPlugin starts plugin
 func (plugin Plugin) StartPlugin(client *maldocker.Docker, sample string, logs bool) (types.ContainerJSONBase, error) {
-	contJSON, err := client.StartContainer(strslice.StrSlice{"-t", sample}, plugin.Name, plugin.Image, logs)
+
+	binds := []string{"malice:/malware:ro"}
+	env := plugin.getPluginEnv()
+	// env := []string{"MALICE_VT_API=" + os.Getenv("MALICE_VT_API")}
+
+	contJSON, err := client.StartContainer(
+		strslice.StrSlice{"-t", sample},
+		plugin.Name,
+		plugin.Image,
+		logs,
+		binds,
+		nil,
+		env,
+	)
 	er.CheckError(err)
 
 	return contJSON, err
@@ -29,11 +42,30 @@ func RunIntelPlugins(client *maldocker.Docker, hash string, logs bool) {
 	var cont types.ContainerJSONBase
 	var err error
 	for _, plugin := range GetIntelPlugins(true) {
+
+		env := plugin.getPluginEnv()
+
 		if plugin.Cmd != "" {
-			cont, err = client.StartContainer(strslice.StrSlice{"-t", plugin.Cmd, hash}, plugin.Name, plugin.Image, logs)
+			cont, err = client.StartContainer(
+				strslice.StrSlice{"-t", plugin.Cmd, hash},
+				plugin.Name,
+				plugin.Image,
+				logs,
+				nil,
+				nil,
+				env,
+			)
 			er.CheckError(err)
 		} else {
-			cont, err = client.StartContainer(strslice.StrSlice{"-t", hash}, plugin.Name, plugin.Image, logs)
+			cont, err = client.StartContainer(
+				strslice.StrSlice{"-t", hash},
+				plugin.Name,
+				plugin.Image,
+				logs,
+				nil,
+				nil,
+				env,
+			)
 			er.CheckError(err)
 		}
 		log.WithFields(log.Fields{
@@ -47,6 +79,14 @@ func RunIntelPlugins(client *maldocker.Docker, hash string, logs bool) {
 		err := client.RemoveContainer(cont, false, false, false)
 		er.CheckError(err)
 	}
+}
+
+func (plugin *Plugin) getPluginEnv() []string {
+	var env []string
+	for _, pluginEnv := range plugin.Env {
+		env = append(env, fmt.Sprintf("%s=%s", pluginEnv, os.Getenv(pluginEnv)))
+	}
+	return env
 }
 
 func printStatus(resp gorequest.Response, body string, errs []error) {

@@ -43,9 +43,7 @@ func setDebugOutputLevel() {
 }
 
 // Init initializes Malice
-func Init() {
-
-}
+func Init() {}
 
 func main() {
 	Init()

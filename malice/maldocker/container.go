@@ -22,7 +22,7 @@ import (
 )
 
 // StartContainer starts a malice docker container
-func (client *Docker) StartContainer(cmd strslice.StrSlice, name string, image string, logs bool) (types.ContainerJSONBase, error) {
+func (client *Docker) StartContainer(cmd strslice.StrSlice, name string, image string, logs bool, binds []string, portBindings nat.PortMap, env []string) (types.ContainerJSONBase, error) {
 
 	if client.Ping() {
 		if _, exists, _ := client.ContainerExists(name); exists {
@@ -51,19 +51,15 @@ func (client *Docker) StartContainer(cmd strslice.StrSlice, name string, image s
 		createContConf := &container.Config{
 			Image: image,
 			Cmd:   cmd,
-			Env:   []string{"MALICE_VT_API=" + os.Getenv("MALICE_VT_API")},
+			Env:   env,
+			// Env:   []string{"MALICE_VT_API=" + os.Getenv("MALICE_VT_API")},
 		}
-		// fmt.Printf("%#v\n", createContConf.Cmd)
-		// fmt.Printf("%#v\n", createContConf.Env)
-
-		binds := []string{
-			"malice:/malware:ro",
-		}
-
 		hostConfig := &container.HostConfig{
 			// Binds:      []string{maldirs.GetSampledsDir() + ":/malware:ro"},
-			Binds:      binds,
-			Privileged: false,
+			// Binds:      []string{"malice:/malware:ro"},
+			Binds:        binds,
+			PortBindings: portBindings,
+			Privileged:   false,
 		}
 		networkingConfig := &network.NetworkingConfig{}
 
@@ -194,8 +190,14 @@ func (client *Docker) listContainers(all bool) ([]types.Container, error) {
 
 // StartELK creates an ELK container from the image blacktop/elk
 func (client *Docker) StartELK(logs bool) (types.ContainerJSONBase, error) {
+
 	name := "elk"
 	image := "blacktop/elk"
+	binds := []string{"malice:/usr/share/elasticsearch/data"}
+	portBindings := nat.PortMap{
+		"80/tcp":   {{HostIP: "0.0.0.0", HostPort: "80"}},
+		"9200/tcp": {{HostIP: "0.0.0.0", HostPort: "9200"}},
+	}
 
 	if client.Ping() {
 		if _, exists, _ := client.ContainerExists(name); exists {
@@ -219,45 +221,8 @@ func (client *Docker) StartELK(logs bool) (types.ContainerJSONBase, error) {
 			client.PullImage(image, "latest")
 		}
 
-		ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
-		defer cancel()
-
-		createContConf := &container.Config{
-			Image: image,
-		}
-		portBindings := nat.PortMap{
-			"80/tcp":   {{HostIP: "0.0.0.0", HostPort: "80"}},
-			"9200/tcp": {{HostIP: "0.0.0.0", HostPort: "9200"}},
-		}
-
-		binds := []string{
-			"malice:/usr/share/elasticsearch/data",
-		}
-
-		hostConfig := &container.HostConfig{
-			Binds:        binds,
-			PortBindings: portBindings,
-			Privileged:   false,
-		}
-		networkingConfig := &network.NetworkingConfig{}
-
-		contResponse, err := client.Client.ContainerCreate(ctx, createContConf, hostConfig, networkingConfig, name)
-		if err != nil {
-			log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("CreateContainer error = %s\n", err)
-		}
-
-		err = client.Client.ContainerStart(ctx, contResponse.ID)
-		if err != nil {
-			log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("StartContainer error = %s\n", err)
-		}
-
-		if logs {
-			client.LogContainer(contResponse.ID)
-		}
-
-		contJSON, err := client.ContainerInspect(contResponse.ID)
-		er.CheckError(err)
-		return contJSON, err
+		cont, err := client.StartContainer(nil, name, image, logs, binds, portBindings, nil)
+		return cont, err
 	}
 	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")
 }

@@ -25,6 +25,7 @@
   cmd = "lookup"
   mime = "hash"
   hashtypes = [ "md5", "sha1", "sha256" ]
+  env = ["MALICE_VT_API"]
 
 [[plugin]]
   name = "shadow-server"
@@ -43,6 +44,7 @@
   image = "malice/team-cymru"
   mime = "hash"
   hashtypes = [ "md5", "sha1" ]
+  env = ["MALICE_TH_USER", "MALICE_TH_KEY"]
 
 [[plugin]]
   name = "fileinfo"

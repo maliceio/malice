@@ -21,7 +21,6 @@ func (plugin Plugin) StartPlugin(client *maldocker.Docker, sample string, logs b
 
 	binds := []string{config.Conf.Docker.Binds}
 	env := plugin.getPluginEnv()
-	// env := []string{"MALICE_VT_API=" + os.Getenv("MALICE_VT_API")}
 
 	contJSON, err := client.StartContainer(
 		strslice.StrSlice{"-t", sample},

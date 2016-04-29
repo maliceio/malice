@@ -119,7 +119,7 @@ func getMime(mime string, plugins []Plugin) []Plugin {
 func getEnabled(plugins []Plugin) []Plugin {
 	enabled := []Plugin{}
 	if plugins == nil {
-		plugins = Plugs.Plugins
+		return Plugs.Plugins
 	}
 	for _, plugin := range Plugs.Plugins {
 		if plugin.Enabled {

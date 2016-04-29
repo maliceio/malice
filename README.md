@@ -7,8 +7,8 @@
 
 [![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)][hub]
 [![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)][hub]
-[![Image Size](https://img.shields.io/imagelayers/image-size/malice/engine/latest.svg)](https://imagelayers.io/?images=malice/engine:latest)
-[![Image Layers](https://img.shields.io/imagelayers/layers/malice/engine/latest.svg)](https://imagelayers.io/?images=malice/engine:latest)
+<!-- [![Image Size](https://img.shields.io/imagelayers/image-size/malice/engine/latest.svg)](https://imagelayers.io/?images=malice/engine:latest)
+[![Image Layers](https://img.shields.io/imagelayers/layers/malice/engine/latest.svg)](https://imagelayers.io/?images=malice/engine:latest) -->
 
 Malice's mission is to be a free open source version of VirusTotal that anyone can use at any scale from an independent researcher to a fortune 500 company.
 
@@ -70,12 +70,17 @@ Run 'malice COMMAND --help' for more information on a command.
 ```
 
 ### Usage (Docker in Docker)
+Install/Update all Plugins
+```bash
+docker run -v /var/run/docker.sock:/var/run/docker.sock malice/engine plugin update --all
+```
+Scan a file
 ```bash
 docker run -v /var/run/docker.sock:/var/run/docker.sock \
            -v malice:/malice/samples \
            -v `pwd`:/cases:ro \
            -e MALICE_VT_API=$MALICE_VT_API \
-           malice/engine scan /cases/<FILE>
+           -it --rm malice/engine scan /cases/<FILE>
 ```
 > NOTE: This command will work with **Docker for Mac** or on Linux.
 

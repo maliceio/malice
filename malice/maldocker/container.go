@@ -68,7 +68,7 @@ func (client *Docker) StartContainer(cmd strslice.StrSlice, name string, image s
 			log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("CreateContainer error = %s\n", err)
 		}
 
-		err = client.Client.ContainerStart(ctx, contResponse.ID)
+		err = client.Client.ContainerStart(ctx, contResponse.ID, types.ContainerStartOptions{})
 		if err != nil {
 			log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("StartContainer error = %s\n", err)
 		}

@@ -1,16 +1,17 @@
 ### Example LookUp Output
 
-#### virustotal
+#### VirusTotal
+
 | Ratio | Link                                                                                                                          | API    | Scanned                |
-| ----- | ----------------------------------------------------------------------------------------------------------------------------- | ------ | ---------------------- |
-| 95%   | [link](https://www.virustotal.com/file/371d99fc5514f5a9816b4ec844cb816c52460a41b8e5d14bac1cb7bee57e0b1f/analysis/1312464222/) | Public | Thu 2011Aug04 13:23:42 |
+|-------|-------------------------------------------------------------------------------------------------------------------------------|--------|------------------------|
+| 85%   | [link](https://www.virustotal.com/file/befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408/analysis/1455536823/) | Public | Mon 2016Feb15 11:47:03 |
+
 #### shadow-server
-AntiVirus
- - FirstSeen: 6/15/2010 3:09AM
- - LastSeen: 6/15/2010 3:09AM
+
+AntiVirus - FirstSeen: 6/15/2010 3:09AM - LastSeen: 6/15/2010 3:09AM
 
 | Vendor           | Signature                  |
-| ---------------- | -------------------------- |
+|------------------|----------------------------|
 | G-Data           | Trojan.Generic.2609117     |
 | NOD32            | Win32/AutoRun.VB.JP        |
 | Norman           | Suspicious_Gen2.SKLJ       |
@@ -35,8 +36,9 @@ AntiVirus
 ### Example Scan Output
 
 #### File
+
 | Field  | Value                                                                    |
-| ------ | ------------------------------------------------------------------------ |
+|--------|--------------------------------------------------------------------------|
 | Name   | befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408         |
 | Path   | samples/befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408 |
 | Size   | 40.96 kB                                                                 |
@@ -44,19 +46,23 @@ AntiVirus
 | SHA1   | 6b82f126555e7644816df5d4e4614677ee0bda5c                                 |
 | SHA256 | befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408         |
 | Mime   | application/x-dosexec                                                    |
+
 #### SSDeep
+
 768:15jQ4nVHQaeO379u4XckKVCsknBN9A4hUnDxDiNZ957ZpK0IUUiM95Zdz:15jQ4nVHQaeO9uwckKuBN9A4UnDxcbFi
 
 #### TRiD
- -  31.0% (.EXE) Win32 Executable MS Visual C++ (generic) (31206/45/13)
- -  27.5% (.EXE) Win64 Executable (generic) (27644/34/4)
- -  26.4% (.EXE) Win32 EXE Yoda's Crypter (26569/9/4)
- -  6.5% (.DLL) Win32 Dynamic Link Library (generic) (6578/25/2)
- -  4.4% (.EXE) Win32 Executable (generic) (4508/7/1)
+
+-	31.0% (.EXE) Win32 Executable MS Visual C++ (generic) (31206/45/13)
+-	27.5% (.EXE) Win64 Executable (generic) (27644/34/4)
+-	26.4% (.EXE) Win32 EXE Yoda's Crypter (26569/9/4)
+-	6.5% (.DLL) Win32 Dynamic Link Library (generic) (6578/25/2)
+-	4.4% (.EXE) Win32 Executable (generic) (4508/7/1)
 
 #### Exiftool
+
 | Field                   | Value                                           |
-| ----------------------- | ----------------------------------------------- |
+|-------------------------|-------------------------------------------------|
 | Legal Copyright         | (C) Microsoft Corporation. All rights reserved. |
 | Product Version Number  | 6.0.2930.2180                                   |
 | File Flags Mask         | 0x003f                                          |
@@ -94,31 +100,49 @@ AntiVirus
 | OS Version              | 4.0                                             |
 | Subsystem               | Windows GUI                                     |
 | File Subtype            | 0                                               |
+
 #### yara
-| Rule                                   | Description                                 | Offset | Data                                 | Tags |
-| -------------------------------------- | ------------------------------------------- | ------ | ------------------------------------ | ---- |
-| _Microsoft_Visual_Cpp_v50v60_MFC_      | Microsoft Visual C++ v5.0/v6.0 (MFC)        | 5204   | U���                                 |      |
-| _Borland_Delphi_v60__v70_              | Borland Delphi v6.0 - v7.0                  | 5204   | U��                                  |      |
-| _dUP_v2x_Patcher__wwwdiablo2oo2cjbnet_ | dUP v2.x Patcher --> www.diablo2oo2.cjb.net | 78     | This program cannot be run in DOS mo |      |
-| _Free_Pascal_v106_                     | Free Pascal v1.06                           | 14866  | ���@O�k                            |      |
-| _Armadillo_v171_                       | Armadillo v1.71                             | 23110  | U��j�h b@h�[@d�                      |      |
+
+| Rule                                    | Description                                 | Offset | Data                                 | Tags |
+|-----------------------------------------|---------------------------------------------|--------|--------------------------------------|------|
+| *Microsoft_Visual_Cpp_v50v60_MFC*       | Microsoft Visual C++ v5.0/v6.0 (MFC)        | 5204   | U���                                 |      |
+| *Borland_Delphi_v60\__v70*              | Borland Delphi v6.0 - v7.0                  | 5204   | U��                                  |      |
+| *dUP_v2x_Patcher\__wwwdiablo2oo2cjbnet* | dUP v2.x Patcher --> www.diablo2oo2.cjb.net | 78     | This program cannot be run in DOS mo |      |
+| *Free_Pascal_v106*                      | Free Pascal v1.06                           | 14866  | ���@O�k                              |      |
+| *Armadillo_v171*                        | Armadillo v1.71                             | 23110  | U��j�h b@h�[@d�                      |      |
+
+#### Avast
+
+| Infected | Result              | Engine | Updated  |
+|----------|---------------------|--------|----------|
+| true     | Win32:Lecna-I [Trj] | 2.1.2  | 20160618 |
+
 #### AVG
+
 | Infected | Result                | Engine    | Updated  |
-| -------- | --------------------- | --------- | -------- |
+|----------|-----------------------|-----------|----------|
 | true     | Found Win32/DH{YQMT?} | 13.0.3114 | 20160301 |
+
 #### Bitdefender
+
 | Infected | Result            | Engine  | Updated  |
-| -------- | ----------------- | ------- | -------- |
+|----------|-------------------|---------|----------|
 | true     | Backdoor.Lecna.AB | 7.90123 | 20160302 |
+
 #### ClamAV
+
 | Infected | Result               | Engine | Updated  |
-| -------- | -------------------- | ------ | -------- |
+|----------|----------------------|--------|----------|
 | true     | Win.Trojan.Backspace | 0.99   | 20160302 |
+
 #### Comodo
+
 | Infected | Result                  | Engine | Updated |
-| -------- | ----------------------- | ------ | ------- |
+|----------|-------------------------|--------|---------|
 | true     | Backdoor.Win32.Lecna.AB | 1.1    |         |
+
 #### F-PROT
+
 | Infected | Result | Engine    | Updated  |
-| -------- | ------ | --------- | -------- |
+|----------|--------|-----------|----------|
 | false    |        | 4.6.5.141 | 20160302 |

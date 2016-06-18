@@ -63,6 +63,14 @@
   mime = "*"
 
 [[plugin]]
+  name = "avast"
+  enabled = true
+  description = "Avast AntiVirus"
+  category = "av"
+  image = "malice/avast"
+  mime = "*"
+
+[[plugin]]
   name = "avg"
   enabled = true
   description = "AVG AntiVirus"

@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 
 	"github.com/maliceio/malice/commands"
 	er "github.com/maliceio/malice/malice/errors"

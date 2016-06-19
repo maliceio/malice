@@ -7,7 +7,7 @@ import (
 	"github.com/maliceio/malice/malice/maldocker"
 )
 
-func cmdELK(logs bool) {
+func cmdELK(logs bool) error {
 
 	docker := maldocker.NewDockerClient()
 
@@ -24,4 +24,6 @@ func cmdELK(logs bool) {
 		"name":     contJSON.Name,
 		"env":      config.Conf.Environment.Run,
 	}).Info("ELK Container Started")
+
+	return nil
 }

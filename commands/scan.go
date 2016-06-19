@@ -13,7 +13,7 @@ import (
 	"github.com/maliceio/malice/utils"
 )
 
-func cmdScan(path string, logs bool) {
+func cmdScan(path string, logs bool) error {
 	if len(path) > 0 {
 		// Check that file exists
 		if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -88,5 +88,5 @@ func cmdScan(path string, logs bool) {
 	} else {
 		log.Error("Please supply a valid file to scan.")
 	}
-
+	return nil
 }

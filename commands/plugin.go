@@ -8,7 +8,7 @@ import (
 	"github.com/maliceio/malice/plugins"
 )
 
-func cmdListPlugins(all bool, detail bool) {
+func cmdListPlugins(all bool, detail bool) error {
 	if all {
 		plugins.ListAllPlugins(detail)
 	} else {
@@ -16,9 +16,10 @@ func cmdListPlugins(all bool, detail bool) {
 	}
 	// enabled := plugins.GetEnabledPlugins()
 	// fmt.Println(enabled)
+	return nil
 }
 
-func cmdInstallPlugin(name string) {
+func cmdInstallPlugin(name string) error {
 
 	testPlugin := plugins.Plugin{
 		Name:        name,
@@ -29,13 +30,15 @@ func cmdInstallPlugin(name string) {
 		Mime:        "image/png",
 	}
 	plugins.InstallPlugin(&testPlugin)
+
+	return nil
 }
 
-func cmdRemovePlugin() {
-
+func cmdRemovePlugin() error {
+	return nil
 }
 
-func cmdUpdatePlugin(name string, all bool) {
+func cmdUpdatePlugin(name string, all bool) error {
 	docker := maldocker.NewDockerClient()
 	if all {
 		plugins.UpdateAllPlugins(docker)
@@ -46,4 +49,5 @@ func cmdUpdatePlugin(name string, all bool) {
 		}
 		plugins.GetPluginByName(name).UpdatePlugin(docker)
 	}
+	return nil
 }

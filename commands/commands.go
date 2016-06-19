@@ -5,7 +5,7 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 )
 
 var tasks = []string{"start", "stop"}
@@ -22,7 +22,7 @@ var Commands = []cli.Command{
 				Usage: "Display the Logs of the Plugin containers",
 			},
 		},
-		Action: func(c *cli.Context) { cmdScan(c.Args().First(), c.Bool("logs")) },
+		Action: func(c *cli.Context) error { return cmdScan(c.Args().First(), c.Bool("logs")) },
 	},
 	{
 		Name:        "lookup",
@@ -34,12 +34,13 @@ var Commands = []cli.Command{
 				Usage: "Display the Logs of the Plugin containers",
 			},
 		},
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			if c.Args().Present() {
-				cmdLookUp(c.Args().First(), c.Bool("logs"))
-			} else {
-				log.Fatal(fmt.Errorf("Please supply a MD5/SHA1 hash to query."))
+				return cmdLookUp(c.Args().First(), c.Bool("logs"))
 			}
+			log.Fatal(fmt.Errorf("Please supply a MD5/SHA1 hash to query."))
+
+			return nil
 		},
 	},
 	{
@@ -52,7 +53,7 @@ var Commands = []cli.Command{
 				Usage: "Display the Logs from the ELK Container",
 			},
 		},
-		Action: func(c *cli.Context) { cmdELK(c.Bool("logs")) },
+		Action: func(c *cli.Context) error { return cmdELK(c.Bool("logs")) },
 	},
 	{
 		Name:  "web",
@@ -61,12 +62,12 @@ var Commands = []cli.Command{
 			{
 				Name:   "start",
 				Usage:  "start web application",
-				Action: func(c *cli.Context) { cmdWebStart() },
+				Action: func(c *cli.Context) error { return cmdWebStart() },
 			},
 			{
 				Name:   "stop",
 				Usage:  "stop web application",
-				Action: func(c *cli.Context) { cmdWebStop() },
+				Action: func(c *cli.Context) error { return cmdWebStop() },
 			},
 		},
 		BashComplete: func(c *cli.Context) {
@@ -96,17 +97,17 @@ var Commands = []cli.Command{
 						Usage: "display plugin details",
 					},
 				},
-				Action: func(c *cli.Context) { cmdListPlugins(c.Bool("all"), c.Bool("detail")) },
+				Action: func(c *cli.Context) error { return cmdListPlugins(c.Bool("all"), c.Bool("detail")) },
 			},
 			{
 				Name:   "install",
 				Usage:  "install plugin",
-				Action: func(c *cli.Context) { cmdInstallPlugin(c.Args().First()) },
+				Action: func(c *cli.Context) error { return cmdInstallPlugin(c.Args().First()) },
 			},
 			{
 				Name:   "remove",
 				Usage:  "remove plugin",
-				Action: func(c *cli.Context) { cmdRemovePlugin() },
+				Action: func(c *cli.Context) error { return cmdRemovePlugin() },
 			},
 			{
 				Name:  "update",
@@ -117,7 +118,7 @@ var Commands = []cli.Command{
 						Usage: "update all installed plugins",
 					},
 				},
-				Action: func(c *cli.Context) { cmdUpdatePlugin(c.Args().First(), c.Bool("all")) },
+				Action: func(c *cli.Context) error { return cmdUpdatePlugin(c.Args().First(), c.Bool("all")) },
 			},
 		},
 		BashComplete: func(c *cli.Context) {

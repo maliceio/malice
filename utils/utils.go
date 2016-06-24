@@ -45,17 +45,18 @@ func AskForConfirmation() bool {
 	}
 	okayResponses := []string{"y", "yes"}
 	nokayResponses := []string{"n", "no"}
-	if stringInSlice(strings.ToLower(response), okayResponses) {
+	if StringInSlice(strings.ToLower(response), okayResponses) {
 		return true
 	}
-	if stringInSlice(strings.ToLower(response), nokayResponses) {
+	if StringInSlice(strings.ToLower(response), nokayResponses) {
 		return false
 	}
 	fmt.Println("Please type yes or no and then press enter:")
 	return AskForConfirmation()
 }
 
-func stringInSlice(a string, list []string) bool {
+// StringInSlice returns whether or not a string exists in a slice
+func StringInSlice(a string, list []string) bool {
 	for _, b := range list {
 		if b == a {
 			return true

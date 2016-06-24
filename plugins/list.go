@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/crackcomm/go-clitable"
+	"github.com/maliceio/malice/utils"
 )
 
 // ListEnabledPlugins lists enabled plugins
@@ -98,6 +99,28 @@ func getInstalled() []Plugin {
 		}
 	}
 	return installed
+}
+
+// GetCategories returns all categories
+func GetCategories() []string {
+	categories := []string{}
+	for _, plugin := range Plugs.Plugins {
+		if !util.StringInSlice(plugin.Category, categories) {
+			categories = append(categories, plugin.Category)
+		}
+	}
+	return categories
+}
+
+// GetAllPluginsInCategory returns all plugins in a give category
+func GetAllPluginsInCategory(category string) []Plugin {
+	inCategory := []Plugin{}
+	for _, plugin := range Plugs.Plugins {
+		if strings.EqualFold(plugin.Category, category) {
+			inCategory = append(inCategory, plugin)
+		}
+	}
+	return inCategory
 }
 
 // filterPluginsByEnabled returns a map[string]plugin of plugins

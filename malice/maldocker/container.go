@@ -21,29 +21,53 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
+func (client *Docker) checkContainerRequirements(containerName, image string) {
+	// Check for existance of malice network
+	if _, exists, _ := client.NetworkExists("malice"); !exists {
+		log.WithFields(log.Fields{
+			"network": "malice",
+			"exisits": exists,
+			"env":     config.Conf.Environment.Run,
+		}).Error("Network malice does not exist, creating now...")
+		_, err := client.CreateNetwork("malice")
+		er.CheckError(err)
+	}
+	// Check for existance of malice volume
+	if _, exists, _ := client.VolumeExists("malice"); !exists {
+		log.Debug("Volume malice not found.")
+		_, err := client.CreateVolume("malice")
+		er.CheckError(err)
+	}
+	log.Debug("Volume malice found.")
+	// Check that the container isn't already running
+	if _, exists, _ := client.ContainerExists(containerName); exists {
+		log.WithFields(log.Fields{
+			"exisits": exists,
+			"name":    containerName,
+			"env":     config.Conf.Environment.Run,
+		}).Error("Container is already running...")
+		os.Exit(0)
+	}
+	// Check that we have already pulled the image
+	if _, exists, _ := client.ImageExists(image); exists {
+		log.WithFields(log.Fields{
+			"exisits": exists,
+			"env":     config.Conf.Environment.Run,
+		}).Debugf("Image `%s` already pulled.", image)
+	} else {
+		log.WithFields(log.Fields{
+			"exisits": exists,
+			"env":     config.Conf.Environment.Run}).Debugf("Pulling Image `%s`", image)
+		client.PullImage(image, "latest")
+	}
+}
+
 // StartContainer starts a malice docker container
 func (client *Docker) StartContainer(cmd strslice.StrSlice, name string, image string, logs bool, binds []string, portBindings nat.PortMap, env []string) (types.ContainerJSONBase, error) {
 
 	if client.Ping() {
-		if _, exists, _ := client.ContainerExists(name); exists {
-			log.WithFields(log.Fields{
-				"exisits": exists,
-				"name":    name,
-				"env":     config.Conf.Environment.Run,
-			}).Info("Container is already running...")
-			os.Exit(0)
-		}
-		if _, exists, _ := client.ImageExists(image); exists {
-			log.WithFields(log.Fields{
-				"exisits": exists,
-				"env":     config.Conf.Environment.Run,
-			}).Debugf("Image `%s` already pulled.", image)
-		} else {
-			log.WithFields(log.Fields{
-				"exisits": exists,
-				"env":     config.Conf.Environment.Run}).Debugf("Pulling Image `%s`", image)
-			client.PullImage(image, "latest")
-		}
+		// Check that all requirements for the container to run are ready
+		client.checkContainerRequirements(name, image)
 
 		ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
 		defer cancel()
@@ -58,7 +82,9 @@ func (client *Docker) StartContainer(cmd strslice.StrSlice, name string, image s
 			// Binds:      []string{maldirs.GetSampledsDir() + ":/malware:ro"},
 			// Binds:      []string{"malice:/malware:ro"},
 			Binds:        binds,
+			NetworkMode:  "malice",
 			PortBindings: portBindings,
+			Links:        []string{"rethink:rethink"},
 			Privileged:   false,
 		}
 		networkingConfig := &network.NetworkingConfig{}
@@ -78,7 +104,6 @@ func (client *Docker) StartContainer(cmd strslice.StrSlice, name string, image s
 		}
 
 		contJSON, err := client.ContainerInspect(contResponse.ID)
-		er.CheckError(err)
 		return contJSON, err
 	}
 	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")
@@ -200,28 +225,31 @@ func (client *Docker) StartELK(logs bool) (types.ContainerJSONBase, error) {
 	}
 
 	if client.Ping() {
-		if _, exists, _ := client.ContainerExists(name); exists {
-			log.WithFields(log.Fields{
-				"exisits": exists,
-				"name":    name,
-				"env":     config.Conf.Environment.Run,
-				"url":     "http://" + client.ip,
-			}).Info("Container is already running...")
-			os.Exit(0)
-		}
-		if _, exists, _ := client.ImageExists(image); exists {
-			log.WithFields(log.Fields{
-				"exisits": exists,
-				"env":     config.Conf.Environment.Run,
-			}).Debugf("Image `%s` already pulled.", image)
-		} else {
-			log.WithFields(log.Fields{
-				"exisits": exists,
-				"env":     config.Conf.Environment.Run}).Debugf("Pulling Image `%s`", image)
-			client.PullImage(image, "latest")
-		}
-
 		cont, err := client.StartContainer(nil, name, image, logs, binds, portBindings, nil)
+		return cont, err
+	}
+	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")
+}
+
+// StartRethinkDB creates an RethinkDB container from the image rethinkdb
+func (client *Docker) StartRethinkDB(logs bool) (types.ContainerJSONBase, error) {
+
+	name := "rethink"
+	image := "rethinkdb"
+	binds := []string{"malice:/data"}
+	portBindings := nat.PortMap{
+		"8080/tcp":  {{HostIP: "0.0.0.0", HostPort: "8081"}},
+		"28015/tcp": {{HostIP: "0.0.0.0", HostPort: "28015"}},
+	}
+
+	if client.Ping() {
+		cont, err := client.StartContainer(nil, name, image, logs, binds, portBindings, nil)
+		// er.CheckError(err)
+		// if network, exists, _ := client.NetworkExists("malice"); exists {
+		// 	err := client.ConnectNetwork(network, cont)
+		// 	er.CheckError(err)
+		// }
+
 		return cont, err
 	}
 	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")

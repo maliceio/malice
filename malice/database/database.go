@@ -26,13 +26,9 @@ func assert(err error) {
 }
 
 func getPluginsByCategory() map[string]interface{} {
-
 	categoryList := make(map[string]interface{})
-
 	for _, category := range plugins.GetCategories() {
-
 		pluginList := make(map[string]interface{})
-
 		for _, plugin := range plugins.GetAllPluginsInCategory(category) {
 			pluginList[plugin.Name] = nil
 		}
@@ -43,14 +39,46 @@ func getPluginsByCategory() map[string]interface{} {
 }
 
 func getPlugins() map[string]interface{} {
-
 	pluginList := make(map[string]interface{})
-
 	for _, plugin := range plugins.Plugs.Plugins {
 		pluginList[plugin.Name] = nil
 	}
 
 	return pluginList
+}
+
+// InitRethinkDB initalizes rethinkDB for use with malice
+func InitRethinkDB() error {
+	// connect to RethinkDB
+	session, err := r.Connect(r.ConnectOpts{
+		Address: fmt.Sprintf("%s:28015", getopt("MALICE_RETHINKDB", "rethink")),
+		Timeout: 5 * time.Second,
+	})
+	assert(err)
+	// Delete database test if it exists
+	resp, err := r.DBDrop("test").RunWrite(session)
+	if err != nil {
+		log.Debug(err)
+	} else {
+		log.Infof("%d DB deleted\n", resp.DBsDropped)
+	}
+	// Create malice DB
+	resp, err = r.DBCreate("malice").RunWrite(session)
+	if err != nil {
+		log.Debug(err)
+	} else {
+		log.Infof("%d DB created\n", resp.DBsCreated)
+	}
+	// Create channel Table
+	resp, err = r.DB("malice").TableCreate("samples").RunWrite(session)
+	if err != nil {
+		log.Debug(err)
+	} else {
+		log.Infof("%d Table created\n", resp.TablesCreated)
+	}
+	session.Use("malice")
+
+	return err
 }
 
 // WriteToDatabase inserts sample into Database

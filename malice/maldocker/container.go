@@ -63,7 +63,16 @@ func (client *Docker) checkContainerRequirements(containerName, image string) {
 }
 
 // StartContainer starts a malice docker container
-func (client *Docker) StartContainer(cmd strslice.StrSlice, name string, image string, logs bool, binds []string, portBindings nat.PortMap, env []string) (types.ContainerJSONBase, error) {
+func (client *Docker) StartContainer(
+	cmd strslice.StrSlice,
+	name string,
+	image string,
+	logs bool,
+	binds []string,
+	portBindings nat.PortMap,
+	links []string,
+	env []string,
+) (types.ContainerJSONBase, error) {
 
 	if client.Ping() {
 		// Check that all requirements for the container to run are ready
@@ -81,10 +90,10 @@ func (client *Docker) StartContainer(cmd strslice.StrSlice, name string, image s
 		hostConfig := &container.HostConfig{
 			// Binds:      []string{maldirs.GetSampledsDir() + ":/malware:ro"},
 			// Binds:      []string{"malice:/malware:ro"},
-			Binds:        binds,
-			NetworkMode:  "malice",
+			Binds: binds,
+			// NetworkMode:  "malice",
 			PortBindings: portBindings,
-			Links:        []string{"rethink:rethink"},
+			Links:        links,
 			Privileged:   false,
 		}
 		networkingConfig := &network.NetworkingConfig{}
@@ -225,7 +234,7 @@ func (client *Docker) StartELK(logs bool) (types.ContainerJSONBase, error) {
 	}
 
 	if client.Ping() {
-		cont, err := client.StartContainer(nil, name, image, logs, binds, portBindings, nil)
+		cont, err := client.StartContainer(nil, name, image, logs, binds, portBindings, nil, nil)
 		return cont, err
 	}
 	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")
@@ -243,12 +252,15 @@ func (client *Docker) StartRethinkDB(logs bool) (types.ContainerJSONBase, error)
 	}
 
 	if client.Ping() {
-		cont, err := client.StartContainer(nil, name, image, logs, binds, portBindings, nil)
+		cont, err := client.StartContainer(nil, name, image, logs, binds, portBindings, nil, nil)
 		// er.CheckError(err)
 		// if network, exists, _ := client.NetworkExists("malice"); exists {
 		// 	err := client.ConnectNetwork(network, cont)
 		// 	er.CheckError(err)
 		// }
+
+		// Give rethinkDB a few seconds to start
+		time.Sleep(2 * time.Second)
 
 		return cont, err
 	}

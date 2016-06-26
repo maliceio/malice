@@ -29,6 +29,7 @@ func (plugin Plugin) StartPlugin(client *maldocker.Docker, sample string, logs b
 		logs,
 		binds,
 		nil,
+		[]string{"rethink:rethink"},
 		env,
 	)
 	er.CheckError(err)
@@ -52,6 +53,7 @@ func RunIntelPlugins(client *maldocker.Docker, hash string, logs bool) {
 				logs,
 				nil,
 				nil,
+				[]string{"rethink:rethink"},
 				env,
 			)
 			er.CheckError(err)
@@ -63,6 +65,7 @@ func RunIntelPlugins(client *maldocker.Docker, hash string, logs bool) {
 				logs,
 				nil,
 				nil,
+				[]string{"rethink:rethink"},
 				env,
 			)
 			er.CheckError(err)

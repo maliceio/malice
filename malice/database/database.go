@@ -3,7 +3,6 @@ package database
 import (
 	"fmt"
 	"os"
-	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/malice/persist"
@@ -47,13 +46,24 @@ func getPlugins() map[string]interface{} {
 	return pluginList
 }
 
+// TestConnection tests the rethinkDB connection
+func TestConnection() error {
+	// connect to RethinkDB
+	session, err := r.Connect(r.ConnectOpts{
+		Address: fmt.Sprintf("%s:28015", getopt("MALICE_RETHINKDB", "rethink")),
+	})
+	defer session.Close()
+
+	return err
+}
+
 // InitRethinkDB initalizes rethinkDB for use with malice
 func InitRethinkDB() error {
 	// connect to RethinkDB
 	session, err := r.Connect(r.ConnectOpts{
 		Address: fmt.Sprintf("%s:28015", getopt("MALICE_RETHINKDB", "rethink")),
-		Timeout: 5 * time.Second,
 	})
+	defer session.Close()
 	assert(err)
 	// Delete database test if it exists
 	resp, err := r.DBDrop("test").RunWrite(session)
@@ -87,9 +97,10 @@ func WriteToDatabase(sample persist.File) {
 	// connect to RethinkDB
 	session, err := r.Connect(r.ConnectOpts{
 		Address:  fmt.Sprintf("%s:28015", getopt("MALICE_RETHINKDB", "rethink")),
-		Timeout:  5 * time.Second,
 		Database: "malice",
 	})
+	defer session.Close()
+
 	if err == nil {
 		res, err := r.Table("samples").Get(sample.SHA256).Run(session)
 		assert(err)

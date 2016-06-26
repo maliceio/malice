@@ -38,7 +38,7 @@ func (plugin Plugin) StartPlugin(client *maldocker.Docker, sample string, logs b
 }
 
 // RunIntelPlugins run all Intel plugins
-func RunIntelPlugins(client *maldocker.Docker, hash string, logs bool) {
+func RunIntelPlugins(client *maldocker.Docker, hash string, scanID string, logs bool) {
 	var cont types.ContainerJSONBase
 	var err error
 	for _, plugin := range GetIntelPlugins(true) {

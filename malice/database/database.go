@@ -7,6 +7,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/malice/persist"
 	"github.com/maliceio/malice/plugins"
+	"github.com/maliceio/malice/utils"
 	r "gopkg.in/dancannon/gorethink.v2"
 )
 
@@ -91,8 +92,8 @@ func InitRethinkDB() error {
 	return err
 }
 
-// WriteToDatabase inserts sample into Database
-func WriteToDatabase(sample persist.File) {
+// WriteFileToDatabase inserts sample into Database
+func WriteFileToDatabase(sample persist.File) r.WriteResponse {
 
 	// connect to RethinkDB
 	session, err := r.Connect(r.ConnectOpts{
@@ -102,25 +103,98 @@ func WriteToDatabase(sample persist.File) {
 	defer session.Close()
 
 	if err == nil {
-		res, err := r.Table("samples").Get(sample.SHA256).Run(session)
+		res, err := r.Table("samples").Filter(map[string]interface{}{
+			"file": map[string]interface{}{
+				"sha256": sample.SHA256,
+			},
+		}).Run(session)
 		assert(err)
 		defer res.Close()
+
+		// Scan query result into the person variable
+		var samples []interface{}
+		err = res.All(&samples)
+		if err != nil {
+			fmt.Printf("Error scanning database result: %s\n", err)
+			return r.WriteResponse{}
+		}
+		fmt.Printf("%d samples\n", len(samples))
+
+		fmt.Println("res: ", res)
 
 		if res.IsNil() {
 			// upsert into RethinkDB
 			resp, err := r.Table("samples").Insert(
 				map[string]interface{}{
-					"id":      sample.SHA256,
+					// "id":      sample.SHA256,
 					"file":    sample,
 					"plugins": getPluginsByCategory(),
 				}, r.InsertOpts{Conflict: "replace"}).RunWrite(session)
 			assert(err)
-			log.Debug(resp)
-		} else {
-			log.Debugf("Sample: %s already exists in the database.", sample.SHA256)
-		}
 
-	} else {
-		log.Debug(err)
+			return resp
+		}
+		log.Debugf("Sample: %s already exists in the database.", sample.SHA256)
+		return r.WriteResponse{}
+
 	}
+	log.Debug(err)
+
+	return r.WriteResponse{}
+}
+
+// WriteHashToDatabase inserts hash into Database
+func WriteHashToDatabase(hash string) r.WriteResponse {
+
+	hashType, err := util.GetHashType(hash)
+	assert(err)
+
+	// connect to RethinkDB
+	session, err := r.Connect(r.ConnectOpts{
+		Address:  fmt.Sprintf("%s:28015", getopt("MALICE_RETHINKDB", "rethink")),
+		Database: "malice",
+	})
+	defer session.Close()
+
+	if err == nil {
+		res, err := r.Table("samples").Filter(map[string]interface{}{
+			"file": map[string]interface{}{
+				hashType: hash,
+			},
+		}).Run(session)
+		assert(err)
+		defer res.Close()
+
+		// Scan query result into the person variable
+		var samples []interface{}
+		err = res.All(&samples)
+		if err != nil {
+			fmt.Printf("Error scanning database result: %s\n", err)
+			return r.WriteResponse{}
+		}
+		fmt.Printf("%d samples\n", len(samples))
+
+		fmt.Println("res: ", res)
+
+		if res.IsNil() {
+			// upsert into RethinkDB
+			resp, err := r.Table("samples").Insert(
+				map[string]interface{}{
+					// "id":      sample.SHA256,
+					"file": map[string]interface{}{
+						hashType: hash,
+					},
+					"plugins": getPluginsByCategory(),
+				}, r.InsertOpts{Conflict: "replace"}).RunWrite(session)
+			assert(err)
+
+			return resp
+		}
+		log.Debugf("Hash %s already exists in the database.", hash)
+		return r.WriteResponse{}
+
+	}
+	log.Debug(err)
+
+	return r.WriteResponse{}
 }

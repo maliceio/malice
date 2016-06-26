@@ -38,7 +38,8 @@ func cmdScan(path string, logs bool) error {
 			log.Debug("All enabled plugins are installed.")
 		} else {
 			// Prompt user to install all plugins?
-			fmt.Println("All enabled plugins not installed would you like to install them now? (yes/no)\n[Warning] This can take a while if it is the first time you have ran Malice.")
+			fmt.Println("All enabled plugins not installed would you like to install them now? (yes/no)")
+			fmt.Println("[Warning] This can take a while if it is the first time you have ran Malice.")
 			if util.AskForConfirmation() {
 				plugins.UpdateAllPlugins(docker)
 			}
@@ -52,11 +53,11 @@ func cmdScan(path string, logs bool) error {
 
 		//////////////////////////////////////
 		// Write all file data to the Database
-		database.WriteToDatabase(file)
-
+		resp := database.WriteFileToDatabase(file)
+		os.Exit(0)
 		/////////////////////////////////////////////////////////////////
 		// Run all Intel Plugins on the md5 hash associated with the file
-		plugins.RunIntelPlugins(docker, file.MD5, true)
+		plugins.RunIntelPlugins(docker, file.MD5, resp.GeneratedKeys[0], true)
 
 		log.Debug("Looking for plugins that will run on: ", file.Mime)
 		// Iterate over all applicable installed plugins

@@ -2,11 +2,13 @@ package util
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/mail"
+	"regexp"
 	"strings"
 
 	"github.com/dustin/go-jsonpointer"
@@ -63,4 +65,25 @@ func StringInSlice(a string, list []string) bool {
 		}
 	}
 	return false
+}
+
+// GetHashType returns the hash type (md5, sha1, sha256, sha512)
+func GetHashType(hash string) (string, error) {
+	var validMD5 = regexp.MustCompile(`^[a-fA-F\d]{32}$`)
+	var validSHA1 = regexp.MustCompile(`^[a-fA-F\d]{40}$`)
+	var validSHA256 = regexp.MustCompile(`^[a-fA-F\d]{64}$`)
+	var validSHA512 = regexp.MustCompile(`^[a-fA-F\d]{128}$`)
+
+	switch {
+	case validMD5.MatchString(hash):
+		return "md5", nil
+	case validSHA1.MatchString(hash):
+		return "sha1", nil
+	case validSHA256.MatchString(hash):
+		return "sha256", nil
+	case validSHA512.MatchString(hash):
+		return "sha512", nil
+	default:
+		return "", errors.New("This is not a valid hash.")
+	}
 }

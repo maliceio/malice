@@ -21,15 +21,15 @@ var routes = Routes{
 		Index,
 	},
 	Route{
-		"VBoxVersion",
-		"GET",
-		"/virtualbox/version",
-		VBoxVersion,
+		"MaliceScan",
+		"POST",
+		"/scan",
+		MaliceScan,
 	},
 	Route{
-		"VBoxList",
+		"MaliceLookUp",
 		"GET",
-		"/virtualbox/list",
-		VBoxList,
+		"/lookup/{hashOrURL}",
+		MaliceLookUp,
 	},
 }

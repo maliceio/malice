@@ -6,6 +6,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/config"
+	"github.com/maliceio/malice/malice/database"
 	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/maldocker"
 	"github.com/maliceio/malice/malice/persist"
@@ -22,13 +23,16 @@ func cmdScan(path string, logs bool) error {
 
 		docker := maldocker.NewDockerClient()
 
-		// Check for existance of malice volume
-		if _, exists, _ := docker.VolumeExists("malice"); !exists {
-			log.Debug("Volume malice not found.")
-			_, err := docker.CreateVolume("malice")
+		// Check that RethinkDB is running
+		if _, running, _ := docker.ContainerRunning("rethink"); !running {
+			log.Error("RethinkDB is NOT running, starting now...")
+			_, err := docker.StartRethinkDB(false)
 			er.CheckError(err)
+			er.CheckError(database.TestConnection())
 		}
-		log.Debug("Volume malice found.")
+
+		// Setup rethinkDB
+		database.InitRethinkDB()
 
 		if plugins.InstalledPluginsCheck(docker) {
 			log.Debug("All enabled plugins are installed.")
@@ -40,15 +44,18 @@ func cmdScan(path string, logs bool) error {
 			}
 		}
 
-		file := persist.File{
-			Path: path,
-		}
-
+		file := persist.File{Path: path}
 		file.Init()
 		// Output File Hashes
 		file.ToMarkdownTable()
 		// fmt.Println(string(file.ToJSON()))
 
+		//////////////////////////////////////
+		// Write all file data to the Database
+		database.WriteToDatabase(file)
+
+		/////////////////////////////////////////////////////////////////
+		// Run all Intel Plugins on the md5 hash associated with the file
 		plugins.RunIntelPlugins(docker, file.MD5, true)
 
 		log.Debug("Looking for plugins that will run on: ", file.Mime)
@@ -77,6 +84,7 @@ func cmdScan(path string, logs bool) error {
 
 			err = docker.RemoveContainer(cont, false, false, false)
 			er.CheckError(err)
+
 			// }()
 			// Clean up the Plugin Container
 			// TODO: I want to reuse these containers for speed eventually.
@@ -89,4 +97,9 @@ func cmdScan(path string, logs bool) error {
 		log.Error("Please supply a valid file to scan.")
 	}
 	return nil
+}
+
+// APIScan is an API wrapper for cmdScan
+func APIScan(file string) error {
+	return cmdScan(file, false)
 }

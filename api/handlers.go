@@ -2,7 +2,11 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
+
+	"github.com/gorilla/mux"
+	"github.com/maliceio/malice/commands"
 )
 
 type jsonErr struct {
@@ -15,40 +19,50 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Welcome!\n")
 }
 
-// VBoxVersion route returns VBoxManage version
-func VBoxVersion(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
+// MaliceScan scan a file
+func MaliceScan(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	vars := mux.Vars(r)
+	file := vars["file"]
 
-	d := vbox.NewDriver("", "")
-	outPut, err := d.Version()
-
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+	if r.Body == nil {
+		http.Error(w, "Body must be set", http.StatusBadRequest)
+		return
 	}
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(outPut))
+
+	// I didn't find what kind of body would give an error, but let's write the error code anyway.
+	content, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// If S3 has any problem with our request, it will return an error. It could also be a 500 error if S3 itself has a problem.
+	path := mux.Params(r).ByName("path")
+	err = c.bucket.Put(path, content, r.Header.Get("Content-Type"), s3.PublicRead)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	url := c.bucket.URL(path)
+	w.Header().Set("Location", url)
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(w, `{"url":"%s"}`, url)
 }
 
-// VBoxList route lists all VMs
-func VBoxList(w http.ResponseWriter, r *http.Request) {
+// MaliceLookUp lookup hash/url in intel sources
+func MaliceLookUp(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	vars := mux.Vars(r)
+	hashOrURL := vars["hashOrURL"]
 
-	// machines, err := virtualbox.ListMachines()
-	// assert(err)
-	// for _, machine := range machines {
-	// 	fmt.Println(machine.Name)
-	// }
+	err := commands.APILookUp(hashOrURL)
 
-	// if err := json.NewEncoder(w).Encode(machines); err != nil {
-	// 	panic(err)
-	// }
-	d := vbox.NewDriver("", "")
-	outPut, err := d.ListVMs()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(outPut))
+	// w.Write([]byte(outPut))
 }

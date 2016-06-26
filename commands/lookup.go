@@ -13,3 +13,8 @@ func cmdLookUp(hash string, logs bool) error {
 
 	return nil
 }
+
+// APILookUp is an API wrapper for cmdLookUp
+func APILookUp(hash string) error {
+	return cmdLookUp(hash, false)
+}

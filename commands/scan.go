@@ -54,7 +54,7 @@ func cmdScan(path string, logs bool) error {
 		//////////////////////////////////////
 		// Write all file data to the Database
 		resp := database.WriteFileToDatabase(file)
-		os.Exit(0)
+		// os.Exit(0)
 		/////////////////////////////////////////////////////////////////
 		// Run all Intel Plugins on the md5 hash associated with the file
 		plugins.RunIntelPlugins(docker, file.MD5, resp.GeneratedKeys[0], true)

@@ -44,6 +44,7 @@ func RunIntelPlugins(client *maldocker.Docker, hash string, scanID string, logs 
 	for _, plugin := range GetIntelPlugins(true) {
 
 		env := plugin.getPluginEnv()
+		env = append(env, "MALICE_SCANID="+scanID)
 
 		if plugin.Cmd != "" {
 			cont, err = client.StartContainer(

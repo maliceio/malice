@@ -36,12 +36,12 @@ func cmdLookUp(hash string, logs bool) error {
 			plugins.UpdateAllPlugins(docker)
 		}
 	}
+
 	/////////////////////////////
 	// Write hash to the Database
 	resp := database.WriteHashToDatabase(hash)
-	log.Info(resp.GeneratedKeys[0])
-	scanID := resp.GeneratedKeys[0]
-	plugins.RunIntelPlugins(docker, hash, scanID, true)
+
+	plugins.RunIntelPlugins(docker, hash, resp.GeneratedKeys[0], true)
 
 	return nil
 }

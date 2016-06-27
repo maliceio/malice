@@ -116,7 +116,15 @@
   description = "PE - tool to triage portable executables"
   category = "exe"
   image = "malice/pe"
-  mime = "application/x-dosexec "
+  mime = "application/x-dosexec"
+
+[[plugin]]
+  name = "floss"
+  enabled = true
+  description = "FireEye Labs Obfuscated String Solver"
+  category = "exe"
+  image = "malice/floss"
+  mime = "application/x-dosexec"
 
 [[plugin]]
   name = "pdf"

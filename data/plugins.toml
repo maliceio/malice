@@ -127,6 +127,14 @@
   mime = "application/x-dosexec"
 
 [[plugin]]
+  name = "office"
+  enabled = false
+  description = "Office - tool to triage OLE/RTF documents"
+  category = "document"
+  image = "malice/office"
+  mime = "*"
+
+[[plugin]]
   name = "pdf"
   enabled = false
   description = "PDF - tool to triage PDF documents"

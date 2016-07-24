@@ -13,7 +13,7 @@ import (
 )
 
 // RethinkAddr RethinkDB address to user for connections
-var RethinkAddr string = ""
+var RethinkAddr string
 
 func getopt(name, dfault string) string {
 	value := os.Getenv(name)
@@ -148,12 +148,12 @@ func WriteFileToDatabase(sample persist.File) r.WriteResponse {
 		var samples []interface{}
 		err = res.All(&samples)
 		if err != nil {
-			fmt.Printf("Error scanning database result: %s\n", err)
+			log.Errorf("Error scanning database result: %s\n", err)
 			return r.WriteResponse{}
 		}
-		fmt.Printf("%d samples\n", len(samples))
 
-		fmt.Println("res: ", res)
+		log.Debugf("%d samples\n", len(samples))
+		log.Debugln("res: ", res)
 
 		if res.IsNil() {
 			// upsert into RethinkDB
@@ -203,12 +203,12 @@ func WriteHashToDatabase(hash string) r.WriteResponse {
 		var samples []interface{}
 		err = res.All(&samples)
 		if err != nil {
-			fmt.Printf("Error scanning database result: %s\n", err)
+			log.Errorf("Error scanning database result: %s\n", err)
 			return r.WriteResponse{}
 		}
-		fmt.Printf("%d samples\n", len(samples))
 
-		fmt.Println("res: ", res)
+		log.Debugf("%d samples\n", len(samples))
+		log.Debugln("res: ", res)
 
 		if res.IsNil() {
 			// upsert into RethinkDB

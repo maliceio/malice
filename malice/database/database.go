@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"os"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/malice/persist"
@@ -10,6 +11,9 @@ import (
 	"github.com/maliceio/malice/utils"
 	r "gopkg.in/dancannon/gorethink.v2"
 )
+
+// RethinkAddr RethinkDB address to user for connections
+var RethinkAddr string = ""
 
 func getopt(name, dfault string) string {
 	value := os.Getenv(name)
@@ -50,21 +54,47 @@ func getPlugins() map[string]interface{} {
 // TestConnection tests the rethinkDB connection
 func TestConnection(addr string) error {
 
-	// connect to RethinkDB
-	session, err := r.Connect(r.ConnectOpts{
-		Address: fmt.Sprintf("%s:28015", getopt("MALICE_RETHINKDB", addr)),
-		// Address: fmt.Sprintf("%s:28015", getopt("MALICE_RETHINKDB", "rethink")),
-	})
-	defer session.Close()
+	if RethinkAddr == "" {
+		RethinkAddr = fmt.Sprintf("%s:28015", getopt("MALICE_RETHINKDB", "rethink"))
+	}
 
+	// connect to RethinkDB where --link rethink was using via malice in Docker
+	log.Debugf("Attempting to connect to: %s", RethinkAddr)
+	session, err := r.Connect(r.ConnectOpts{
+		Address: RethinkAddr,
+	})
+	if err != nil {
+		// connect to RethinkDB via malice in Docker
+		RethinkAddr = fmt.Sprintf("%s:28015", getopt("MALICE_RETHINKDB", addr))
+		log.Debugf("Attempting to connect to: %s", RethinkAddr)
+		session, err := r.Connect(r.ConnectOpts{
+			Address: RethinkAddr,
+			Timeout: 2 * time.Second,
+		})
+		if err != nil {
+			// connect to RethinkDB using Docker for Mac
+			RethinkAddr = fmt.Sprintf("%s:28015", getopt("MALICE_RETHINKDB", "localhost"))
+			log.Debugf("Attempting to connect to: %s", RethinkAddr)
+			session, err := r.Connect(r.ConnectOpts{
+				Address: RethinkAddr,
+			})
+			defer session.Close()
+			return err
+		}
+		defer session.Close()
+		return err
+	}
+	defer session.Close()
 	return err
 }
 
 // InitRethinkDB initalizes rethinkDB for use with malice
 func InitRethinkDB() error {
+
 	// connect to RethinkDB
+	log.Debugf("Attempting to connect to: %s", RethinkAddr)
 	session, err := r.Connect(r.ConnectOpts{
-		Address: fmt.Sprintf("%s:28015", getopt("MALICE_RETHINKDB", "rethink")),
+		Address: RethinkAddr,
 	})
 	defer session.Close()
 	assert(err)
@@ -98,8 +128,9 @@ func InitRethinkDB() error {
 func WriteFileToDatabase(sample persist.File) r.WriteResponse {
 
 	// connect to RethinkDB
+	log.Debugf("Attempting to connect to: %s", RethinkAddr)
 	session, err := r.Connect(r.ConnectOpts{
-		Address:  fmt.Sprintf("%s:28015", getopt("MALICE_RETHINKDB", "rethink")),
+		Address:  RethinkAddr,
 		Database: "malice",
 	})
 	defer session.Close()
@@ -152,8 +183,9 @@ func WriteHashToDatabase(hash string) r.WriteResponse {
 	assert(err)
 
 	// connect to RethinkDB
+	log.Debugf("Attempting to connect to: %s", RethinkAddr)
 	session, err := r.Connect(r.ConnectOpts{
-		Address:  fmt.Sprintf("%s:28015", getopt("MALICE_RETHINKDB", "rethink")),
+		Address:  RethinkAddr,
 		Database: "malice",
 	})
 	defer session.Close()

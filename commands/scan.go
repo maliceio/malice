@@ -37,6 +37,10 @@ func cmdScan(path string, logs bool) error {
 		}
 
 		// Setup rethinkDB
+		rInfo, err := docker.Client.ContainerInspect(context.Background(), "rethink")
+		er.CheckError(err)
+		fmt.Println(rInfo.NetworkSettings.IPAddress)
+		er.CheckError(database.TestConnection(rInfo.NetworkSettings.IPAddress))
 		database.InitRethinkDB()
 
 		if plugins.InstalledPluginsCheck(docker) {

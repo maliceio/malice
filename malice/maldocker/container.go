@@ -261,7 +261,7 @@ func (client *Docker) StartRethinkDB(logs bool) (types.ContainerJSONBase, error)
 
 		// Give rethinkDB a few seconds to start
 		time.Sleep(2 * time.Second)
-
+		log.Info("sleeping for 2 seconds to let rethinkDB start")
 		return cont, err
 	}
 	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")

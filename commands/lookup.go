@@ -3,6 +3,8 @@ package commands
 import (
 	"fmt"
 
+	"golang.org/x/net/context"
+
 	"github.com/docker/machine/libmachine/log"
 	"github.com/maliceio/malice/malice/database"
 	er "github.com/maliceio/malice/malice/errors"
@@ -18,9 +20,11 @@ func cmdLookUp(hash string, logs bool) error {
 	// Check that RethinkDB is running
 	if _, running, _ := docker.ContainerRunning("rethink"); !running {
 		log.Error("RethinkDB is NOT running, starting now...")
-		_, err := docker.StartRethinkDB(false)
+		rethink, err := docker.StartRethinkDB(false)
 		er.CheckError(err)
-		er.CheckError(database.TestConnection())
+		rInfo, err := docker.Client.ContainerInspect(context.Background(), rethink.ID)
+		er.CheckError(err)
+		er.CheckError(database.TestConnection(rInfo.Node.Addr))
 	}
 
 	// Setup rethinkDB

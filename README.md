@@ -89,6 +89,7 @@ docker run -v /var/run/docker.sock:/var/run/docker.sock \
            -v malice:/malice/samples \
            -v `pwd`:/cases:ro \
            -e MALICE_VT_API=$MALICE_VT_API \
+           --link rethink:rethink \
            -it --rm malice/engine scan /cases/<FILE>
 ```
 

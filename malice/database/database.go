@@ -48,10 +48,12 @@ func getPlugins() map[string]interface{} {
 }
 
 // TestConnection tests the rethinkDB connection
-func TestConnection() error {
+func TestConnection(addr string) error {
+
 	// connect to RethinkDB
 	session, err := r.Connect(r.ConnectOpts{
-		Address: fmt.Sprintf("%s:28015", getopt("MALICE_RETHINKDB", "rethink")),
+		Address: fmt.Sprintf("%s:28015", getopt("MALICE_RETHINKDB", addr)),
+		// Address: fmt.Sprintf("%s:28015", getopt("MALICE_RETHINKDB", "rethink")),
 	})
 	defer session.Close()
 

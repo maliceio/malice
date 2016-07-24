@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"golang.org/x/net/context"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/database"
@@ -26,9 +28,12 @@ func cmdScan(path string, logs bool) error {
 		// Check that RethinkDB is running
 		if _, running, _ := docker.ContainerRunning("rethink"); !running {
 			log.Error("RethinkDB is NOT running, starting now...")
-			_, err := docker.StartRethinkDB(false)
+			rethink, err := docker.StartRethinkDB(false)
 			er.CheckError(err)
-			er.CheckError(database.TestConnection())
+			rInfo, err := docker.Client.ContainerInspect(context.Background(), rethink.ID)
+			er.CheckError(err)
+			fmt.Println(rInfo.NetworkSettings.IPAddress)
+			er.CheckError(database.TestConnection(rInfo.NetworkSettings.IPAddress))
 		}
 
 		// Setup rethinkDB

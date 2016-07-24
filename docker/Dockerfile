@@ -1,4 +1,4 @@
-FROM gliderlabs/alpine:edge
+FROM gliderlabs/alpine
 
 MAINTAINER blacktop, https://github.com/blacktop
 
@@ -24,7 +24,7 @@ ENV MALICE_STORAGE_PATH /malice
 VOLUME ["/malice/config"]
 VOLUME ["/malice/samples"]
 
-EXPOSE 80 443 9200 9300
+EXPOSE 80 443
 
 WORKDIR /malice/samples
 

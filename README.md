@@ -80,7 +80,7 @@ Run 'malice COMMAND --help' for more information on a command.
 Install/Update all Plugins
 
 ```bash
-docker run -v /var/run/docker.sock:/var/run/docker.sock malice/engine plugin update --all
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock malice/engine plugin update --all
 ```
 
 Scan a file

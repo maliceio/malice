@@ -3,6 +3,7 @@ package maldocker
 import (
 	"errors"
 	"os"
+	"strings"
 	"time"
 
 	"golang.org/x/net/context"
@@ -15,8 +16,6 @@ import (
 	"github.com/docker/go-connections/nat"
 	"github.com/maliceio/malice/config"
 	er "github.com/maliceio/malice/malice/errors"
-
-	"regexp"
 
 	log "github.com/Sirupsen/logrus"
 )
@@ -122,24 +121,19 @@ func (client *Docker) StartContainer(
 // If volumes is true, the associated volumes are removed with container.
 // If links is true, the associated links are removed with container.
 // If force is true, the container will be destroyed with extreme prejudice.
-func (client *Docker) RemoveContainer(cont types.ContainerJSONBase, volumes bool, links bool, force bool) error {
-	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
-	defer cancel()
+func (client *Docker) RemoveContainer(cont types.ContainerJSONBase, volumes bool, links bool, force bool) {
 	// check if container exists
-	if plugin, exists, err := client.ContainerExists(cont.Name); exists {
-		er.CheckError(err)
+	if plugin, exists, _ := client.ContainerExists(cont.Name); exists {
 		log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Debug("Removing Plugin container: ", cont.Name)
-		err := client.Client.ContainerRemove(ctx, plugin.ID, types.ContainerRemoveOptions{
-			RemoveVolumes: volumes,
-			RemoveLinks:   links,
-			Force:         force,
-		})
-		er.CheckError(err)
-		return err
+		er.CheckError(client.Client.ContainerRemove(context.Background(), plugin.ID, types.ContainerRemoveOptions{
+			RemoveVolumes: true,
+			// RemoveLinks:   links,
+			Force: true,
+		}))
+	} else {
+		// container not found
+		log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Error("Plugin container does not exist. Cannot remove.")
 	}
-	// container not found
-	log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Error("Plugin container does not exist. Cannot remove.")
-	return nil
 }
 
 // LogContainer tails container logs to terminal
@@ -168,22 +162,20 @@ func (client *Docker) LogContainer(contID string) {
 // ContainerInspect returns types.ContainerJSON from Container ID
 // if the container name exists, otherwise false.
 func (client *Docker) ContainerInspect(id string) (types.ContainerJSONBase, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
-	defer cancel()
-	contJSON, err := client.Client.ContainerInspect(ctx, id)
+	contJSON, err := client.Client.ContainerInspect(context.Background(), id)
 	return *contJSON.ContainerJSONBase, err
 }
 
 // ContainerExists returns APIContainers containers list and true
 // if the container name exists, otherwise false.
 func (client *Docker) ContainerExists(name string) (types.Container, bool, error) {
-	return client.ParseContainers(name, true)
+	return client.ParseContainers(strings.TrimLeft(name, "/"), true)
 }
 
 // ContainerRunning returns APIContainers containers list and true
 // if the container name exists and is running, otherwise false.
 func (client *Docker) ContainerRunning(name string) (types.Container, bool, error) {
-	return client.ParseContainers(name, false)
+	return client.ParseContainers(strings.TrimLeft(name, "/"), false)
 }
 
 // ParseContainers parses the containers
@@ -195,14 +187,18 @@ func (client *Docker) ParseContainers(name string, all bool) (types.Container, b
 		return types.Container{}, false, err
 	}
 	// locate docker container that matches name
-	r := regexp.MustCompile(name)
 	if len(containers) != 0 {
 		for _, container := range containers {
-			for _, n := range container.Names {
-				if r.MatchString(n) {
-					log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Debug("Container FOUND: ", name)
-					return container, true, nil
-				}
+
+			cont, err := client.ContainerInspect(container.ID)
+			er.CheckError(err)
+
+			log.Debugln("name: ", name, " ", "container.Name: ", strings.TrimLeft(cont.Name, "/"))
+			log.Debugln("MATCH: ", strings.EqualFold(strings.TrimLeft(cont.Name, "/"), name))
+
+			if strings.EqualFold(strings.TrimLeft(cont.Name, "/"), name) {
+				log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Debug("Container FOUND: ", name)
+				return container, true, nil
 			}
 		}
 	}
@@ -212,10 +208,8 @@ func (client *Docker) ParseContainers(name string, all bool) (types.Container, b
 
 // listContainers returns array of types.Containers and error
 func (client *Docker) listContainers(all bool) ([]types.Container, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
-	defer cancel()
 	options := types.ContainerListOptions{All: all}
-	containers, err := client.Client.ContainerList(ctx, options)
+	containers, err := client.Client.ContainerList(context.Background(), options)
 	if err != nil {
 		return nil, err
 	}

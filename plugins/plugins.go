@@ -54,7 +54,7 @@ func RunIntelPlugins(client *maldocker.Docker, hash string, scanID string, logs 
 				logs,
 				nil,
 				nil,
-				[]string{"rethink:rethink"},
+				[]string{"rethink"},
 				env,
 			)
 			er.CheckError(err)
@@ -66,7 +66,7 @@ func RunIntelPlugins(client *maldocker.Docker, hash string, scanID string, logs 
 				logs,
 				nil,
 				nil,
-				[]string{"rethink:rethink"},
+				[]string{"rethink"},
 				env,
 			)
 			er.CheckError(err)
@@ -80,8 +80,7 @@ func RunIntelPlugins(client *maldocker.Docker, hash string, scanID string, logs 
 			"env":  config.Conf.Environment.Run,
 		}).Debug("Plugin Container Started")
 
-		err := client.RemoveContainer(cont, false, false, false)
-		er.CheckError(err)
+		client.RemoveContainer(cont, true, true, true)
 	}
 }
 

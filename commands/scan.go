@@ -90,8 +90,7 @@ func cmdScan(path string, logs bool) error {
 				"env":  config.Conf.Environment.Run,
 			}).Debug("Plugin Container Started")
 
-			err = docker.RemoveContainer(cont, false, false, false)
-			er.CheckError(err)
+			docker.RemoveContainer(cont, false, false, false)
 
 			// }()
 			// Clean up the Plugin Container

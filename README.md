@@ -45,7 +45,7 @@ $ docker-machine create --driver virtualbox --engine-storage-driver overlay mali
 $ eval $(docker-machine env malice)
 ```
 
-Or install **Docker for Mac** if you can get a [beta invite](https://beta.docker.com).
+Or install [Docker for Mac](https://docs.docker.com/docker-for-mac/).
 
 ### Usage
 

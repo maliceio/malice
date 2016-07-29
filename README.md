@@ -85,11 +85,11 @@ docker run -v /var/run/docker.sock:/var/run/docker.sock malice/engine plugin upd
 Scan a file
 
 ```bash
-docker run -v /var/run/docker.sock:/var/run/docker.sock \
-           -v malice:/malice/samples \
-           -v `pwd`:/cases:ro \
-           -e MALICE_VT_API=$MALICE_VT_API \
-           -it --rm malice/engine scan /cases/<FILE>
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                -v malice:/malice/samples \
+                -v `pwd`:/cases:ro \
+                -e MALICE_VT_API=$MALICE_VT_API \
+                malice/engine scan /cases/<FILE>
 ```
 
 > NOTE: This command will work with **Docker for Mac** or on Linux.

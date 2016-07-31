@@ -4,9 +4,10 @@ malice
 ======
 
 [![Build Status][travis-badge]](https://travis-ci.org/maliceio/malice)
+[![License][license]](http://www.apache.org/licenses/LICENSE-2.0)
 [![GoDoc](https://godoc.org/github.com/maliceio/malice?status.svg)](https://godoc.org/github.com/maliceio/malice)
 [![Gitter Chat][gitter-badge]][gitter-link]
-[![License][license]](http://www.apache.org/licenses/LICENSE-2.0)
+
 
 [![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)][hub]
 [![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)][hub]

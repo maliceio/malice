@@ -1,4 +1,4 @@
-FROM gliderlabs/alpine
+FROM gliderlabs/alpine:3.4
 
 MAINTAINER blacktop, https://github.com/blacktop
 
@@ -28,6 +28,6 @@ EXPOSE 80 443
 
 WORKDIR /malice/samples
 
-ENTRYPOINT ["/sbin/tini","--","malice"]
+ENTRYPOINT ["gosu","malice","/sbin/tini","--","malice"]
 
 CMD ["--help"]

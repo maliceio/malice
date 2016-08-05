@@ -1,17 +1,28 @@
-dependencies:
-  pre:
-    - make deps
-  override:
-    - make build
+machine:
+  services:
+    - docker
 
-# test:
-#   override:
-#     - tests/shunit2:
-#         parallel: true
-#         files:
-#           - tests/*.sh
+general:
+  build_dir: "docker"
+
+dependencies:
+  cache_directories:
+    - "~/docker"
+  override:
+    - docker info
+    - if [[ -e ~/docker/image.tar ]]; then docker load --input ~/docker/image.tar; fi
+    - docker build -t malice_engine .
+    - mkdir -p ~/docker; docker save malice_engine > ~/docker/image.tar
+
+test:
+  override:
+    - docker run malice_engine
 
 deployment:
+  # master:
+  #   branch: master
+  #   commands:
+  #     - eval $(docker run gliderlabs/pagebuilder circleci-cmd)
   release:
     branch: release
     commands:

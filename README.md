@@ -8,29 +8,11 @@ malice
 [![GoDoc](https://godoc.org/github.com/maliceio/malice?status.svg)](https://godoc.org/github.com/maliceio/malice)
 [![Gitter Chat][gitter-badge]][gitter-link]
 
-
 [![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)][hub]
 [![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)][hub]
 [![Docker Image](https://img.shields.io/badge/docker image-26.63 MB-blue.svg)][hub]
 
 Malice's mission is to be a free open source version of VirusTotal that anyone can use at any scale from an independent researcher to a fortune 500 company.
-
-### Install
-
-Malice will have binary releases for all platforms soon.
-
-```bash
-$ go get github.com/tools/godep
-$ go get -u github.com/maliceio/malice
-$ godep restore
-```
-
-If you have have [zsh](http://www.zsh.org/) and installed it via [homebrew](http://brew.sh) you can do this as well:
-
-```bash
-$ cd $GOPATH/src/github.com/maliceio/malice/contrib/zsh-completion
-$ bash install.sh
-```
 
 ### Setup Docker
 
@@ -48,7 +30,7 @@ $ eval $(docker-machine env malice)
 
 Or install [Docker for Mac](https://docs.docker.com/docker-for-mac/).
 
-### Usage
+### Getting Started
 
 ```
 Usage: malice [OPTIONS] COMMAND [arg...]
@@ -100,6 +82,14 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
 
 #### Install
 
+Malice will have binary releases for all platforms soon.
+
+```bash
+$ go get github.com/tools/godep
+$ go get -u github.com/maliceio/malice
+$ godep restore
+```
+
 -	[Ubuntu](https://github.com/maliceio/malice/blob/master/docs/ubuntu.md)
 
 #### Plugins
@@ -109,6 +99,17 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
 #### Examples
 
 -	[Examples](https://github.com/maliceio/malice/blob/master/docs/example.md)
+
+#### Tips and Tricks
+
+If you have have [zsh](http://www.zsh.org/) and installed it via [homebrew](http://brew.sh) you can do this as well:
+
+```bash
+$ cd $GOPATH/src/github.com/maliceio/malice/contrib/zsh-completion
+$ bash install.sh
+```
+
+### Known Issues
 
 ### Issues
 
@@ -123,6 +124,16 @@ Minimum Viable Product
 ### TODO
 
 -	[ ] Figure out how to do Windows AV ? :confounded:
+
+### CHANGELOG
+
+See [`CHANGELOG.md`](https://github.com/maliceio/malice/blob/master/CHANGELOG.md)
+
+### Contributing
+
+[See all contributors on GitHub](https://github.com/maliceio/malice/graphs/contributors).
+
+Please update the [CHANGELOG.md](https://github.com/maliceio/malice/blob/master/CHANGELOG.md) and submit a [Pull Request on GitHub](https://help.github.com/articles/using-pull-requests/).
 
 ### License
 

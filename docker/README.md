@@ -12,8 +12,8 @@ This repository contains a **Dockerfile** of the [Malice Engine](https://github.
 ### Image Tags
 
 ```bash
-REPOSITORY          TAG                 SIZE                                                                                
-malice/engine       latest              27.29 MB                                                                            
+REPOSITORY          TAG                 SIZE
+malice/engine       latest              27.29 MB
 malice/engine       0.1                 27.29 MB
 ```
 

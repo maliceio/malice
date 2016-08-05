@@ -2,6 +2,8 @@ FROM gliderlabs/alpine:3.4
 
 MAINTAINER blacktop, https://github.com/blacktop
 
+ENV GOSU_VERSION 1.9
+
 RUN apk-install file tini
 RUN apk-install -t build-deps go git mercurial build-base file-dev \
   && set -x \

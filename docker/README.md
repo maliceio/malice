@@ -1,7 +1,7 @@
 ![malice logo](https://raw.githubusercontent.com/maliceio/malice/master/docs/logo/malice.png)
 =============================================================================================
 
-[![CircleCI](https://circleci.com/gh/maliceio/malice.png?style=shield)](https://circleci.com/gh/maliceio/malice) [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org) [![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)](https://hub.docker.com/r/malice/engine/) [![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)](https://hub.docker.com/r/malice/engine/) [![Docker Image](https://img.shields.io/badge/docker image-29.09 MB-blue.svg)](https://hub.docker.com/r/malice/engine/)
+[![CircleCI](https://circleci.com/gh/maliceio/malice.png?style=shield)](https://circleci.com/gh/maliceio/malice) [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org) [![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)](https://hub.docker.com/r/malice/engine/) [![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)](https://hub.docker.com/r/malice/engine/) [![Docker Image](https://img.shields.io/badge/docker image-27.29 MB-blue.svg)](https://hub.docker.com/r/malice/engine/)
 
 This repository contains a **Dockerfile** of the [Malice Engine](https://github.com/maliceio/malice).
 
@@ -12,8 +12,9 @@ This repository contains a **Dockerfile** of the [Malice Engine](https://github.
 ### Image Tags
 
 ```bash
-REPOSITORY          TAG                 SIZE
-malice/engine     latest              26.63 MB
+REPOSITORY          TAG                 SIZE                                                                                
+malice/engine       latest              27.29 MB                                                                            
+malice/engine       0.1                 27.29 MB
 ```
 
 ### Installation

@@ -36,3 +36,4 @@ release/
 build/
 .vscode/
 debug
+*.bu

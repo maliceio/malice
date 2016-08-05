@@ -30,7 +30,10 @@ RUN apk-install -t build-deps go git mercurial build-base file-dev \
   && go get \
   && go build -ldflags "-X main.Version=$(cat VERSION) -X main.BuildTime=$(date -u +%Y%m%d)" -o /bin/malice \
   && echo "Copy malice config files..." \
+  && addgroup malice \
+  && adduser -S -G malice malice \  
   && mkdir /malice \
+  && chown -R malice:malice /malware \
   && cp /go/src/github.com/maliceio/malice/data/config.toml /malice \
   && cp /go/src/github.com/maliceio/malice/data/plugins.toml /malice \
   && rm -rf /go \

@@ -74,4 +74,5 @@ Please update the [CHANGELOG.md](https://github.com/maliceio/malice/blob/master/
 
 ### License
 
-MIT Copyright (c) 2015-2016 **blacktop**
+Apache License (Version 2.0)  
+Copyright (c) 2013 - 2016 **blacktop** Joshua Maine

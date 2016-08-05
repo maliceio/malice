@@ -16,7 +16,7 @@ dependencies:
 
 test:
   override:
-    - docker run malice_engine
+    - docker run -v /var/run/docker.sock:/var/run/docker.sock malice_engine
 
 deployment:
   # master:

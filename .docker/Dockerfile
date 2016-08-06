@@ -14,8 +14,8 @@ RUN apk-install -t build-deps go git mercurial build-base file-dev \
   && go build -ldflags "-X main.Version=$(cat VERSION) -X main.BuildTime=$(date -u +%Y%m%d)" -o /bin/malice \
   && echo "Copy malice config files..." \
   && mkdir /malice \
-  && cp /go/src/github.com/maliceio/malice/data/config.toml /malice \
-  && cp /go/src/github.com/maliceio/malice/data/plugins.toml /malice \
+  && cp /go/src/github.com/maliceio/malice/config/config.toml /malice \
+  && cp /go/src/github.com/maliceio/malice/plugins/plugins.toml /malice \
   && rm -rf /go \
   && apk del --purge build-deps
 

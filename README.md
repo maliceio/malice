@@ -3,7 +3,7 @@
 malice
 ======
 
-[![Build Status][travis-badge]](https://travis-ci.org/maliceio/malice)
+[![CircleCI](https://circleci.com/gh/maliceio/malice.png?style=shield)](https://circleci.com/gh/maliceio/malice) 
 [![License][license]](http://www.apache.org/licenses/LICENSE-2.0)
 [![GoDoc](https://godoc.org/github.com/maliceio/malice?status.svg)](https://godoc.org/github.com/maliceio/malice)
 [![Gitter Chat][gitter-badge]][gitter-link]

@@ -3,7 +3,7 @@ machine:
     - docker
 
 general:
-  build_dir: "docker"
+  build_dir: ".docker"
 
 dependencies:
   cache_directories:

@@ -5,6 +5,8 @@
 # PLUGIN Configuration ################################################
 #######################################################################
 
+title = "Malice Plugin Configurations"
+
 [[plugin]]
   name = "nsrl"
   enabled = false

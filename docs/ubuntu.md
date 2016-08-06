@@ -33,7 +33,6 @@ $ go get github.com/maliceio/malice
 #### Download All Malice Plugins
 
 ```bash
-$ cd $HOME/src/github.com/maliceio/malice  # This is a BUG, I don't know why you need to be in this directory for it to work  
 $ malice plugin update --all
 ```
 
@@ -43,7 +42,6 @@ $ malice plugin update --all
 
 ```bash
 $ export MALICE_VT_API=<YOUR API KEY>
-$ cd $HOME/src/github.com/maliceio/malice
 $ malice
 ```
 

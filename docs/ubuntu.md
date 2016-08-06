@@ -1,6 +1,7 @@
 ### Ubuntu 14.04.3
 
 #### Install Go
+
 ```bash
 $ sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable
 $ sudo apt-get update
@@ -9,7 +10,9 @@ $ sudo apt-get install golang
 $ export GOPATH=$HOME  
 $ export PATH=$PATH:$GOPATH/bin
 ```
+
 #### Install Docker
+
 ```bash
 $ sudo apt-get update
 $ sudo apt-get install apt-transport-https ca-certificates
@@ -19,29 +22,32 @@ $ sudo apt-get update
 $ sudo apt-get install docker-engine
 $ sudo usermod -aG docker $USER  # You might have to logout for change to take effect
 ```
+
 #### Install Malice
+
 ```bash
 $ sudo apt-get install libmagic-dev build-essential
-$ go get github.com/tools/godep
-$ go get -u github.com/maliceio/malice
-$ cd ~/src/github.com/maliceio/malice
-$ godep restore  # This might not be needed with Go 1.6+
-$ go install
+$ go get github.com/maliceio/malice
 ```
+
 #### Download All Malice Plugins
+
 ```bash
 $ cd $HOME/src/github.com/maliceio/malice  # This is a BUG, I don't know why you need to be in this directory for it to work  
 $ malice plugin update --all
 ```
+
 > **NOTE:** pulling down all of the plugins can take a long time depending on your network speed.
 
 #### Run Malice
+
 ```bash
 $ export MALICE_VT_API=<YOUR API KEY>
 $ cd $HOME/src/github.com/maliceio/malice
 $ malice
 ```
-> **NOTE:** Malice has just created a `.malice` in your home directory.  This is used to store the `config/plugin` info as well as to store the **samples** that you scan.
+
+> **NOTE:** Malice has just created a `.malice` in your home directory. This is used to store the `config/plugin` info as well as to store the **samples** that you scan.
 
 ```bash
 Usage: malice [OPTIONS] COMMAND [arg...]

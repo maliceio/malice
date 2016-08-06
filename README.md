@@ -85,9 +85,7 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
 Malice will have binary releases for all platforms soon.
 
 ```bash
-$ go get github.com/tools/godep
-$ go get -u github.com/maliceio/malice
-$ godep restore
+$ go get github.com/maliceio/malice
 ```
 
 -	[Ubuntu](https://github.com/maliceio/malice/blob/master/docs/ubuntu.md)

@@ -7,7 +7,6 @@ import (
 	"golang.org/x/net/context"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/database"
 	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/maldocker"
@@ -87,7 +86,7 @@ func cmdScan(path string, logs bool) error {
 				"ip": docker.GetIP(),
 				// "url":      "http://" + maldocker.GetIP(),
 				"name": cont.Name,
-				"env":  config.Conf.Environment.Run,
+				// "env":  config.Conf.Environment.Run,
 			}).Debug("Plugin Container Started")
 
 			docker.RemoveContainer(cont, false, false, false)

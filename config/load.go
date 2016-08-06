@@ -1,17 +1,10 @@
 package config
 
 import (
-	"io/ioutil"
-	"os"
+	"fmt"
 	"time"
 
-	"path"
-
 	"github.com/BurntSushi/toml"
-	log "github.com/Sirupsen/logrus"
-	"github.com/maliceio/malice/data"
-	er "github.com/maliceio/malice/malice/errors"
-	"github.com/maliceio/malice/malice/maldirs"
 )
 
 // "github.com/pelletier/go-toml"
@@ -85,19 +78,28 @@ var Conf Configuration
 
 // Load config.toml into Conf var
 func Load() {
-	// Get the config file
-	configPath := "./data/config.toml"
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		// er.CheckErrorNoStackWithMessage(err, "NOT FOUND")
-		configPath = path.Join(maldirs.GetBaseDir(), "./config.toml")
-		if _, err := os.Stat(configPath); os.IsNotExist(err) {
-			configData, err := data.Asset("data/config.toml")
-			er.CheckError(err)
-			er.CheckError(ioutil.WriteFile(configPath, configData, 0644))
-		}
+	tomlData, err := Asset("config/config.toml")
+	if err != nil {
+		// Asset was not found.
 	}
-	log.Debug("Malice Config: ", configPath)
-	_, err := toml.DecodeFile(configPath, &Conf)
-	er.CheckError(err)
+	fmt.Println(string(tomlData))
+	if _, err := toml.Decode(string(tomlData), &Conf); err != nil {
+		// handle error
+	}
+	// os.Exit(0)
+	// Get the config file
+	// configPath := "./data/config.toml"
+	// if _, err := os.Stat(configPath); os.IsNotExist(err) {
+	// 	// er.CheckErrorNoStackWithMessage(err, "NOT FOUND")
+	// 	configPath = path.Join(maldirs.GetBaseDir(), "./config.toml")
+	// 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+	// 		configData, err := data.Asset("data/config.toml")
+	// 		er.CheckError(err)
+	// 		er.CheckError(ioutil.WriteFile(configPath, configData, 0644))
+	// 	}
+	// }
+	// log.Debug("Malice Config: ", configPath)
+	// _, err := toml.DecodeFile(configPath, &Conf)
+	// er.CheckError(err)
 	// fmt.Println(Conf)
 }

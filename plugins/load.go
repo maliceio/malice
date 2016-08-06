@@ -1,15 +1,9 @@
 package plugins
 
 import (
-	"io/ioutil"
-	"os"
-	"path"
+	"fmt"
 
 	"github.com/BurntSushi/toml"
-	log "github.com/Sirupsen/logrus"
-	"github.com/maliceio/malice/data"
-	er "github.com/maliceio/malice/malice/errors"
-	"github.com/maliceio/malice/malice/maldirs"
 	"github.com/maliceio/malice/malice/maldocker"
 )
 
@@ -38,22 +32,31 @@ var Plugs Configuration
 
 // Load plugins.toml into Plug var
 func Load() {
-	// Get the plugin file
-	pluginPath := "./data/plugins.toml"
-	if _, err := os.Stat(pluginPath); os.IsNotExist(err) {
-		// er.CheckErrorNoStackWithMessage(err, "NOT FOUND")
-		pluginPath = path.Join(maldirs.GetBaseDir(), "./plugins.toml")
-		if _, err := os.Stat(pluginPath); os.IsNotExist(err) {
-			pluginData, err := data.Asset("data/plugins.toml")
-			er.CheckError(err)
-			er.CheckError(ioutil.WriteFile(pluginPath, pluginData, 0644))
-		}
+	tomlData, err := Asset("plugins/plugins.toml")
+	if err != nil {
+		// Asset was not found.
 	}
-	log.Debug("Plugin Config: ", pluginPath)
-	_, err := toml.DecodeFile(pluginPath, &Plugs)
-	setInstalledFlag()
-	// fmt.Printf("%#v\n", Plugs)
-	er.CheckError(err)
+	fmt.Println(string(tomlData))
+	if _, err := toml.Decode(string(tomlData), &Plugs); err != nil {
+		// handle error
+	}
+	// os.Exit(0)
+	// Get the plugin file
+	// pluginPath := "./data/plugins.toml"
+	// if _, err := os.Stat(pluginPath); os.IsNotExist(err) {
+	// 	// er.CheckErrorNoStackWithMessage(err, "NOT FOUND")
+	// 	pluginPath = path.Join(maldirs.GetBaseDir(), "./plugins.toml")
+	// 	if _, err := os.Stat(pluginPath); os.IsNotExist(err) {
+	// 		pluginData, err := data.Asset("data/plugins.toml")
+	// 		er.CheckError(err)
+	// 		er.CheckError(ioutil.WriteFile(pluginPath, pluginData, 0644))
+	// 	}
+	// }
+	// log.Debug("Plugin Config: ", pluginPath)
+	// _, err := toml.DecodeFile(pluginPath, &Plugs)
+	// // setInstalledFlag()
+	// // fmt.Printf("%#v\n", Plugs)
+	// er.CheckError(err)
 }
 
 func setInstalledFlag() {

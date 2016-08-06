@@ -10,7 +10,6 @@ import (
 	log "github.com/Sirupsen/logrus"
 	docker "github.com/docker/engine-api/client"
 	"github.com/maliceio/malice/config"
-	er "github.com/maliceio/malice/malice/errors"
 )
 
 // NOTE: https://github.com/eris-ltd/eris-cli/blob/master/perform/docker_run.go
@@ -28,51 +27,27 @@ func NewDockerClient() *Docker {
 	var ip, port string
 	var err error
 
-	// Create docker client based on OS
-	switch runtime.GOOS {
-	case "windows":
-		// Create a new Client from Env
-		if _, exists := os.LookupEnv("DOCKER_HOST"); exists {
-			ip, port, err = parseDockerEndoint(os.Getenv("DOCKER_HOST"))
-			er.CheckError(err)
-			client, err = docker.NewEnvClient()
-			if err != nil {
-				log.Fatal(err)
-			}
-		} else {
-			// Create a new Client from config.Conf.Docker.EndPoint
-			ip, port, err = parseDockerEndoint(config.Conf.Docker.EndPoint)
-			er.CheckError(err)
-			defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
-			client, err = docker.NewClient(config.Conf.Docker.EndPoint, "v1.22", nil, defaultHeaders)
-			if err != nil {
-				log.Fatal(err)
-			}
-		}
-	case "darwin", "linux":
-		defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
-		client, err = docker.NewClient("unix:///var/run/docker.sock", "v1.22", nil, defaultHeaders)
-		log.Debug(client)
+	defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
+	client, err = docker.NewClient("unix:///var/run/docker.sock", "v1.22", nil, defaultHeaders)
+
+	// Check if client can connect
+	if _, err = client.Info(context.Background()); err != nil {
+		// If failed to connect try to create docker client from ENV
+		client, err = docker.NewEnvClient()
 		if err != nil {
 			log.Fatal(err)
 		}
-	}
-
-	// ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
-	// defer cancel()
-
-	// vols, err := client.VolumeList(context.Background(), filters.Args{})
-	// for _, volume := range vols.Volumes {
-	// 	if strings.Contains(volume.Name, "malice") {
-	// 		fmt.Printf("%#v", volume)
-	// 	}
-	// }
-
-	// Check if client can connect
-	_, err = client.Info(context.Background())
-	if err != nil {
-		handleClientError(err)
-		// log.Fatal(err)
+		// Check if client can connect
+		if _, err = client.Info(context.Background()); err != nil {
+			handleClientError(err)
+		} else {
+			ip, port, err = parseDockerEndoint(os.Getenv("DOCKER_HOST"))
+			log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon with docker-machine")
+		}
+	} else {
+		ip = "localhost"
+		port = "2375"
+		log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon native client")
 	}
 
 	return &Docker{

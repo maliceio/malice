@@ -10,7 +10,7 @@ malice
 
 [![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)][hub]
 [![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)][hub]
-[![Docker Image](https://img.shields.io/badge/docker image-26.63 MB-blue.svg)][hub]
+[![Docker Image](https://img.shields.io/badge/docker image-27.29 MB-blue.svg)][hub]
 
 Malice's mission is to be a free open source version of VirusTotal that anyone can use at any scale from an independent researcher to a fortune 500 company.
 

@@ -1,9 +1,14 @@
 package plugins
 
 import (
-	"fmt"
+	"io/ioutil"
+	"os"
+	"path"
 
 	"github.com/BurntSushi/toml"
+	log "github.com/Sirupsen/logrus"
+	er "github.com/maliceio/malice/malice/errors"
+	"github.com/maliceio/malice/malice/maldirs"
 	"github.com/maliceio/malice/malice/maldocker"
 )
 
@@ -32,31 +37,44 @@ var Plugs Configuration
 
 // Load plugins.toml into Plug var
 func Load() {
+	// Try to load plugins from
+	// - git repo folder      : MALICE_ROOT/plugins/plugins.toml
+	// - .malice folder       : $HOME/.malice/plugins.toml
+	// - binary embedded file : bindata
+
+	// Check for plugins config in repo
+	if _, err := os.Stat("./plugins/plugins.toml"); err == nil {
+		log.Debug("Malice plugins loaded from ./plugins/plugins.toml")
+
+		_, err := toml.DecodeFile("./plugins/plugins.toml", &Plugs)
+		er.CheckError(err)
+
+		return
+	}
+	// Check for plugins config in .malice folder
+	if _, err := os.Stat(path.Join(maldirs.GetBaseDir(), "./plugins.toml")); err == nil {
+		homeConfigDir := path.Join(maldirs.GetBaseDir(), "./plugins.toml")
+		log.Debug("Malice plugins loaded from ", homeConfigDir)
+
+		_, err := toml.DecodeFile(homeConfigDir, &Plugs)
+		er.CheckError(err)
+
+		return
+	}
+	// Read plugin config out of bindata
 	tomlData, err := Asset("plugins/plugins.toml")
 	if err != nil {
-		// Asset was not found.
+		log.Error(err)
 	}
-	fmt.Println(string(tomlData))
-	if _, err := toml.Decode(string(tomlData), &Plugs); err != nil {
-		// handle error
+
+	if _, err := toml.Decode(string(tomlData), &Plugs); err == nil {
+		log.Debug("Malice plugins loaded from plugins/bindata.go")
+		configPath := path.Join(maldirs.GetBaseDir(), "./plugins.toml")
+		er.CheckError(ioutil.WriteFile(configPath, tomlData, 0644))
 	}
-	// os.Exit(0)
-	// Get the plugin file
-	// pluginPath := "./data/plugins.toml"
-	// if _, err := os.Stat(pluginPath); os.IsNotExist(err) {
-	// 	// er.CheckErrorNoStackWithMessage(err, "NOT FOUND")
-	// 	pluginPath = path.Join(maldirs.GetBaseDir(), "./plugins.toml")
-	// 	if _, err := os.Stat(pluginPath); os.IsNotExist(err) {
-	// 		pluginData, err := data.Asset("data/plugins.toml")
-	// 		er.CheckError(err)
-	// 		er.CheckError(ioutil.WriteFile(pluginPath, pluginData, 0644))
-	// 	}
-	// }
-	// log.Debug("Plugin Config: ", pluginPath)
-	// _, err := toml.DecodeFile(pluginPath, &Plugs)
-	// // setInstalledFlag()
-	// // fmt.Printf("%#v\n", Plugs)
-	// er.CheckError(err)
+	er.CheckError(err)
+
+	return
 }
 
 func setInstalledFlag() {

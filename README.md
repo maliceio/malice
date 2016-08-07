@@ -63,7 +63,7 @@ Run 'malice COMMAND --help' for more information on a command.
 
 [![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)][hub]
 [![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)][hub]
-[![Docker Image](https://img.shields.io/badge/docker image-27.29 MB-blue.svg)][hub]
+[![Docker Image](https://img.shields.io/badge/docker image-28.59 MB-blue.svg)][hub]
 
 Install/Update all Plugins
 

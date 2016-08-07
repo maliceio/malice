@@ -7,6 +7,7 @@ import (
 	"golang.org/x/net/context"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/database"
 	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/maldocker"
@@ -58,9 +59,12 @@ func cmdScan(path string, logs bool) error {
 		// fmt.Println(string(file.ToJSON()))
 
 		//////////////////////////////////////
+		// Copy file to malice volume
+		docker.CopyToVolume(file)
+		//////////////////////////////////////
 		// Write all file data to the Database
 		resp := database.WriteFileToDatabase(file)
-		// os.Exit(0)
+
 		/////////////////////////////////////////////////////////////////
 		// Run all Intel Plugins on the md5 hash associated with the file
 		plugins.RunIntelPlugins(docker, file.MD5, resp.GeneratedKeys[0], true)
@@ -86,7 +90,7 @@ func cmdScan(path string, logs bool) error {
 				"ip": docker.GetIP(),
 				// "url":      "http://" + maldocker.GetIP(),
 				"name": cont.Name,
-				// "env":  config.Conf.Environment.Run,
+				"env":  config.Conf.Environment.Run,
 			}).Debug("Plugin Container Started")
 
 			docker.RemoveContainer(cont, false, false, false)

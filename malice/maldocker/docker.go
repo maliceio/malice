@@ -27,13 +27,13 @@ func NewDockerClient() *Docker {
 	var ip, port string
 	var err error
 
-	defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
-	client, err = docker.NewClient("unix:///var/run/docker.sock", "v1.22", nil, defaultHeaders)
+	client, err = docker.NewEnvClient()
 
 	// Check if client can connect
 	if _, err = client.Info(context.Background()); err != nil {
-		// If failed to connect try to create docker client from ENV
-		client, err = docker.NewEnvClient()
+		// If failed to connect try to create docker client via socket
+		defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
+		client, err = docker.NewClient("unix:///var/run/docker.sock", "v1.22", nil, defaultHeaders)
 		if err != nil {
 			log.Fatal(err)
 		}

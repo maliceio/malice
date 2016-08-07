@@ -1,16 +1,21 @@
 package maldocker
 
 import (
+	"bytes"
+	"io/ioutil"
+	"path/filepath"
 	"time"
-
-	"github.com/docker/engine-api/types"
-	"github.com/docker/engine-api/types/filters"
-	"github.com/maliceio/malice/config"
-	"golang.org/x/net/context"
 
 	"regexp"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/docker/engine-api/types"
+	"github.com/docker/engine-api/types/filters"
+	"github.com/docker/engine-api/types/strslice"
+	"github.com/maliceio/malice/config"
+	er "github.com/maliceio/malice/malice/errors"
+	"github.com/maliceio/malice/malice/persist"
+	"golang.org/x/net/context"
 )
 
 // VolumeExists returns type.Volume and true
@@ -34,6 +39,44 @@ func (client *Docker) CreateVolume(name string) (types.Volume, error) {
 		"env":  config.Conf.Environment.Run,
 	}).Info("Created Volume: ", name)
 	return vol, err
+}
+
+// CopyToVolume copies samples into Malice volume
+func (client *Docker) CopyToVolume(file persist.File) {
+	name := "copy2volume"
+	image := "busybox"
+	cmd := strslice.StrSlice{"sh", "-c", "while true; do echo 'Hit CTRL+C'; sleep 1; done"}
+	binds := []string{"malice:/malice:rw"}
+	volSavePath := filepath.Join("/malice/samples", file.SHA256)
+	if client.Ping() {
+		container, err := client.StartContainer(cmd, name, image, false, binds, nil, nil, nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// If file doesn't already exists copy into volume
+		// stat, err := client.Client.ContainerStatPath(context.Background(), container.ID, volSavePath)
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
+		// log.Info(stat)
+
+		dat, err := ioutil.ReadFile(file.Path)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		copyOptions := types.CopyToContainerOptions{AllowOverwriteDirWithFile: false}
+		er.CheckError(client.Client.CopyToContainer(
+			context.Background(),
+			container.ID,
+			volSavePath,
+			bytes.NewReader(dat),
+			copyOptions,
+		))
+
+		client.RemoveContainer(container, true, true, true)
+	}
 }
 
 // ParseVolumes parses the volumes

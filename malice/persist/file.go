@@ -1,15 +1,18 @@
 package persist
 
 import (
+	"compress/gzip"
 	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/sha512"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/crackcomm/go-clitable"
@@ -52,6 +55,7 @@ func (file *File) Init() {
 		file.GetSHA512()
 		file.GetFileMimeType()
 		file.CopyToSamples()
+		file.gzipSample()
 		file.Data = nil
 	} else {
 		log.Fatalf("error occured during file.Init() because file.Path was not set.")
@@ -73,6 +77,24 @@ func (file *File) CopyToSamples() error {
 	}
 
 	return nil
+}
+
+func (file *File) gzipSample() error {
+	reader, err := os.Open(file.Path)
+	er.CheckError(err)
+
+	destination := filepath.Join(maldirs.GetSampledsDir(), file.SHA256+".tar.gz")
+	writer, err := os.Create(destination)
+	er.CheckError(err)
+	defer writer.Close()
+
+	archiver := gzip.NewWriter(writer)
+	archiver.Name = file.Name
+	defer archiver.Close()
+
+	_, err = io.Copy(archiver, reader)
+	er.CheckError(err)
+	return err
 }
 
 // GetName returns file name

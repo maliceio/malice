@@ -2,6 +2,7 @@ package commands
 
 import (
 	log "github.com/Sirupsen/logrus"
+	"github.com/maliceio/malice/config"
 	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/maldocker"
 )
@@ -21,7 +22,7 @@ func cmdELK(logs bool) error {
 		"username": "admin",
 		"password": "admin",
 		"name":     contJSON.Name,
-		// "env":      config.Conf.Environment.Run,
+		"env":      config.Conf.Environment.Run,
 	}).Info("ELK Container Started")
 
 	return nil

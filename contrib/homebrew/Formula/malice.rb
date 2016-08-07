@@ -4,11 +4,9 @@ class Malice < Formula
   desc "malice - VirusTotal Wanna Be - Now with 100% more Hipster"
   homepage "https://github.com/maliceio/malice"
   url "https://github.com/maliceio/malice.git",
-    :revision => "d845ec0fa2788b26a36b7b5bf4440d0bf4502abb"
+    :revision => "6aa3b27c084a2ee5cedb2af2802638d739721bc6"
   version "0.1.0-alpha"
   head "https://github.com/maliceio/malice.git"
-
-  option "without-completions", "Disable bash/zsh completions"
 
   depends_on "go" => :build
   depends_on "libmagic" => :run

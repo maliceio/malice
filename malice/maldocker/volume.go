@@ -69,6 +69,10 @@ func (client *Docker) CopyToVolume(file persist.File) {
 		container, err := client.StartContainer(cmd, name, image, false, binds, nil, nil, nil)
 		er.CheckError(err)
 
+		// Get an absolute source path.
+		srcPath, err := client.resolveLocalPath(file.Path)
+		er.CheckError(err)
+
 		// Prepare destination copy info by stat-ing the container path.
 		dstInfo := archive.CopyInfo{Path: volSavePath}
 		dstStat, err := client.statContainerPath(container.Name, volSavePath)
@@ -113,7 +117,8 @@ func (client *Docker) CopyToVolume(file persist.File) {
 		}
 
 		if err == nil {
-			dstInfo.Exists, dstInfo.IsDir = true, dstStat.Mode.IsDir()
+			dstInfo.Exists = true
+			dstInfo.IsDir = dstStat.Mode.IsDir()
 		}
 
 		var (
@@ -122,7 +127,7 @@ func (client *Docker) CopyToVolume(file persist.File) {
 		)
 
 		// Prepare source copy info.
-		srcInfo, err := archive.CopyInfoSourcePath(file.Path, false)
+		srcInfo, err := archive.CopyInfoSourcePath(srcPath, false)
 		er.CheckError(err)
 
 		srcArchive, err := archive.TarResource(srcInfo)

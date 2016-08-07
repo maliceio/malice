@@ -101,6 +101,14 @@ func (client *Docker) CopyToVolume(file persist.File) {
 
 			dstInfo.Path = linkTarget
 			dstStat, err = client.statContainerPath(container.Name, linkTarget)
+			log.WithFields(log.Fields{
+				"dstInfo":        dstInfo,
+				"dstStat":        dstStat,
+				"container.Name": container.Name,
+				"file.Path":      file.Path,
+				"linkTarget":     linkTarget,
+				"SampledsDir":    maldirs.GetSampledsDir(),
+			}).Debug("Second statContainerPath call.")
 			er.CheckError(err)
 		}
 

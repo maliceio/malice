@@ -70,7 +70,7 @@ func (client *Docker) CopyToVolume(file persist.File) {
 		er.CheckError(err)
 
 		// Get an absolute source path.
-		srcPath, err := client.resolveLocalPath(file.Path)
+		srcPath, err := resolveLocalPath(file.Path)
 		er.CheckError(err)
 
 		// Prepare destination copy info by stat-ing the container path.

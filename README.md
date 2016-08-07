@@ -28,6 +28,12 @@ Or install [Docker for Mac](https://docs.docker.com/docker-for-mac/).
 
 ### Getting Started
 
+#### Install  
+
+```bash
+$ brew install https://raw.githubusercontent.com/maliceio/malice/master/contrib/homebrew/Formula/malice.rb
+```
+
 ```
 Usage: malice [OPTIONS] COMMAND [arg...]
 
@@ -81,11 +87,12 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
 
 #### Install
 
-Malice will have binary releases for all platforms soon.
-
 ```bash
 $ go get github.com/maliceio/malice
 ```
+> Malice will have binary releases for all platforms soon.  
+
+To install on Linux:
 
 -	[Ubuntu](https://github.com/maliceio/malice/blob/master/docs/ubuntu.md)
 
@@ -95,14 +102,14 @@ $ go get github.com/maliceio/malice
 
 #### Examples
 
--	[Examples](https://github.com/maliceio/malice/blob/master/docs/example.md)
+-	[Example Output](https://github.com/maliceio/malice/blob/master/docs/example.md)
 
 #### Tips and Tricks
 
 If you have have [zsh](http://www.zsh.org/) and installed it via [homebrew](http://brew.sh) you can do this as well:
 
 ```bash
-$ cd $GOPATH/src/github.com/maliceio/malice/contrib/zsh-completion
+$ cd $GOPATH/src/github.com/maliceio/malice/contrib/completion/zsh
 $ bash install.sh
 ```
 

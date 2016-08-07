@@ -45,6 +45,26 @@
 			"Rev": "9d491698ccf3eba4e87213350518dbaacf8e9650"
 		},
 		{
+			"ImportPath": "github.com/docker/docker/pkg/archive",
+			"Comment": "docs-v1.12.0-rc4-2016-07-15-194-g9c1be54",
+			"Rev": "9c1be541ff2bd38ea88bb7679ba5e8a3181102de"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/fileutils",
+			"Comment": "docs-v1.12.0-rc4-2016-07-15-194-g9c1be54",
+			"Rev": "9c1be541ff2bd38ea88bb7679ba5e8a3181102de"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/idtools",
+			"Comment": "docs-v1.12.0-rc4-2016-07-15-194-g9c1be54",
+			"Rev": "9c1be541ff2bd38ea88bb7679ba5e8a3181102de"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/ioutils",
+			"Comment": "docs-v1.12.0-rc4-2016-07-15-194-g9c1be54",
+			"Rev": "9c1be541ff2bd38ea88bb7679ba5e8a3181102de"
+		},
+		{
 			"ImportPath": "github.com/docker/docker/pkg/jsonlog",
 			"Comment": "docs-v1.12.0-rc4-2016-07-15-194-g9c1be54",
 			"Rev": "9c1be541ff2bd38ea88bb7679ba5e8a3181102de"
@@ -55,7 +75,27 @@
 			"Rev": "9c1be541ff2bd38ea88bb7679ba5e8a3181102de"
 		},
 		{
+			"ImportPath": "github.com/docker/docker/pkg/longpath",
+			"Comment": "docs-v1.12.0-rc4-2016-07-15-194-g9c1be54",
+			"Rev": "9c1be541ff2bd38ea88bb7679ba5e8a3181102de"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/pools",
+			"Comment": "docs-v1.12.0-rc4-2016-07-15-194-g9c1be54",
+			"Rev": "9c1be541ff2bd38ea88bb7679ba5e8a3181102de"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/promise",
+			"Comment": "docs-v1.12.0-rc4-2016-07-15-194-g9c1be54",
+			"Rev": "9c1be541ff2bd38ea88bb7679ba5e8a3181102de"
+		},
+		{
 			"ImportPath": "github.com/docker/docker/pkg/stdcopy",
+			"Comment": "docs-v1.12.0-rc4-2016-07-15-194-g9c1be54",
+			"Rev": "9c1be541ff2bd38ea88bb7679ba5e8a3181102de"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/system",
 			"Comment": "docs-v1.12.0-rc4-2016-07-15-194-g9c1be54",
 			"Rev": "9c1be541ff2bd38ea88bb7679ba5e8a3181102de"
 		},
@@ -352,6 +392,14 @@
 			"Rev": "f3241ce8505855877cc8a9717bd61a0f7c4ea83c"
 		},
 		{
+			"ImportPath": "golang.org/x/crypto/ed25519",
+			"Rev": "f3241ce8505855877cc8a9717bd61a0f7c4ea83c"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ed25519/internal/edwards25519",
+			"Rev": "f3241ce8505855877cc8a9717bd61a0f7c4ea83c"
+		},
+		{
 			"ImportPath": "golang.org/x/crypto/pbkdf2",
 			"Rev": "f3241ce8505855877cc8a9717bd61a0f7c4ea83c"
 		},
@@ -377,6 +425,10 @@
 		},
 		{
 			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "b776ec39b3e54652e09028aaaaac9757f4f8211a"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/windows",
 			"Rev": "b776ec39b3e54652e09028aaaaac9757f4f8211a"
 		},
 		{

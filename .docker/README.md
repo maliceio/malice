@@ -35,10 +35,9 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock malice/engine plugi
 
 ```bash
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-                -v malice:/malice/samples \
-                -v `pwd`:/cases:ro \
+                -v `pwd`:/malice/samples \
                 -e MALICE_VT_API=$MALICE_VT_API \
-                malice/engine scan /cases/<FILE>
+                malice/engine scan SAMPLE
 ```
 
 ### Documentation

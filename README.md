@@ -3,7 +3,7 @@
 malice
 ======
 
-[![CircleCI](https://circleci.com/gh/maliceio/malice.png?style=shield)](https://circleci.com/gh/maliceio/malice) 
+[![CircleCI](https://circleci.com/gh/maliceio/malice.png?style=shield)](https://circleci.com/gh/maliceio/malice)
 [![License][license]](http://www.apache.org/licenses/LICENSE-2.0)
 [![GoDoc](https://godoc.org/github.com/maliceio/malice?status.svg)](https://godoc.org/github.com/maliceio/malice)
 [![Gitter Chat][gitter-badge]][gitter-link]
@@ -70,10 +70,9 @@ Scan a file
 
 ```bash
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-                -v malice:/malice/samples \
-                -v `pwd`:/cases:ro \
+                -v `pwd`:/malice/samples \
                 -e MALICE_VT_API=$MALICE_VT_API \
-                malice/engine scan /cases/<FILE>
+                malice/engine scan SAMPLE
 ```
 
 > NOTE: This command will work with **Docker for Mac** or on Linux.

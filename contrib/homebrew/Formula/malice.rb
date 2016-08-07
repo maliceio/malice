@@ -1,3 +1,5 @@
+require "language/go"
+
 class Malice < Formula
   desc "malice - VirusTotal Wanna Be - Now with 100% more Hipster"
   homepage "https://github.com/maliceio/malice"
@@ -32,10 +34,7 @@ class Malice < Formula
       system "go", "get", "-v"
       system "go", "build", "-o", bin/"malice"
       # bin.install "bin/malice"
-    end
-
-    if build.with? "completions"
-      zsh_completion.install gopath/"src/github.com/maliceio/malice/contrib/completion/zsh/_malice"
+      zsh_completion.install "contrib/completion/zsh/_malice"
     end
   end
 

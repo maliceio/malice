@@ -9,6 +9,7 @@ import (
 	"github.com/urfave/cli"
 
 	"github.com/maliceio/malice/commands"
+	"github.com/maliceio/malice/config"
 	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/logger"
 	"github.com/maliceio/malice/plugins"
@@ -16,9 +17,9 @@ import (
 )
 
 func init() {
-	// config.Load()
 	logger.Init()
 	setDebugOutputLevel()
+	config.Load()
 	plugins.Load()
 }
 

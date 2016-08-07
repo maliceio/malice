@@ -76,10 +76,11 @@ func (client *Docker) CopyToVolume(file persist.File) {
 			"dstInfo":        dstInfo,
 			"dstStat":        dstStat,
 			"container.Name": container.Name,
+			"file.Path":      file.Path,
 			"volSavePath":    volSavePath,
 			"SampledsDir":    maldirs.GetSampledsDir(),
 		}).Debug("First statContainerPath call.")
-		er.CheckError(err)
+		// er.CheckError(err)
 
 		// Check if file already exists in volume
 		if dstStat.Size > 0 {

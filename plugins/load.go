@@ -19,6 +19,7 @@ type Plugin struct {
 	Category    string   `toml:"category"`
 	Description string   `toml:"description"`
 	Image       string   `toml:"image"`
+	Repository  string   `toml:"repository"`
 	APIKey      string   `toml:"apikey"`
 	Mime        string   `toml:"mime"`
 	HashTypes   []string `toml:"hashtypes"`

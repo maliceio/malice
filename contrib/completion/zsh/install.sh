@@ -2,6 +2,7 @@
 set -e
 
 ZSH_FUNC_DIR="/usr/share/zsh/site-functions"
+# ZSH_FUNC_DIR="/usr/local/share/zsh/site-functions"
 
 if [ -d "$ZSH_FUNC_DIR" ]; then
     echo "Installing into ${ZSH_FUNC_DIR}..."

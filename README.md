@@ -17,7 +17,6 @@ To Run on OSX - Install [Homebrew](http://brew.sh)
 ```bash
 $ brew install caskroom/cask/brew-cask
 $ brew cask install virtualbox
-$ brew install libmagic
 $ brew install docker
 $ brew install docker-machine
 $ docker-machine create --driver virtualbox --engine-storage-driver overlay malice
@@ -110,7 +109,7 @@ If you have have [zsh](http://www.zsh.org/) and installed it via [homebrew](http
 
 ```bash
 $ cd $GOPATH/src/github.com/maliceio/malice/contrib/completion/zsh
-$ bash install.sh
+$ ./install.sh
 ```
 
 ### Known Issues

@@ -16,6 +16,7 @@ import (
 	"github.com/docker/engine-api/types/strslice"
 	"github.com/maliceio/malice/config"
 	er "github.com/maliceio/malice/malice/errors"
+	"github.com/maliceio/malice/malice/maldirs"
 	"github.com/maliceio/malice/malice/persist"
 	"golang.org/x/net/context"
 )
@@ -71,6 +72,14 @@ func (client *Docker) CopyToVolume(file persist.File) {
 		// Prepare destination copy info by stat-ing the container path.
 		dstInfo := archive.CopyInfo{Path: volSavePath}
 		dstStat, err := client.statContainerPath(container.Name, volSavePath)
+		log.WithFields(log.Fields{
+			"dstInfo":        dstInfo,
+			"dstStat":        dstStat,
+			"container.Name": container.Name,
+			"volSavePath":    volSavePath,
+			"SampledsDir":    maldirs.GetSampledsDir(),
+		}).Debug("First statContainerPath call.")
+		er.CheckError(err)
 
 		// Check if file already exists in volume
 		if dstStat.Size > 0 {
@@ -91,6 +100,7 @@ func (client *Docker) CopyToVolume(file persist.File) {
 
 			dstInfo.Path = linkTarget
 			dstStat, err = client.statContainerPath(container.Name, linkTarget)
+			er.CheckError(err)
 		}
 
 		if err == nil {

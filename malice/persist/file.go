@@ -72,6 +72,9 @@ func (file *File) CopyToSamples() error {
 
 	if _, err := os.Stat(path.Join(maldirs.GetSampledsDir(), file.SHA256)); os.IsNotExist(err) {
 		err := malutils.CopyFile(file.Path, path.Join(maldirs.GetSampledsDir(), file.SHA256))
+		log.WithFields(log.Fields{
+			"sample": file.SHA256,
+		}).Debug("Copied sample to sample dir: ", maldirs.GetSampledsDir())
 		er.CheckError(err)
 		return err
 	}

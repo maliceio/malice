@@ -41,13 +41,16 @@ func NewDockerClient() *Docker {
 		if _, err = client.Info(context.Background()); err != nil {
 			handleClientError(err)
 		} else {
-			ip, port, err = parseDockerEndoint(os.Getenv("DOCKER_HOST"))
-			log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon with docker-machine")
+			ip = "localhost"
+			port = "2375"
+			log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon native client")
 		}
 	} else {
-		ip = "localhost"
-		port = "2375"
-		log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon native client")
+		ip, port, err = parseDockerEndoint(os.Getenv("DOCKER_HOST"))
+		if err != nil {
+			log.Error(err)
+		}
+		log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon with docker-machine")
 	}
 
 	return &Docker{

@@ -1,14 +1,16 @@
 package maldocker
 
 import (
-	"bytes"
-	"io/ioutil"
+	"io"
+	"os"
 	"path/filepath"
 	"time"
 
 	"regexp"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/docker/docker/pkg/archive"
+	"github.com/docker/docker/pkg/system"
 	"github.com/docker/engine-api/types"
 	"github.com/docker/engine-api/types/filters"
 	"github.com/docker/engine-api/types/strslice"
@@ -41,40 +43,102 @@ func (client *Docker) CreateVolume(name string) (types.Volume, error) {
 	return vol, err
 }
 
+func resolveLocalPath(localPath string) (absPath string, err error) {
+	if absPath, err = filepath.Abs(localPath); err != nil {
+		return
+	}
+
+	return archive.PreserveTrailingDotOrSeparator(absPath, localPath), nil
+}
+
+func (client *Docker) statContainerPath(containerName, path string) (types.ContainerPathStat, error) {
+	return client.Client.ContainerStatPath(context.Background(), containerName, path)
+}
+
 // CopyToVolume copies samples into Malice volume
 func (client *Docker) CopyToVolume(file persist.File) {
+
 	name := "copy2volume"
 	image := "busybox"
-	cmd := strslice.StrSlice{"sh", "-c", "while true; do echo 'Hit CTRL+C'; sleep 1; done"}
+	cmd := strslice.StrSlice{"sh", "-c", "while true; do echo 'Waiting...'; sleep 1; done"}
 	binds := []string{"malice:/malice:rw"}
-	volSavePath := filepath.Join("/malice/samples", file.SHA256)
+	volSavePath := filepath.Join("/malice", file.SHA256)
+
 	if client.Ping() {
 		container, err := client.StartContainer(cmd, name, image, false, binds, nil, nil, nil)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		// If file doesn't already exists copy into volume
-		// stat, err := client.Client.ContainerStatPath(context.Background(), container.ID, volSavePath)
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
-		// log.Info(stat)
+		// Prepare destination copy info by stat-ing the container path.
+		dstInfo := archive.CopyInfo{Path: volSavePath}
+		dstStat, err := client.statContainerPath(container.Name, volSavePath)
 
-		dat, err := ioutil.ReadFile(file.Path)
+		// Check if file already exists in volume
+		if dstStat.Size > 0 {
+			// Remove copy2volume container
+			client.RemoveContainer(container, true, true, true)
+			log.Debug("Sample ", file.Name, " already in malice volume.")
+			return
+		}
+
+		// If the destination is a symbolic link, we should evaluate it.
+		if err == nil && dstStat.Mode&os.ModeSymlink != 0 {
+			linkTarget := dstStat.LinkTarget
+			if !system.IsAbs(linkTarget) {
+				// Join with the parent directory.
+				dstParent, _ := archive.SplitPathDirEntry(volSavePath)
+				linkTarget = filepath.Join(dstParent, linkTarget)
+			}
+
+			dstInfo.Path = linkTarget
+			dstStat, err = client.statContainerPath(container.Name, linkTarget)
+		}
+
+		if err == nil {
+			dstInfo.Exists, dstInfo.IsDir = true, dstStat.Mode.IsDir()
+		}
+
+		var (
+			content         io.Reader
+			resolvedDstPath string
+		)
+
+		// Prepare source copy info.
+		srcInfo, err := archive.CopyInfoSourcePath(file.Path, false)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		copyOptions := types.CopyToContainerOptions{AllowOverwriteDirWithFile: false}
+		srcArchive, err := archive.TarResource(srcInfo)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer srcArchive.Close()
+
+		dstDir, preparedArchive, err := archive.PrepareArchiveCopy(srcArchive, srcInfo, dstInfo)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer preparedArchive.Close()
+
+		resolvedDstPath = dstDir
+		content = preparedArchive
+
+		copyOptions := types.CopyToContainerOptions{
+			AllowOverwriteDirWithFile: true,
+		}
+
+		// Copy sample to malice volume
 		er.CheckError(client.Client.CopyToContainer(
 			context.Background(),
 			container.ID,
-			volSavePath,
-			bytes.NewReader(dat),
+			resolvedDstPath,
+			content,
 			copyOptions,
 		))
 
+		// Remove copy2volume container
 		client.RemoveContainer(container, true, true, true)
 	}
 }

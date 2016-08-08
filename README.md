@@ -80,8 +80,6 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                 malice/engine scan SAMPLE
 ```
 
-> NOTE: This command will work with **Docker for Mac** or on Linux.
-
 ### Documentation
 
 #### Install
@@ -111,8 +109,6 @@ If you have have [zsh](http://www.zsh.org/) and installed it via [homebrew](http
 $ cd $GOPATH/src/github.com/maliceio/malice/contrib/completion/zsh
 $ ./install.sh
 ```
-
-### Known Issues
 
 ### Issues
 

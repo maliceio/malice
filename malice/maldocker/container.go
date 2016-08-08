@@ -77,8 +77,8 @@ func (client *Docker) StartContainer(
 		// Check that all requirements for the container to run are ready
 		client.checkContainerRequirements(name, image)
 
-		ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
-		defer cancel()
+		// ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+		// defer cancel()
 
 		createContConf := &container.Config{
 			Image: image,
@@ -97,12 +97,12 @@ func (client *Docker) StartContainer(
 		}
 		networkingConfig := &network.NetworkingConfig{}
 
-		contResponse, err := client.Client.ContainerCreate(ctx, createContConf, hostConfig, networkingConfig, name)
+		contResponse, err := client.Client.ContainerCreate(context.Background(), createContConf, hostConfig, networkingConfig, name)
 		if err != nil {
 			log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("CreateContainer error = %s\n", err)
 		}
 
-		err = client.Client.ContainerStart(ctx, contResponse.ID, types.ContainerStartOptions{})
+		err = client.Client.ContainerStart(context.Background(), contResponse.ID, types.ContainerStartOptions{})
 		if err != nil {
 			log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Errorf("StartContainer error = %s\n", err)
 		}
@@ -139,8 +139,8 @@ func (client *Docker) RemoveContainer(cont types.ContainerJSONBase, volumes bool
 // LogContainer tails container logs to terminal
 func (client *Docker) LogContainer(contID string) {
 
-	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
-	defer cancel()
+	// ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+	// defer cancel()
 
 	options := types.ContainerLogsOptions{
 		ShowStdout: true,
@@ -151,7 +151,7 @@ func (client *Docker) LogContainer(contID string) {
 		// Tail        string
 	}
 
-	logs, err := client.Client.ContainerLogs(ctx, contID, options)
+	logs, err := client.Client.ContainerLogs(context.Background(), contID, options)
 	defer logs.Close()
 	er.CheckError(err)
 

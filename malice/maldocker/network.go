@@ -1,8 +1,6 @@
 package maldocker
 
 import (
-	"time"
-
 	"github.com/docker/engine-api/types"
 	"github.com/docker/engine-api/types/filters"
 	"github.com/docker/engine-api/types/network"
@@ -73,11 +71,11 @@ func (client *Docker) parseNetworks(name string, all bool) (types.NetworkResourc
 
 // listNetworks returns array of type NetworkResources and error
 func (client *Docker) listNetworks(all bool) ([]types.NetworkResource, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
-	defer cancel()
+	// ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+	// defer cancel()
 
 	options := types.NetworkListOptions{Filters: filters.Args{}}
-	networks, err := client.Client.NetworkList(ctx, options)
+	networks, err := client.Client.NetworkList(context.Background(), options)
 	if err != nil {
 		return nil, err
 	}

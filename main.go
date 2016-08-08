@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"runtime"
 	"strconv"
 
 	log "github.com/Sirupsen/logrus"
@@ -47,6 +48,8 @@ func setDebugOutputLevel() {
 func Init() {}
 
 func main() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	Init()
 	// setDebugOutputLevel()
 	cli.AppHelpTemplate = commands.AppHelpTemplate

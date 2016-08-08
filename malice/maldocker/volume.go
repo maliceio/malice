@@ -4,7 +4,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"time"
 
 	"regexp"
 
@@ -184,10 +183,10 @@ func (client *Docker) ParseVolumes(name string, all bool) (*types.Volume, bool, 
 
 // listVolumes returns array of types.Containers and error
 func (client *Docker) listVolumes(all bool) (types.VolumesListResponse, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
-	defer cancel()
+	// ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+	// defer cancel()
 	filter := filters.Args{}
-	volumes, err := client.Client.VolumeList(ctx, filter)
+	volumes, err := client.Client.VolumeList(context.Background(), filter)
 	if err != nil {
 		return types.VolumesListResponse{}, err
 	}

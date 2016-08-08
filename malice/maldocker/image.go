@@ -2,7 +2,6 @@ package maldocker
 
 import (
 	"os"
-	"time"
 
 	"golang.org/x/net/context"
 
@@ -19,10 +18,10 @@ import (
 // PullImage pulls docker image:tag
 func (client *Docker) PullImage(id string, tag string) {
 
-	ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
-	defer cancel()
+	// ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+	// defer cancel()
 
-	responseBody, err := client.Client.ImagePull(ctx, id, types.ImagePullOptions{})
+	responseBody, err := client.Client.ImagePull(context.Background(), id, types.ImagePullOptions{})
 	defer responseBody.Close()
 	er.CheckError(err)
 

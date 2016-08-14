@@ -123,10 +123,10 @@ func (client *Docker) BuildImage(repository string, tags []string, buildArgs map
 	var body io.Reader = progress.NewProgressReader(buildCtx, progressOutput, 0, "", "Sending build context to Docker daemon")
 
 	buildOptions := types.ImageBuildOptions{
-		Tags: tags,
-		// SuppressOutput bool
+		Tags:           tags,
+		SuppressOutput: quiet,
 		// RemoteContext  string
-		// NoCache        bool
+		NoCache: true,
 		// Remove         bool
 		// ForceRemove    bool
 		// PullParent     bool

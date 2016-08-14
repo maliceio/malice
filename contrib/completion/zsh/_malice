@@ -25,6 +25,11 @@ __scan() {
 
 __watch() {
   _files
+  _describe 'folder to watch' -- && return 0 
+}
+
+__lookup() {
+  _describe 'hash to lookup' -- && return 0 
 }
 
 __elk() {
@@ -80,12 +85,13 @@ __plugin() {
 # ----------------------
 local -a _1st_arguments
 _1st_arguments=(
-   'scan:Scan a file' \
-   'watch:Watch a folder' \
-   'elk:Start an ELK docker container' \
-   'web:Start, Stop Web services' \
-   'plugin:List, Install or Remove Plugins' \
-   'help:Shows a list of commands or help for one command'
+    'scan:Scan a file' \
+    'watch:Watch a folder' \        
+    'lookup:Look up a file hash' \        
+    'elk:Start an ELK docker container' \
+    'web:Start, Stop Web services' \
+    'plugin:List, Install or Remove Plugins' \
+    'help:Shows a list of commands or help for one command'
 )
 
 _arguments \
@@ -114,6 +120,11 @@ case "$words[1]" in
         $opts_help
     __watch && ret=0
     ;;
+  lookup)
+    _arguments \
+        $opts_help
+    __lookup && ret=0
+    ;;            
   elk)
     _arguments \
         $opts_help

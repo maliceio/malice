@@ -17,6 +17,19 @@ import (
 )
 
 func cmdScan(path string, logs bool) error {
+
+	ScanSample(path)
+
+	return nil
+}
+
+// APIScan is an API wrapper for cmdScan
+func APIScan(file string) error {
+	return cmdScan(file, false)
+}
+
+// ScanSample scans a sample with all appropreiate malice plugins
+func ScanSample(path string) {
 	if len(path) > 0 {
 		// Check that file exists
 		if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -106,10 +119,4 @@ func cmdScan(path string, logs bool) error {
 	} else {
 		log.Error("Please supply a valid file to scan.")
 	}
-	return nil
-}
-
-// APIScan is an API wrapper for cmdScan
-func APIScan(file string) error {
-	return cmdScan(file, false)
 }

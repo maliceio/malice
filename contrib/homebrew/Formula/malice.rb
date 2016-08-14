@@ -4,7 +4,7 @@ class Malice < Formula
   desc "malice - VirusTotal Wanna Be - Now with 100% more Hipster"
   homepage "https://github.com/maliceio/malice"
   url "https://github.com/maliceio/malice.git",
-    :revision => "a7442a60f680f45f75895f43c5a24a3c475425d4"
+    :revision => "ec6ae7611fb3cd9acdf362d620260f90ca0a2c22"
   version "0.1.0-alpha"
   head "https://github.com/maliceio/malice.git"
 

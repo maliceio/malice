@@ -25,6 +25,18 @@ var Commands = []cli.Command{
 		Action: func(c *cli.Context) error { return cmdScan(c.Args().First(), c.Bool("logs")) },
 	},
 	{
+		Name:        "watch",
+		Usage:       "Watch a folder",
+		Description: "Folder to be watched.",
+		Flags: []cli.Flag{
+			cli.BoolFlag{
+				Name:  "logs",
+				Usage: "Display the Logs of the Plugin containers",
+			},
+		},
+		Action: func(c *cli.Context) error { return cmdWatch(c.Args().First(), c.Bool("logs")) },
+	},
+	{
 		Name:        "lookup",
 		Usage:       "Look up a file hash",
 		Description: "Hash to be queried.",

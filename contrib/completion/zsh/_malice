@@ -25,16 +25,14 @@ __scan() {
 
 __watch() {
   _files
-  _describe 'folder to watch' -- && return 0 
 }
 
 __lookup() {
-  _describe 'hash to lookup' -- && return 0 
+  _message 'hash to lookup'
 }
 
 __elk() {
-  _arguments \
-    '--logs[Display the Logs from the ELK Container]'
+  _arguments '--logs[Display the Logs from the ELK Container]'
     ret=0
 }
 
@@ -85,12 +83,12 @@ __plugin() {
 # ----------------------
 local -a _1st_arguments
 _1st_arguments=(
-    'scan:Scan a file' \
-    'watch:Watch a folder' \        
-    'lookup:Look up a file hash' \        
-    'elk:Start an ELK docker container' \
-    'web:Start, Stop Web services' \
-    'plugin:List, Install or Remove Plugins' \
+    'scan:Scan a file'
+    'watch:Watch a folder'
+    'lookup:Look up a file hash'
+    'elk:Start an ELK docker container'
+    'web:Start, Stop Web services'
+    'plugin:List, Install or Remove Plugins'
     'help:Shows a list of commands or help for one command'
 )
 
@@ -98,7 +96,7 @@ _arguments \
   '(- :)'{-D,--debug}'[Enable debug mode \[$MALICE_DEBUG\]]' \
   '(- :)'{-h,--help}'[show help]' \
   '(- :)'{-v,--version}'[print the version]' \
-  '*:: :->command'
+  '*:: :->subcmds' && return 0
 
 if (( CURRENT == 1 )); then
   _describe -t commands "malice subcommand" _1st_arguments
@@ -109,35 +107,24 @@ local opts_help='(: -)--help[Print usage]'
 
 integer ret=1
 local -a _command_args
+
 case "$words[1]" in
   scan)
-    _arguments \
-        $opts_help
-    __scan && ret=0
-    ;;
+    _arguments $opts_help
+    __scan ;;
   watch)
-    _arguments \
-        $opts_help
-    __watch && ret=0
-    ;;
+    _arguments $opts_help  
+    __watch ;;
   lookup)
-    _arguments \
-        $opts_help
-    __lookup && ret=0
-    ;;            
+    _arguments $opts_help  
+    __lookup ;;            
   elk)
-    _arguments \
-        $opts_help
-    __elk && ret=0
-    ;;
+    _arguments $opts_help  
+    __elk ;;
   web)
-    _arguments \
-        $opts_help
-    __web && ret=0
-    ;;
+    _arguments $opts_help  
+    __web ;;
   plugin)
-    _arguments \
-        $opts_help
-    __plugin && ret=0
-    ;;
+    _arguments $opts_help  
+    __plugin ;;
 esac

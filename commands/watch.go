@@ -18,15 +18,21 @@ import (
 
 func cmdWatch(folderName string, logs bool) error {
 
-	// docker := maldocker.NewDockerClient()
-
 	log.WithFields(log.Fields{
 		"env": config.Conf.Environment.Run,
 	}).Info("Malice watching folder: ", folderName)
 
-	if _, err := os.Stat(folderName); os.IsNotExist(err) {
+	info, err := os.Stat(folderName)
+
+	// Check that folder exists
+	if os.IsNotExist(err) {
 		log.Error("error: folder does not exist.")
-		return err
+		return nil
+	}
+	// Check that path is a folder and not a file
+	if info.IsDir() {
+		log.Error("error: path is not a folder")
+		return nil
 	}
 
 	NewWatcher(folderName)

@@ -8,6 +8,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
+	runconfigopts "github.com/docker/docker/runconfig/opts"
 	"github.com/docker/engine-api/types"
 	"github.com/docker/engine-api/types/strslice"
 	"github.com/maliceio/malice/config"
@@ -155,11 +156,44 @@ func (plugin Plugin) UpdatePlugin(client *maldocker.Docker) {
 	client.PullImage(plugin.Image, "latest")
 }
 
+// UpdatePluginFromRepository performs a docker build on a plugins remote repository
+func (plugin Plugin) UpdatePluginFromRepository(client *maldocker.Docker) {
+
+	log.Info("[Building Plugin from Source] ===> ", plugin.Name)
+
+	var buildArgs map[string]string
+	var quiet = false
+
+	tags := []string{"malice/" + plugin.Name + ":latest"}
+
+	if config.Conf.Proxy.Enable {
+		buildArgs = runconfigopts.ConvertKVStringsToMap([]string{
+			"HTTP_PROXY=" + config.Conf.Proxy.HTTP,
+			"HTTPS_PROXY=" + config.Conf.Proxy.HTTPS,
+		})
+	} else {
+		buildArgs = nil
+	}
+
+	labels := runconfigopts.ConvertKVStringsToMap([]string{"io.malice.plugin.installed.from=repository"})
+
+	client.BuildImage(plugin.Repository, tags, buildArgs, labels, quiet)
+}
+
 // UpdateAllPlugins performs a docker pull on all registered plugins checking for updates
 func UpdateAllPlugins(client *maldocker.Docker) {
 	plugins := Plugs.Plugins
 	for _, plugin := range plugins {
 		fmt.Println("[Updating Plugin] ===> ", plugin.Name)
 		client.PullImage(plugin.Image, "latest")
+	}
+}
+
+// UpdateAllPluginsFromSource performs a docker build on a plugins remote repository on all registered plugins
+func UpdateAllPluginsFromSource(client *maldocker.Docker) {
+	plugins := Plugs.Plugins
+	for _, plugin := range plugins {
+		fmt.Println("[Updating Plugin from Source] ===> ", plugin.Name)
+		plugin.UpdatePluginFromRepository(client)
 	}
 }

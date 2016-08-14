@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"net/url"
 	"strings"
@@ -105,10 +106,6 @@ func (cli *Client) sendClientRequest(ctx context.Context, method, path string, q
 
 	resp, err := cancellable.Do(ctx, cli.transport, req)
 	if err != nil {
-		if isTimeout(err) || strings.Contains(err.Error(), "connection refused") || strings.Contains(err.Error(), "dial unix") {
-			return serverResp, ErrConnectionFailed
-		}
-
 		if !cli.transport.Secure() && strings.Contains(err.Error(), "malformed HTTP response") {
 			return serverResp, fmt.Errorf("%v.\n* Are you trying to connect to a TLS-enabled daemon without TLS?", err)
 		}
@@ -117,6 +114,18 @@ func (cli *Client) sendClientRequest(ctx context.Context, method, path string, q
 			return serverResp, fmt.Errorf("The server probably has client authentication (--tlsverify) enabled. Please check your TLS client certification settings: %v", err)
 		}
 
+		// Don't decorate context sentinel errors; users may be comparing to
+		// them directly.
+		switch err {
+		case context.Canceled, context.DeadlineExceeded:
+			return serverResp, err
+		}
+
+		if err, ok := err.(net.Error); ok && !err.Temporary() {
+			if !strings.Contains(err.Error(), "HTTP response to HTTPS client") {
+				return serverResp, ErrConnectionFailed
+			}
+		}
 		return serverResp, fmt.Errorf("An error occurred trying to connect: %v", err)
 	}
 
@@ -191,17 +200,4 @@ func ensureReaderClosed(response *serverResponse) {
 		io.CopyN(ioutil.Discard, response.body, 512)
 		response.body.Close()
 	}
-}
-
-func isTimeout(err error) bool {
-	type timeout interface {
-		Timeout() bool
-	}
-	e := err
-	switch urlErr := err.(type) {
-	case *url.Error:
-		e = urlErr.Err
-	}
-	t, ok := e.(timeout)
-	return ok && t.Timeout()
 }

@@ -67,7 +67,7 @@ title = "Malice Plugin Configurations"
   description = "YARA Scan"
   category = "av"
   image = "malice/yara"
-  repository = "https://github.com/maliceio/malice-yaraav.git"   
+  repository = "https://github.com/maliceio/malice-yara.git"   
   mime = "*"
 
 [[plugin]]
@@ -121,7 +121,7 @@ title = "Malice Plugin Configurations"
   description = "F-PROT AntiVirus"
   category = "av"
   image = "malice/fprot"
-  repository = "https://github.com/maliceio/malice-av.git#:fprotavg"  
+  repository = "https://github.com/maliceio/malice-av.git#:fprot"  
   mime = "*"
 
 [[plugin]]

@@ -117,8 +117,12 @@ var Commands = []cli.Command{
 						Name:  "all",
 						Usage: "update all installed plugins",
 					},
+					cli.BoolFlag{
+						Name:  "s,source",
+						Usage: "update plugin from source repo",
+					},
 				},
-				Action: func(c *cli.Context) error { return cmdUpdatePlugin(c.Args().First(), c.Bool("all")) },
+				Action: func(c *cli.Context) error { return cmdUpdatePlugin(c.Args().First(), c.Bool("all"), c.Bool("source")) },
 			},
 		},
 		BashComplete: func(c *cli.Context) {

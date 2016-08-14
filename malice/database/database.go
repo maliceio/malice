@@ -148,8 +148,7 @@ func WriteFileToDatabase(sample persist.File) r.WriteResponse {
 		}).Run(session)
 		assert(err)
 		defer res.Close()
-
-		// Scan query result into the person variable
+		
 		var samples []interface{}
 		err = res.All(&samples)
 		if err != nil {

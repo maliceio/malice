@@ -23,6 +23,10 @@ __scan() {
   _files
 }
 
+__watch() {
+  _files
+}
+
 __elk() {
   _arguments \
     '--logs[Display the Logs from the ELK Container]'
@@ -77,6 +81,7 @@ __plugin() {
 local -a _1st_arguments
 _1st_arguments=(
    'scan:Scan a file' \
+   'watch:Watch a folder' \
    'elk:Start an ELK docker container' \
    'web:Start, Stop Web services' \
    'plugin:List, Install or Remove Plugins' \
@@ -103,6 +108,11 @@ case "$words[1]" in
     _arguments \
         $opts_help
     __scan && ret=0
+    ;;
+  watch)
+    _arguments \
+        $opts_help
+    __watch && ret=0
     ;;
   elk)
     _arguments \

@@ -13,7 +13,8 @@ title = "Malice Plugin Configurations"
   description = "NSRL Database Hash Search"
   category = "intel"
   image = "malice/nsrl"
-  repository = "https://github.com/maliceio/malice-nsrl.git"    
+  repository = "https://github.com/maliceio/malice-nsrl.git"
+  build = false    
   mime = "hash"
   hashtypes = [ "md5" ]
 
@@ -23,7 +24,8 @@ title = "Malice Plugin Configurations"
   description = "VirusTotal - files scan and hash lookup"
   category = "intel"
   image = "malice/virustotal"
-  repository = "https://github.com/maliceio/malice-virustotal.git"    
+  repository = "https://github.com/maliceio/malice-virustotal.git"
+  build = false 
   upload = false # Set upload to `true` if you want to upload sample to virustotal.com
   apikey = ""
   cmd = "lookup"
@@ -37,7 +39,8 @@ title = "Malice Plugin Configurations"
   description = "ShadowServer - hash lookup"
   category = "intel"
   image = "malice/shadow-server"
-   repository = "https://github.com/maliceio/malice-shadow-server.git"   
+  repository = "https://github.com/maliceio/malice-shadow-server.git"
+  build = false  
   mime = "hash"
   hashtypes = [ "md5", "sha1" ]
 
@@ -47,7 +50,8 @@ title = "Malice Plugin Configurations"
   description = "TeamCymru - hash lookup"
   category = "intel"
   image = "malice/team-cymru"
-  repository = "https://github.com/maliceio/malice-team-cymru.git"    
+  repository = "https://github.com/maliceio/malice-team-cymru.git"
+  build = false   
   mime = "hash"
   hashtypes = [ "md5", "sha1" ]
   env = ["MALICE_TH_USER", "MALICE_TH_KEY"]
@@ -58,7 +62,8 @@ title = "Malice Plugin Configurations"
   description = "ssdeep/TRiD/exiftool"
   category = "metadata"
   image = "malice/fileinfo"
-  repository = "https://github.com/maliceio/malice-fileinfo.git"    
+  repository = "https://github.com/maliceio/malice-fileinfo.git"
+  build = false  
   mime = "*"
 
 [[plugin]]
@@ -67,7 +72,8 @@ title = "Malice Plugin Configurations"
   description = "YARA Scan"
   category = "av"
   image = "malice/yara"
-  repository = "https://github.com/maliceio/malice-yara.git"   
+  repository = "https://github.com/maliceio/malice-yara.git"
+  build = false  
   mime = "*"
 
 [[plugin]]
@@ -76,7 +82,8 @@ title = "Malice Plugin Configurations"
   description = "Avast AntiVirus"
   category = "av"
   image = "malice/avast"
-  repository = "https://github.com/maliceio/malice-av.git#:avast"  
+  repository = "https://github.com/maliceio/malice-av.git#:avast"
+  build = false  
   mime = "*"
 
 [[plugin]]
@@ -85,7 +92,8 @@ title = "Malice Plugin Configurations"
   description = "AVG AntiVirus"
   category = "av"
   image = "malice/avg"
-  repository = "https://github.com/maliceio/malice-av.git#:avg"  
+  repository = "https://github.com/maliceio/malice-av.git#:avg"
+  build = false  
   mime = "*"
 
 [[plugin]]
@@ -94,7 +102,8 @@ title = "Malice Plugin Configurations"
   description = "Bitdefender AntiVirus"
   category = "av"
   image = "malice/bitdefender"
-  repository = "https://github.com/maliceio/malice-av.git#:bitdefender"  
+  repository = "https://github.com/maliceio/malice-av.git#:bitdefender"
+  build = false  
   mime = "*"
 
 [[plugin]]
@@ -103,7 +112,8 @@ title = "Malice Plugin Configurations"
   description = "ClamAV"
   category = "av"
   image = "malice/clamav"
-  repository = "https://github.com/maliceio/malice-av.git#:clamav"  
+  repository = "https://github.com/maliceio/malice-av.git#:clamav"
+  build = false  
   mime = "*"
 
 [[plugin]]
@@ -112,7 +122,8 @@ title = "Malice Plugin Configurations"
   description = "Comodo AntiVirus"
   category = "av"
   image = "malice/comodo"
-  repository = "https://github.com/maliceio/malice-av.git#:comodo"  
+  repository = "https://github.com/maliceio/malice-av.git#:comodo"
+  build = false  
   mime = "*"
 
 [[plugin]]
@@ -121,7 +132,8 @@ title = "Malice Plugin Configurations"
   description = "F-PROT AntiVirus"
   category = "av"
   image = "malice/fprot"
-  repository = "https://github.com/maliceio/malice-av.git#:fprot"  
+  repository = "https://github.com/maliceio/malice-av.git#:fprot"
+  build = true
   mime = "*"
 
 [[plugin]]
@@ -130,7 +142,8 @@ title = "Malice Plugin Configurations"
   description = "PE - tool to triage portable executables"
   category = "exe"
   image = "malice/pe"
-  repository = "https://github.com/maliceio/malice-pe.git"    
+  repository = "https://github.com/maliceio/malice-pe.git"
+  build = false  
   mime = "application/x-dosexec"
 
 [[plugin]]
@@ -139,7 +152,8 @@ title = "Malice Plugin Configurations"
   description = "FireEye Labs Obfuscated String Solver"
   category = "exe"
   image = "malice/floss"
-  repository = "https://github.com/maliceio/malice-floss.git"    
+  repository = "https://github.com/maliceio/malice-floss.git"
+  build = false  
   mime = "application/x-dosexec"
 
 [[plugin]]
@@ -148,7 +162,8 @@ title = "Malice Plugin Configurations"
   description = "Office - tool to triage OLE/RTF documents"
   category = "document"
   image = "malice/office"
-  repository = "https://github.com/maliceio/malice-office.git"    
+  repository = "https://github.com/maliceio/malice-office.git"
+  build = false  
   mime = "*"
 
 [[plugin]]
@@ -157,7 +172,8 @@ title = "Malice Plugin Configurations"
   description = "PDF - tool to triage PDF documents"
   category = "document"
   image = "malice/pdf"
-  repository = "https://github.com/maliceio/malice-pdf.git"    
+  repository = "https://github.com/maliceio/malice-pdf.git"
+  build = false  
   mime = "application/pdf"
 
 [[plugin]]
@@ -166,5 +182,6 @@ title = "Malice Plugin Configurations"
   description = "Javascript - tool to triage JS scripts"
   category = "document"
   image = "malice/javascript"
-  repository = "https://github.com/maliceio/malice-javascript.git"    
+  repository = "https://github.com/maliceio/malice-javascript.git"
+  build = false  
   mime = "application/javascript"

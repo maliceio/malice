@@ -20,6 +20,7 @@ type Plugin struct {
 	Description string   `toml:"description"`
 	Image       string   `toml:"image"`
 	Repository  string   `toml:"repository"`
+	Build       bool     `toml:"build"`
 	APIKey      string   `toml:"apikey"`
 	Mime        string   `toml:"mime"`
 	HashTypes   []string `toml:"hashtypes"`

@@ -59,6 +59,7 @@ __plugin() {
       ;;
       (update)
         local update_options; update_options=(
+        '--source:update plugin from source repo'        
         '--all:update all installed plugins'
         )
         _describe -t update_options 'update options' update_options

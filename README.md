@@ -104,7 +104,7 @@ To install on Linux:
 
 #### Tips and Tricks
 
-If you have have [zsh](http://www.zsh.org/) and installed it via [homebrew](http://brew.sh) you can do this as well:
+If you have have [zsh](http://www.zsh.org/) installed you can install the zsh-completions:
 
 ```bash
 $ cd $GOPATH/src/github.com/maliceio/malice/contrib/completion/zsh

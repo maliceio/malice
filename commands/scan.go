@@ -95,7 +95,7 @@ func ScanSample(path string) {
 			// go func() {
 			// Start Plugin Container
 			// TODO: don't use the default of true for --logs
-			cont, err := plugin.StartPlugin(docker, file.SHA256, true)
+			cont, err := plugin.StartPlugin(docker, file.SHA256, false)
 			er.CheckError(err)
 
 			log.WithFields(log.Fields{
@@ -106,8 +106,8 @@ func ScanSample(path string) {
 				"env":  config.Conf.Environment.Run,
 			}).Debug("Plugin Container Started")
 
-			docker.RemoveContainer(cont, false, false, false)
-
+			// docker.RemoveContainer(cont, false, false, false)
+			docker.RemoveContainer(cont, true, true, true)
 			// }()
 			// Clean up the Plugin Container
 			// TODO: I want to reuse these containers for speed eventually.

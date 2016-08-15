@@ -77,9 +77,6 @@ func (client *Docker) StartContainer(
 		// Check that all requirements for the container to run are ready
 		client.checkContainerRequirements(name, image)
 
-		// ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
-		// defer cancel()
-
 		createContConf := &container.Config{
 			Image: image,
 			Cmd:   cmd,
@@ -136,6 +133,19 @@ func (client *Docker) RemoveContainer(cont types.ContainerJSONBase, volumes bool
 	}
 }
 
+func (client *Docker) removeContainer(ctx context.Context, container string, removeVolumes, removeLinks, force bool) error {
+	// name = strings.Trim(name, "/")
+	options := types.ContainerRemoveOptions{
+		RemoveVolumes: removeVolumes,
+		RemoveLinks:   removeLinks,
+		Force:         force,
+	}
+	if err := client.Client.ContainerRemove(ctx, container, options); err != nil {
+		return err
+	}
+	return nil
+}
+
 // LogContainer tails container logs to terminal
 func (client *Docker) LogContainer(contID string) {
 
@@ -169,51 +179,13 @@ func (client *Docker) ContainerInspect(id string) (types.ContainerJSONBase, erro
 // ContainerExists returns APIContainers containers list and true
 // if the container name exists, otherwise false.
 func (client *Docker) ContainerExists(name string) (types.Container, bool, error) {
-	return client.ParseContainers(strings.TrimLeft(name, "/"), true)
+	return client.parseContainers(strings.TrimLeft(name, "/"), true)
 }
 
 // ContainerRunning returns APIContainers containers list and true
 // if the container name exists and is running, otherwise false.
 func (client *Docker) ContainerRunning(name string) (types.Container, bool, error) {
-	return client.ParseContainers(strings.TrimLeft(name, "/"), false)
-}
-
-// ParseContainers parses the containers
-func (client *Docker) ParseContainers(name string, all bool) (types.Container, bool, error) {
-	// list containers
-	log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Debug("Searching for container: ", name)
-	containers, err := client.listContainers(all)
-	if err != nil {
-		return types.Container{}, false, err
-	}
-	// locate docker container that matches name
-	if len(containers) != 0 {
-		for _, container := range containers {
-
-			cont, err := client.ContainerInspect(container.ID)
-			er.CheckError(err)
-
-			log.Debugln("name: ", name, " ", "container.Name: ", strings.TrimLeft(cont.Name, "/"))
-			log.Debugln("MATCH: ", strings.EqualFold(strings.TrimLeft(cont.Name, "/"), name))
-
-			if strings.EqualFold(strings.TrimLeft(cont.Name, "/"), name) {
-				log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Debug("Container FOUND: ", name)
-				return container, true, nil
-			}
-		}
-	}
-	log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Debug("Container NOT Found: ", name)
-	return types.Container{}, false, nil
-}
-
-// listContainers returns array of types.Containers and error
-func (client *Docker) listContainers(all bool) ([]types.Container, error) {
-	options := types.ContainerListOptions{All: all}
-	containers, err := client.Client.ContainerList(context.Background(), options)
-	if err != nil {
-		return nil, err
-	}
-	return containers, nil
+	return client.parseContainers(strings.TrimLeft(name, "/"), false)
 }
 
 // StartELK creates an ELK container from the image blacktop/elk
@@ -259,4 +231,42 @@ func (client *Docker) StartRethinkDB(logs bool) (types.ContainerJSONBase, error)
 		return cont, err
 	}
 	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")
+}
+
+// HELPER FUNCTIONS
+func (client *Docker) parseContainers(name string, all bool) (types.Container, bool, error) {
+	// list containers
+	log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Debug("Searching for container: ", name)
+	containers, err := client.listContainers(all)
+	if err != nil {
+		return types.Container{}, false, err
+	}
+	// locate docker container that matches name
+	if len(containers) != 0 {
+		for _, container := range containers {
+
+			cont, err := client.ContainerInspect(container.ID)
+			er.CheckError(err)
+
+			log.Debugln("name: ", name, " ", "container.Name: ", strings.TrimLeft(cont.Name, "/"))
+			log.Debugln("MATCH: ", strings.EqualFold(strings.TrimLeft(cont.Name, "/"), name))
+
+			if strings.EqualFold(strings.TrimLeft(cont.Name, "/"), name) {
+				log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Debug("Container FOUND: ", name)
+				return container, true, nil
+			}
+		}
+	}
+	log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Debug("Container NOT Found: ", name)
+	return types.Container{}, false, nil
+}
+
+// listContainers returns array of types.Containers and error
+func (client *Docker) listContainers(all bool) ([]types.Container, error) {
+	options := types.ContainerListOptions{All: all}
+	containers, err := client.Client.ContainerList(context.Background(), options)
+	if err != nil {
+		return nil, err
+	}
+	return containers, nil
 }

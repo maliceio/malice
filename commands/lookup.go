@@ -3,26 +3,25 @@ package commands
 import (
 	"fmt"
 
-	"golang.org/x/net/context"
-
 	"github.com/docker/machine/libmachine/log"
 	"github.com/maliceio/malice/malice/database"
+	"github.com/maliceio/malice/malice/docker/client"
+	"github.com/maliceio/malice/malice/docker/client/container"
 	er "github.com/maliceio/malice/malice/errors"
-	"github.com/maliceio/malice/malice/maldocker"
 	"github.com/maliceio/malice/plugins"
 	"github.com/maliceio/malice/utils"
 )
 
 func cmdLookUp(hash string, logs bool) error {
 
-	docker := maldocker.NewDockerClient()
+	docker := client.NewDockerClient()
 
 	// Check that RethinkDB is running
-	if _, running, _ := docker.ContainerRunning("rethink"); !running {
+	if _, running, _ := container.Running(docker, "rethink"); !running {
 		log.Error("RethinkDB is NOT running, starting now...")
-		rethink, err := docker.StartRethinkDB(false)
+		rethink, err := container.StartRethinkDB(docker, false)
 		er.CheckError(err)
-		rInfo, err := docker.Client.ContainerInspect(context.Background(), rethink.ID)
+		rInfo, err := container.Inspect(docker, rethink.ID)
 		er.CheckError(err)
 		er.CheckError(database.TestConnection(rInfo.Node.Addr))
 	}

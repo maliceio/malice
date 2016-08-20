@@ -12,18 +12,21 @@ import (
 	"github.com/docker/engine-api/types"
 	"github.com/docker/engine-api/types/strslice"
 	"github.com/maliceio/malice/config"
+	"github.com/maliceio/malice/malice/docker/client"
+	"github.com/maliceio/malice/malice/docker/client/container"
+	"github.com/maliceio/malice/malice/docker/client/image"
 	er "github.com/maliceio/malice/malice/errors"
-	"github.com/maliceio/malice/malice/maldocker"
 	"github.com/parnurzeal/gorequest"
 )
 
 // StartPlugin starts plugin
-func (plugin Plugin) StartPlugin(client *maldocker.Docker, sample string, logs bool) (types.ContainerJSONBase, error) {
+func (plugin Plugin) StartPlugin(docker *client.Docker, sample string, logs bool) (types.ContainerJSONBase, error) {
 
 	binds := []string{config.Conf.Docker.Binds}
 	env := plugin.getPluginEnv()
 
-	contJSON, err := client.StartContainer(
+	contJSON, err := container.Start(
+		docker,
 		strslice.StrSlice{"-t", sample},
 		plugin.Name,
 		plugin.Image,
@@ -39,7 +42,7 @@ func (plugin Plugin) StartPlugin(client *maldocker.Docker, sample string, logs b
 }
 
 // RunIntelPlugins run all Intel plugins
-func RunIntelPlugins(client *maldocker.Docker, hash string, scanID string, logs bool) {
+func RunIntelPlugins(docker *client.Docker, hash string, scanID string, logs bool) {
 	var cont types.ContainerJSONBase
 	var err error
 	for _, plugin := range GetIntelPlugins(true) {
@@ -48,7 +51,8 @@ func RunIntelPlugins(client *maldocker.Docker, hash string, scanID string, logs 
 		env = append(env, "MALICE_SCANID="+scanID)
 
 		if plugin.Cmd != "" {
-			cont, err = client.StartContainer(
+			cont, err = container.Start(
+				docker,
 				strslice.StrSlice{"-t", plugin.Cmd, hash},
 				plugin.Name,
 				plugin.Image,
@@ -60,7 +64,8 @@ func RunIntelPlugins(client *maldocker.Docker, hash string, scanID string, logs 
 			)
 			er.CheckError(err)
 		} else {
-			cont, err = client.StartContainer(
+			cont, err = container.Start(
+				docker,
 				strslice.StrSlice{"-t", hash},
 				plugin.Name,
 				plugin.Image,
@@ -75,13 +80,13 @@ func RunIntelPlugins(client *maldocker.Docker, hash string, scanID string, logs 
 
 		log.WithFields(log.Fields{
 			"id": cont.ID,
-			"ip": client.GetIP(),
-			// "url":      "http://" + maldocker.GetIP(),
+			"ip": docker.GetIP(),
+			// "url":      "http://" + client.GetIP(),
 			"name": cont.Name,
 			"env":  config.Conf.Environment.Run,
 		}).Debug("Plugin Container Started")
 
-		client.RemoveContainer(cont, true, true, true)
+		container.Remove(docker, cont.ID, true, true, true)
 	}
 }
 
@@ -142,9 +147,9 @@ func InstallPlugin(plugin *Plugin) (err error) {
 }
 
 // InstalledPluginsCheck checks that all enabled plugins are installed
-func InstalledPluginsCheck(client *maldocker.Docker) bool {
+func InstalledPluginsCheck(docker *client.Docker) bool {
 	for _, plugin := range getEnabled(Plugs.Plugins) {
-		if _, exists, _ := client.ImageExists(plugin.Image); !exists {
+		if _, exists, _ := image.Exists(docker, plugin.Image); !exists {
 			return false
 		}
 	}
@@ -152,12 +157,12 @@ func InstalledPluginsCheck(client *maldocker.Docker) bool {
 }
 
 // UpdatePlugin performs a docker pull on all registered plugins checking for updates
-func (plugin Plugin) UpdatePlugin(client *maldocker.Docker) {
-	client.PullImage(plugin.Image, "latest")
+func (plugin Plugin) UpdatePlugin(docker *client.Docker) {
+	image.Pull(docker, plugin.Image, "latest")
 }
 
 // UpdatePluginFromRepository performs a docker build on a plugins remote repository
-func (plugin Plugin) UpdatePluginFromRepository(client *maldocker.Docker) {
+func (plugin Plugin) UpdatePluginFromRepository(docker *client.Docker) {
 
 	log.Info("[Building Plugin from Source] ===> ", plugin.Name)
 
@@ -177,27 +182,27 @@ func (plugin Plugin) UpdatePluginFromRepository(client *maldocker.Docker) {
 
 	labels := runconfigopts.ConvertKVStringsToMap([]string{"io.malice.plugin.installed.from=repository"})
 
-	client.BuildImage(plugin.Repository, tags, buildArgs, labels, quiet)
+	image.Build(docker, plugin.Repository, tags, buildArgs, labels, quiet)
 }
 
 // UpdateAllPlugins performs a docker pull on all registered plugins checking for updates
-func UpdateAllPlugins(client *maldocker.Docker) {
+func UpdateAllPlugins(docker *client.Docker) {
 	plugins := Plugs.Plugins
 	for _, plugin := range plugins {
 		fmt.Println("[Updating Plugin] ===> ", plugin.Name)
 		if plugin.Build {
-			plugin.UpdatePluginFromRepository(client)
+			plugin.UpdatePluginFromRepository(docker)
 		} else {
-			client.PullImage(plugin.Image, "latest")
+			image.Pull(docker, plugin.Image, "latest")
 		}
 	}
 }
 
 // UpdateAllPluginsFromSource performs a docker build on a plugins remote repository on all registered plugins
-func UpdateAllPluginsFromSource(client *maldocker.Docker) {
+func UpdateAllPluginsFromSource(docker *client.Docker) {
 	plugins := Plugs.Plugins
 	for _, plugin := range plugins {
 		fmt.Println("[Updating Plugin from Source] ===> ", plugin.Name)
-		plugin.UpdatePluginFromRepository(client)
+		plugin.UpdatePluginFromRepository(docker)
 	}
 }

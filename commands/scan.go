@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"golang.org/x/net/context"
-
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/database"
+	"github.com/maliceio/malice/malice/docker/client"
+	"github.com/maliceio/malice/malice/docker/client/container"
 	er "github.com/maliceio/malice/malice/errors"
-	"github.com/maliceio/malice/malice/maldocker"
 	"github.com/maliceio/malice/malice/persist"
 	"github.com/maliceio/malice/plugins"
 	"github.com/maliceio/malice/utils"
@@ -36,22 +35,22 @@ func ScanSample(path string) {
 			log.Fatal(path + ": no such file or directory")
 		}
 
-		docker := maldocker.NewDockerClient()
+		docker := client.NewDockerClient()
 
 		// Check that RethinkDB is running
-		if _, running, _ := docker.ContainerRunning("rethink"); !running {
+		if _, running, _ := container.Running(docker, "rethink"); !running {
 			log.Error("RethinkDB is NOT running, starting now...")
-			rethink, err := docker.StartRethinkDB(false)
+			rethink, err := container.StartRethinkDB(docker, false)
 			er.CheckError(err)
-			rInfo, err := docker.Client.ContainerInspect(context.Background(), rethink.ID)
+			rInfo, err := container.Inspect(docker, rethink.ID)
 			er.CheckError(err)
-			er.CheckError(database.TestConnection(rInfo.NetworkSettings.IPAddress))
+			er.CheckError(database.TestConnection(rInfo.Node.IPAddress))
 		}
 
 		// Setup rethinkDB
-		rInfo, err := docker.Client.ContainerInspect(context.Background(), "rethink")
+		rInfo, err := container.Inspect(docker, "rethink")
 		er.CheckError(err)
-		er.CheckError(database.TestConnection(rInfo.NetworkSettings.IPAddress))
+		er.CheckError(database.TestConnection(rInfo.Node.IPAddress))
 		database.InitRethinkDB()
 
 		if plugins.InstalledPluginsCheck(docker) {
@@ -73,7 +72,7 @@ func ScanSample(path string) {
 
 		//////////////////////////////////////
 		// Copy file to malice volume
-		docker.CopyToVolume(file)
+		container.CopyToVolume(docker, file)
 		//////////////////////////////////////
 		// Write all file data to the Database
 		resp := database.WriteFileToDatabase(file)
@@ -101,13 +100,13 @@ func ScanSample(path string) {
 			log.WithFields(log.Fields{
 				"id": cont.ID,
 				"ip": docker.GetIP(),
-				// "url":      "http://" + maldocker.GetIP(),
+				// "url":      "http://" + client.GetIP(),
 				"name": cont.Name,
 				"env":  config.Conf.Environment.Run,
 			}).Debug("Plugin Container Started")
 
 			// docker.RemoveContainer(cont, false, false, false)
-			docker.RemoveContainer(cont, true, true, true)
+			container.Remove(docker, cont.ID, true, true, true)
 			// }()
 			// Clean up the Plugin Container
 			// TODO: I want to reuse these containers for speed eventually.

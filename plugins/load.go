@@ -9,7 +9,6 @@ import (
 	log "github.com/Sirupsen/logrus"
 	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/maldirs"
-	"github.com/maliceio/malice/malice/maldocker"
 )
 
 // Plugin represents a single plugin setting.
@@ -79,11 +78,11 @@ func Load() {
 	return
 }
 
-func setInstalledFlag() {
-	docker := maldocker.NewDockerClient()
-	for i, plugin := range Plugs.Plugins {
-		if _, exists, _ := docker.ImageExists(plugin.Image); exists {
-			Plugs.Plugins[i].Installed = true
-		}
-	}
-}
+// func setInstalledFlag() {
+// 	docker := client.NewDockerClient()
+// 	for i, plugin := range Plugs.Plugins {
+// 		if _, exists, _ := image.Exists(docker, plugin.Image); exists {
+// 			Plugs.Plugins[i].Installed = true
+// 		}
+// 	}
+// }

@@ -15,6 +15,8 @@ type ContainerSpec struct {
 	Env             []string          `json:",omitempty"`
 	Dir             string            `json:",omitempty"`
 	User            string            `json:",omitempty"`
+	Groups          []string          `json:",omitempty"`
+	TTY             bool              `json:",omitempty"`
 	Mounts          []mount.Mount     `json:",omitempty"`
 	StopGracePeriod *time.Duration    `json:",omitempty"`
 }

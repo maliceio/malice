@@ -3,22 +3,23 @@ package commands
 import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/config"
+	"github.com/maliceio/malice/malice/docker/client"
+	"github.com/maliceio/malice/malice/docker/client/container"
 	er "github.com/maliceio/malice/malice/errors"
-	"github.com/maliceio/malice/malice/maldocker"
 )
 
 func cmdELK(logs bool) error {
 
-	docker := maldocker.NewDockerClient()
+	docker := client.NewDockerClient()
 
 	// contJSON, err := &docker StartELK(logs)
-	contJSON, err := docker.StartELK(logs)
+	contJSON, err := container.StartELK(docker, logs)
 	er.CheckError(err)
 
 	log.WithFields(log.Fields{
 		// "id":   cont.ID,
 		"ip": docker.GetIP(),
-		// "url":      "http://" + maldocker.GetIP(),
+		// "url":      "http://" + docker.GetIP(),
 		"username": "admin",
 		"password": "admin",
 		"name":     contJSON.Name,

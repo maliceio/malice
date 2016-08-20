@@ -1,10 +1,11 @@
 package container
 
 import (
-	"context"
 	"io"
 	"os"
 	"path/filepath"
+
+	"golang.org/x/net/context"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/docker/pkg/archive"

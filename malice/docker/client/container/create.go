@@ -1,10 +1,11 @@
 package container
 
 import (
-	"context"
 	"fmt"
 	"io"
 	"os"
+
+	"golang.org/x/net/context"
 
 	"github.com/docker/docker/pkg/jsonmessage"
 	"github.com/docker/docker/reference"

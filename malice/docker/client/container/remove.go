@@ -1,7 +1,7 @@
 package container
 
 import (
-	"context"
+	"golang.org/x/net/context"
 
 	"github.com/docker/engine-api/types"
 	"github.com/maliceio/malice/malice/docker/client"

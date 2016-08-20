@@ -29,9 +29,9 @@ func List(docker *client.Docker, all bool) ([]types.Container, error) {
 
 // Inspect returns types.ContainerJSON from Container ID
 // if the container name exists, otherwise false.
-func Inspect(docker *client.Docker, id string) (types.ContainerJSONBase, error) {
+func Inspect(docker *client.Docker, id string) (types.ContainerJSON, error) {
 	contJSON, err := docker.Client.ContainerInspect(context.Background(), id)
-	return *contJSON.ContainerJSONBase, err
+	return contJSON, err
 }
 
 // Exists returns APIContainers containers list and true

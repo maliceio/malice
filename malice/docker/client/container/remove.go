@@ -1,10 +1,10 @@
 package container
 
 import (
-	"golang.org/x/net/context"
-
 	"github.com/docker/engine-api/types"
 	"github.com/maliceio/malice/malice/docker/client"
+	er "github.com/maliceio/malice/malice/errors"
+	"golang.org/x/net/context"
 )
 
 // Remove removes the `cont` container unforcedly.
@@ -37,6 +37,7 @@ func removeContainer(docker *client.Docker, ctx context.Context, container strin
 		Force:         force,
 	}
 	if err := docker.Client.ContainerRemove(ctx, container, options); err != nil {
+		er.CheckError(err)
 		return err
 	}
 	return nil

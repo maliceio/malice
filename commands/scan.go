@@ -44,13 +44,13 @@ func ScanSample(path string) {
 			er.CheckError(err)
 			rInfo, err := container.Inspect(docker, rethink.ID)
 			er.CheckError(err)
-			er.CheckError(database.TestConnection(rInfo.Node.IPAddress))
+			er.CheckError(database.TestConnection(rInfo.NetworkSettings.IPAddress))
 		}
 
 		// Setup rethinkDB
 		rInfo, err := container.Inspect(docker, "rethink")
 		er.CheckError(err)
-		er.CheckError(database.TestConnection(rInfo.Node.IPAddress))
+		er.CheckError(database.TestConnection(rInfo.NetworkSettings.IPAddress))
 		database.InitRethinkDB()
 
 		if plugins.InstalledPluginsCheck(docker) {
@@ -94,7 +94,7 @@ func ScanSample(path string) {
 			// go func() {
 			// Start Plugin Container
 			// TODO: don't use the default of true for --logs
-			cont, err := plugin.StartPlugin(docker, file.SHA256, false)
+			cont, err := plugin.StartPlugin(docker, file.SHA256, true)
 			er.CheckError(err)
 
 			log.WithFields(log.Fields{
@@ -105,8 +105,9 @@ func ScanSample(path string) {
 				"env":  config.Conf.Environment.Run,
 			}).Debug("Plugin Container Started")
 
+			er.CheckError(container.Remove(docker, cont.ID, true, false, true))
 			// docker.RemoveContainer(cont, false, false, false)
-			container.Remove(docker, cont.ID, true, true, true)
+			// container.Remove(docker, cont.ID, true, true, true)
 			// }()
 			// Clean up the Plugin Container
 			// TODO: I want to reuse these containers for speed eventually.

@@ -1,6 +1,7 @@
 package container
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -31,6 +32,11 @@ func CopyToVolume(docker *client.Docker, file persist.File) {
 		cont, err := Start(docker, cmd, name, image, false, binds, nil, nil, nil)
 		er.CheckError(err)
 
+		defer func() {
+			if err := Remove(docker, cont.ID, true, false, true); err != nil {
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+			}
+		}()
 		// Get an absolute source path.
 		srcPath, err := resolveLocalPath(file.Path)
 		er.CheckError(err)
@@ -116,9 +122,6 @@ func CopyToVolume(docker *client.Docker, file persist.File) {
 			content,
 			copyOptions,
 		))
-
-		// Remove copy2volume container
-		Remove(docker, cont.ID, true, true, true)
 	}
 }
 

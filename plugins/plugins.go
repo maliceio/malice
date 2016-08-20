@@ -26,6 +26,7 @@ func (plugin Plugin) StartPlugin(docker *client.Docker, sample string, logs bool
 	env := plugin.getPluginEnv()
 
 	contJSON, err := container.Start(
+		// err := container.Run(
 		docker,
 		strslice.StrSlice{"-t", sample},
 		plugin.Name,
@@ -39,6 +40,7 @@ func (plugin Plugin) StartPlugin(docker *client.Docker, sample string, logs bool
 	er.CheckError(err)
 
 	return contJSON, err
+	// return types.ContainerJSONBase{}, err
 }
 
 // RunIntelPlugins run all Intel plugins
@@ -52,6 +54,7 @@ func RunIntelPlugins(docker *client.Docker, hash string, scanID string, logs boo
 
 		if plugin.Cmd != "" {
 			cont, err = container.Start(
+				// err = container.Run(
 				docker,
 				strslice.StrSlice{"-t", plugin.Cmd, hash},
 				plugin.Name,
@@ -65,6 +68,7 @@ func RunIntelPlugins(docker *client.Docker, hash string, scanID string, logs boo
 			er.CheckError(err)
 		} else {
 			cont, err = container.Start(
+				// err = container.Run(
 				docker,
 				strslice.StrSlice{"-t", hash},
 				plugin.Name,
@@ -86,7 +90,14 @@ func RunIntelPlugins(docker *client.Docker, hash string, scanID string, logs boo
 			"env":  config.Conf.Environment.Run,
 		}).Debug("Plugin Container Started")
 
-		container.Remove(docker, cont.ID, true, true, true)
+		er.CheckError(container.Remove(docker, cont.ID, true, false, true))
+		log.WithFields(log.Fields{
+			"id": cont.ID,
+			"ip": docker.GetIP(),
+			// "url":      "http://" + client.GetIP(),
+			"name": cont.Name,
+			"env":  config.Conf.Environment.Run,
+		}).Debug("Plugin Container Removed")
 	}
 }
 

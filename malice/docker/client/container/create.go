@@ -5,8 +5,6 @@ import (
 	"io"
 	"os"
 
-	"golang.org/x/net/context"
-
 	"github.com/docker/docker/pkg/jsonmessage"
 	"github.com/docker/docker/reference"
 	"github.com/docker/docker/registry"
@@ -15,6 +13,8 @@ import (
 	"github.com/docker/engine-api/types/container"
 	networktypes "github.com/docker/engine-api/types/network"
 	"github.com/maliceio/malice/malice/docker/client"
+	er "github.com/maliceio/malice/malice/errors"
+	"golang.org/x/net/context"
 )
 
 func pullImage(ctx context.Context, docker *client.Docker, image string, out io.Writer) error {
@@ -95,21 +95,24 @@ func newCIDFile(path string) (*cidFile, error) {
 // createContainer
 func createContainer(docker *client.Docker, ctx context.Context, config *container.Config, hostConfig *container.HostConfig, networkingConfig *networktypes.NetworkingConfig, cidfile, name string) (*types.ContainerCreateResponse, error) {
 	stderr := os.Stderr
-
+	// log.Info("cidfile: ", cidfile)
 	var containerIDFile *cidFile
+	// log.Info("containerIDFile: ", containerIDFile)
 	if cidfile != "" {
 		var err error
 		if containerIDFile, err = newCIDFile(cidfile); err != nil {
+			er.CheckError(err)
 			return nil, err
 		}
+		// log.Info("NEW containerIDFile: ", containerIDFile)
 		defer containerIDFile.Close()
 	}
 
 	// var trustedRef reference.Canonical
-	_, ref, err := reference.ParseIDOrReference(config.Image)
-	if err != nil {
-		return nil, err
-	}
+	// _, ref, err := reference.ParseIDOrReference(config.Image)
+	// if err != nil {
+	// 	return nil, err
+	// }
 	// if ref != nil {
 	// 	ref = reference.WithDefaultTag(ref)
 
@@ -125,11 +128,11 @@ func createContainer(docker *client.Docker, ctx context.Context, config *contain
 
 	//create the container
 	response, err := docker.Client.ContainerCreate(ctx, config, hostConfig, networkingConfig, name)
-
+	er.CheckError(err)
 	//if image not found try to pull it
 	if err != nil {
-		if apiclient.IsErrImageNotFound(err) && ref != nil {
-			fmt.Fprintf(stderr, "Unable to find image '%s' locally\n", ref.String())
+		if apiclient.IsErrImageNotFound(err) {
+			// fmt.Fprintf(stderr, "Unable to find image '%s' locally\n", ref.String())
 
 			// we don't want to write to stdout anything apart from container.ID
 			if err = pullImage(ctx, docker, config.Image, stderr); err != nil {

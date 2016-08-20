@@ -33,7 +33,7 @@ func CopyToVolume(docker *client.Docker, file persist.File) {
 		er.CheckError(err)
 
 		defer func() {
-			if err := Remove(docker, cont.ID, true, false, true); err != nil {
+			if err = Remove(docker, cont.ID, true, false, true); err != nil {
 				fmt.Fprintf(os.Stderr, "%v\n", err)
 			}
 		}()

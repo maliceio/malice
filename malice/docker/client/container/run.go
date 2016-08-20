@@ -71,6 +71,12 @@ func Run(
 	// 	hostConfig.ConsoleSize[0], hostConfig.ConsoleSize[1] = dockerCli.GetTtySize()
 	// }
 
+	var (
+		waitDisplayID chan struct{}
+		errCh         chan error
+		err           error
+	)
+
 	createContConf := &container.Config{
 		Image: image,
 		Cmd:   cmd,
@@ -98,10 +104,7 @@ func Run(
 	// 	sigc := dockerCli.ForwardAllSignals(ctx, createResponse.ID)
 	// 	defer signal.StopCatch(sigc)
 	// }
-	var (
-		waitDisplayID chan struct{}
-		errCh         chan error
-	)
+
 	// if !config.AttachStdout && !config.AttachStderr {
 	// Make this asynchronous to allow the client to write to stdin before having to read the ID
 	waitDisplayID = make(chan struct{})
@@ -168,7 +171,7 @@ func Run(
 	defer func() {
 		// Explicitly not sharing the context as it could be "Done" (by calling cancelFun)
 		// and thus the container would not be removed.
-		if err := Remove(docker, createResponse.ID, true, false, true); err != nil {
+		if err = Remove(docker, createResponse.ID, true, false, true); err != nil {
 			fmt.Fprintf(os.Stderr, "%v\n", err)
 		}
 	}()
@@ -176,7 +179,7 @@ func Run(
 
 	//start the container
 	log.Debugf("Starting containter: %s", createResponse.ID)
-	if err := docker.Client.ContainerStart(ctx, createResponse.ID, types.ContainerStartOptions{}); err != nil {
+	if err = docker.Client.ContainerStart(ctx, createResponse.ID, types.ContainerStartOptions{}); err != nil {
 		// If we have holdHijackedConnection, we should notify
 		// holdHijackedConnection we are going to exit and wait
 		// to avoid the terminal are not restored.
@@ -195,7 +198,7 @@ func Run(
 	// }
 
 	if errCh != nil {
-		if err := <-errCh; err != nil {
+		if err = <-errCh; err != nil {
 			log.Debugf("Error hijack: %s", err)
 			return err
 		}

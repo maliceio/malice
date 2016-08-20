@@ -19,6 +19,7 @@ deps:
 	go get -u github.com/progrium/gh-release/...
 	go get -u -f github.com/tools/godep
 	go get github.com/golang/lint/golint
+	go get -u github.com/jteeuwen/go-bindata/...
 	go get -t ./... || true
 
 test:

@@ -3,6 +3,7 @@ language: go
 go:
   - 1.5.3
   - 1.6
+  - 1.7
   - tip
 
 env:
@@ -20,4 +21,4 @@ before_install:
 
 install: make deps
 script:
-  - make test
+  - make build

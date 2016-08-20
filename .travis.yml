@@ -21,4 +21,4 @@ before_install:
 
 install: make deps
 script:
-  - make build
+  - go build

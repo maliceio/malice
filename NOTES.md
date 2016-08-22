@@ -8,3 +8,6 @@ NOTES
 ### Ideas
 
  - https://github.com/ytisf/theZoo (I can use this to test malice)
+
+### RethinkDB  
+ - https://github.com/stefanprodan/aspnetcore-dockerswarm/wiki/RethinkDB-Swarm

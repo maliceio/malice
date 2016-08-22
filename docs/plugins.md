@@ -8,7 +8,7 @@
 | team-cymru    | TeamCymru - hash lookup                   | false   | malice/team-cymru    | intel    | hash                   |
 | fileinfo      | ssdeep/TRiD/exiftool                      | true    | malice/fileinfo      | metadata | \*                     |
 | yara          | YARA Scan                                 | true    | malice/yara          | av       | \*                     |
-| avast         | Avast AntiVirus                           | true    | malice/avast         | av       | \*                     |
+| avast         | Avast AntiVirus                           | false   | malice/avast         | av       | \*                     |
 | avg           | AVG AntiVirus                             | true    | malice/avg           | av       | \*                     |
 | bitdefender   | Bitdefender AntiVirus                     | true    | malice/bitdefender   | av       | \*                     |
 | clamav        | ClamAV                                    | true    | malice/clamav        | av       | \*                     |

@@ -9,7 +9,6 @@ import (
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
 	runconfigopts "github.com/docker/docker/runconfig/opts"
-	"github.com/docker/engine-api/types"
 	"github.com/docker/engine-api/types/strslice"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/docker/client"
@@ -20,84 +19,60 @@ import (
 )
 
 // StartPlugin starts plugin
-func (plugin Plugin) StartPlugin(docker *client.Docker, sample string, logs bool) (types.ContainerJSONBase, error) {
+func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID string, logs bool) error {
 
+	cmd := plugin.buildCmd(arg, logs)
 	binds := []string{config.Conf.Docker.Binds}
 	env := plugin.getPluginEnv()
+
+	env = append(env, "MALICE_SCANID="+scanID)
 
 	contJSON, err := container.Start(
 		// err := container.Run(
 		docker,
-		strslice.StrSlice{"-t", sample},
+		cmd, //strslice.StrSlice{"-t", plugin.Cmd, arg},
 		plugin.Name,
 		plugin.Image,
 		logs,
 		binds,
 		nil,
-		[]string{"rethink:rethink"},
+		[]string{"rethink"},
 		env,
 	)
-	er.CheckError(err)
+	log.WithFields(log.Fields{
+		"name": contJSON.Name,
+		"env":  config.Conf.Environment.Run,
+	}).Debug("Plugin Container Started")
 
-	return contJSON, err
-	// return types.ContainerJSONBase{}, err
+	defer func() {
+		er.CheckError(container.Remove(docker, contJSON.ID, true, false, true))
+		log.WithFields(log.Fields{
+			"name": contJSON.Name,
+			"env":  config.Conf.Environment.Run,
+		}).Debug("Plugin Container Removed")
+	}()
+
+	return err
+}
+
+func (plugin Plugin) buildCmd(args string, logs bool) strslice.StrSlice {
+
+	cmdStr := strslice.StrSlice{}
+	if logs {
+		cmdStr = append(cmdStr, "-t")
+	}
+	if plugin.Cmd != "" {
+		cmdStr = append(cmdStr, plugin.Cmd)
+	}
+	cmdStr = append(cmdStr, args)
+
+	return cmdStr
 }
 
 // RunIntelPlugins run all Intel plugins
 func RunIntelPlugins(docker *client.Docker, hash string, scanID string, logs bool) {
-	var cont types.ContainerJSONBase
-	var err error
 	for _, plugin := range GetIntelPlugins(true) {
-
-		env := plugin.getPluginEnv()
-		env = append(env, "MALICE_SCANID="+scanID)
-
-		if plugin.Cmd != "" {
-			cont, err = container.Start(
-				// err = container.Run(
-				docker,
-				strslice.StrSlice{"-t", plugin.Cmd, hash},
-				plugin.Name,
-				plugin.Image,
-				logs,
-				nil,
-				nil,
-				[]string{"rethink"},
-				env,
-			)
-			er.CheckError(err)
-		} else {
-			cont, err = container.Start(
-				// err = container.Run(
-				docker,
-				strslice.StrSlice{"-t", hash},
-				plugin.Name,
-				plugin.Image,
-				logs,
-				nil,
-				nil,
-				[]string{"rethink"},
-				env,
-			)
-			er.CheckError(err)
-		}
-
-		log.WithFields(log.Fields{
-			"id": cont.ID,
-			"ip": docker.GetIP(),
-			// "url":      "http://" + client.GetIP(),
-			"name": cont.Name,
-			"env":  config.Conf.Environment.Run,
-		}).Debug("Plugin Container Started")
-
-		er.CheckError(container.Remove(docker, cont.ID, true, false, true))
-		log.WithFields(log.Fields{
-			"id": cont.ID,
-			"ip": docker.GetIP(),
-			// "url":      "http://" + client.GetIP(),
-			"name": cont.Name,
-			"env":  config.Conf.Environment.Run,
-		}).Debug("Plugin Container Removed")
+		er.CheckError(plugin.StartPlugin(docker, hash, scanID, logs))
 	}
 }
 

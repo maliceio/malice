@@ -77,7 +77,7 @@ title = "Malice Plugin Configurations"
   mime = "*"
 
 [[plugin]]
-  enabled = true
+  enabled = false
   name = "avast"
   description = "Avast AntiVirus"
   category = "av"

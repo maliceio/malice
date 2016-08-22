@@ -1,9 +1,9 @@
 package container
 
 import (
+	log "github.com/Sirupsen/logrus"
 	"github.com/docker/engine-api/types"
 	"github.com/maliceio/malice/malice/docker/client"
-	er "github.com/maliceio/malice/malice/errors"
 	"golang.org/x/net/context"
 )
 
@@ -12,6 +12,7 @@ import (
 // If links is true, the associated links are removed with container.
 // If force is true, the container will be destroyed with extreme prejudice.
 func Remove(docker *client.Docker, contID string, volumes bool, links bool, force bool) error {
+	log.Debug("Removing container: ", contID)
 	return removeContainer(docker, context.Background(), contID, volumes, links, force)
 	// // check if container exists
 	// if plugin, exists, _ := Exists(docker, cont.Name); exists {
@@ -37,7 +38,6 @@ func removeContainer(docker *client.Docker, ctx context.Context, container strin
 		Force:         force,
 	}
 	if err := docker.Client.ContainerRemove(ctx, container, options); err != nil {
-		er.CheckError(err)
 		return err
 	}
 	return nil

@@ -5,7 +5,6 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/database"
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"
@@ -76,10 +75,10 @@ func ScanSample(path string) {
 		//////////////////////////////////////
 		// Write all file data to the Database
 		resp := database.WriteFileToDatabase(file)
-
+		scanID := resp.GeneratedKeys[0]
 		/////////////////////////////////////////////////////////////////
 		// Run all Intel Plugins on the md5 hash associated with the file
-		plugins.RunIntelPlugins(docker, file.MD5, resp.GeneratedKeys[0], true)
+		plugins.RunIntelPlugins(docker, file.MD5, scanID, true)
 
 		log.Debug("Looking for plugins that will run on: ", file.Mime)
 		// Iterate over all applicable installed plugins
@@ -94,18 +93,8 @@ func ScanSample(path string) {
 			// go func() {
 			// Start Plugin Container
 			// TODO: don't use the default of true for --logs
-			cont, err := plugin.StartPlugin(docker, file.SHA256, true)
-			er.CheckError(err)
+			er.CheckError(plugin.StartPlugin(docker, file.SHA256, scanID, true))
 
-			log.WithFields(log.Fields{
-				"id": cont.ID,
-				"ip": docker.GetIP(),
-				// "url":      "http://" + client.GetIP(),
-				"name": cont.Name,
-				"env":  config.Conf.Environment.Run,
-			}).Debug("Plugin Container Started")
-
-			er.CheckError(container.Remove(docker, cont.ID, true, false, true))
 			// docker.RemoveContainer(cont, false, false, false)
 			// container.Remove(docker, cont.ID, true, true, true)
 			// }()

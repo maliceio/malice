@@ -1,7 +1,6 @@
 package container
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -33,10 +32,9 @@ func CopyToVolume(docker *client.Docker, file persist.File) {
 		er.CheckError(err)
 
 		defer func() {
-			if err = Remove(docker, cont.ID, true, false, true); err != nil {
-				fmt.Fprintf(os.Stderr, "%v\n", err)
-			}
+			er.CheckError(Remove(docker, cont.ID, true, false, true))
 		}()
+
 		// Get an absolute source path.
 		srcPath, err := resolveLocalPath(file.Path)
 		er.CheckError(err)
@@ -56,8 +54,6 @@ func CopyToVolume(docker *client.Docker, file persist.File) {
 
 		// Check if file already exists in volume
 		if dstStat.Size > 0 {
-			// Remove copy2volume container
-			Remove(docker, cont.ID, true, true, true)
 			log.Debug("Sample ", file.Name, " already in malice volume.")
 			return
 		}

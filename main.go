@@ -48,6 +48,7 @@ func setDebugOutputLevel() {
 func Init() {}
 
 func main() {
+	log.Debugf("Using %d PROCS", runtime.NumCPU())
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	Init()

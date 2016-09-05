@@ -3,6 +3,7 @@ package plugins
 import (
 	"bytes"
 	"fmt"
+	"sync"
 
 	"os"
 
@@ -19,7 +20,9 @@ import (
 )
 
 // StartPlugin starts plugin
-func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID string, logs bool) error {
+func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID string, logs bool, wg *sync.WaitGroup) {
+
+	defer wg.Done()
 
 	cmd := plugin.buildCmd(arg, logs)
 	binds := []string{config.Conf.Docker.Binds}
@@ -52,7 +55,7 @@ func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID strin
 		}).Debug("Plugin Container Removed")
 	}()
 
-	return err
+	er.CheckError(err)
 }
 
 func (plugin Plugin) buildCmd(args string, logs bool) strslice.StrSlice {
@@ -71,9 +74,16 @@ func (plugin Plugin) buildCmd(args string, logs bool) strslice.StrSlice {
 
 // RunIntelPlugins run all Intel plugins
 func RunIntelPlugins(docker *client.Docker, hash string, scanID string, logs bool) {
-	for _, plugin := range GetIntelPlugins(true) {
-		er.CheckError(plugin.StartPlugin(docker, hash, scanID, logs))
+
+	intelPlugins := GetIntelPlugins(true)
+
+	var wg sync.WaitGroup
+	wg.Add(len(intelPlugins))
+
+	for _, plugin := range intelPlugins {
+		go plugin.StartPlugin(docker, hash, scanID, logs, &wg)
 	}
+	wg.Wait()
 }
 
 func (plugin *Plugin) getPluginEnv() []string {

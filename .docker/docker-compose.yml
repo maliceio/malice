@@ -1,0 +1,66 @@
+version: "2"
+
+services:
+  avg:
+    image: malice/avg
+    external_links:
+      - rethink
+    command: -t befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
+    volumes: 
+     - ./data/samples:/malware:ro          
+    networks:
+      - malice
+  bitdefender:
+    image: malice/bitdefender
+    external_links:
+      - rethink
+    command: -t befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
+    volumes: 
+     - ./data/samples:/malware:ro          
+    networks:
+      - malice
+  clamav:
+    image: malice/clamav
+    external_links:
+      - rethink
+    command: -t befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
+    volumes: 
+     - ./data/samples:/malware:ro          
+    networks:
+      - malice
+  comodo:
+    image: malice/comodo
+    external_links:
+      - rethink
+    command: -t befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
+    volumes: 
+     - ./data/samples:/malware:ro          
+    networks:
+      - malice      
+  fprot:
+    image: malice/fprot
+    external_links:
+      - rethink
+    command: -t befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
+    volumes: 
+     - ./data/samples:/malware:ro          
+    networks:
+      - malice
+
+  rethink:
+    container_name: rethink  
+    image: rethinkdb
+    ports:
+      - "28015:28015"
+      - "8081:8080"
+    volumes: 
+     - malice:/data      
+    networks:
+      - malice
+
+volumes:
+  malice:
+
+networks:
+  malice:
+    driver: bridge      

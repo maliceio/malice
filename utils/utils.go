@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"net/mail"
+	"os"
 	"regexp"
 	"strings"
 
@@ -65,6 +66,15 @@ func StringInSlice(a string, list []string) bool {
 		}
 	}
 	return false
+}
+
+// GetOpt returns Env var or default
+func GetOpt(name, dfault string) string {
+	value := os.Getenv(name)
+	if value == "" {
+		value = dfault
+	}
+	return value
 }
 
 // GetHashType returns the hash type (md5, sha1, sha256, sha512)

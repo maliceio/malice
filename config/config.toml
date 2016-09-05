@@ -36,7 +36,7 @@ title = "Malice Runtime Configuration"
 
 [docker]
   machine-name = "malice"
-  endpoint = "tcp://192.168.99.100:2376"
+  endpoint = "tcp://localhost:2376"
   binds = "malice:/malware:ro"
   timeout = 120
 

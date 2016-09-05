@@ -10,6 +10,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/engine-api/client"
 	"github.com/maliceio/malice/config"
+	util "github.com/maliceio/malice/utils"
 )
 
 // NOTE: https://github.com/eris-ltd/eris-cli/blob/master/perform/docker_run.go
@@ -46,7 +47,11 @@ func NewDockerClient() *Docker {
 			log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon native client")
 		}
 	} else {
-		ip, port, err = parseDockerEndoint(os.Getenv("DOCKER_HOST"))
+		_, _, _, err := client.ParseHost(util.GetOpt("DOCKER_HOST", client.DefaultDockerHost))
+		if err != nil {
+			log.Error(err)
+		}
+		ip, port, err = parseDockerEndoint(util.GetOpt("DOCKER_HOST", config.Conf.Docker.EndPoint))
 		if err != nil {
 			log.Error(err)
 		}

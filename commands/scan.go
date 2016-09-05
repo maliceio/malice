@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"os"
+	"sync"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/malice/database"
@@ -72,10 +73,12 @@ func ScanSample(path string) {
 		//////////////////////////////////////
 		// Copy file to malice volume
 		container.CopyToVolume(docker, file)
+
 		//////////////////////////////////////
 		// Write all file data to the Database
 		resp := database.WriteFileToDatabase(file)
 		scanID := resp.GeneratedKeys[0]
+
 		/////////////////////////////////////////////////////////////////
 		// Run all Intel Plugins on the md5 hash associated with the file
 		plugins.RunIntelPlugins(docker, file.MD5, scanID, true)
@@ -88,22 +91,17 @@ func ScanSample(path string) {
 			log.Debugf(" - %v", plugin.Name)
 		}
 
+		var wg sync.WaitGroup
+		wg.Add(len(plugins))
+
 		for _, plugin := range plugins {
 			log.Debugf(">>>>> RUNNING Plugin: %s >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", plugin.Name)
-			// go func() {
 			// Start Plugin Container
 			// TODO: don't use the default of true for --logs
-			er.CheckError(plugin.StartPlugin(docker, file.SHA256, scanID, true))
-
-			// docker.RemoveContainer(cont, false, false, false)
-			// container.Remove(docker, cont.ID, true, true, true)
-			// }()
-			// Clean up the Plugin Container
-			// TODO: I want to reuse these containers for speed eventually.
-
-			// time.Sleep(10 * time.Millisecond)
+			go plugin.StartPlugin(docker, file.SHA256, scanID, true, &wg)
 		}
-		// time.Sleep(60 * time.Second)
+
+		wg.Wait() // this waits for the counter to be 0
 		log.Debug("Done with plugins.")
 	} else {
 		log.Error("Please supply a valid file to scan.")

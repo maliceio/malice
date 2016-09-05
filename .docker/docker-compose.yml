@@ -3,50 +3,66 @@ version: "2"
 services:
   avg:
     image: malice/avg
-    external_links:
+    links:
       - rethink
     command: -t befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
     volumes: 
-     - ./data/samples:/malware:ro          
+     - ../data/samples:/malware:ro          
     networks:
       - malice
   bitdefender:
     image: malice/bitdefender
-    external_links:
+    links:
       - rethink
     command: -t befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
     volumes: 
-     - ./data/samples:/malware:ro          
+     - ../data/samples:/malware:ro          
     networks:
       - malice
   clamav:
     image: malice/clamav
-    external_links:
+    links:
       - rethink
     command: -t befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
     volumes: 
-     - ./data/samples:/malware:ro          
+     - ../data/samples:/malware:ro          
     networks:
       - malice
   comodo:
     image: malice/comodo
-    external_links:
+    links:
       - rethink
     command: -t befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
     volumes: 
-     - ./data/samples:/malware:ro          
+     - ../data/samples:/malware:ro          
     networks:
       - malice      
   fprot:
     image: malice/fprot
-    external_links:
+    links:
       - rethink
     command: -t befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
     volumes: 
-     - ./data/samples:/malware:ro          
+     - ../data/samples:/malware:ro          
     networks:
       - malice
-
+  # ELK
+  elk:
+    image: blacktop/elk
+    ports:
+      - "9200:9200"
+      - "80:80"
+    networks:
+      - malice      
+  # LOGSTASH
+  logstash:
+    build: ./logstash
+    links:
+      - rethink
+      - elk:elasticsearch
+    networks:
+      - malice
+  # RETHINKDB
   rethink:
     container_name: rethink  
     image: rethinkdb
@@ -60,6 +76,7 @@ services:
 
 volumes:
   malice:
+  es_data:
 
 networks:
   malice:

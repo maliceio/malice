@@ -86,7 +86,7 @@ func (file *File) gzipSample() error {
 	reader, err := os.Open(file.Path)
 	er.CheckError(err)
 
-	destination := filepath.Join(maldirs.GetSampledsDir(), file.SHA256+".tar.gz")
+	destination := filepath.Join(maldirs.GetSampledsDir(), file.SHA256+".gz")
 	writer, err := os.Create(destination)
 	er.CheckError(err)
 	defer writer.Close()

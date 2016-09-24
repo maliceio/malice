@@ -21,3 +21,4 @@
 | office        | Office - tool to triage OLE/RTF documents | false   | malice/office        | document | *                      |
 | pdf           | PDF - tool to triage PDF documents        | false   | malice/pdf           | document | application/pdf        |
 | javascript    | Javascript - tool to triage JS scripts    | false   | malice/javascript    | document | application/javascript |
+| zip           | Zip - tool to unarchive archives          | false   | malice/zip           | archive  | archive                |

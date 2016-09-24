@@ -205,3 +205,14 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/maliceio/malice-javascript.git"
   build = false
   mime = "application/javascript"
+
+[[plugin]]
+  enabled = false
+  name = "zip"
+  description = "Zip - tool to unarchive archives"
+  category = "archive"
+  image = "malice/zip"
+  repository = "https://github.com/maliceio/malice-zip.git"
+  build = false
+  mime = "archive"
+  ziptypes = [ "tar", "gz", "p7z" ]

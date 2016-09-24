@@ -59,24 +59,13 @@ AntiVirus - FirstSeen: 6/15/2010 3:09AM - LastSeen: 6/15/2010 3:09AM
 
 #### Yara
 
-| Rule                                                        | Description                                   | Offset                       | Data                                 | Tags  |
-|-------------------------------------------------------------|-----------------------------------------------|------------------------------|--------------------------------------|-------|
-| Contains_PE_File                                            | Detect a PE file inside a byte sequence       | 0                            | MZ                                   |       |
-| _Microsoft_Visual_Cpp_v50v60*MFC*                           | Microsoft Visual C++ v5.0/v6.0 (MFC)          | 5204                         | U���                                 |       |
-| _Borland_Delphi_v60\_*v70*                                  | Borland Delphi v6.0 - v7.0                    | 5204                         | U��                                  |       |
-| maldoc_function_prolog_signature                            |                                               | 5204                         | U����                                |       |
-| maldoc_structured_exception_handling                        |                                               | 23125                        | d�                                   |       |
-| maldoc_suspicious_strings                                   |                                               | 26604                        | CloseHandle                          |       |
-| PEiD_00138_Armadillo_v1*71*                                 | [Armadillo v1.71]                             | 23110                        | U��j�h b@h�[@d�                      |       |
-| PEiD_00497_dUP_v2_x_Patcher\_\_\_\__www_diablo2oo2_cjb*net* | [dUP v2.x Patcher --> www.diablo2oo2.cjb.net] | 78                           | This program cannot be run in DOS mo |       |
-| PEiD_00729_Free_Pascal_1*06*                                | [Free Pascal 1.06]                            | 14866                        | ���@O�k                              |       |
-| PEiD_01101_Microsoft_Visual_C\_**v5_0_v6_0**MFC\_\_         | [Microsoft Visual C++ v5.0/v6.0 (MFC)]        | 23110                        | U��j�h b@h�[@d�P                     |       |
-| PEiD_01108_Microsoft_Visual_C\_\__v6*0*                     | [Microsoft Visual C++ v6.0]                   | 23110                        | U��j�h b@h�[@d�Pd�%��hSVW            |       |
-| ��@�                                                        |                                               | Microsoft_Visual_C\_\__v6*0* | [Microsoft Visual C++ v6.0]          | 23110 |
-| PEiD_01125_Microsoft_Visual_C\_\_\_                         | [Microsoft Visual C++]                        | 23110                        | U��j�h b@h�[@d�Pd�%                  |       |
-| _dUP_v2x_Patcher\_*wwwdiablo2oo2cjbnet*                     | dUP v2.x Patcher --> www.diablo2oo2.cjb.net   | 78                           | This program cannot be run in DOS mo |       |
-| _Free_Pascal*v106*                                          | Free Pascal v1.06                             | 14866                        | ���@O�k                              |       |
-| _Armadillo*v171*                                            | Armadillo v1.71                               | 23110                        | U��j�h b@h�[@d�                      |       |
+| Rule                                    | Description                                 | Offset | Data                                 | Tags |
+|-----------------------------------------|---------------------------------------------|--------|--------------------------------------|------|
+| *Microsoft_Visual_Cpp_v50v60_MFC*       | Microsoft Visual C++ v5.0/v6.0 (MFC)        | 5204   | U���                                 |      |
+| *Borland_Delphi_v60\__v70*              | Borland Delphi v6.0 - v7.0                  | 5204   | U��                                  |      |
+| *dUP_v2x_Patcher\__wwwdiablo2oo2cjbnet* | dUP v2.x Patcher --> www.diablo2oo2.cjb.net | 78     | This program cannot be run in DOS mo |      |
+| *Free_Pascal_v106*                      | Free Pascal v1.06                           | 14866  | ���@O�k                              |      |
+| *Armadillo_v171*                        | Armadillo v1.71                             | 23110  | U��j�h b@h�[@d�                      |      |
 
 #### SSDeep
 

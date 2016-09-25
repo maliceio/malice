@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/fatih/structs"
 	"github.com/maliceio/malice/malice/database/elasticsearch"
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"
@@ -76,7 +77,7 @@ func ScanSample(path string) {
 
 		//////////////////////////////////////
 		// Write all file data to the Database
-		resp := elasticsearch.WriteFileToDatabase(file)
+		resp := elasticsearch.WriteFileToDatabase(structs.Map(file))
 		scanID := resp.Id
 
 		os.Exit(0)

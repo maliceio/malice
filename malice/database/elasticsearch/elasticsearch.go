@@ -7,7 +7,6 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/maliceio/malice/malice/database"
-	"github.com/maliceio/malice/malice/persist"
 	"github.com/maliceio/malice/utils"
 	elastic "gopkg.in/olivere/elastic.v3"
 )
@@ -88,7 +87,7 @@ func TestConnection(addr string) error {
 }
 
 // WriteFileToDatabase inserts sample into Database
-func WriteFileToDatabase(sample persist.File) elastic.IndexResponse {
+func WriteFileToDatabase(sample map[string]interface{}) elastic.IndexResponse {
 
 	if ElasticAddr == "" {
 		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elastic"))

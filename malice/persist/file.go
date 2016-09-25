@@ -26,20 +26,20 @@ import (
 
 // File is a file object
 type File struct {
-	Name string `json:"name" gorethink:"name"`
-	Path string `json:"path" gorethink:"path"`
+	Name string `json:"name" structs:"name"`
+	Path string `json:"path" structs:"path"`
 	// Valid bool   `json:"valid"`
-	Size string `json:"size" gorethink:"size"`
+	Size string `json:"size" structs:"size"`
 	// Size   int64
 	// CRC32  string
-	MD5    string `json:"md5" gorethink:"md5"`
-	SHA1   string `json:"sha1" gorethink:"sha1"`
-	SHA256 string `json:"sha256" gorethink:"sha256"`
-	SHA512 string `json:"sha512" gorethink:"sha512"`
+	MD5    string `json:"md5" structs:"md5"`
+	SHA1   string `json:"sha1" structs:"sha1"`
+	SHA256 string `json:"sha256" structs:"sha256"`
+	SHA512 string `json:"sha512" structs:"sha512"`
 	// Ssdeep string `json:"ssdeep"`
-	Mime string `json:"mime" gorethink:"mime"`
+	Mime string `json:"mime" structs:"mime"`
 	// Arch string `json:"arch"`
-	Data []byte `json:"data" gorethink:"data,omitempty"`
+	Data []byte `json:"data" structs:"data,omitempty"`
 }
 
 // Init initializes the File object

@@ -59,7 +59,7 @@ func ScanSample(path string) {
 			// Prompt user to install all plugins?
 			fmt.Println("All enabled plugins not installed would you like to install them now? (yes/no)")
 			fmt.Println("[Warning] This can take a while if it is the first time you have ran Malice.")
-			if util.AskForConfirmation() {
+			if utils.AskForConfirmation() {
 				plugins.UpdateAllPlugins(docker)
 			}
 		}

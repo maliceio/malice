@@ -164,7 +164,10 @@ func WriteHashToDatabase(hash string) elastic.IndexResponse {
 func WritePluginResultsToDatabase(results PluginResults) {
 
 	// scanID := utils.Getopt("MALICE_SCANID", "")
-	ElasticAddr := fmt.Sprintf("%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elastic"))
+	if ElasticAddr == "" {
+		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elastic"))
+	}
+
 	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
 	utils.Assert(err)
 

@@ -183,7 +183,7 @@ func WritePluginResultsToDatabase(results PluginResults) {
 
 	}
 
-	if getSample.Found {
+	if getSample != nil && getSample.Found {
 		fmt.Printf("Got document %s in version %d from index %s, type %s\n", getSample.Id, getSample.Version, getSample.Index, getSample.Type)
 		updateScan := map[string]interface{}{
 			"scan_date": time.Now().Format(time.RFC3339Nano),

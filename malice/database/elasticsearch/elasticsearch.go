@@ -14,8 +14,10 @@ import (
 
 // PluginResults a malice plugin results object
 type PluginResults struct {
-	ID   string `json:"id" gorethink:"id,omitempty"`
-	Data map[string]interface{}
+	ID       string `json:"id"`
+	Name     string
+	Category string
+	Data     map[string]interface{}
 }
 
 // ElasticAddr ElasticSearch address to user for connections
@@ -130,7 +132,7 @@ func WriteFileToDatabase(sample persist.File) elastic.IndexResponse {
 // WriteHashToDatabase inserts sample into Database
 func WriteHashToDatabase(hash string) elastic.IndexResponse {
 
-	hashType, err := util.GetHashType(hash)
+	hashType, err := utils.GetHashType(hash)
 	utils.Assert(err)
 
 	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
@@ -183,8 +185,8 @@ func WritePluginResultsToDatabase(results PluginResults) {
 		updateScan := map[string]interface{}{
 			"scan_date": time.Now().Format(time.RFC3339Nano),
 			"plugins": map[string]interface{}{
-				category: map[string]interface{}{
-					name: results.Data,
+				results.Category: map[string]interface{}{
+					results.Name: results.Data,
 				},
 			},
 		}
@@ -202,8 +204,8 @@ func WritePluginResultsToDatabase(results PluginResults) {
 			// "id":      sample.SHA256,
 			// "file":      sample,
 			"plugins": map[string]interface{}{
-				category: map[string]interface{}{
-					name: results.Data,
+				results.Category: map[string]interface{}{
+					results.Name: results.Data,
 				},
 			},
 			"scan_date": time.Now().Format(time.RFC3339Nano),

@@ -105,7 +105,7 @@ func getInstalled() []Plugin {
 func GetCategories() []string {
 	categories := []string{}
 	for _, plugin := range Plugs.Plugins {
-		if !util.StringInSlice(plugin.Category, categories) {
+		if !utils.StringInSlice(plugin.Category, categories) {
 			categories = append(categories, plugin.Category)
 		}
 	}

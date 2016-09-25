@@ -5,19 +5,30 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/maliceio/go-plugin-utils/utils"
+
 	"github.com/maliceio/malice/malice/database"
 	"github.com/maliceio/malice/malice/persist"
-	util "github.com/maliceio/malice/utils"
+	"github.com/maliceio/malice/utils"
 	elastic "gopkg.in/olivere/elastic.v3"
 )
+
+// PluginResults a malice plugin results object
+type PluginResults struct {
+	ID   string `json:"id" gorethink:"id,omitempty"`
+	Data map[string]interface{}
+}
 
 // ElasticAddr ElasticSearch address to user for connections
 var ElasticAddr string
 
 // InitElasticSearch initalizes ElasticSearch for use with malice
 func InitElasticSearch() error {
-	client, err := elastic.NewSimpleClient()
+
+	if ElasticAddr == "" {
+		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elastic"))
+	}
+
+	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
 	utils.Assert(err)
 
 	exists, err := client.IndexExists("malice").Do()
@@ -76,24 +87,13 @@ func TestConnection(addr string) error {
 
 // WriteFileToDatabase inserts sample into Database
 func WriteFileToDatabase(sample persist.File) elastic.IndexResponse {
+
+	if ElasticAddr == "" {
+		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elastic"))
+	}
+
 	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
 	utils.Assert(err)
-
-	// getSample, err := client.Get().
-	// 	Index("malice").
-	// 	Type("samples").
-	// 	Id("1").
-	// 	Do()
-
-	// fmt.Println(getSample)
-	// fmt.Println(err)
-	// if err != nil {
-
-	// }
-
-	// if getSample.Found {
-	// 	fmt.Printf("Got document %s in version %d from index %s, type %s\n", getSample.Id, getSample.Version, getSample.Index, getSample.Type)
-	// } else {
 
 	scan := map[string]interface{}{
 		// "id":      sample.SHA256,
@@ -123,8 +123,6 @@ func WriteFileToDatabase(sample persist.File) elastic.IndexResponse {
 		Do()
 	utils.Assert(err)
 	log.Debugf("New version of sample %q is now %d\n", update.Id, update.Version)
-
-	// }
 
 	return *newScan
 }
@@ -158,4 +156,69 @@ func WriteHashToDatabase(hash string) elastic.IndexResponse {
 	log.Debugf("Indexed sample %s to index %s, type %s\n", newScan.Id, newScan.Index, newScan.Type)
 
 	return *newScan
+}
+
+// WritePluginResultsToDatabase upserts plugin results into Database
+func WritePluginResultsToDatabase(results PluginResults) {
+
+	// scanID := utils.Getopt("MALICE_SCANID", "")
+	ElasticAddr := fmt.Sprintf("%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elastic"))
+	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
+	utils.Assert(err)
+
+	getSample, err := client.Get().
+		Index("malice").
+		Type("samples").
+		Id(results.ID).
+		Do()
+
+	fmt.Println(getSample)
+	fmt.Println(err)
+	if err != nil {
+
+	}
+
+	if getSample.Found {
+		fmt.Printf("Got document %s in version %d from index %s, type %s\n", getSample.Id, getSample.Version, getSample.Index, getSample.Type)
+		updateScan := map[string]interface{}{
+			"scan_date": time.Now().Format(time.RFC3339Nano),
+			"plugins": map[string]interface{}{
+				category: map[string]interface{}{
+					name: results.Data,
+				},
+			},
+		}
+		update, err := client.Update().Index("malice").Type("samples").Id(getSample.Id).
+			Doc(updateScan).
+			Do()
+		utils.Assert(err)
+
+		log.Debugf("New version of sample %q is now %d\n", update.Id, update.Version)
+		// return *update
+
+	} else {
+
+		scan := map[string]interface{}{
+			// "id":      sample.SHA256,
+			// "file":      sample,
+			"plugins": map[string]interface{}{
+				category: map[string]interface{}{
+					name: results.Data,
+				},
+			},
+			"scan_date": time.Now().Format(time.RFC3339Nano),
+		}
+
+		newScan, err := client.Index().
+			Index("malice").
+			Type("samples").
+			OpType("create").
+			// Id("1").
+			BodyJson(scan).
+			Do()
+		utils.Assert(err)
+
+		log.Debugf("Indexed sample %s to index %s, type %s\n", newScan.Id, newScan.Index, newScan.Type)
+		// return *newScan
+	}
 }

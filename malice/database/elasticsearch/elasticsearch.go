@@ -44,7 +44,7 @@ func InitElasticSearch() error {
 func TestConnection(addr string) error {
 
 	if ElasticAddr == "" {
-		ElasticAddr = fmt.Sprintf("%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elastic"))
+		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elastic"))
 	}
 
 	// connect to ElasticSearch where --link elastic was using via malice in Docker
@@ -58,13 +58,13 @@ func TestConnection(addr string) error {
 
 	if err != nil {
 		// connect to ElasticSearch via malice in Docker
-		ElasticAddr = fmt.Sprintf("%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", addr))
+		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", addr))
 		log.Debugf("Attempting to connect to: %s", ElasticAddr)
 		_, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
 
 		if err != nil {
 			// connect to ElasticSearch using Docker for Mac
-			ElasticAddr = fmt.Sprintf("%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "localhost"))
+			ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "localhost"))
 			log.Debugf("Attempting to connect to: %s", ElasticAddr)
 			_, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
 			return err
@@ -76,7 +76,7 @@ func TestConnection(addr string) error {
 
 // WriteFileToDatabase inserts sample into Database
 func WriteFileToDatabase(sample persist.File) elastic.IndexResponse {
-	client, err := elastic.NewSimpleClient()
+	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
 	utils.Assert(err)
 
 	// getSample, err := client.Get().
@@ -135,7 +135,7 @@ func WriteHashToDatabase(hash string) elastic.IndexResponse {
 	hashType, err := util.GetHashType(hash)
 	utils.Assert(err)
 
-	client, err := elastic.NewSimpleClient()
+	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
 	utils.Assert(err)
 
 	scan := map[string]interface{}{

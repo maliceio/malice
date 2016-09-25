@@ -176,8 +176,6 @@ func WritePluginResultsToDatabase(results PluginResults) {
 		Id(results.ID).
 		Do()
 
-	fmt.Println(getSample)
-	fmt.Println(err)
 	if err != nil {
 
 	}

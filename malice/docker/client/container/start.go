@@ -109,6 +109,9 @@ func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error)
 
 	if docker.Ping() {
 		cont, err := Start(docker, nil, name, image, logs, binds, portBindings, nil, nil)
+		// Give ELK a few seconds to start
+		time.Sleep(5 * time.Second)
+		log.Info("sleeping for 5 seconds to let ELK start")
 		return cont, err
 	}
 	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")

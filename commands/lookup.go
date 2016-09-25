@@ -3,8 +3,8 @@ package commands
 import (
 	"fmt"
 
-	"github.com/docker/machine/libmachine/log"
-	"github.com/maliceio/malice/malice/database"
+	log "github.com/Sirupsen/logrus"
+	"github.com/maliceio/malice/malice/database/elasticsearch"
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"
 	er "github.com/maliceio/malice/malice/errors"
@@ -16,18 +16,18 @@ func cmdLookUp(hash string, logs bool) error {
 
 	docker := client.NewDockerClient()
 
-	// Check that RethinkDB is running
-	if _, running, _ := container.Running(docker, "rethink"); !running {
-		log.Error("RethinkDB is NOT running, starting now...")
-		rethink, err := container.StartRethinkDB(docker, false)
+	// Check that ElasticSearch is running
+	if _, running, _ := container.Running(docker, "elk"); !running {
+		log.Error("ELK is NOT running, starting now...")
+		elk, err := container.StartELK(docker, false)
 		er.CheckError(err)
-		rInfo, err := container.Inspect(docker, rethink.ID)
+		eInfo, err := container.Inspect(docker, elk.ID)
 		er.CheckError(err)
-		er.CheckError(database.TestConnection(rInfo.Node.Addr))
+		er.CheckError(elasticsearch.TestConnection(eInfo.NetworkSettings.IPAddress))
 	}
 
-	// Setup rethinkDB
-	database.InitRethinkDB()
+	// Setup ElasticSearch
+	elasticsearch.InitElasticSearch()
 
 	if plugins.InstalledPluginsCheck(docker) {
 		log.Debug("All enabled plugins are installed.")
@@ -42,9 +42,9 @@ func cmdLookUp(hash string, logs bool) error {
 
 	/////////////////////////////
 	// Write hash to the Database
-	resp := database.WriteHashToDatabase(hash)
+	resp := elasticsearch.WriteHashToDatabase(hash)
 
-	plugins.RunIntelPlugins(docker, hash, resp.GeneratedKeys[0], true)
+	plugins.RunIntelPlugins(docker, hash, resp.Id, true)
 
 	return nil
 }

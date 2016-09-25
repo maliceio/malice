@@ -6,7 +6,7 @@ import (
 	"sync"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/maliceio/malice/malice/database"
+	"github.com/maliceio/malice/malice/database/elasticsearch"
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"
 	er "github.com/maliceio/malice/malice/errors"
@@ -37,21 +37,21 @@ func ScanSample(path string) {
 
 		docker := client.NewDockerClient()
 
-		// Check that RethinkDB is running
-		if _, running, _ := container.Running(docker, "rethink"); !running {
-			log.Error("RethinkDB is NOT running, starting now...")
-			rethink, err := container.StartRethinkDB(docker, false)
+		// Check that ElasticSearch is running
+		if _, running, _ := container.Running(docker, "elk"); !running {
+			log.Error("ELK is NOT running, starting now...")
+			elk, err := container.StartELK(docker, false)
 			er.CheckError(err)
-			rInfo, err := container.Inspect(docker, rethink.ID)
+			eInfo, err := container.Inspect(docker, elk.ID)
 			er.CheckError(err)
-			er.CheckError(database.TestConnection(rInfo.NetworkSettings.IPAddress))
+			er.CheckError(elasticsearch.TestConnection(eInfo.NetworkSettings.IPAddress))
 		}
 
-		// Setup rethinkDB
-		rInfo, err := container.Inspect(docker, "rethink")
+		// Setup ElasticSearch
+		eInfo, err := container.Inspect(docker, "elk")
 		er.CheckError(err)
-		er.CheckError(database.TestConnection(rInfo.NetworkSettings.IPAddress))
-		database.InitRethinkDB()
+		er.CheckError(elasticsearch.TestConnection(eInfo.NetworkSettings.IPAddress))
+		elasticsearch.InitElasticSearch()
 
 		if plugins.InstalledPluginsCheck(docker) {
 			log.Debug("All enabled plugins are installed.")
@@ -76,9 +76,10 @@ func ScanSample(path string) {
 
 		//////////////////////////////////////
 		// Write all file data to the Database
-		resp := database.WriteFileToDatabase(file)
-		scanID := resp.GeneratedKeys[0]
+		resp := elasticsearch.WriteFileToDatabase(file)
+		scanID := resp.Id
 
+		os.Exit(0)
 		/////////////////////////////////////////////////////////////////
 		// Run all Intel Plugins on the md5 hash associated with the file
 		plugins.RunIntelPlugins(docker, file.MD5, scanID, true)

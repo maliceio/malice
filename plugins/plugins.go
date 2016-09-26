@@ -39,7 +39,7 @@ func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID strin
 		logs,
 		binds,
 		nil,
-		[]string{"elk"},
+		[]string{"elk:elastic"},
 		env,
 	)
 	log.WithFields(log.Fields{

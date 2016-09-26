@@ -26,7 +26,7 @@ var ElasticAddr string
 func InitElasticSearch() error {
 
 	if ElasticAddr == "" {
-		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elastic"))
+		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elk"))
 	}
 
 	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
@@ -43,10 +43,10 @@ func InitElasticSearch() error {
 			// Not acknowledged
 			log.Error("Couldn't create Index.")
 		} else {
-			log.Info("Created Index: ", "malice")
+			log.Debug("Created Index: ", "malice")
 		}
 	} else {
-		log.Info("Index malice already exists.")
+		log.Debug("Index malice already exists.")
 	}
 
 	return err
@@ -56,7 +56,7 @@ func InitElasticSearch() error {
 func TestConnection(addr string) error {
 
 	if ElasticAddr == "" {
-		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elastic"))
+		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elk"))
 	}
 
 	// connect to ElasticSearch where --link elastic was using via malice in Docker
@@ -113,17 +113,17 @@ func WriteFileToDatabase(sample map[string]interface{}) elastic.IndexResponse {
 	utils.Assert(err)
 	log.Debugf("Indexed sample %s to index %s, type %s\n", newScan.Id, newScan.Index, newScan.Type)
 
-	update, err := client.Update().Index("malice").Type("samples").Id(newScan.Id).
-		Doc(map[string]interface{}{
-			"plugins": map[string]interface{}{
-				"intel": map[string]interface{}{
-					"nsrl": "UPDATED",
-				},
-			},
-		}).
-		Do()
-	utils.Assert(err)
-	log.Debugf("New version of sample %q is now %d\n", update.Id, update.Version)
+	// update, err := client.Update().Index("malice").Type("samples").Id(newScan.Id).
+	// 	Doc(map[string]interface{}{
+	// 		"plugins": map[string]interface{}{
+	// 			"intel": map[string]interface{}{
+	// 				"nsrl": "UPDATED",
+	// 			},
+	// 		},
+	// 	}).
+	// 	Do()
+	// utils.Assert(err)
+	// log.Debugf("New version of sample %q is now %d\n", update.Id, update.Version)
 
 	return *newScan
 }

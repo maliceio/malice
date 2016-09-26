@@ -80,10 +80,10 @@ func ScanSample(path string) {
 		resp := elasticsearch.WriteFileToDatabase(structs.Map(file))
 		scanID := resp.Id
 
-		os.Exit(0)
 		/////////////////////////////////////////////////////////////////
 		// Run all Intel Plugins on the md5 hash associated with the file
 		plugins.RunIntelPlugins(docker, file.MD5, scanID, true)
+		os.Exit(0)
 
 		log.Debug("Looking for plugins that will run on: ", file.Mime)
 		// Iterate over all applicable installed plugins

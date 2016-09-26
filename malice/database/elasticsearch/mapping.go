@@ -8,7 +8,7 @@ const mapping = `{
   "mappings": {
     "_default_": {
       "_all": {
-        "enabled": false
+        "enabled": true
       }
     },
     "samples": {
@@ -19,7 +19,8 @@ const mapping = `{
               "type": "string"
             },
             "mime": {
-              "type": "string"
+              "type": "string",
+              "index": "not_analyzed"
             },
             "name": {
               "type": "string"

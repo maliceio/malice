@@ -3,7 +3,23 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
-[latest] - 2016-08-14
+[latest] - 2016-09-25
+---------------------
+
+### Fixed
+
+### Added
+
+-	added support for ElasticSearch through use of **blacktop/elk**
+-	add zip plugin place holder
+
+### Removed
+
+-	support for RethinkDB
+
+### Changed
+
+[v0.1.0] - 2016-08-14
 ---------------------
 
 ### Fixed

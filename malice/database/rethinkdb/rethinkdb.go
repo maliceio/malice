@@ -1,15 +1,19 @@
 package rethinkdb
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/docker/engine-api/types"
+	"github.com/docker/go-connections/nat"
 	"github.com/maliceio/go-plugin-utils/utils"
 	"github.com/maliceio/malice/malice/database"
+	"github.com/maliceio/malice/malice/docker/client"
+	"github.com/maliceio/malice/malice/docker/client/container"
 	"github.com/maliceio/malice/malice/persist"
-	"github.com/maliceio/malice/utils"
 	r "gopkg.in/dancannon/gorethink.v2"
 )
 
@@ -18,6 +22,33 @@ var RethinkAddr string
 
 func init() {
 	r.Log.Out = ioutil.Discard
+}
+
+// StartRethinkDB creates an RethinkDB container from the image rethinkdb
+func StartRethinkDB(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
+
+	name := "rethink"
+	image := "rethinkdb"
+	binds := []string{"malice:/data"}
+	portBindings := nat.PortMap{
+		"8080/tcp":  {{HostIP: "0.0.0.0", HostPort: "8081"}},
+		"28015/tcp": {{HostIP: "0.0.0.0", HostPort: "28015"}},
+	}
+
+	if docker.Ping() {
+		cont, err := container.Start(docker, nil, name, image, logs, binds, portBindings, nil, nil)
+		// er.CheckError(err)
+		// if network, exists, _ := docker.NetworkExists("malice"); exists {
+		// 	err := docker.ConnectNetwork(network, cont)
+		// 	er.CheckError(err)
+		// }
+
+		// Give rethinkDB a few seconds to start
+		time.Sleep(2 * time.Second)
+		log.Info("sleeping for 2 seconds to let rethinkDB start")
+		return cont, err
+	}
+	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")
 }
 
 // TestConnection tests the rethinkDB connection
@@ -147,7 +178,7 @@ func WriteFileToDatabase(sample persist.File) r.WriteResponse {
 // WriteHashToDatabase inserts hash into Database
 func WriteHashToDatabase(hash string) r.WriteResponse {
 
-	hashType, err := util.GetHashType(hash)
+	hashType, err := utils.GetHashType(hash)
 	utils.Assert(err)
 
 	// connect to RethinkDB

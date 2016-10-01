@@ -3,7 +3,6 @@ package container
 import (
 	"errors"
 	"os"
-	"time"
 
 	"golang.org/x/net/context"
 
@@ -94,52 +93,4 @@ func LogContainer(docker *client.Docker, contID string) {
 
 	_, err = stdcopy.StdCopy(os.Stdout, os.Stderr, logs)
 	er.CheckError(err)
-}
-
-// StartELK creates an ELK container from the image blacktop/elk
-func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
-
-	name := "elk"
-	image := "blacktop/elk"
-	binds := []string{"malice:/usr/share/elasticsearch/data"}
-	portBindings := nat.PortMap{
-		"80/tcp":   {{HostIP: "0.0.0.0", HostPort: "80"}},
-		"9200/tcp": {{HostIP: "0.0.0.0", HostPort: "9200"}},
-	}
-
-	if docker.Ping() {
-		cont, err := Start(docker, nil, name, image, logs, binds, portBindings, nil, nil)
-		// Give ELK a few seconds to start
-		time.Sleep(10 * time.Second)
-		log.Info("sleeping for 5 seconds to let ELK start")
-		return cont, err
-	}
-	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")
-}
-
-// StartRethinkDB creates an RethinkDB container from the image rethinkdb
-func StartRethinkDB(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
-
-	name := "rethink"
-	image := "rethinkdb"
-	binds := []string{"malice:/data"}
-	portBindings := nat.PortMap{
-		"8080/tcp":  {{HostIP: "0.0.0.0", HostPort: "8081"}},
-		"28015/tcp": {{HostIP: "0.0.0.0", HostPort: "28015"}},
-	}
-
-	if docker.Ping() {
-		cont, err := Start(docker, nil, name, image, logs, binds, portBindings, nil, nil)
-		// er.CheckError(err)
-		// if network, exists, _ := docker.NetworkExists("malice"); exists {
-		// 	err := docker.ConnectNetwork(network, cont)
-		// 	er.CheckError(err)
-		// }
-
-		// Give rethinkDB a few seconds to start
-		time.Sleep(2 * time.Second)
-		log.Info("sleeping for 2 seconds to let rethinkDB start")
-		return cont, err
-	}
-	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")
 }

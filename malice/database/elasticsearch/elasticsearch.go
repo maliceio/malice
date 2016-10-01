@@ -1,12 +1,17 @@
 package elasticsearch
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/docker/engine-api/types"
+	"github.com/docker/go-connections/nat"
 
 	"github.com/maliceio/malice/malice/database"
+	"github.com/maliceio/malice/malice/docker/client"
+	"github.com/maliceio/malice/malice/docker/client/container"
 	"github.com/maliceio/malice/utils"
 	elastic "gopkg.in/olivere/elastic.v3"
 )
@@ -21,6 +26,28 @@ type PluginResults struct {
 
 // ElasticAddr ElasticSearch address to user for connections
 var ElasticAddr string
+
+// StartELK creates an ELK container from the image blacktop/elk
+func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
+
+	name := "elk"
+	image := "blacktop/elk"
+	binds := []string{"malice:/usr/share/elasticsearch/data"}
+	portBindings := nat.PortMap{
+		"80/tcp":   {{HostIP: "0.0.0.0", HostPort: "80"}},
+		"9200/tcp": {{HostIP: "0.0.0.0", HostPort: "9200"}},
+	}
+
+	if docker.Ping() {
+		cont, err := container.Start(docker, nil, name, image, logs, binds, portBindings, nil, nil)
+
+		// Give ELK a few seconds to start
+		time.Sleep(10 * time.Second)
+		log.Info("sleeping for 5 seconds to let ELK start")
+		return cont, err
+	}
+	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")
+}
 
 // InitElasticSearch initalizes ElasticSearch for use with malice
 func InitElasticSearch() error {
@@ -56,7 +83,7 @@ func InitElasticSearch() error {
 func TestConnection(addr string) error {
 
 	if ElasticAddr == "" {
-		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elk"))
+		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "localhost"))
 	}
 
 	// connect to ElasticSearch where --link elastic was using via malice in Docker
@@ -68,21 +95,21 @@ func TestConnection(addr string) error {
 	// utils.Assert(err)
 	// fmt.Printf("Elasticsearch returned with code %d and version %s", code, info.Version.Number)
 
+	// if err != nil {
+	// 	// connect to ElasticSearch via malice in Docker
+	// 	ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elk"))
+	// 	log.Debugf("Attempting to connect to: %s", ElasticAddr)
+	// 	_, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
+
 	if err != nil {
-		// connect to ElasticSearch via malice in Docker
+		// connect to ElasticSearch using Docker for Mac
 		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", addr))
 		log.Debugf("Attempting to connect to: %s", ElasticAddr)
 		_, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
-
-		if err != nil {
-			// connect to ElasticSearch using Docker for Mac
-			ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "localhost"))
-			log.Debugf("Attempting to connect to: %s", ElasticAddr)
-			_, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
-			return err
-		}
 		return err
 	}
+	// return err
+	// }
 	return err
 }
 

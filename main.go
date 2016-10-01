@@ -11,7 +11,6 @@ import (
 
 	"github.com/maliceio/malice/commands"
 	"github.com/maliceio/malice/config"
-	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/logger"
 	"github.com/maliceio/malice/plugins"
 	"github.com/maliceio/malice/version"
@@ -77,6 +76,5 @@ func main() {
 		},
 	}
 
-	err := app.Run(os.Args)
-	er.CheckError(err)
+	app.Run(os.Args)
 }

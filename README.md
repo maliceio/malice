@@ -88,20 +88,11 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
 - [Plugins](docs/plugins)
 - [Examples](docs/examples)
 - [Roadmap](docs/oadmap)
+- [Contributing](CONTRIBUTING.md)
 
 ### CHANGELOG
 
 See [`CHANGELOG.md`](https://github.com/maliceio/malice/blob/master/CHANGELOG.md)
-
-### Issues
-
-Find a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to [file an issue](https://github.com/maliceio/malice/issues/new) and I'll get right on it.
-
-### Contributing
-
-[See all contributors on GitHub](https://github.com/maliceio/malice/graphs/contributors).
-
-Please update the [CHANGELOG.md](https://github.com/maliceio/malice/blob/master/CHANGELOG.md) and submit a [Pull Request on GitHub](https://help.github.com/articles/using-pull-requests/).
 
 ### License
 

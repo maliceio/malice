@@ -58,7 +58,7 @@ func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error)
 		log.Debug("ELK is now online.")
 
 		// Even though it's up it's not ready to index data yet.
-		log.Info("Sleeping for 10 seconds to give ElasticSearch time to initalize.")
+		log.Info("Sleeping for 10 seconds to give blacktop/elk time to initalize.")
 		time.Sleep(10 * time.Second)
 
 		return cont, err

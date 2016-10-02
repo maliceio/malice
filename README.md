@@ -83,33 +83,10 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
 
 ### Documentation
 
-#### Install
-
-```bash
-$ go get github.com/maliceio/malice
-```
-> Malice will have binary releases for all platforms soon.  
-
-To install on Linux:
-
--	[Ubuntu](https://github.com/maliceio/malice/blob/master/docs/ubuntu.md)
-
-#### Plugins
-
--	[Plugins List (and growing)](https://github.com/maliceio/malice/blob/master/docs/plugins.md)
-
-#### Examples
-
--	[Example Output](https://github.com/maliceio/malice/blob/master/docs/example.md)
-
-#### Tips and Tricks
-
-If you have have [zsh](http://www.zsh.org/) installed you can install the zsh-completions:
-
-```bash
-$ cd $GOPATH/src/github.com/maliceio/malice/contrib/completion/zsh
-$ ./install.sh
-```
+- [Documentation](Documentation)
+- [Building](Documentation/installation)
+- [Plugins](Documentation/plugins)
+- [Examples](Documentation/examples)
 
 ### Issues
 

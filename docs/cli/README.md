@@ -7,7 +7,7 @@ Commands
 | [watch](#watch)   | Watch a folder.                                   |
 | [lookup](#lookup) | Look up a file hash.                              |
 | [elk](#elk)       | Start an ELK docker container.                    |
-| [web](#web)       | Start, Stop Web services.                         |
+| [web](#web)       | Start, Stop Web services. :construction:          |
 | [plugin](#plugin) | List, Install or Remove Plugins.                  |
 | [help](#help)     | Shows a list of commands or help for one command. |
 

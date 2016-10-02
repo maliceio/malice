@@ -62,6 +62,27 @@ Commands:
 Run 'malice COMMAND --help' for more information on a command.
 ```
 
+Scan some *malware*
+
+```bash
+$ MALICE_ELASTICSEARCH=localhost malice scan befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
+```
+> Malice will out the results as a markdown table that can be piped or copied into a results.md that will look great on Github see [here]()
+
+> Now you can open the Kibana UI and look at the scan results there as well
+
+Open [http://localhost](http://localhost)
+
+Use these creds: user/pass is **admin/admin**
+
+![kibana-setup](docs/images/kibana-setup.png)
+
+Type in **malice** as the `Index name or pattern` and click **Create**.
+
+Now click on the Discover Tab and **behold!!!**
+
+![kibana-scan](docs/images/kibana-scan.png)
+
 ### Getting Started (*Docker in Docker*)
 
 [![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)][hub]

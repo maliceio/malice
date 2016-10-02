@@ -62,24 +62,26 @@ Commands:
 Run 'malice COMMAND --help' for more information on a command.
 ```
 
-Scan some *malware*
+#### Scan some *malware*
 
 ```bash
-$ MALICE_ELASTICSEARCH=localhost malice scan befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
+$ MALICE_ELASTICSEARCH=localhost malice scan evil.malware
 ```
-> Malice will out the results as a markdown table that can be piped or copied into a results.md that will look great on Github see [here]()
 
-> Now you can open the Kibana UI and look at the scan results there as well
+Malice will out the results as a markdown table that can be piped or copied into a results.md that will look great on Github see [here]()
 
-Open [http://localhost](http://localhost)
+> Now you can open the Kibana UI and look at the scan results here: [http://localhost](http://localhost)
 
-Use these creds: user/pass is **admin/admin**
+-	You will be prompted for a user/pass which defaults to:
+
+	-	**user:** `admin`
+	-	**password:** `admin`
 
 ![kibana-setup](docs/images/kibana-setup.png)
 
-Type in **malice** as the `Index name or pattern` and click **Create**.
+-	Type in **malice** as the `Index name or pattern` and click **Create**.
 
-Now click on the Discover Tab and **behold!!!**
+-	Now click on the Discover Tab and **behold!!!**
 
 ![kibana-scan](docs/images/kibana-scan.png)
 

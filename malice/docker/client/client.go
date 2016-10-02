@@ -82,9 +82,10 @@ func NewDockerClient() *Docker {
 		log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon client")
 	}
 
-	log.Debug("Docker Info...")
+	log.Debug("Docker Info2...")
 	if _, err = docker.Info(context.Background()); err != nil {
-		log.Debug("Docker Info FAILED...")
+		log.Debug("Docker Info2 FAILED...")
+		log.Error(err)
 		er.CheckError(err)
 		handleClientError(err)
 	} else {

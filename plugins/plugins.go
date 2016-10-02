@@ -25,15 +25,14 @@ func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID strin
 	defer wg.Done()
 
 	cmd := plugin.buildCmd(arg, logs)
-	binds := []string{config.Conf.Docker.Binds}
+	binds := []string{config.Conf.Docker.Binds} // []string{maldirs.GetSampledsDir() + ":/malware:ro"},
 	env := plugin.getPluginEnv()
 
 	env = append(env, "MALICE_SCANID="+scanID)
 
 	contJSON, err := container.Start(
-		// err := container.Run(
 		docker,
-		cmd, //strslice.StrSlice{"-t", plugin.Cmd, arg},
+		cmd,
 		plugin.Name,
 		plugin.Image,
 		logs,
@@ -58,6 +57,7 @@ func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID strin
 	er.CheckError(err)
 }
 
+// buildCmd creates plugin run command
 func (plugin Plugin) buildCmd(args string, logs bool) strslice.StrSlice {
 
 	cmdStr := strslice.StrSlice{}

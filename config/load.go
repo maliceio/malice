@@ -39,10 +39,10 @@ type webConfig struct {
 }
 
 type databaseConfig struct {
-	Path    string
+	Name    string
 	Server  string
 	Ports   []int
-	ConnMax int `toml:"connection_max"`
+	Timeout int
 	Enabled bool
 }
 

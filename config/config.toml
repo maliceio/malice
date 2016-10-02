@@ -24,10 +24,10 @@ title = "Malice Runtime Configuration"
   pass = "password"
 
 [database]
-  path = "malice.db"
+  name = "malice-elk"
   server = "localhost" # This is for running on Docker for Mac installations.
-  ports = [ 8001, 8001, 8002 ]
-  connection_max = 5000
+  ports = [ 9200 ]
+  timeout = 10
   enabled = true
 
 [environment]

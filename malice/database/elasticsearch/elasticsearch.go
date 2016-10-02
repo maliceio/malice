@@ -8,11 +8,13 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/engine-api/types"
 	"github.com/docker/go-connections/nat"
-
+	"github.com/maliceio/go-plugin-utils/utils"
+	"github.com/maliceio/go-plugin-utils/waitforit"
+	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/database"
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"
-	"github.com/maliceio/malice/utils"
+	er "github.com/maliceio/malice/malice/errors"
 	elastic "gopkg.in/olivere/elastic.v3"
 )
 
@@ -30,7 +32,7 @@ var ElasticAddr string
 // StartELK creates an ELK container from the image blacktop/elk
 func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
 
-	name := "elk"
+	name := config.Conf.DB.Name
 	image := "blacktop/elk"
 	binds := []string{"malice:/usr/share/elasticsearch/data"}
 	portBindings := nat.PortMap{
@@ -42,8 +44,19 @@ func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error)
 		cont, err := container.Start(docker, nil, name, image, logs, binds, portBindings, nil, nil)
 
 		// Give ELK a few seconds to start
-		time.Sleep(10 * time.Second)
-		log.Info("sleeping for 5 seconds to let ELK start")
+		log.WithFields(log.Fields{
+			"server":  config.Conf.DB.Server,
+			"port":    config.Conf.DB.Ports[0],
+			"timeout": config.Conf.DB.Timeout,
+		}).Debug("Waiting for ELK to come online.")
+		er.CheckError(waitforit.WaitForIt(
+			"", // fullConn string,
+			config.Conf.DB.Server,   // host string,
+			config.Conf.DB.Ports[0], // port int,
+			config.Conf.DB.Timeout,  // timeout int,
+		))
+		log.Debug("ELK is now online.")
+
 		return cont, err
 	}
 	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")
@@ -51,11 +64,11 @@ func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error)
 
 // InitElasticSearch initalizes ElasticSearch for use with malice
 func InitElasticSearch() error {
-
+	log.Debug("ElasticAddr: ", ElasticAddr)
 	if ElasticAddr == "" {
 		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elk"))
 	}
-
+	log.Debug("NEW ElasticAddr: ", ElasticAddr)
 	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
 	utils.Assert(err)
 
@@ -81,11 +94,11 @@ func InitElasticSearch() error {
 
 // TestConnection tests the ElasticSearch connection
 func TestConnection(addr string) error {
-
+	log.Debug("ElasticAddr: ", ElasticAddr)
 	if ElasticAddr == "" {
-		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "localhost"))
+		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", addr))
 	}
-
+	log.Debug("NEW ElasticAddr: ", ElasticAddr)
 	// connect to ElasticSearch where --link elastic was using via malice in Docker
 	log.Debugf("Attempting to connect to: %s", ElasticAddr)
 	_, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
@@ -103,7 +116,7 @@ func TestConnection(addr string) error {
 
 	if err != nil {
 		// connect to ElasticSearch using Docker for Mac
-		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", addr))
+		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "localhost"))
 		log.Debugf("Attempting to connect to: %s", ElasticAddr)
 		_, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
 		return err

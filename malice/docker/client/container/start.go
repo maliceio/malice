@@ -39,13 +39,10 @@ func Start(
 			Image: image,
 			Cmd:   cmd,
 			Env:   env,
-			// Env:   []string{"MALICE_VT_API=" + os.Getenv("MALICE_VT_API")},
 		}
 		hostConfig := &container.HostConfig{
-			// Binds:      []string{maldirs.GetSampledsDir() + ":/malware:ro"},
-			// Binds:      []string{"malice:/malware:ro"},
-			Binds: binds,
-			// NetworkMode:  "malice",
+			Binds:        binds,
+			NetworkMode:  "malice",
 			PortBindings: portBindings,
 			Links:        links,
 			Privileged:   false,
@@ -74,9 +71,6 @@ func Start(
 
 // LogContainer tails container logs to terminal
 func LogContainer(docker *client.Docker, contID string) {
-
-	// ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
-	// defer cancel()
 
 	options := types.ContainerLogsOptions{
 		ShowStdout: true,

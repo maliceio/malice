@@ -10,9 +10,12 @@ import (
 	"github.com/docker/engine-api/types"
 	"github.com/docker/go-connections/nat"
 	"github.com/maliceio/go-plugin-utils/utils"
+	"github.com/maliceio/go-plugin-utils/waitforit"
+	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/database"
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"
+	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/persist"
 	r "gopkg.in/dancannon/gorethink.v2"
 )
@@ -27,7 +30,7 @@ func init() {
 // StartRethinkDB creates an RethinkDB container from the image rethinkdb
 func StartRethinkDB(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
 
-	name := "rethink"
+	name := config.Conf.DB.Name
 	image := "rethinkdb"
 	binds := []string{"malice:/data"}
 	portBindings := nat.PortMap{
@@ -44,8 +47,19 @@ func StartRethinkDB(docker *client.Docker, logs bool) (types.ContainerJSONBase, 
 		// }
 
 		// Give rethinkDB a few seconds to start
-		time.Sleep(2 * time.Second)
-		log.Info("sleeping for 2 seconds to let rethinkDB start")
+		log.WithFields(log.Fields{
+			"server":  config.Conf.DB.Server,
+			"port":    config.Conf.DB.Ports[0],
+			"timeout": config.Conf.DB.Timeout,
+		}).Debug("Waiting for RethinkDB to come online.")
+		er.CheckError(waitforit.WaitForIt(
+			"", // fullConn string,
+			config.Conf.DB.Server,   // host string,
+			config.Conf.DB.Ports[0], // port int,
+			config.Conf.DB.Timeout,  // timeout int,
+		))
+		log.Debug("RethinkDB is now online.")
+
 		return cont, err
 	}
 	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")

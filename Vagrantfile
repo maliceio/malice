@@ -66,6 +66,7 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
+    echo "Installing Docker================================"
     sudo apt-get install apt-transport-https ca-certificates
     sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
     echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" | sudo tee -a /etc/apt/sources.list.d/docker.list
@@ -73,13 +74,20 @@ Vagrant.configure("2") do |config|
     sudo apt-get install -y linux-image-extra-$(uname -r)
     sudo apt-get install -y docker-engine
     sudo usermod -aG docker vagrant
+    echo "Installing docker-compose ======================="    
     curl -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
     chmod +x /usr/local/bin/docker-compose
+    echo "Installing docker-clean ========================="    
     curl -s https://raw.githubusercontent.com/ZZROTDesign/docker-clean/v2.0.4/docker-clean | sudo tee /usr/local/bin/docker-clean > /dev/null
     sudo chmod +x /usr/local/bin/docker-clean
-    sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable
-    sudo apt-get update
-    sudo apt-get install -y golang
+    echo "Installing Golang ==============================="
+    export GO_VERSION=1.7.1
+    export ARCH="$(dpkg --print-architecture)"
+    wget https://storage.googleapis.com/golang/go$GO_VERSION.linux-$ARCH.tar.gz -O /tmp/go.tar.gz
+    tar -C /usr/local -xzf /tmp/go.tar.gz
+    export PATH=$PATH:/usr/local/go/bin
+    export GOPATH=/home/vagrant/go
     sudo apt-get install -y libmagic-dev build-essential
+    go get github.com/maliceio/malice
   SHELL
 end

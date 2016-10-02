@@ -5,6 +5,7 @@ Directions for installing Malice on all supported platforms is provided here. Pl
 - [OSX](osx/install.md)
 - [Linux](linux/install.md)
 - [Windows](windows/install.md)
+- [Docker](docker)
 
 #### Tips and Tricks
 

@@ -18,3 +18,5 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                 -e MALICE_VT_API=$MALICE_VT_API \
                 malice/engine scan SAMPLE
 ```
+
+[hub]: https://hub.docker.com/r/malice/engine/

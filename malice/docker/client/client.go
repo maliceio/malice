@@ -85,6 +85,7 @@ func NewDockerClient() *Docker {
 	log.Debug("Docker Info...")
 	if _, err = docker.Info(context.Background()); err != nil {
 		log.Debug("Docker Info FAILED...")
+		er.CheckError(err)
 		handleClientError(err)
 	} else {
 		log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon client")
@@ -95,45 +96,6 @@ func NewDockerClient() *Docker {
 		ip:     ip,
 		port:   port,
 	}
-
-	// if _, found := os.LookupEnv("MALICE_IN_DOCKER"); found {
-
-	// } else {
-	// 	log.Debug("Running outside Docker...")
-	// 	log.Debug("Creating NewClient...")
-	// 	defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
-	// 	docker, err = client.NewClient("unix:///var/run/docker.sock", "v1.23", nil, defaultHeaders)
-	// 	if err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// 	// Check if client can connect
-	// 	log.Debug("Docker Info2...")
-	// 	if _, err = docker.Info(context.Background()); err != nil {
-	// 		// If failed to connect try to create docker client via socket
-	// 		log.Debug("Docker Info2 FAILED...")
-	// 		log.Debug("Creating NewEnvClient...")
-	// 		docker, err = client.NewEnvClient()
-	// 		if err != nil {
-	// 			log.Fatal(err)
-	// 		}
-	// 	} else {
-	// 		_, _, _, err := client.ParseHost(utils.Getopt("DOCKER_HOST", client.DefaultDockerHost))
-	// 		if err != nil {
-	// 			log.Error(err)
-	// 		}
-	// 		ip, port, err = parseDockerEndoint(utils.Getopt("DOCKER_HOST", config.Conf.Docker.EndPoint))
-	// 		if err != nil {
-	// 			log.Error(err)
-	// 		}
-	// 		log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon with docker-machine")
-	// 	}
-	// }
-
-	// return &Docker{
-	// 	Client: docker,
-	// 	ip:     ip,
-	// 	port:   port,
-	// }
 }
 
 // GetIP returns IP of docker client

@@ -25,7 +25,7 @@ $ docker-machine create --driver virtualbox --engine-storage-driver overlay mali
 $ eval $(docker-machine env malice)
 ```
 
-### Getting Started
+### Getting Started (OSX)
 
 #### Install  
 
@@ -60,7 +60,7 @@ Commands:
 Run 'malice COMMAND --help' for more information on a command.
 ```
 
-### Usage (Docker in Docker)
+### Getting Started (*Docker in Docker*)
 
 [![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)][hub]
 [![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)][hub]
@@ -81,30 +81,21 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                 malice/engine scan SAMPLE
 ```
 
-### Documentation
+## Documentation
 
-- [Documentation](Documentation)
-- [Building](Documentation/installation)
-- [Plugins](Documentation/plugins)
-- [Examples](Documentation/examples)
-
-### Issues
-
-Find a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to [file an issue](https://github.com/maliceio/malice/issues/new) and I'll get right on it.
-
-### MVP
-
-Minimum Viable Product
-
-> To be able to scan malware on OSX via cli and have the results either sent to stdout as Markdown tables or store results in ELK with an arbitrary amount of registered Malice plugins.
-
-### TODO
-
--	[ ] Figure out how to do Windows AV ? :confounded:
+- [Documentation](docs)
+- [Building](docs/installation)
+- [Plugins](docs/plugins)
+- [Examples](docs/examples)
+- [Roadmap](docs/oadmap)
 
 ### CHANGELOG
 
 See [`CHANGELOG.md`](https://github.com/maliceio/malice/blob/master/CHANGELOG.md)
+
+### Issues
+
+Find a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to [file an issue](https://github.com/maliceio/malice/issues/new) and I'll get right on it.
 
 ### Contributing
 

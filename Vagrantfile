@@ -86,11 +86,11 @@ Vagrant.configure("2") do |config|
     wget https://storage.googleapis.com/golang/go$GO_VERSION.linux-$ARCH.tar.gz -O /tmp/go.tar.gz
     tar -C /usr/local -xzf /tmp/go.tar.gz
     export PATH=$PATH:/usr/local/go/bin
-    echo 'export PATH=$PATH:/usr/local/go/bin' >> /home/vagrant/.bashrc
     export GOPATH=/home/vagrant/go
-    echo 'GOPATH=/home/vagrant/go' >> /home/vagrant/.bashrc    
+    echo 'export PATH=$PATH:/usr/local/go/bin' >> /home/vagrant/.bashrc    
+    echo 'export GOPATH=/home/vagrant/go' >> /home/vagrant/.bashrc    
     echo 'export PATH=$PATH:/home/vagrant/go/bin' >> /home/vagrant/.bashrc
     sudo apt-get install -y libmagic-dev build-essential
-    go get github.com/maliceio/malice
+    go get -v github.com/maliceio/malice
   SHELL
 end

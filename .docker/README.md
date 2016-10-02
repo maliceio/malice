@@ -7,7 +7,7 @@ This repository contains a **Dockerfile** of the [Malice Engine](https://github.
 
 ### Dependencies
 
--	[gliderlabs/alpine:3.4](https://index.docker.io/_/gliderlabs/alpine/)
+-	[gliderlabs/alpine:edge](https://index.docker.io/_/gliderlabs/alpine/)
 
 ### Image Tags
 
@@ -40,37 +40,17 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                 malice/engine scan SAMPLE
 ```
 
-### Documentation
+## Documentation
 
-#### Usage
-
-#### Plugins
-
--	[Plugins List (and growing)](https://github.com/maliceio/malice/blob/master/docs/plugins.md)
-
-#### Examples
-
--	[Examples](https://github.com/maliceio/malice/blob/master/docs/example.md)
-
-#### Tips and Tricks
-
-### Known Issues
-
-### Issues
-
-Find a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to [file an issue](https://github.com/maliceio/malice/issues/new) and I'll get right on it.
-
-### Todo
+- [Documentation](https://github.com/maliceio/malice/blob/master/docs/README.md)
+- [Plugins](https://github.com/maliceio/malice/blob/master/docs/plugins)
+- [Examples](https://github.com/maliceio/malice/blob/master/docs/examples)
+- [Roadmap](https://github.com/maliceio/malice/blob/master/docs/roadmap)
+- [Contributing](https://github.com/maliceio/malice/blob/master/CHANGELOG.md)
 
 ### CHANGELOG
 
 See [`CHANGELOG.md`](https://github.com/maliceio/malice/blob/master/CHANGELOG.md)
-
-### Contributing
-
-[See all contributors on GitHub](https://github.com/maliceio/malice/graphs/contributors).
-
-Please update the [CHANGELOG.md](https://github.com/maliceio/malice/blob/master/CHANGELOG.md) and submit a [Pull Request on GitHub](https://help.github.com/articles/using-pull-requests/).
 
 ### License
 

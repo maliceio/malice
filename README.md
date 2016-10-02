@@ -68,6 +68,8 @@ Run 'malice COMMAND --help' for more information on a command.
 $ MALICE_ELASTICSEARCH=localhost malice scan evil.malware
 ```
 
+> **NOTE:** On the first run malice will download all of it's default plugins which can take a while to complete.
+
 Malice will out the results as a markdown table that can be piped or copied into a **results.md** that will look great on Github see [here](docs/examples/scan.md)
 
 > Now you can open the Kibana UI and look at the scan results here: [http://localhost](http://localhost) (*assuming you are using Docker for Mac*)

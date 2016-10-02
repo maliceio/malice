@@ -84,10 +84,9 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
 ## Documentation
 
 - [Documentation](docs)
-- [Building](docs/installation)
 - [Plugins](docs/plugins)
 - [Examples](docs/examples)
-- [Roadmap](docs/oadmap)
+- [Roadmap](docs/roadmap)
 - [Contributing](CONTRIBUTING.md)
 
 ### CHANGELOG

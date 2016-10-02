@@ -7,5 +7,4 @@ Documentation for the project will reside in this directory.
 - [Command Line Interface](cli)
 - [API](api)
 - [Internals](internals)
-- [Editor Integration](EditorIntegration.md)
 - [Known Bugs](KnownBugs.md)

@@ -10,9 +10,9 @@ malice
 
 Malice's mission is to be a free open source version of VirusTotal that anyone can use at any scale from an independent researcher to a fortune 500 company.
 
-### Setup Docker
+### Setup Docker (OSX)
 
-To Run on OSX - Install [Docker for Mac](https://docs.docker.com/docker-for-mac/)
+Install [Docker for Mac](https://docs.docker.com/docker-for-mac/)
 
 -Or- 
 

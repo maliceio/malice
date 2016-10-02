@@ -30,16 +30,12 @@ func NewDockerClient() *Docker {
 	switch os := runtime.GOOS; os {
 	case "linux":
 		log.Debug("Running inside Docker...")
-		proto, addr, basePath, err := client.ParseHost("unix:///var/run/docker.sock")
-		log.Debug("Proto: ", proto, ", Addr: ", addr, ", BasePath: ", basePath, ", Error: ", err)
 		defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
 		docker, err = client.NewClient("unix:///var/run/docker.sock", "v1.22", nil, defaultHeaders)
 		ip = "localhost"
 		port = "2375"
 	case "darwin":
 		log.Debug("Running on Docker for Mac...")
-		proto, addr, basePath, err := client.ParseHost("unix:///var/run/docker.sock")
-		log.Debug("Proto: ", proto, ", Addr: ", addr, ", BasePath: ", basePath, ", Error: ", err)
 		defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
 		docker, err = client.NewClient("unix:///var/run/docker.sock", "v1.22", nil, defaultHeaders)
 		ip = "localhost"
@@ -63,9 +59,7 @@ func NewDockerClient() *Docker {
 		log.Fatal(err)
 	}
 	// Check if client can connect
-	log.Debug("Docker Info...")
 	if _, err = docker.Info(context.Background()); err != nil {
-		log.Debug("Docker Info FAILED...")
 		handleClientError(err)
 	} else {
 		log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon client")
@@ -89,7 +83,7 @@ func handleClientError(dockerError error) {
 		log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Error("Unable to connect to docker client")
 		switch runtime.GOOS {
 		case "darwin":
-			if _, err := exec.LookPath("/Applications/Docker.app"); err != nil {
+			if _, err := os.Stat("/Applications/Docker.app"); os.IsNotExist(err) {
 				log.Info("Please install Docker for Mac - https://docs.docker.com/docker-for-mac/")
 				log.Info("= OR =")
 				log.Info("Please install docker-machine by running: ")

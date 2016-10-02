@@ -56,7 +56,11 @@ func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error)
 			config.Conf.DB.Timeout,  // timeout int,
 		))
 		log.Debug("ELK is now online.")
-		time.Sleep(3 * time.Second)
+
+		// Even though it's up it's not ready to index data yet.
+		log.Info("Sleeping for 10 seconds to give ElasticSearch time to initalize.")
+		time.Sleep(10 * time.Second)
+
 		return cont, err
 	}
 	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")

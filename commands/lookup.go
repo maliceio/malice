@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/database/elasticsearch"
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"
@@ -17,17 +18,21 @@ func cmdLookUp(hash string, logs bool) error {
 	docker := client.NewDockerClient()
 
 	// Check that ElasticSearch is running
-	if _, running, _ := container.Running(docker, "elk"); !running {
+	if _, running, _ := container.Running(docker, config.Conf.DB.Name); !running {
 		log.Error("ELK is NOT running, starting now...")
 		elk, err := elasticsearch.StartELK(docker, false)
 		er.CheckError(err)
-		eInfo, err := container.Inspect(docker, elk.ID)
+		dbInfo, err := container.Inspect(docker, elk.ID)
 		er.CheckError(err)
-		er.CheckError(elasticsearch.TestConnection(eInfo.NetworkSettings.IPAddress))
+		log.Debug("ELK is running at: ", dbInfo.NetworkSettings.IPAddress)
 	}
 
 	// Setup ElasticSearch
-	elasticsearch.InitElasticSearch()
+	dbInfo, err := container.Inspect(docker, config.Conf.DB.Name)
+	er.CheckError(err)
+	log.Debug("ELK is running at: ", dbInfo.NetworkSettings.IPAddress)
+
+	elasticsearch.InitElasticSearch(dbInfo.NetworkSettings.IPAddress)
 
 	if plugins.InstalledPluginsCheck(docker) {
 		log.Debug("All enabled plugins are installed.")

@@ -9,8 +9,9 @@ import (
 
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
-	runconfigopts "github.com/docker/docker/runconfig/opts"
 	"github.com/docker/docker/api/types/strslice"
+	runconfigopts "github.com/docker/docker/runconfig/opts"
+	"github.com/maliceio/go-plugin-utils/utils"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"
@@ -29,6 +30,7 @@ func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID strin
 	env := plugin.getPluginEnv()
 
 	env = append(env, "MALICE_SCANID="+scanID)
+	env = append(env, "MALICE_ELASTICSEARCH="+utils.Getopt("MALICE_ELASTICSEARCH", getDbAddr()))
 
 	contJSON, err := container.Start(
 		docker,       // docker *client.Docker,
@@ -55,6 +57,11 @@ func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID strin
 	}()
 
 	er.CheckError(err)
+}
+
+// getDbAddr gets address of DB server
+func getDbAddr() string {
+	return "localhost"
 }
 
 // buildCmd creates plugin run command

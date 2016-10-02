@@ -7,11 +7,11 @@ import (
 	"golang.org/x/net/context"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/api/types/strslice"
+	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/docker/go-connections/nat"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/docker/client"
@@ -41,8 +41,8 @@ func Start(
 			Env:   env,
 		}
 		hostConfig := &container.HostConfig{
-			Binds:        binds,
-			NetworkMode:  "malice",
+			Binds: binds,
+			// NetworkMode:  "malice",
 			PortBindings: portBindings,
 			Links:        links,
 			Privileged:   false,

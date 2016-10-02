@@ -56,19 +56,18 @@ func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error)
 			config.Conf.DB.Timeout,  // timeout int,
 		))
 		log.Debug("ELK is now online.")
-
+		time.Sleep(3 * time.Second)
 		return cont, err
 	}
 	return types.ContainerJSONBase{}, errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")
 }
 
 // InitElasticSearch initalizes ElasticSearch for use with malice
-func InitElasticSearch() error {
-	log.Debug("ElasticAddr: ", ElasticAddr)
-	if ElasticAddr == "" {
-		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elk"))
-	}
-	log.Debug("NEW ElasticAddr: ", ElasticAddr)
+func InitElasticSearch(addr string) error {
+
+	// Test connection to ElasticSearch
+	er.CheckError(TestConnection(addr))
+
 	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
 	utils.Assert(err)
 

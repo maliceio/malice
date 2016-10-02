@@ -10,12 +10,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/docker/docker/api/types/container"
+	networktypes "github.com/docker/docker/api/types/network"
+	"github.com/docker/docker/api/types/strslice"
 	"github.com/docker/docker/opts"
 	"github.com/docker/docker/pkg/mount"
 	"github.com/docker/docker/pkg/signal"
-	"github.com/docker/engine-api/types/container"
-	networktypes "github.com/docker/engine-api/types/network"
-	"github.com/docker/engine-api/types/strslice"
 	"github.com/docker/go-connections/nat"
 	units "github.com/docker/go-units"
 	"github.com/spf13/pflag"
@@ -103,6 +103,8 @@ type ContainerOptions struct {
 	healthRetries     int
 	runtime           string
 	autoRemove        bool
+	init              bool
+	initPath          string
 
 	Image string
 	Args  []string
@@ -243,6 +245,9 @@ func AddFlags(flags *pflag.FlagSet) *ContainerOptions {
 	flags.StringVar(&copts.shmSize, "shm-size", "", "Size of /dev/shm, default value is 64MB")
 	flags.StringVar(&copts.utsMode, "uts", "", "UTS namespace to use")
 	flags.StringVar(&copts.runtime, "runtime", "", "Runtime to use for this container")
+
+	flags.BoolVar(&copts.init, "init", false, "Run an init inside the container that forwards signals and reaps processes")
+	flags.StringVar(&copts.initPath, "init-path", "", "Path to the docker-init binary")
 	return copts
 }
 
@@ -593,6 +598,11 @@ func Parse(flags *pflag.FlagSet, copts *ContainerOptions) (*container.Config, *c
 		Runtime:        copts.runtime,
 	}
 
+	// only set this value if the user provided the flag, else it should default to nil
+	if flags.Changed("init") {
+		hostConfig.Init = &copts.init
+	}
+
 	// When allocating stdin in attached mode, close stdin at client disconnect
 	if config.OpenStdin && config.AttachStdin {
 		config.StdinOnce = true
@@ -729,34 +739,21 @@ func ParseRestartPolicy(policy string) (container.RestartPolicy, error) {
 		return p, nil
 	}
 
-	var (
-		parts = strings.Split(policy, ":")
-		name  = parts[0]
-	)
+	parts := strings.Split(policy, ":")
 
-	p.Name = name
-	switch name {
-	case "always", "unless-stopped":
-		if len(parts) > 1 {
-			return p, fmt.Errorf("maximum restart count not valid with restart policy of \"%s\"", name)
-		}
-	case "no":
-		// do nothing
-	case "on-failure":
-		if len(parts) > 2 {
-			return p, fmt.Errorf("restart count format is not valid, usage: 'on-failure:N' or 'on-failure'")
-		}
-		if len(parts) == 2 {
-			count, err := strconv.Atoi(parts[1])
-			if err != nil {
-				return p, err
-			}
-
-			p.MaximumRetryCount = count
-		}
-	default:
-		return p, fmt.Errorf("invalid restart policy %s", name)
+	if len(parts) > 2 {
+		return p, fmt.Errorf("invalid restart policy format")
 	}
+	if len(parts) == 2 {
+		count, err := strconv.Atoi(parts[1])
+		if err != nil {
+			return p, fmt.Errorf("maximum retry count must be an integer")
+		}
+
+		p.MaximumRetryCount = count
+	}
+
+	p.Name = parts[0]
 
 	return p, nil
 }

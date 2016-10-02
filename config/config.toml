@@ -38,6 +38,7 @@ title = "Malice Runtime Configuration"
   machine-name = "malice"
   endpoint = "tcp://localhost:2376"
   binds = "malice:/malware:ro"
+  links = "malice-elk:elastic"
   timeout = 120
 
 [logger]

@@ -7,7 +7,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/docker/engine-api/types"
+	"github.com/docker/docker/api/types"
 	"github.com/docker/go-connections/nat"
 	"github.com/maliceio/go-plugin-utils/utils"
 	"github.com/maliceio/go-plugin-utils/waitforit"

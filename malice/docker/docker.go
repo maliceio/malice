@@ -8,7 +8,7 @@ package docker
 // 	"golang.org/x/net/context"
 
 // 	log "github.com/Sirupsen/logrus"
-// 	docker "github.com/docker/engine-api/client"
+// 	docker "github.com/docker/docker/client"
 // 	"github.com/maliceio/malice/config"
 // )
 

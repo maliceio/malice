@@ -62,6 +62,7 @@ type dockerConfig struct {
 	EndPoint string
 	Timeout  time.Duration
 	Binds    string
+	Links    string
 }
 
 type loggerConfig struct {

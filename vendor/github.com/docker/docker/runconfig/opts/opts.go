@@ -2,10 +2,11 @@ package opts
 
 import (
 	"fmt"
-	fopts "github.com/docker/docker/opts"
 	"net"
 	"os"
 	"strings"
+
+	fopts "github.com/docker/docker/opts"
 )
 
 // ValidateAttach validates that the specified string is a valid attach option.
@@ -44,6 +45,21 @@ func doesEnvExist(name string) bool {
 		}
 	}
 	return false
+}
+
+// ValidateArg validates a build-arg variable and returns it.
+// Build-arg is in the form of <varname>=<value> where <varname> is required.
+func ValidateArg(val string) (string, error) {
+	arr := strings.Split(val, "=")
+	if len(arr) > 1 && isNotEmpty(arr[0]) {
+		return val, nil
+	}
+
+	return "", fmt.Errorf("bad format for build-arg: %s", val)
+}
+
+func isNotEmpty(val string) bool {
+	return len(val) > 0
 }
 
 // ValidateExtraHost validates that the specified string is a valid extrahost and returns it.

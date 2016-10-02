@@ -10,7 +10,7 @@ import (
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
 	runconfigopts "github.com/docker/docker/runconfig/opts"
-	"github.com/docker/engine-api/types/strslice"
+	"github.com/docker/docker/api/types/strslice"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"
@@ -31,15 +31,15 @@ func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID strin
 	env = append(env, "MALICE_SCANID="+scanID)
 
 	contJSON, err := container.Start(
-		docker,
-		cmd,
-		plugin.Name,
-		plugin.Image,
-		logs,
-		binds,
-		nil,
-		[]string{"elk:elastic"},
-		env,
+		docker,       // docker *client.Docker,
+		cmd,          // cmd strslice.StrSlice,
+		plugin.Name,  // name string,
+		plugin.Image, // image string,
+		logs,         // logs bool,
+		binds,        // binds []string,
+		nil,          // portBindings nat.PortMap,
+		[]string{config.Conf.Docker.Links}, // links []string,
+		env, // env []string,
 	)
 	log.WithFields(log.Fields{
 		"name": contJSON.Name,

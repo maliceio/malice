@@ -6,22 +6,7 @@ import (
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
-	er "github.com/maliceio/malice/malice/errors"
-	"golang.org/x/net/context"
 )
-
-// Ping pings docker client to see if it is up or not by checking Info.
-func (docker *Docker) Ping() bool {
-	// ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
-	// defer cancel()
-
-	_, err := docker.Client.Info(context.Background())
-	if err != nil {
-		er.CheckError(err)
-		return false
-	}
-	return true
-}
 
 // parseDockerEndoint returns ip and port from docker endpoint string
 func parseDockerEndoint(endpoint string) (string, string, error) {

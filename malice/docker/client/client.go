@@ -5,12 +5,12 @@ import (
 	"os/exec"
 	"runtime"
 
-	"golang.org/x/net/context"
-
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/docker/client"
 	"github.com/maliceio/go-plugin-utils/utils"
 	"github.com/maliceio/malice/config"
+	er "github.com/maliceio/malice/malice/errors"
+	"golang.org/x/net/context"
 )
 
 // NOTE: https://github.com/eris-ltd/eris-cli/blob/master/perform/docker_run.go
@@ -74,6 +74,22 @@ func NewDockerClient() *Docker {
 		log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon client")
 	}
 
+	log.Debug("Docker Info...")
+	if _, err = docker.Info(context.Background()); err != nil {
+		log.Debug("Docker Info FAILED...")
+		handleClientError(err)
+	} else {
+		log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon client")
+	}
+
+	log.Debug("Docker Info...")
+	if _, err = docker.Info(context.Background()); err != nil {
+		log.Debug("Docker Info FAILED...")
+		handleClientError(err)
+	} else {
+		log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon client")
+	}
+
 	return &Docker{
 		Client: docker,
 		ip:     ip,
@@ -123,6 +139,19 @@ func NewDockerClient() *Docker {
 // GetIP returns IP of docker client
 func (docker *Docker) GetIP() string {
 	return docker.ip
+}
+
+// Ping pings docker client to see if it is up or not by checking Info.
+func (docker *Docker) Ping() bool {
+	// ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
+	// defer cancel()
+
+	_, err := docker.Client.Info(context.Background())
+	if err != nil {
+		er.CheckError(err)
+		return false
+	}
+	return true
 }
 
 // TODO: Make this betta MUCHO betta

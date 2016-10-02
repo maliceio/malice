@@ -10,4 +10,3 @@ docker-compose.yml
 build
 release
 Makefile
-VERSION

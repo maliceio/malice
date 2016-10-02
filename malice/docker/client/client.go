@@ -9,7 +9,6 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/maliceio/go-plugin-utils/utils"
 	"github.com/maliceio/malice/config"
-	er "github.com/maliceio/malice/malice/errors"
 	"golang.org/x/net/context"
 )
 
@@ -31,7 +30,6 @@ func NewDockerClient() *Docker {
 	switch os := runtime.GOOS; os {
 	case "linux":
 		log.Debug("Running inside Docker...")
-		log.Debug("Creating NewClient...")
 		proto, addr, basePath, err := client.ParseHost("unix:///var/run/docker.sock")
 		log.Debug("Proto: ", proto, ", Addr: ", addr, ", BasePath: ", basePath, ", Error: ", err)
 		defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
@@ -39,8 +37,7 @@ func NewDockerClient() *Docker {
 		ip = "localhost"
 		port = "2375"
 	case "darwin":
-		log.Debug("Running inside Docker for Mac...")
-		log.Debug("Creating NewClient...")
+		log.Debug("Running on Docker for Mac...")
 		proto, addr, basePath, err := client.ParseHost("unix:///var/run/docker.sock")
 		log.Debug("Proto: ", proto, ", Addr: ", addr, ", BasePath: ", basePath, ", Error: ", err)
 		defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
@@ -48,7 +45,7 @@ func NewDockerClient() *Docker {
 		ip = "localhost"
 		port = "2375"
 	case "windows":
-		log.Debug("Creating NewEnvClient...")
+		log.Debug("Running on Docker for Windows or docker-machine on a Windows host...")
 		docker, err = client.NewEnvClient()
 		if err != nil {
 			log.Fatal(err)
@@ -74,26 +71,6 @@ func NewDockerClient() *Docker {
 		log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon client")
 	}
 
-	log.Debug("Docker Info2...")
-	if _, err = docker.Info(context.Background()); err != nil {
-		log.Debug("Docker Info2 FAILED...")
-		log.Error(err)
-		er.CheckError(err)
-		handleClientError(err)
-	} else {
-		log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon client")
-	}
-
-	log.Debug("Docker Info3...")
-	if _, err = docker.Info(context.Background()); err != nil {
-		log.Debug("Docker Info3 FAILED...")
-		log.Error(err)
-		er.CheckError(err)
-		handleClientError(err)
-	} else {
-		log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon client")
-	}
-
 	return &Docker{
 		Client: docker,
 		ip:     ip,
@@ -106,26 +83,17 @@ func (docker *Docker) GetIP() string {
 	return docker.ip
 }
 
-// Ping pings docker client to see if it is up or not by checking Info.
-func (docker *Docker) Ping() bool {
-	// ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
-	// defer cancel()
-
-	_, err := docker.Client.Info(context.Background())
-	if err != nil {
-		er.CheckError(err)
-		return false
-	}
-	return true
-}
-
 // TODO: Make this betta MUCHO betta
 func handleClientError(dockerError error) {
 	if dockerError != nil {
 		log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Error("Unable to connect to docker client")
 		switch runtime.GOOS {
 		case "darwin":
-			if _, err := exec.LookPath("docker-machine"); err != nil {
+			if _, err := exec.LookPath("/Applications/Docker.app"); err != nil {
+				log.Info("Please start Docker for Mac - https://docs.docker.com/docker-for-mac/")
+			} else if _, err := exec.LookPath("docker-machine"); err != nil {
+				log.Info("Please install Docker for Mac - https://docs.docker.com/docker-for-mac/")
+				log.Info("= OR =")
 				log.Info("Please install docker-machine by running: ")
 				log.Info(" - brew install docker-machine")
 				log.Infof(" - brew install docker-machine\n\tdocker-machine create -d virtualbox %s", config.Conf.Docker.Name)
@@ -136,19 +104,20 @@ func handleClientError(dockerError error) {
 				log.Infof(" - eval $(docker-machine env %s)", config.Conf.Docker.Name)
 			}
 		case "linux":
-			log.Info("Please start the docker daemon.")
+			log.Info("Please start the docker daemon. `sudo service docker start`")
 		case "windows":
-			if _, err := exec.LookPath("docker-machine.exe"); err != nil {
+			if _, err := exec.LookPath("/Applications/Docker.app"); err != nil {
+				log.Info("Please install Docker for Windows - https://docs.docker.com/docker-for-windows/")
+				log.Info("= OR =")
+				log.Info("Please install docker-toolbox - https://www.docker.com/docker-toolbox")
+			} else if _, err := exec.LookPath("docker-machine.exe"); err != nil {
 				log.Info("Please install docker-machine - https://www.docker.com/docker-toolbox")
 			} else {
-				log.Info("Please start and source the docker-machine env by running: ")
+				log.Info("Please start Docker for Windows *OR* start and source the docker-machine env by running: ")
 				log.Infof(" - docker-machine start %", config.Conf.Docker.Name)
 				log.Infof(" - eval $(docker-machine env %s)", config.Conf.Docker.Name)
 			}
 		}
-		// TODO Decide if I want to make docker machines or rely on user to create their own.
-		// log.Info("Trying to create new docker-machine: ", "test")
-		// MakeDockerMachine("test")
 		os.Exit(2)
 	}
 }

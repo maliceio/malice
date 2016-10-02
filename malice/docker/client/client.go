@@ -27,37 +27,27 @@ func NewDockerClient() *Docker {
 	var ip, port string
 	var err error
 
-	_, maliceInDocker := os.LookupEnv("MALICE_IN_DOCKER")
-
-	switch {
-	case maliceInDocker || runtime.GOOS == "linux":
+	switch os := runtime.GOOS; os {
+	case "linux":
 		log.Debug("Running inside Docker...")
 		log.Debug("Creating NewClient...")
 		defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
 		docker, err = client.NewClient("unix:///var/run/docker.sock", "v1.23", nil, defaultHeaders)
-		if err != nil {
-			log.Fatal(err)
-		}
-	case runtime.GOOS == "darwin":
+
+	case "darwin":
 		log.Debug("Running inside Docker for Mac...")
 		log.Debug("Creating NewClient...")
 		defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
 		docker, err = client.NewClient("unix:///var/run/docker.sock", "v1.23", nil, defaultHeaders)
-		if err != nil {
-			log.Fatal(err)
-		}
-	case runtime.GOOS == "windows":
+	case "windows":
 		log.Debug("Creating NewEnvClient...")
 		docker, err = client.NewEnvClient()
-		if err != nil {
-			log.Fatal(err)
-		}
 	default:
 		log.Debug("Creating NewEnvClient...")
 		docker, err = client.NewEnvClient()
-		if err != nil {
-			log.Fatal(err)
-		}
+	}
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	// Check if client can connect

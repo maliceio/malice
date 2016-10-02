@@ -90,8 +90,6 @@ func handleClientError(dockerError error) {
 		switch runtime.GOOS {
 		case "darwin":
 			if _, err := exec.LookPath("/Applications/Docker.app"); err != nil {
-				log.Info("Please start Docker for Mac - https://docs.docker.com/docker-for-mac/")
-			} else if _, err := exec.LookPath("docker-machine"); err != nil {
 				log.Info("Please install Docker for Mac - https://docs.docker.com/docker-for-mac/")
 				log.Info("= OR =")
 				log.Info("Please install docker-machine by running: ")
@@ -99,6 +97,8 @@ func handleClientError(dockerError error) {
 				log.Infof(" - brew install docker-machine\n\tdocker-machine create -d virtualbox %s", config.Conf.Docker.Name)
 				log.Infof(" - eval $(docker-machine env %s)", config.Conf.Docker.Name)
 			} else {
+				log.Info("Please start Docker for Mac.")
+				log.Info("= OR =")
 				log.Info("Please start and source the docker-machine env by running: ")
 				log.Infof(" - docker-machine start %s", config.Conf.Docker.Name)
 				log.Infof(" - eval $(docker-machine env %s)", config.Conf.Docker.Name)
@@ -110,10 +110,10 @@ func handleClientError(dockerError error) {
 				log.Info("Please install Docker for Windows - https://docs.docker.com/docker-for-windows/")
 				log.Info("= OR =")
 				log.Info("Please install docker-toolbox - https://www.docker.com/docker-toolbox")
-			} else if _, err := exec.LookPath("docker-machine.exe"); err != nil {
-				log.Info("Please install docker-machine - https://www.docker.com/docker-toolbox")
 			} else {
-				log.Info("Please start Docker for Windows *OR* start and source the docker-machine env by running: ")
+				log.Info("Please start Docker for Windows.")
+				log.Info("= OR =")
+				log.Info("Please start and source the docker-machine env by running: ")
 				log.Infof(" - docker-machine start %", config.Conf.Docker.Name)
 				log.Infof(" - eval $(docker-machine env %s)", config.Conf.Docker.Name)
 			}

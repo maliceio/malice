@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 
 -	added support for ElasticSearch through use of **blacktop/elk**
 -	add zip plugin place holder
+- Docs !!!
 
 ### Removed
 

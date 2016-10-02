@@ -94,7 +94,7 @@ func handleClientError(dockerError error) {
 				log.Info("= OR =")
 				log.Info("Please install docker-machine by running: ")
 				log.Info(" - brew install docker-machine")
-				log.Infof(" - brew install docker-machine\n\tdocker-machine create -d virtualbox %s", config.Conf.Docker.Name)
+				log.Infof(" - docker-machine create -d virtualbox %s", config.Conf.Docker.Name)
 				log.Infof(" - eval $(docker-machine env %s)", config.Conf.Docker.Name)
 			} else {
 				log.Info("Please start Docker for Mac.")

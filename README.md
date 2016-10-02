@@ -14,7 +14,9 @@ Malice's mission is to be a free open source version of VirusTotal that anyone c
 
 To Run on OSX - Install [Docker for Mac](https://docs.docker.com/docker-for-mac/)
 
-Or install with [homebrew](http://brew.sh).
+-Or- 
+
+Install with [homebrew](http://brew.sh).
 
 ```bash
 $ brew install caskroom/cask/brew-cask

@@ -1,4 +1,4 @@
-FROM gliderlabs/alpine:3.4
+FROM gliderlabs/alpine:edge
 
 MAINTAINER blacktop, https://github.com/blacktop
 

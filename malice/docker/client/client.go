@@ -9,8 +9,8 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/docker/client"
+	"github.com/maliceio/go-plugin-utils/utils"
 	"github.com/maliceio/malice/config"
-	util "github.com/maliceio/malice/utils"
 )
 
 // NOTE: https://github.com/eris-ltd/eris-cli/blob/master/perform/docker_run.go
@@ -28,11 +28,7 @@ func NewDockerClient() *Docker {
 	var ip, port string
 	var err error
 
-	docker, err = client.NewEnvClient()
-
-	// Check if client can connect
-	if _, err = docker.Info(context.Background()); err != nil {
-		// If failed to connect try to create docker client via socket
+	if _, found := os.LookupEnv("MALICE_IN_DOCKER"); found {
 		defaultHeaders := map[string]string{"User-Agent": "engine-api-cli-1.0"}
 		docker, err = client.NewClient("unix:///var/run/docker.sock", "v1.22", nil, defaultHeaders)
 		if err != nil {
@@ -47,15 +43,23 @@ func NewDockerClient() *Docker {
 			log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon native client")
 		}
 	} else {
-		_, _, _, err := client.ParseHost(util.GetOpt("DOCKER_HOST", client.DefaultDockerHost))
-		if err != nil {
-			log.Error(err)
+		docker, err = client.NewEnvClient()
+
+		// Check if client can connect
+		if _, err = docker.Info(context.Background()); err != nil {
+			// If failed to connect try to create docker client via socket
+
+		} else {
+			_, _, _, err := client.ParseHost(utils.Getopt("DOCKER_HOST", client.DefaultDockerHost))
+			if err != nil {
+				log.Error(err)
+			}
+			ip, port, err = parseDockerEndoint(utils.Getopt("DOCKER_HOST", config.Conf.Docker.EndPoint))
+			if err != nil {
+				log.Error(err)
+			}
+			log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon with docker-machine")
 		}
-		ip, port, err = parseDockerEndoint(util.GetOpt("DOCKER_HOST", config.Conf.Docker.EndPoint))
-		if err != nil {
-			log.Error(err)
-		}
-		log.WithFields(log.Fields{"ip": ip, "port": port}).Debug("Connected to docker daemon with docker-machine")
 	}
 
 	return &Docker{

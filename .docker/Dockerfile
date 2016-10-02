@@ -20,7 +20,7 @@ RUN apk-install -t build-deps go git mercurial build-base file-dev \
   && apk del --purge build-deps
 
 ENV MALICE_STORAGE_PATH /malice
-ENV MALICE_ELASTICSEARCH elastic
+ENV MALICE_IN_DOCKER true
 
 VOLUME ["/malice/config"]
 VOLUME ["/malice/samples"]

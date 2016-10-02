@@ -122,6 +122,7 @@ func TestConnection(addr string) error {
 		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "localhost"))
 		log.Debugf("Attempting to connect to: %s", ElasticAddr)
 		_, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
+		log.Debug("NEW NEW ElasticAddr: ", ElasticAddr)
 		return err
 	}
 	// return err

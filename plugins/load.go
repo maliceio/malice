@@ -52,7 +52,7 @@ func Load() {
 		"src/github.com/maliceio/malice/plugins/plugins.toml",
 	)
 	if _, err := os.Stat(configPath); err == nil {
-		_, err := toml.DecodeFile("./plugins/plugins.toml", &Plugs)
+		_, err := toml.DecodeFile(configPath, &Plugs)
 		er.CheckError(err)
 		log.Debug("Malice plugins loaded from: ", configPath)
 		return

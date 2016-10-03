@@ -7,7 +7,6 @@ import (
 
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
-	"github.com/maliceio/go-plugin-utils/utils"
 	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/maldirs"
 )
@@ -39,24 +38,11 @@ var Plugs Configuration
 
 // Load plugins.toml into Plug var
 // Try to load plugins from
-// - git repo folder      : MALICE_ROOT/plugins/plugins.toml
 // - .malice folder       : $HOME/.malice/plugins.toml
 // - binary embedded file : bindata
 func Load() {
 
 	var configPath string
-
-	// Check for plugins config in repo
-	configPath = path.Join(
-		utils.Getopt("GOPATH", ""),
-		"src/github.com/maliceio/malice/plugins/plugins.toml",
-	)
-	if _, err := os.Stat(configPath); err == nil {
-		_, err := toml.DecodeFile(configPath, &Plugs)
-		er.CheckError(err)
-		log.Debug("Malice plugins loaded from: ", configPath)
-		return
-	}
 
 	// Check for plugins config in .malice folder
 	configPath = path.Join(maldirs.GetBaseDir(), "./plugins.toml")

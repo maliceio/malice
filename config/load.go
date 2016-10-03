@@ -10,7 +10,6 @@ import (
 	log "github.com/Sirupsen/logrus"
 	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/maldirs"
-	"github.com/maliceio/malice/utils"
 )
 
 // "github.com/pelletier/go-toml"
@@ -85,24 +84,11 @@ var Conf Configuration
 
 // Load config.toml into Conf var
 // Try to load config from
-// - git repo folder      : MALICE_ROOT/config/config.toml
 // - .malice folder       : $HOME/.malice/config.toml
 // - binary embedded file : bindata
 func Load() {
 
 	var configPath string
-
-	// Check for config config in repo
-	configPath = path.Join(
-		utils.Getopt("GOPATH", ""),
-		"src/github.com/maliceio/malice/config/config.toml",
-	)
-	if _, err := os.Stat(configPath); err == nil {
-		_, err := toml.DecodeFile(configPath, &Conf)
-		er.CheckError(err)
-		log.Debug("Malice config loaded from: ", configPath)
-		return
-	}
 
 	// Check for config config in .malice folder
 	configPath = path.Join(maldirs.GetBaseDir(), "./config.toml")

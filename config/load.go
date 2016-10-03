@@ -98,7 +98,7 @@ func Load() {
 		"src/github.com/maliceio/malice/config/config.toml",
 	)
 	if _, err := os.Stat(configPath); err == nil {
-		_, err := toml.DecodeFile("./config/config.toml", &Conf)
+		_, err := toml.DecodeFile(configPath, &Conf)
 		er.CheckError(err)
 		log.Debug("Malice config loaded from: ", configPath)
 		return

@@ -90,8 +90,8 @@ Vagrant.configure("2") do |config|
     echo 'export PATH=$PATH:/usr/local/go/bin' >> /home/vagrant/.bashrc
     echo 'export GOPATH=/home/vagrant/go' >> /home/vagrant/.bashrc
     echo 'export PATH=$PATH:/home/vagrant/go/bin' >> /home/vagrant/.bashrc
-    echo "Installing Malice ==============================="    
+    echo "Installing Malice ==============================="
     sudo apt-get install -y libmagic-dev build-essential
-    go get -v github.com/maliceio/malice
+    sudo -H -u vagrant bash -c 'go get -v github.com/maliceio/malice'
   SHELL
 end

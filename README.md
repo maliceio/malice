@@ -65,7 +65,7 @@ Run 'malice COMMAND --help' for more information on a command.
 #### Scan some *malware*
 
 ```bash
-$ MALICE_ELASTICSEARCH=localhost malice scan evil.malware
+$ malice scan evil.malware
 ```
 
 > **NOTE:** On the first run malice will download all of it's default plugins which can take a while to complete.

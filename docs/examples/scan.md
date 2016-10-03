@@ -4,6 +4,15 @@
 $ malice scan befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
 ```
 
+=OR=
+
+```
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                -v `pwd`/data/samples:/malice/samples \
+                -e MALICE_VT_API=$MALICE_VT_API \
+                malice/engine scan befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
+```
+
 #### File
 
 | Field  | Value                                                                         |

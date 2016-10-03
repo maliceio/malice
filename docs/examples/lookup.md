@@ -1,21 +1,33 @@
-# LookUp
+LookUp
+======
 
 ```bash
 $ malice lookup 6fe80e56ad4de610304bab1675ce84d16ab6988e
 ```
 
+=OR=
+
+```bash
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                -e MALICE_VT_API=$MALICE_VT_API \
+                malice/engine lookup 6fe80e56ad4de610304bab1675ce84d16ab6988e
+```
+
 #### VirusTotal
+
 | Ratio | Link                                                                                                                          | API    | Scanned             |
-| ----- | ----------------------------------------------------------------------------------------------------------------------------- | ------ | ------------------- |
+|-------|-------------------------------------------------------------------------------------------------------------------------------|--------|---------------------|
 | 95%   | [link](https://www.virustotal.com/file/371d99fc5514f5a9816b4ec844cb816c52460a41b8e5d14bac1cb7bee57e0b1f/analysis/1312464222/) | Public | 2011-08-04 13:23:42 |
 
 #### ShadowServer
+
 ##### AntiVirus
- - FirstSeen: 6/15/2010 3:09AM
- - LastSeen: 6/15/2010 3:09AM
+
+-	FirstSeen: 6/15/2010 3:09AM
+-	LastSeen: 6/15/2010 3:09AM
 
 | Vendor           | Signature                       |
-| ---------------- | ------------------------------- |
+|------------------|---------------------------------|
 | BitDefender      | Worm.Generic.384701             |
 | VirusBuster      | Worm.VB.FMYJ                    |
 | Authentium       | Worm.BAOX                       |

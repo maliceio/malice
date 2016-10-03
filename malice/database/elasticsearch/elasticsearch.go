@@ -61,14 +61,18 @@ func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error)
 			"timeout": config.Conf.DB.Timeout,
 		}).Debug("Waiting for ELK to come online.")
 
-		dbInfo, err := container.Inspect(docker, config.Conf.DB.Name)
+		// Inspect newly created container to get IP assigned to it
+		dbInfo, err := container.Inspect(docker, cont.ID)
 
-		er.CheckError(waitforit.WaitForIt(
+		err = waitforit.WaitForIt(
 			getElasticSearchAddr(dbInfo.NetworkSettings.IPAddress), // fullConn string,
 			"", // config.Conf.DB.Server,   // host string,
 			-1, // config.Conf.DB.Ports[0], // port int,
 			config.Conf.DB.Timeout, // timeout int,
-		))
+		)
+		if err != nil {
+			log.Error(err)
+		}
 		log.Debug("ELK is now online.")
 
 		// Even though it's up it's not ready to index data yet.

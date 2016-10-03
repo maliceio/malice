@@ -93,19 +93,30 @@ Malice will output the results as a markdown table that can be piped or copied i
 [![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)][hub]
 [![Docker Image](https://img.shields.io/badge/docker image-37.04 MB-blue.svg)][hub]
 
-Install/Update all Plugins
+#### Install/Update all Plugins
 
 ```bash
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock malice/engine plugin update --all
 ```
 
-Scan a file
+#### Scan a file
 
 ```bash
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                 -v `pwd`:/malice/samples \
                 -e MALICE_VT_API=$MALICE_VT_API \
                 malice/engine scan SAMPLE
+```
+
+#### Use **malice/engine** like a host binary
+
+Add the following to your bash or zsh profile
+
+```bash
+$ alias malice='docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                -v `pwd`:/malice/samples \
+                -e MALICE_VT_API=$MALICE_VT_API \
+                malice/engine $@'
 ```
 
 ## Documentation

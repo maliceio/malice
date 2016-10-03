@@ -30,6 +30,16 @@ type PluginResults struct {
 // ElasticAddr ElasticSearch address to user for connections
 var ElasticAddr string
 
+func getElasticSearchAddr(addr string) string {
+	if _, inDocker := os.LookupEnv("MALICE_IN_DOCKER"); inDocker {
+		if addr != "" {
+			return fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", addr))
+		}
+		return fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elastic"))
+	}
+	return fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "localhost"))
+}
+
 // StartELK creates an ELK container from the image blacktop/elk
 func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
 
@@ -46,15 +56,18 @@ func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error)
 
 		// Give ELK a few seconds to start
 		log.WithFields(log.Fields{
-			"server":  config.Conf.DB.Server,
+			"server":  config.Conf.DB.Name,
 			"port":    config.Conf.DB.Ports[0],
 			"timeout": config.Conf.DB.Timeout,
 		}).Debug("Waiting for ELK to come online.")
+
+		dbInfo, err := container.Inspect(docker, config.Conf.DB.Name)
+
 		er.CheckError(waitforit.WaitForIt(
-			"", // fullConn string,
-			config.Conf.DB.Server,   // host string,
-			config.Conf.DB.Ports[0], // port int,
-			config.Conf.DB.Timeout,  // timeout int,
+			getElasticSearchAddr(dbInfo.NetworkSettings.IPAddress), // fullConn string,
+			"", // config.Conf.DB.Server,   // host string,
+			-1, // config.Conf.DB.Ports[0], // port int,
+			config.Conf.DB.Timeout, // timeout int,
 		))
 		log.Debug("ELK is now online.")
 
@@ -102,17 +115,8 @@ func TestConnection(addr string) error {
 	var err error
 
 	if ElasticAddr == "" {
-		if _, inDocker := os.LookupEnv("MALICE_IN_DOCKER"); inDocker {
-			if addr != "" {
-				ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", addr))
-			} else {
-				ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elastic"))
-			}
-		} else {
-			ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "localhost"))
-		}
+		ElasticAddr = getElasticSearchAddr(addr)
 	}
-	log.Debug("NEW ElasticAddr: ", ElasticAddr)
 
 	// connect to ElasticSearch where --link elastic was using via malice in Docker
 	log.Debugf("Attempting to connect to: %s", ElasticAddr)

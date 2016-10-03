@@ -10,6 +10,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/maldirs"
+	"github.com/maliceio/malice/utils"
 )
 
 // "github.com/pelletier/go-toml"
@@ -83,41 +84,46 @@ type proxyConfig struct {
 var Conf Configuration
 
 // Load config.toml into Conf var
+// Try to load config from
+// - git repo folder      : MALICE_ROOT/config/config.toml
+// - .malice folder       : $HOME/.malice/config.toml
+// - binary embedded file : bindata
 func Load() {
-	// Try to load config from
-	// - git repo folder      : MALICE_ROOT/config/config.toml
-	// - .malice folder       : $HOME/.malice/config.toml
-	// - binary embedded file : bindata
+
+	var configPath string
 
 	// Check for config config in repo
-	if _, err := os.Stat("./config/config.toml"); err == nil {
-		log.Debug("Malice config loaded from ./config/config.toml")
-
+	configPath = path.Join(
+		utils.Getopt("GOPATH", ""),
+		"src/github.com/maliceio/malice/config/config.toml",
+	)
+	if _, err := os.Stat(configPath); err == nil {
 		_, err := toml.DecodeFile("./config/config.toml", &Conf)
 		er.CheckError(err)
-
+		log.Debug("Malice config loaded from: ", configPath)
 		return
 	}
+
 	// Check for config config in .malice folder
-	if _, err := os.Stat(path.Join(maldirs.GetBaseDir(), "./config.toml")); err == nil {
-		homeConfigDir := path.Join(maldirs.GetBaseDir(), "./config.toml")
-		log.Debug("Malice config loaded from ", homeConfigDir)
-
-		_, err := toml.DecodeFile(homeConfigDir, &Conf)
+	configPath = path.Join(maldirs.GetBaseDir(), "./config.toml")
+	if _, err := os.Stat(configPath); err == nil {
+		_, err := toml.DecodeFile(configPath, &Conf)
 		er.CheckError(err)
-
+		log.Debug("Malice config loaded from: ", configPath)
 		return
 	}
+
 	// Read plugin config out of bindata
 	tomlData, err := Asset("config/config.toml")
 	if err != nil {
 		log.Error(err)
 	}
-
-	if _, err := toml.Decode(string(tomlData), &Conf); err == nil {
-		log.Debug("Malice config loaded from config/bindata.go")
-		configPath := path.Join(maldirs.GetBaseDir(), "./config.toml")
+	if _, err = toml.Decode(string(tomlData), &Conf); err == nil {
+		// Create .malice folder in the users home directory
+		er.CheckError(os.MkdirAll(maldirs.GetBaseDir(), 0777))
+		// Create the config config in the .malice folder
 		er.CheckError(ioutil.WriteFile(configPath, tomlData, 0644))
+		log.Debug("Malice config loaded from config/bindata.go")
 	}
 	er.CheckError(err)
 

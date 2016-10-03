@@ -7,6 +7,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
+	"github.com/maliceio/go-plugin-utils/utils"
 	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/maldirs"
 )
@@ -37,41 +38,46 @@ type Configuration struct {
 var Plugs Configuration
 
 // Load plugins.toml into Plug var
+// Try to load plugins from
+// - git repo folder      : MALICE_ROOT/plugins/plugins.toml
+// - .malice folder       : $HOME/.malice/plugins.toml
+// - binary embedded file : bindata
 func Load() {
-	// Try to load plugins from
-	// - git repo folder      : MALICE_ROOT/plugins/plugins.toml
-	// - .malice folder       : $HOME/.malice/plugins.toml
-	// - binary embedded file : bindata
+
+	var configPath string
 
 	// Check for plugins config in repo
-	if _, err := os.Stat("./plugins/plugins.toml"); err == nil {
-		log.Debug("Malice plugins loaded from ./plugins/plugins.toml")
-
+	configPath = path.Join(
+		utils.Getopt("GOPATH", ""),
+		"src/github.com/maliceio/malice/plugins/plugins.toml",
+	)
+	if _, err := os.Stat(configPath); err == nil {
 		_, err := toml.DecodeFile("./plugins/plugins.toml", &Plugs)
 		er.CheckError(err)
-
+		log.Debug("Malice plugins loaded from: ", configPath)
 		return
 	}
+
 	// Check for plugins config in .malice folder
-	if _, err := os.Stat(path.Join(maldirs.GetBaseDir(), "./plugins.toml")); err == nil {
-		homeConfigDir := path.Join(maldirs.GetBaseDir(), "./plugins.toml")
-		log.Debug("Malice plugins loaded from ", homeConfigDir)
-
-		_, err := toml.DecodeFile(homeConfigDir, &Plugs)
+	configPath = path.Join(maldirs.GetBaseDir(), "./plugins.toml")
+	if _, err := os.Stat(configPath); err == nil {
+		_, err := toml.DecodeFile(configPath, &Plugs)
 		er.CheckError(err)
-
+		log.Debug("Malice plugins loaded from: ", configPath)
 		return
 	}
+
 	// Read plugin config out of bindata
 	tomlData, err := Asset("plugins/plugins.toml")
 	if err != nil {
 		log.Error(err)
 	}
-
-	if _, err := toml.Decode(string(tomlData), &Plugs); err == nil {
-		log.Debug("Malice plugins loaded from plugins/bindata.go")
-		configPath := path.Join(maldirs.GetBaseDir(), "./plugins.toml")
+	if _, err = toml.Decode(string(tomlData), &Plugs); err == nil {
+		// Create .malice folder in the users home directory
+		er.CheckError(os.MkdirAll(maldirs.GetBaseDir(), 0777))
+		// Create the plugins config in the .malice folder
 		er.CheckError(ioutil.WriteFile(configPath, tomlData, 0644))
+		log.Debug("Malice plugins loaded from plugins/bindata.go")
 	}
 	er.CheckError(err)
 

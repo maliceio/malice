@@ -3,6 +3,7 @@ package elasticsearch
 import (
 	"errors"
 	"fmt"
+	"os"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
@@ -97,45 +98,45 @@ func InitElasticSearch(addr string) error {
 
 // TestConnection tests the ElasticSearch connection
 func TestConnection(addr string) error {
-	log.Debug("ElasticAddr: ", ElasticAddr)
+
+	var err error
+
 	if ElasticAddr == "" {
-		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", addr))
+		if _, inDocker := os.LookupEnv("MALICE_IN_DOCKER"); inDocker {
+			if addr != "" {
+				ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", addr))
+			} else {
+				ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elastic"))
+			}
+		} else {
+			ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "localhost"))
+		}
 	}
 	log.Debug("NEW ElasticAddr: ", ElasticAddr)
+
 	// connect to ElasticSearch where --link elastic was using via malice in Docker
 	log.Debugf("Attempting to connect to: %s", ElasticAddr)
-	_, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
+	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
 
 	// Ping the Elasticsearch server to get e.g. the version number
-	// info, code, err := client.Ping(ElasticAddr).Do()
-	// utils.Assert(err)
-	// fmt.Printf("Elasticsearch returned with code %d and version %s", code, info.Version.Number)
+	info, code, err := client.Ping(ElasticAddr).Do()
+	utils.Assert(err)
 
-	// if err != nil {
-	// 	// connect to ElasticSearch via malice in Docker
-	// 	ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elk"))
-	// 	log.Debugf("Attempting to connect to: %s", ElasticAddr)
-	// 	_, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
+	log.WithFields(log.Fields{
+		"code":    code,
+		"cluster": info.ClusterName,
+		"version": info.Version.Number,
+		"address": ElasticAddr,
+	}).Debug("ElasticSearch connection successful.")
 
-	if err != nil {
-		// connect to ElasticSearch using Docker for Mac
-		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "localhost"))
-		log.Debugf("Attempting to connect to: %s", ElasticAddr)
-		_, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
-		log.Debug("NEW NEW ElasticAddr: ", ElasticAddr)
-		return err
-	}
-	// return err
-	// }
 	return err
 }
 
 // WriteFileToDatabase inserts sample into Database
 func WriteFileToDatabase(sample map[string]interface{}) elastic.IndexResponse {
 
-	if ElasticAddr == "" {
-		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elastic"))
-	}
+	// Test connection to ElasticSearch
+	er.CheckError(TestConnection(""))
 
 	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
 	utils.Assert(err)
@@ -155,19 +156,12 @@ func WriteFileToDatabase(sample map[string]interface{}) elastic.IndexResponse {
 		BodyJson(scan).
 		Do()
 	utils.Assert(err)
-	log.Debugf("Indexed sample %s to index %s, type %s\n", newScan.Id, newScan.Index, newScan.Type)
 
-	// update, err := client.Update().Index("malice").Type("samples").Id(newScan.Id).
-	// 	Doc(map[string]interface{}{
-	// 		"plugins": map[string]interface{}{
-	// 			"intel": map[string]interface{}{
-	// 				"nsrl": "UPDATED",
-	// 			},
-	// 		},
-	// 	}).
-	// 	Do()
-	// utils.Assert(err)
-	// log.Debugf("New version of sample %q is now %d\n", update.Id, update.Version)
+	log.WithFields(log.Fields{
+		"id":    newScan.Id,
+		"index": newScan.Index,
+		"type":  newScan.Type,
+	}).Debug("Indexed sample.")
 
 	return *newScan
 }
@@ -198,7 +192,12 @@ func WriteHashToDatabase(hash string) elastic.IndexResponse {
 		BodyJson(scan).
 		Do()
 	utils.Assert(err)
-	log.Debugf("Indexed sample %s to index %s, type %s\n", newScan.Id, newScan.Index, newScan.Type)
+
+	log.WithFields(log.Fields{
+		"id":    newScan.Id,
+		"index": newScan.Index,
+		"type":  newScan.Type,
+	}).Debug("Indexed sample.")
 
 	return *newScan
 }
@@ -239,7 +238,11 @@ func WritePluginResultsToDatabase(results PluginResults) {
 			Do()
 		utils.Assert(err)
 
-		log.Debugf("New version of sample %q is now %d\n", update.Id, update.Version)
+		log.WithFields(log.Fields{
+			"id":      update.Id,
+			"version": update.Version,
+		}).Debug("New version of sample.")
+
 		// return *update
 
 	} else {
@@ -264,7 +267,11 @@ func WritePluginResultsToDatabase(results PluginResults) {
 			Do()
 		utils.Assert(err)
 
-		log.Debugf("Indexed sample %s to index %s, type %s\n", newScan.Id, newScan.Index, newScan.Type)
+		log.WithFields(log.Fields{
+			"id":    newScan.Id,
+			"index": newScan.Index,
+			"type":  newScan.Type,
+		}).Debug("Indexed sample.")
 		// return *newScan
 	}
 }

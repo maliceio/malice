@@ -42,17 +42,18 @@ func ScanSample(path string) {
 		// Check that ElasticSearch is running
 		if _, running, _ := container.Running(docker, config.Conf.DB.Name); !running {
 			log.Error("ELK is NOT running, starting now...")
-			elk, err := elasticsearch.StartELK(docker, false)
+			_, err := elasticsearch.StartELK(docker, false)
 			er.CheckError(err)
-			dbInfo, err := container.Inspect(docker, elk.ID)
-			er.CheckError(err)
-			log.Debug("ELK is running at: ", dbInfo.NetworkSettings.IPAddress)
 		}
 
 		// Setup ElasticSearch
 		dbInfo, err := container.Inspect(docker, config.Conf.DB.Name)
 		er.CheckError(err)
-		log.Debug("ELK is running at: ", dbInfo.NetworkSettings.IPAddress)
+		log.WithFields(log.Fields{
+			"ip":      dbInfo.NetworkSettings.IPAddress,
+			"network": dbInfo.HostConfig.NetworkMode,
+			"image":   dbInfo.Config.Image,
+		}).Debug("ELK is running.")
 
 		elasticsearch.InitElasticSearch(dbInfo.NetworkSettings.IPAddress)
 

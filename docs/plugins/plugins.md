@@ -1,5 +1,9 @@
 ### Plugin List
 
+```bash
+$ malice plugin list --all --detail
+```
+
 | Name          | Description                               | Enabled | Image                | Category | Mime                   |
 | ------------- | ----------------------------------------- | ------- | -------------------- | -------- | ---------------------- |
 | nsrl          | NSRL Database Hash Search                 | false   | malice/nsrl          | intel    | hash                   |

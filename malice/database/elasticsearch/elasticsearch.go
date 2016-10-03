@@ -54,23 +54,17 @@ func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error)
 	if docker.Ping() {
 		cont, err := container.Start(docker, nil, name, image, logs, binds, portBindings, nil, nil)
 
+		// Inspect newly created container to get IP assigned to it
+		dbInfo, err := container.Inspect(docker, cont.ID)
+		elasticAddress := getElasticSearchAddr(dbInfo.NetworkSettings.IPAddress)
+
 		// Give ELK a few seconds to start
 		log.WithFields(log.Fields{
-			"server":  config.Conf.DB.Name,
+			"server":  elasticAddress,
 			"port":    config.Conf.DB.Ports[0],
 			"timeout": config.Conf.DB.Timeout,
 		}).Debug("Waiting for ELK to come online.")
-
-		// Inspect newly created container to get IP assigned to it
-		dbInfo, err := container.Inspect(docker, cont.ID)
-
-		err = waitforit.WaitForIt(
-			getElasticSearchAddr(dbInfo.NetworkSettings.IPAddress), // fullConn string,
-			"", // config.Conf.DB.Server,   // host string,
-			-1, // config.Conf.DB.Ports[0], // port int,
-			config.Conf.DB.Timeout, // timeout int,
-		)
-		if err != nil {
+		if err = waitforit.WaitForIt(elasticAddress, "", -1, config.Conf.DB.Timeout); err != nil {
 			log.Error(err)
 		}
 		log.Debug("ELK is now online.")

@@ -74,10 +74,10 @@ Vagrant.configure("2") do |config|
     sudo apt-get install -y linux-image-extra-$(uname -r)
     sudo apt-get install -y docker-engine
     sudo usermod -aG docker vagrant
-    echo "Installing docker-compose ======================="    
+    echo "Installing docker-compose ======================="
     curl -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
     chmod +x /usr/local/bin/docker-compose
-    echo "Installing docker-clean ========================="    
+    echo "Installing docker-clean ========================="
     curl -s https://raw.githubusercontent.com/ZZROTDesign/docker-clean/v2.0.4/docker-clean | sudo tee /usr/local/bin/docker-clean > /dev/null
     sudo chmod +x /usr/local/bin/docker-clean
     echo "Installing Golang ==============================="
@@ -87,9 +87,10 @@ Vagrant.configure("2") do |config|
     tar -C /usr/local -xzf /tmp/go.tar.gz
     export PATH=$PATH:/usr/local/go/bin
     export GOPATH=/home/vagrant/go
-    echo 'export PATH=$PATH:/usr/local/go/bin' >> /home/vagrant/.bashrc    
-    echo 'export GOPATH=/home/vagrant/go' >> /home/vagrant/.bashrc    
+    echo 'export PATH=$PATH:/usr/local/go/bin' >> /home/vagrant/.bashrc
+    echo 'export GOPATH=/home/vagrant/go' >> /home/vagrant/.bashrc
     echo 'export PATH=$PATH:/home/vagrant/go/bin' >> /home/vagrant/.bashrc
+    echo "Installing Malice ==============================="    
     sudo apt-get install -y libmagic-dev build-essential
     go get -v github.com/maliceio/malice
   SHELL

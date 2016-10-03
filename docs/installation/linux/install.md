@@ -3,11 +3,13 @@
 #### Install Go
 
 ```bash
-$ sudo add-apt-repository ppa:ubuntu-lxc/lxd-stable
-$ sudo apt-get update
-$ sudo apt-get install golang
+$ GO_VERSION=1.7.1
+$ ARCH="$(dpkg --print-architecture)" \
+$ wget https://storage.googleapis.com/golang/go$GO_VERSION.linux-$ARCH.tar.gz -O /tmp/go.tar.gz \
+$ tar -C /usr/local -xzf /tmp/go.tar.gz \
 # You should add these two lines to you .bashrc file.
-$ export GOPATH=$HOME  
+$ export PATH=$PATH:/usr/local/go/bin
+$ export GOPATH=$HOME/go
 $ export PATH=$PATH:$GOPATH/bin
 ```
 
@@ -27,7 +29,7 @@ $ sudo usermod -aG docker $USER  # You might have to logout for change to take e
 
 ```bash
 $ sudo apt-get install libmagic-dev build-essential
-$ go get github.com/maliceio/malice
+$ go get -v github.com/maliceio/malice
 ```
 
 #### Download All Malice Plugins
@@ -45,7 +47,7 @@ $ export MALICE_VT_API=<YOUR API KEY>
 $ malice
 ```
 
-> **NOTE:** Malice has just created a `.malice` in your home directory. This is used to store the `config/plugin` info as well as to store the **samples** that you scan.
+> **NOTE:** Malice has just created a `.malice` folder in your home directory. This is used to store the `config.toml/plugins.toml` that you can change.
 
 ```bash
 Usage: malice [OPTIONS] COMMAND [arg...]
@@ -58,12 +60,13 @@ Author:
   blacktop - <https://github.com/blacktop>
 
 Options:
-  --debug, -D	Enable debug mode [$MALICE_DEBUG]
-  --help, -h	show help
+  --debug, -D  	Enable debug mode [$MALICE_DEBUG]
+  --help, -h   	show help
   --version, -v	print the version
 
 Commands:
   scan		Scan a file
+  watch		Watch a folder
   lookup	Look up a file hash
   elk		Start an ELK docker container
   web		Start, Stop Web services

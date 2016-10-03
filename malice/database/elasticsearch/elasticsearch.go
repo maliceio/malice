@@ -61,7 +61,6 @@ func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error)
 		// Give ELK a few seconds to start
 		log.WithFields(log.Fields{
 			"server":  elasticAddress,
-			"port":    config.Conf.DB.Ports[0],
 			"timeout": config.Conf.DB.Timeout,
 		}).Debug("Waiting for ELK to come online.")
 		if err = waitforit.WaitForIt(elasticAddress, "", -1, config.Conf.DB.Timeout); err != nil {

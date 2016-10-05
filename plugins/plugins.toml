@@ -133,7 +133,7 @@ title = "Malice Plugin Configurations"
   category = "av"
   image = "malice/fprot"
   repository = "https://github.com/maliceio/malice-av.git#:fprot"
-  build = true
+  build = false
   mime = "*"
 
 [[plugin]]

@@ -51,7 +51,7 @@ Vagrant.configure("2") do |config|
     vb.memory = "8192"
     vb.cpus = 4
   end
-  #
+
   # View the documentation for the provider you are using for more
   # information on available options.
 
@@ -92,6 +92,6 @@ Vagrant.configure("2") do |config|
     echo 'export PATH=$PATH:/home/vagrant/go/bin' >> /home/vagrant/.bashrc
     echo "Installing Malice ==============================="
     sudo apt-get install -y libmagic-dev build-essential
-    sudo -H -u vagrant bash -c 'go get -v github.com/maliceio/malice'
+    sudo -E -H -u vagrant bash -c 'go get -v github.com/maliceio/malice'
   SHELL
 end

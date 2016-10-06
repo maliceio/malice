@@ -64,20 +64,7 @@ Start an ELK docker container.
 web
 ---
 
-```bash
-NAME:
-   malice web - Start, Stop Web services
-
-USAGE:
-   malice web command [command options] [arguments...]
-
-COMMANDS:
-     start	start web application
-     stop	stop web application
-
-OPTIONS:
-   --help, -h	show help
-```
+> **NOTE:** the api/web ui is not done yet.
 
 plugin
 ------

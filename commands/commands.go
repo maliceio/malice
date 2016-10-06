@@ -67,31 +67,31 @@ var Commands = []cli.Command{
 		},
 		Action: func(c *cli.Context) error { return cmdELK(c.Bool("logs")) },
 	},
-	{
-		Name:  "web",
-		Usage: "Start, Stop Web services",
-		Subcommands: []cli.Command{
-			{
-				Name:   "start",
-				Usage:  "start web application",
-				Action: func(c *cli.Context) error { return cmdWebStart() },
-			},
-			{
-				Name:   "stop",
-				Usage:  "stop web application",
-				Action: func(c *cli.Context) error { return cmdWebStop() },
-			},
-		},
-		BashComplete: func(c *cli.Context) {
-			// This will complete if no args are passed
-			if len(c.Args()) > 0 {
-				return
-			}
-			for _, t := range tasks {
-				fmt.Println(t)
-			}
-		},
-	},
+	// {
+	// 	Name:  "web",
+	// 	Usage: "Start, Stop Web services",
+	// 	Subcommands: []cli.Command{
+	// 		{
+	// 			Name:   "start",
+	// 			Usage:  "start web application",
+	// 			Action: func(c *cli.Context) error { return cmdWebStart() },
+	// 		},
+	// 		{
+	// 			Name:   "stop",
+	// 			Usage:  "stop web application",
+	// 			Action: func(c *cli.Context) error { return cmdWebStop() },
+	// 		},
+	// 	},
+	// 	BashComplete: func(c *cli.Context) {
+	// 		// This will complete if no args are passed
+	// 		if len(c.Args()) > 0 {
+	// 			return
+	// 		}
+	// 		for _, t := range tasks {
+	// 			fmt.Println(t)
+	// 		}
+	// 	},
+	// },
 	{
 		Name:  "plugin",
 		Usage: "List, Install or Remove Plugins",

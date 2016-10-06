@@ -1,14 +1,12 @@
 language: go
 # sudo: false
 go:
-  - 1.6
   - 1.7
   - tip
 
 env:
   global:
     - GOARCH=amd64
-    - GO15VENDOREXPERIMENT=1
 
 branches:
   only:

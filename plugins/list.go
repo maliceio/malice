@@ -123,6 +123,11 @@ func GetAllPluginsInCategory(category string) []Plugin {
 	return inCategory
 }
 
+// GetEnabledPlugins will return all enabled plugins
+func GetEnabledPlugins() []Plugin {
+	return getEnabled(Plugs.Plugins)
+}
+
 // filterPluginsByEnabled returns a map[string]plugin of plugins
 // that work on the given mime type
 func getMime(mime string, plugins []Plugin) []Plugin {

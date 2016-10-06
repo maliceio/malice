@@ -187,6 +187,18 @@ func (plugin Plugin) UpdatePluginFromRepository(docker *client.Docker) {
 	image.Build(docker, plugin.Repository, tags, buildArgs, labels, quiet)
 }
 
+// UpdateEnabledPlugins performs a docker pull on all enabled plugins checking for updates
+func UpdateEnabledPlugins(docker *client.Docker) {
+	for _, plugin := range GetEnabledPlugins() {
+		fmt.Println("[Updating Plugin] ===> ", plugin.Name)
+		if plugin.Build {
+			plugin.UpdatePluginFromRepository(docker)
+		} else {
+			image.Pull(docker, plugin.Image, "latest")
+		}
+	}
+}
+
 // UpdateAllPlugins performs a docker pull on all registered plugins checking for updates
 func UpdateAllPlugins(docker *client.Docker) {
 	plugins := Plugs.Plugins

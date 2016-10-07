@@ -119,7 +119,7 @@ var Commands = []cli.Command{
 			{
 				Name:   "remove",
 				Usage:  "remove plugin",
-				Action: func(c *cli.Context) error { return cmdRemovePlugin() },
+				Action: func(c *cli.Context) error { return cmdRemovePlugin(c.Args().First()) },
 			},
 			{
 				Name:  "update",

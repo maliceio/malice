@@ -43,7 +43,8 @@ func cmdInstallPlugin(name string) error {
 	return nil
 }
 
-func cmdRemovePlugin() error {
+func cmdRemovePlugin(name string) error {
+	plugins.DeletePlugin(name)
 	return nil
 }
 

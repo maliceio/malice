@@ -3,6 +3,9 @@ package plugins
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
+	"path"
+	"strings"
 	"sync"
 
 	"os"
@@ -16,6 +19,7 @@ import (
 	"github.com/maliceio/malice/malice/docker/client/container"
 	"github.com/maliceio/malice/malice/docker/client/image"
 	er "github.com/maliceio/malice/malice/errors"
+	"github.com/maliceio/malice/malice/maldirs"
 	"github.com/parnurzeal/gorequest"
 )
 
@@ -134,9 +138,11 @@ func InstallPlugin(plugin *Plugin) (err error) {
 
 	buf := new(bytes.Buffer)
 	er.CheckError(toml.NewEncoder(buf).Encode(newPlugin))
-	fmt.Println(buf.String())
+	// fmt.Println(buf.String())
+
 	// open plugin config file
-	f, err := os.OpenFile("./plugins.toml", os.O_APPEND|os.O_WRONLY, 0600)
+	configPath := path.Join(maldirs.GetBaseDir(), "./plugins.toml")
+	f, err := os.OpenFile(configPath, os.O_APPEND|os.O_WRONLY, 0600)
 	if err != nil {
 		panic(err)
 	}
@@ -146,6 +152,25 @@ func InstallPlugin(plugin *Plugin) (err error) {
 		panic(err)
 	}
 	return
+}
+
+// DeletePlugin deletes a plugin
+func DeletePlugin(name string) error {
+
+	for i, plugin := range Plugs.Plugins {
+		if strings.EqualFold(plugin.Name, name) {
+			Plugs.Plugins = append(Plugs.Plugins[:i], Plugs.Plugins[i+1:]...)
+			break
+		}
+	}
+
+	buf := new(bytes.Buffer)
+	er.CheckError(toml.NewEncoder(buf).Encode(Plugs))
+
+	// open plugin config file
+	configPath := path.Join(maldirs.GetBaseDir(), "./plugins.toml")
+	err := ioutil.WriteFile(configPath, buf.Bytes(), 0644)
+	return err
 }
 
 // InstalledPluginsCheck checks that all enabled plugins are installed

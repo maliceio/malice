@@ -6,7 +6,7 @@ malice
 [![CircleCI](https://circleci.com/gh/maliceio/malice.png?style=shield)](https://circleci.com/gh/maliceio/malice)
 [![License][license]](http://www.apache.org/licenses/LICENSE-2.0)
 [![GoDoc](https://godoc.org/github.com/maliceio/malice?status.svg)](https://godoc.org/github.com/maliceio/malice)
-[![Gitter Chat][gitter-badge]][gitter-link]
+[![Slack](https://malice-slack.herokuapp.com/badge.svg)][slack]
 
 Malice's mission is to be a free open source version of VirusTotal that anyone can use at any scale from an independent researcher to a fortune 500 company.
 
@@ -142,3 +142,4 @@ Copyright (c) 2013 - 2016 **blacktop** Joshua Maine
 [gitter-link]: https://gitter.im/maliceio/malice
 [license]: https://img.shields.io/badge/licence-Apache%202.0-blue.svg
 [hub]: https://hub.docker.com/r/malice/engine/
+[slack]: https://malice-slack.herokuapp.com/

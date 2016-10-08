@@ -37,9 +37,9 @@ var Commands = []cli.Command{
 		Action: func(c *cli.Context) error { return cmdWatch(c.Args().First(), c.Bool("logs")) },
 	},
 	{
-		Name:        "lookup",
-		Usage:       "Look up a file hash",
-		Description: "Hash to be queried.",
+		Name:  "lookup",
+		Usage: "Look up a file hash (md5/sha1)",
+		// Description: "Hash to be queried.",
 		Flags: []cli.Flag{
 			cli.BoolFlag{
 				Name:  "logs",
@@ -57,8 +57,8 @@ var Commands = []cli.Command{
 	},
 	{
 		Name:        "elk",
-		Usage:       "Start an ELK docker container",
-		Description: "Argument is what port to bind to.",
+		Usage:       "Start the ELK docker container",
+		Description: "This ELK container will attach to the ElasticSearch data for all previous malice scans.",
 		Flags: []cli.Flag{
 			cli.BoolFlag{
 				Name:  "logs",

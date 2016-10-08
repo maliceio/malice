@@ -1,0 +1,30 @@
+machine:
+  services:
+    - docker
+
+# general:
+#   build_dir: "2.0"
+
+dependencies:
+  cache_directories:
+    - "~/docker"
+  override:
+    - docker info
+    - if [[ -e ~/docker/image.tar ]]; then docker load --input ~/docker/image.tar; fi
+    - docker build -t circleci/cuckoo .
+    - mkdir -p ~/docker; docker save circleci/cuckoo > ~/docker/image.tar
+
+test:
+  override:
+    - docker run -d -p 31337:31337 circleci/cuckoo web; sleep 5
+    - curl --retry 10 --retry-delay 5 -v http://localhost:31337
+
+deployment:
+  # master:
+  #   branch: master
+  #   commands:
+  #     - eval $(docker run gliderlabs/pagebuilder circleci-cmd)
+  release:
+    branch: release
+    commands:
+      - make release

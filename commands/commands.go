@@ -37,8 +37,9 @@ var Commands = []cli.Command{
 		Action: func(c *cli.Context) error { return cmdWatch(c.Args().First(), c.Bool("logs")) },
 	},
 	{
-		Name:  "lookup",
-		Usage: "Look up a file hash (md5/sha1)",
+		Name:      "lookup",
+		Usage:     "Look up a file hash (md5/sha1)",
+		ArgsUsage: "hash of file to lookup `HASH`",
 		// Description: "Hash to be queried.",
 		Flags: []cli.Flag{
 			cli.BoolFlag{
@@ -50,7 +51,7 @@ var Commands = []cli.Command{
 			if c.Args().Present() {
 				return cmdLookUp(c.Args().First(), c.Bool("logs"))
 			}
-			log.Fatal(fmt.Errorf("Please supply a MD5/SHA1 hash to query."))
+			log.Error("Please supply a MD5/SHA1 hash to query.")
 
 			return nil
 		},

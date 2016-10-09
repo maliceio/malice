@@ -37,7 +37,8 @@ type File struct {
 	SHA256 string `json:"sha256" structs:"sha256"`
 	SHA512 string `json:"sha512" structs:"sha512"`
 	// Ssdeep string `json:"ssdeep"`
-	Mime string `json:"mime" structs:"mime"`
+	Mime  string `json:"mime" structs:"mime"`
+	Magic string `json:"magic" structs:"magic"`
 	// Arch string `json:"arch"`
 	Data []byte `json:"data" structs:"data,omitempty"`
 }
@@ -54,6 +55,7 @@ func (file *File) Init() {
 		file.GetSHA256()
 		file.GetSHA512()
 		file.GetFileMimeType()
+		file.GetFileMagicType()
 		file.CopyToSamples()
 		file.gzipSample()
 		file.Data = nil
@@ -236,6 +238,24 @@ func (file *File) GetFileMimeType() (mimetype string, err error) {
 	return
 }
 
+// GetFileMagicType returns the textual libmagic type of a file path
+func (file *File) GetFileMagicType() (magictype string, err error) {
+
+	if err := magicmime.Open(magicmime.MAGIC_SYMLINK | magicmime.MAGIC_ERROR); err != nil {
+		log.Fatal(err)
+	}
+	defer magicmime.Close()
+
+	magictype, err = magicmime.TypeByFile(file.Path)
+	if err != nil {
+		log.Fatalf("error occured during type lookup: %v", err)
+	}
+
+	file.Magic = magictype
+	// log.Printf("magic-type: %v", magictype)
+	return
+}
+
 // ToJSON converts File object to []byte JSON
 func (file *File) ToJSON() []byte {
 	fileJSON, err := json.Marshal(file)
@@ -255,6 +275,7 @@ func (file *File) ToMarkdownTable() {
 	table.AddRow(map[string]interface{}{"Field": "SHA256", "Value": file.SHA256})
 	// table.AddRow(map[string]interface{}{"Field": "SHA512", "Value": file.SHA512})
 	table.AddRow(map[string]interface{}{"Field": "Mime", "Value": file.Mime})
+	table.AddRow(map[string]interface{}{"Field": "Magic", "Value": file.Magic})
 	table.Markdown = true
 	table.Print()
 }
@@ -273,6 +294,7 @@ func (file *File) PrintFileDetails() {
 	table.AddRow(map[string]interface{}{"Field": "SHA512", "Value": file.SHA512})
 	// table.AddRow(map[string]interface{}{"Field": "Ssdeep", "Value": file.Ssdeep})
 	table.AddRow(map[string]interface{}{"Field": "Mime", "Value": file.Mime})
+	table.AddRow(map[string]interface{}{"Field": "Magic", "Value": file.Magic})
 	table.Markdown = true
 	table.Print()
 	// fmt.Println("Name: ", file.Name)

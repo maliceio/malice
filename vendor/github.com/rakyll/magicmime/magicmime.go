@@ -30,10 +30,20 @@ import "C"
 
 import (
 	"errors"
+	"sync"
 	"unsafe"
 )
 
-var db C.magic_t
+// Decoder allows for doing mimetype detection using libmagic.
+type Decoder struct {
+	db C.magic_t
+}
+
+// decMu and dec are used for the package level functions.
+var (
+	decMu sync.Mutex
+	dec   *Decoder
+)
 
 type Flag int
 
@@ -111,51 +121,91 @@ const (
 	MAGIC_NO_CHECK_TOKENS Flag = C.MAGIC_NO_CHECK_TOKENS
 )
 
-// Open initializes magicmime and opens the magicmime database
-// with the specified flags. Once successfully opened, users must
-// call Close when they are
-func Open(flags Flag) error {
-	db = C.magic_open(C.int(0))
+// NewDecoder creates a detector that uses libmagic. It initializes
+// the opens the magicmime database with the specified flags. Upon
+// success users are expected to call Close on the returned Decoder
+// when it is no longer needed.
+func NewDecoder(flags Flag) (*Decoder, error) {
+	db := C.magic_open(C.int(0))
 	if db == nil {
-		return errors.New("error opening magic")
+		return nil, errors.New("error opening magic")
 	}
-
+	d := &Decoder{db: db}
 	if code := C.magic_setflags(db, C.int(flags)); code != 0 {
-		Close()
-		return errors.New(C.GoString(C.magic_error(db)))
+		d.Close()
+		return nil, errors.New(C.GoString(C.magic_error(d.db)))
 	}
 
 	if code := C.magic_load(db, nil); code != 0 {
-		Close()
-		return errors.New(C.GoString(C.magic_error(db)))
+		d.Close()
+		return nil, errors.New(C.GoString(C.magic_error(d.db)))
 	}
-	return nil
+	return d, nil
 }
 
 // TypeByFile looks up for a file's mimetype by its content.
 // It uses a magic number database which is described in magic(5).
-func TypeByFile(filePath string) (string, error) {
-	path := C.CString(filePath)
+func (d *Decoder) TypeByFile(filename string) (string, error) {
+	path := C.CString(filename)
 	defer C.free(unsafe.Pointer(path))
-	out := C.magic_file(db, path)
+	out := C.magic_file(d.db, path)
 	if out == nil {
-		return "", errors.New(C.GoString(C.magic_error(db)))
+		return "", errors.New(C.GoString(C.magic_error(d.db)))
 	}
 	return C.GoString(out), nil
 }
 
 // TypeByBuffer looks up for a blob's mimetype by its contents.
 // It uses a magic number database which is described in magic(5).
-func TypeByBuffer(blob []byte) (string, error) {
+func (d *Decoder) TypeByBuffer(blob []byte) (string, error) {
 	bytes := unsafe.Pointer(&blob[0])
-	out := C.magic_buffer(db, bytes, C.size_t(len(blob)))
+	out := C.magic_buffer(d.db, bytes, C.size_t(len(blob)))
 	if out == nil {
-		return "", errors.New(C.GoString(C.magic_error(db)))
+		return "", errors.New(C.GoString(C.magic_error(d.db)))
 	}
+
 	return C.GoString(out), nil
 }
 
+// Close frees up resources associated with d.
+func (d *Decoder) Close() {
+	C.magic_close(d.db)
+	d.db = nil
+}
+
+// Open initializes a global Decoder and opens the magicmime database
+// with the specified flags. Once successfully opened, users must
+// call Close when they are finished using the package. This must
+// be called before any of the package level functions.
+func Open(flags Flag) error {
+	decMu.Lock()
+	defer decMu.Unlock()
+	if dec != nil {
+		return errors.New("cannot open; magic mime db is already open")
+	}
+	var err error
+	dec, err = NewDecoder(flags)
+	return err
+}
+
+// TypeByFile calls TypeByFile on the global Decoder. This is safe for
+// concurrent use with the other package level TypeBy* functions.
+func TypeByFile(filename string) (string, error) {
+	decMu.Lock()
+	defer decMu.Unlock()
+	return dec.TypeByFile(filename)
+}
+
+// TypeByBuffer calls TypeByBuffer on the global Decoder. This is safe for
+// concurrent use with the other package level TypeBy* functions.
+func TypeByBuffer(blob []byte) (string, error) {
+	decMu.Lock()
+	defer decMu.Unlock()
+	return dec.TypeByBuffer(blob)
+}
+
+// Close cleans up the resources associated with the global detector.
 func Close() {
-	C.magic_close(db)
-	db = nil
+	dec.Close()
+	dec = nil
 }

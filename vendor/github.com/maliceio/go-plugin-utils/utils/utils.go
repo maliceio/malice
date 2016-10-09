@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"strings"
 
 	"github.com/parnurzeal/gorequest"
 )
@@ -112,6 +113,16 @@ func GetHashType(hash string) (string, error) {
 	default:
 		return "", errors.New("This is not a valid hash.")
 	}
+}
+
+// SliceContainsString returns if slice contains substring
+func SliceContainsString(a string, list []string) bool {
+	for _, b := range list {
+		if strings.Contains(b, a) {
+			return true
+		}
+	}
+	return false
 }
 
 // StringInSlice returns whether or not a string exists in a slice

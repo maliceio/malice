@@ -528,11 +528,11 @@
 		},
 		{
 			"ImportPath": "github.com/maliceio/go-plugin-utils/utils",
-			"Rev": "317dc97ba22637c6ca25e048036aaa6bf2887f28"
+			"Rev": "37113e27821d78485b90574ed25fe8aa17282c08"
 		},
 		{
 			"ImportPath": "github.com/maliceio/go-plugin-utils/waitforit",
-			"Rev": "317dc97ba22637c6ca25e048036aaa6bf2887f28"
+			"Rev": "37113e27821d78485b90574ed25fe8aa17282c08"
 		},
 		{
 			"ImportPath": "github.com/mattn/go-runewidth",
@@ -565,7 +565,7 @@
 		},
 		{
 			"ImportPath": "github.com/rakyll/magicmime",
-			"Rev": "df5592fbfc25b51c18b5671787d8385879d15c0d"
+			"Rev": "2b8b8f91948c4307f40a8f86ac6f3b26e27b7389"
 		},
 		{
 			"ImportPath": "github.com/samalba/dockerclient",

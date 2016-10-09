@@ -1,4 +1,4 @@
-Copyright (c) 2016 <Your name here>
+Copyright (c) {{ current_year }} {{ creator }}
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

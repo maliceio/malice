@@ -12,12 +12,14 @@ bindata:
 	mv bindata.go plugins/bindata.go
 
 docker:
-	docker build -t malice/build-binaries -f Dockerfile.binaries
+	docker build -t malice/build-binaries -f Dockerfile.binaries .
 
-build: bindata
+build: bindata docker
 	# mkdir -p build/Linux  && GOOS=linux  go build -ldflags "-X main.Version=$(VERSION)" -o build/Linux/$(NAME)
-	docker run --rm -v `pwd`/build malice/build-binaries
-	mkdir -p build/Darwin && GOOS=darwin go build -ldflags "-X main.Version=$(VERSION)" -o build/Darwin/$(NAME)
+	rm -rf build
+	mkdir build
+	docker run --rm -v `pwd`:/go/src/github.com/maliceio/malice:rw malice/build-binaries
+	# mkdir -p build/Darwin && GOOS=darwin go build -ldflags "-X main.Version=$(VERSION)" -o build/Darwin/$(NAME)
 
 deps:
 	go get -u github.com/progrium/gh-release/...

@@ -63,7 +63,7 @@ func main() {
 	app.Commands = commands.Commands
 	app.CommandNotFound = commands.CmdNotFound
 	app.Usage = "Open Source Malware Analysis Framework"
-	app.Version = version.FullVersion()
+	app.Version = version.GetHumanVersion()
 	app.Copyright = "Copyright (c) 2013 - 2016 'blacktop' Joshua Maine"
 	// app.EnableBashCompletion = true
 

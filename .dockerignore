@@ -1,0 +1,13 @@
+# Ignore .git folder
+.git*
+
+.gitignore
+README.md
+README.md.bu
+LICENSE
+docs
+docker-compose.yml
+build
+release
+Makefile
+data

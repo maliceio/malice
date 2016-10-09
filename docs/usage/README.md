@@ -1,10 +1,16 @@
-# Using Malice
+Using Malice
+============
 
-TODO(blacktop)
+Table of Contents
+-----------------
 
-This directory will hold documentation around using malice and how it works.
+-	[Download All Malice Plugins](#download-all-malice-plugins)
+-	[Run Malice](#run-malice)
+-	[Lookup a Hash](#lookup-a-hash)
+-	[Scan Some Malware](#scan-some-malware)
 
-## Download All Malice Plugins
+Download All Malice Plugins
+---------------------------
 
 ```bash
 $ malice plugin update --all
@@ -12,7 +18,8 @@ $ malice plugin update --all
 
 > **NOTE:** pulling down all of the plugins can take a long time depending on your network speed.
 
-## Run Malice
+Run Malice
+----------
 
 ```bash
 $ export MALICE_VT_API=<YOUR API KEY>
@@ -46,3 +53,21 @@ Commands:
 
 Run 'malice COMMAND --help' for more information on a command.
 ```
+
+Lookup a Hash
+-------------
+
+```bash
+$ malice lookup 6fe80e56ad4de610304bab1675ce84d16ab6988e
+```
+
+See [Lookup Output](https://github.com/maliceio/malice/blob/master/docs/examples/lookup.md)
+
+Scan Some Malware
+-----------------
+
+```bash
+$ malice scan befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
+```
+
+See [Scan Output](https://github.com/maliceio/malice/blob/master/docs/examples/scan.md)

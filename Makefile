@@ -19,9 +19,9 @@ docker:
 	docker build -t malice/build-linux-binaries -f .docker/Dockerfile.binaries .
 
 build: bindata docker
-	@echo "==> Building Linux Binaries..."
+	@echo "[Building Linux Binaries]"
 	docker run --rm -v `pwd`:/go/src/github.com/maliceio/malice:rw -e NAME=$(NAME) -e VERSION=$(VERSION) malice/build-linux-binaries
-	@echo "==> Building OSX Binaries..."
+	@echo "[Building OSX Binaries]"
 	GOOS=darwin go build -ldflags "-X main.GitCommit=${GIT_COMMIT}${GIT_DIRTY} -X main.GitDescribe=${GIT_DESCRIBE}" -o build/darwin_amd64/malice
 	zip -jr build/$(NAME)_$(VERSION)_darwin_amd64.zip build/darwin_amd64/malice
 

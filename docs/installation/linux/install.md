@@ -1,4 +1,28 @@
-# Installation on Linux (**Ubuntu 14.04.3**)
+# Installation on Linux (**Ubuntu 14.04.5**)
+
+#### Install Docker
+
+```bash
+$ sudo apt-get update
+$ sudo apt-get install apt-transport-https ca-certificates
+$ sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+$ echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" > sudo tee -a /etc/apt/sources.list.d/docker.list
+$ sudo apt-get update
+$ sudo apt-get install docker-engine
+$ sudo usermod -aG docker $USER  # You might have to logout for change to take effect
+```
+
+## Download Pre-Compiled Binary
+
+#### Install Malice
+
+```bash
+$ sudo apt-get install libmagic-dev build-essential unzip
+$ wget https://github.com/maliceio/malice/releases/download/v0.2.0-alpha/malice_0.2.0-alpha_linux_amd64.zip -O /tmp/malice.zip
+$ sudo unzip /tmp/malice.zip -d /usr/local/bin/
+```
+
+## Install From Source
 
 #### Install Go
 
@@ -13,18 +37,6 @@ $ export GOPATH=$HOME/go
 $ export PATH=$PATH:$GOPATH/bin
 ```
 
-#### Install Docker
-
-```bash
-$ sudo apt-get update
-$ sudo apt-get install apt-transport-https ca-certificates
-$ sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-$ echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" > sudo tee -a /etc/apt/sources.list.d/docker.list
-$ sudo apt-get update
-$ sudo apt-get install docker-engine
-$ sudo usermod -aG docker $USER  # You might have to logout for change to take effect
-```
-
 #### Install Malice
 
 ```bash
@@ -32,7 +44,7 @@ $ sudo apt-get install libmagic-dev build-essential
 $ go get -v github.com/maliceio/malice
 ```
 
-#### Download All Malice Plugins
+## Download All Malice Plugins
 
 ```bash
 $ malice plugin update --all
@@ -40,7 +52,7 @@ $ malice plugin update --all
 
 > **NOTE:** pulling down all of the plugins can take a long time depending on your network speed.
 
-#### Run Malice
+## Run Malice
 
 ```bash
 $ export MALICE_VT_API=<YOUR API KEY>

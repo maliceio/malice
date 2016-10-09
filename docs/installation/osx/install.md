@@ -24,4 +24,4 @@ $ sudo unzip /tmp/malice.zip -d /usr/local/bin/
 $ brew install https://raw.githubusercontent.com/maliceio/malice/master/contrib/homebrew/Formula/malice.rb
 ```
 
-> **NOTE:** Included with homebrew install is zsh completions :sunglasses:
+> **NOTE:** Included with the homebrew install are zsh completions :sunglasses:

@@ -3,7 +3,18 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
-[latest] - 2016-09-25
+[latest]
+--------
+
+### Fixed
+
+### Added
+
+### Removed
+
+### Changed
+
+[v0.2.0] - 2016-10-08
 ---------------------
 
 ### Fixed
@@ -12,7 +23,8 @@ All notable changes to this project will be documented in this file.
 
 -	added support for ElasticSearch through use of **blacktop/elk**
 -	add zip plugin place holder
-- Docs !!!
+-	Docs !!!
+-	release binaries
 
 ### Removed
 

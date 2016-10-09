@@ -5,6 +5,7 @@ Using Malice
 -	[Run Malice](#run-malice)
 -	[Lookup a Hash](#lookup-a-hash)
 -	[Scan Some Malware](#scan-some-malware)
+-	[Watch a Folder](#watch-a-folder)
 
 Download All Malice Plugins
 ---------------------------
@@ -68,3 +69,14 @@ $ malice scan befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
 ```
 
 See [Scan Output](https://github.com/maliceio/malice/blob/master/docs/examples/scan.md)
+
+Watch a Folder
+--------------
+
+```bash
+$ malice watch .
+```
+
+```bash
+INFO[0000] Malice watching folder: .                     env=development
+```

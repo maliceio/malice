@@ -1,4 +1,4 @@
-![malice logo](https://raw.githubusercontent.com/maliceio/malice/master/docs/logo/malice.png)
+![malice logo](https://raw.githubusercontent.com/maliceio/malice/master/docs/images/logo/malice.png)
 
 malice
 ======

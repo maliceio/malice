@@ -3,8 +3,6 @@
 # This script builds the application from source for multiple platforms.
 set -e
 
-go get github.com/mitchellh/gox
-
 # Install dependencies
 echo "==> Getting dependencies..."
 # go get ./...
@@ -28,11 +26,8 @@ XC_OS=${XC_OS:-"solaris darwin freebsd linux"}
 # Build!
 echo "==> Building linux..."
 for GOARCH in arm amd64; do
-go build -v -ldflags "-X main.GitCommit=${GIT_COMMIT}${GIT_DIRTY} -X main.GitDescribe=${GIT_DESCRIBE}" -o build/linux_${GOARCH}/malice
+    GOOS=linux go build -ldflags "-X main.GitCommit=${GIT_COMMIT}${GIT_DIRTY} -X main.GitDescribe=${GIT_DESCRIBE}" -o build/linux_${GOARCH}/malice
 done
-
-echo "==> Building darwin..."
-go build -v -ldflags "-X main.GitCommit=${GIT_COMMIT}${GIT_DIRTY} -X main.GitDescribe=${GIT_DESCRIBE}" -o build/darwin_amd64/malice
 
 # Zip and copy to the dist dir
 echo "==> Packaging..."
@@ -41,7 +36,7 @@ for PLATFORM in $(find ./build -mindepth 1 -maxdepth 1 -type d); do
     echo "--> ${OSARCH}"
 
     pushd $PLATFORM >/dev/null 2>&1
-    zip ../${OSARCH}.zip ./*
+    zip ../${NAME}_${VERSION}_${OSARCH}.zip ./*
     popd >/dev/null 2>&1
 done
 

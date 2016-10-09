@@ -2,6 +2,10 @@ NAME=malice
 ARCH=$(shell uname -m)
 VERSION=0.2.0-alpha
 
+GIT_COMMIT=$(git rev-parse HEAD)
+GIT_DIRTY=$(test -n "`git status --porcelain`" && echo "+CHANGES" || true)
+GIT_DESCRIBE=$(git describe --tags)
+
 all: deps test validate
 
 bindata:
@@ -12,10 +16,14 @@ bindata:
 	mv bindata.go plugins/bindata.go
 
 docker:
-	docker build -t malice/build-binaries -f Dockerfile.binaries .
+	docker build -t malice/build-linux-binaries -f Dockerfile.binaries .
 
 build: bindata docker
-	docker run --rm -v `pwd`:/go/src/github.com/maliceio/malice:rw malice/build-binaries
+	@echo "==> Building Linux Binaries..."
+	docker run --rm -v `pwd`:/go/src/github.com/maliceio/malice:rw -e NAME=$(NAME) -e VERSION=$(VERSION) malice/build-linux-binaries
+	@echo "==> Building OSX Binaries..."
+	GOOS=darwin go build -ldflags "-X main.GitCommit=${GIT_COMMIT}${GIT_DIRTY} -X main.GitDescribe=${GIT_DESCRIBE}" -o build/darwin_amd64/malice
+	zip -jr build/$(NAME)_$(VERSION)_darwin_amd64.zip build/darwin_amd64/malice
 
 deps:
 	go get -u github.com/progrium/gh-release/...
@@ -50,4 +58,4 @@ destroy:
 	rm -rf build
 	gh-release destroy maliceio/$(NAME) $(VERSION) $(shell git rev-parse --abbrev-ref HEAD) v$(VERSION)
 
-.PHONY: all release build destroy deps test validate lint
+.PHONY: all release build destroy

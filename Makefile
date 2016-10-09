@@ -1,6 +1,6 @@
 NAME=malice
 ARCH=$(shell uname -m)
-VERSION=0.2.0-alpha
+VERSION=$(shell gorram github.com/maliceio/malice/version GetHumanVersion)
 
 GIT_COMMIT=$(git rev-parse HEAD)
 GIT_DIRTY=$(test -n "`git status --porcelain`" && echo "+CHANGES" || true)
@@ -16,7 +16,7 @@ bindata:
 	mv bindata.go plugins/bindata.go
 
 docker:
-	docker build -t malice/build-linux-binaries -f Dockerfile.binaries .
+	docker build -t malice/build-linux-binaries -f .docker/Dockerfile.binaries .
 
 build: bindata docker
 	@echo "==> Building Linux Binaries..."
@@ -30,6 +30,7 @@ deps:
 	go get -u -f github.com/tools/godep
 	go get github.com/golang/lint/golint
 	go get -u github.com/jteeuwen/go-bindata/...
+	go get -u npf.io/gorram
 	go get -t ./... || true
 
 test:
@@ -48,9 +49,8 @@ lint:
 
 release: build
 	rm -rf release && mkdir release
-	mv build/*.zip release/
-	# tar -zcf release/$(NAME)_$(VERSION)_linux_$(ARCH).tgz -C build/Linux $(NAME)
-	# tar -zcf release/$(NAME)_$(VERSION)_darwin_$(ARCH).tgz -C build/Darwin $(NAME)
+	go get github.com/progrium/gh-release/...
+	cp build/*.zip release
 	gh-release create maliceio/$(NAME) $(VERSION) $(shell git rev-parse --abbrev-ref HEAD) v$(VERSION)
 
 destroy:

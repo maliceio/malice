@@ -1,9 +1,6 @@
 Using Malice
 ============
 
-Table of Contents
------------------
-
 -	[Download All Malice Plugins](#download-all-malice-plugins)
 -	[Run Malice](#run-malice)
 -	[Lookup a Hash](#lookup-a-hash)

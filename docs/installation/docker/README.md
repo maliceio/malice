@@ -8,6 +8,7 @@ Run Malice inside Docker (no binary)
 -	[Lookup a hash](#lookup-a-hash)
 -	[Start ELK](#start-elk)
 -	[Watch a folder](#watch-a-folder)
+-	[Use **malice/engine** like a host binary](#use-maliceengine-like-a-host-binary)
 
 Install/Update all Plugins
 --------------------------
@@ -51,4 +52,16 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                 -v `pwd`:/malice/samples \
                 -e MALICE_VT_API=$MALICE_VT_API \
                 malice/engine watch .
+```
+
+Use **malice/engine** like a host binary
+----------------------------------------
+
+Add the following to your bash or zsh profile
+
+```bash
+$ alias malice='docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                -v `pwd`:/malice/samples \
+                -e MALICE_VT_API=$MALICE_VT_API \
+                malice/engine $@'
 ```

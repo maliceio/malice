@@ -108,17 +108,6 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                 malice/engine scan SAMPLE
 ```
 
-#### Use **malice/engine** like a host binary
-
-Add the following to your bash or zsh profile
-
-```bash
-$ alias malice='docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-                -v `pwd`:/malice/samples \
-                -e MALICE_VT_API=$MALICE_VT_API \
-                malice/engine $@'
-```
-
 ## Documentation
 
 - [Documentation](docs)

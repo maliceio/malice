@@ -24,3 +24,11 @@ WebUI
 ### ReactJS
 
 -	http://www.overreact.io/
+
+
+### README Stuff  
+
+```bash
+$ markdown-toc README.md | pbcopy
+$ markdownfmt -w README.md
+```

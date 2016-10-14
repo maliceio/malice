@@ -28,9 +28,9 @@ $ sudo unzip /tmp/malice.zip -d /usr/local/bin/
 
 ```bash
 $ GO_VERSION=1.7.1
-$ ARCH="$(dpkg --print-architecture)" \
-$ wget https://storage.googleapis.com/golang/go$GO_VERSION.linux-$ARCH.tar.gz -O /tmp/go.tar.gz \
-$ tar -C /usr/local -xzf /tmp/go.tar.gz \
+$ ARCH="$(dpkg --print-architecture)"
+$ wget https://storage.googleapis.com/golang/go$GO_VERSION.linux-$ARCH.tar.gz -O /tmp/go.tar.gz
+$ tar -C /usr/local -xzf /tmp/go.tar.gz
 # You should add these two lines to you .bashrc file.
 $ export PATH=$PATH:/usr/local/go/bin
 $ export GOPATH=$HOME/go

@@ -1,7 +1,9 @@
 package persist
 
 import (
+	"bytes"
 	"compress/gzip"
+	"context"
 	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha256"
@@ -13,14 +15,23 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/crackcomm/go-clitable"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/network"
+	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/docker/go-units"
+	"github.com/dustin/go-jsonpointer"
+	"github.com/maliceio/go-plugin-utils/utils"
+	"github.com/maliceio/malice/config"
+	"github.com/maliceio/malice/malice/docker/client"
 	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/maldirs"
 	"github.com/maliceio/malice/malice/malutils"
-	"github.com/rakyll/magicmime"
 	// "github.com/dutchcoders/gossdeep"
 )
 
@@ -30,38 +41,141 @@ type File struct {
 	Path string `json:"path" structs:"path"`
 	// Valid bool   `json:"valid"`
 	Size string `json:"size" structs:"size"`
-	// Size   int64
 	// CRC32  string
 	MD5    string `json:"md5" structs:"md5"`
 	SHA1   string `json:"sha1" structs:"sha1"`
 	SHA256 string `json:"sha256" structs:"sha256"`
 	SHA512 string `json:"sha512" structs:"sha512"`
 	// Ssdeep string `json:"ssdeep"`
-	Mime  string `json:"mime" structs:"mime"`
-	Magic string `json:"magic" structs:"magic"`
 	// Arch string `json:"arch"`
-	Data []byte `json:"data" structs:"data,omitempty"`
 }
 
 // Init initializes the File object
 func (file *File) Init() {
-	if file.Path != "" {
-		file.GetName()
-		file.GetSize()
-		file.getData()
-		// file.GetCRC32()
-		file.GetMD5()
-		file.GetSHA1()
-		file.GetSHA256()
-		file.GetSHA512()
-		file.GetFileMimeType()
-		file.GetFileMagicType()
-		file.CopyToSamples()
-		file.gzipSample()
-		file.Data = nil
-	} else {
+
+	if file.Path == "" {
 		log.Fatalf("error occured during file.Init() because file.Path was not set.")
 	}
+
+	file.GetName()
+	file.GetSize()
+
+	// Read in file data
+	dat, err := ioutil.ReadFile(file.Path)
+	utils.Assert(err)
+
+	file.GetMD5(dat)
+	file.GetSHA1(dat)
+	file.GetSHA256(dat)
+	file.GetSHA512(dat)
+}
+
+// GetMimeType returns file's mime type
+func GetMimeType(docker *client.Docker, arg string) (string, error) {
+
+	// Create Container
+	createContConf := &container.Config{
+		Image: "malice/fileinfo",
+		Cmd:   []string{"-m", arg},
+	}
+	hostConfig := &container.HostConfig{
+		Binds:      []string{config.Conf.Docker.Binds},
+		Privileged: false,
+	}
+	networkingConfig := &network.NetworkingConfig{}
+
+	contResponse, err := docker.Client.ContainerCreate(context.Background(), createContConf, hostConfig, networkingConfig, "")
+	if err != nil {
+		return "", err
+	}
+
+	// Start Container
+	err = docker.Client.ContainerStart(context.Background(), contResponse.ID, types.ContainerStartOptions{})
+	if err != nil {
+		return "", err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	options := types.ContainerLogsOptions{
+		ShowStdout: true,
+		ShowStderr: true,
+		Follow:     true,
+	}
+	// Catch Container's Output
+	reader, err := docker.Client.ContainerLogs(ctx, contResponse.ID, options)
+	if err != nil {
+		return "", err
+	}
+	defer reader.Close()
+
+	var buf1 bytes.Buffer
+	w := io.Writer(&buf1)
+
+	_, err = stdcopy.StdCopy(w, os.Stderr, reader)
+	if err != nil && err != io.EOF {
+		return "", err
+	}
+
+	return strings.TrimSpace(buf1.String()), nil
+}
+
+// GetFileInfo start malice/fileinfo container and extract certain fields with a search string
+func GetFileInfo(docker *client.Docker, arg string, search string) (string, error) {
+
+	// Create Container
+	createContConf := &container.Config{
+		Image: "malice/fileinfo",
+		Cmd:   []string{arg},
+	}
+	hostConfig := &container.HostConfig{
+		Binds:      []string{config.Conf.Docker.Binds},
+		Privileged: false,
+	}
+	networkingConfig := &network.NetworkingConfig{}
+
+	contResponse, err := docker.Client.ContainerCreate(context.Background(), createContConf, hostConfig, networkingConfig, "")
+	if err != nil {
+		return "", err
+	}
+
+	// Start Container
+	err = docker.Client.ContainerStart(context.Background(), contResponse.ID, types.ContainerStartOptions{})
+	if err != nil {
+		return "", err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	options := types.ContainerLogsOptions{
+		ShowStdout: true,
+		ShowStderr: true,
+		Follow:     true,
+	}
+	// Catch Container's Output
+	reader, err := docker.Client.ContainerLogs(ctx, contResponse.ID, options)
+	if err != nil {
+		return "", err
+	}
+	defer reader.Close()
+
+	var buf1 bytes.Buffer
+	w := io.Writer(&buf1)
+
+	_, err = stdcopy.StdCopy(w, os.Stderr, reader)
+	if err != nil && err != io.EOF {
+		return "", err
+	}
+
+	// Find fields in JSON output with search string
+	found, err := jsonpointer.Find(buf1.Bytes(), search)
+	if err != nil {
+		return "", err
+	}
+
+	return string(found), nil
 }
 
 // CopyToSamples copys input file to samples folder
@@ -142,14 +256,6 @@ func (file *File) GetSize() (bytes int64, err error) {
 	return
 }
 
-// getData loads file into []bytes
-// TODO: This is probably pretty dumb to keep this data in memory
-func (file *File) getData() {
-	dat, err := ioutil.ReadFile(file.Path)
-	er.CheckError(err)
-	file.Data = dat
-}
-
 // // GetCRC32 calculates the Files CRC32
 // func (file *File) GetCRC32() (hCRC32Sum string, err error) {
 //
@@ -166,11 +272,11 @@ func (file *File) getData() {
 // }
 
 // GetMD5 calculates the Files md5sum
-func (file *File) GetMD5() (hMd5Sum string, err error) {
+func (file *File) GetMD5(data []byte) (hMd5Sum string, err error) {
 
 	hmd5 := md5.New()
-	_, err = hmd5.Write(file.Data)
-	er.CheckError(err)
+	_, err = hmd5.Write(data)
+	utils.Assert(err)
 	hMd5Sum = fmt.Sprintf("%x", hmd5.Sum(nil))
 
 	file.MD5 = hMd5Sum
@@ -179,11 +285,11 @@ func (file *File) GetMD5() (hMd5Sum string, err error) {
 }
 
 // GetSHA1 calculates the Files sha256sum
-func (file *File) GetSHA1() (h1Sum string, err error) {
+func (file *File) GetSHA1(data []byte) (h1Sum string, err error) {
 
 	h1 := sha1.New()
-	_, err = h1.Write(file.Data)
-	er.CheckError(err)
+	_, err = h1.Write(data)
+	utils.Assert(err)
 	h1Sum = fmt.Sprintf("%x", h1.Sum(nil))
 
 	file.SHA1 = h1Sum
@@ -192,11 +298,11 @@ func (file *File) GetSHA1() (h1Sum string, err error) {
 }
 
 // GetSHA256 calculates the Files sha256sum
-func (file *File) GetSHA256() (h256Sum string, err error) {
+func (file *File) GetSHA256(data []byte) (h256Sum string, err error) {
 
 	h256 := sha256.New()
-	_, err = h256.Write(file.Data)
-	er.CheckError(err)
+	_, err = h256.Write(data)
+	utils.Assert(err)
 	h256Sum = fmt.Sprintf("%x", h256.Sum(nil))
 
 	file.SHA256 = h256Sum
@@ -205,54 +311,15 @@ func (file *File) GetSHA256() (h256Sum string, err error) {
 }
 
 // GetSHA512 calculates the Files sha256sum
-func (file *File) GetSHA512() (h512Sum string, err error) {
+func (file *File) GetSHA512(data []byte) (h512Sum string, err error) {
 
 	h512 := sha512.New()
-	_, err = h512.Write(file.Data)
-	er.CheckError(err)
+	_, err = h512.Write(data)
+	utils.Assert(err)
 	h512Sum = fmt.Sprintf("%x", h512.Sum(nil))
 
 	file.SHA512 = h512Sum
 
-	return
-}
-
-// GetFileMimeType returns the mime-type of a file path
-func (file *File) GetFileMimeType() (mimetype string, err error) {
-
-	if err := magicmime.Open(magicmime.MAGIC_MIME_TYPE | magicmime.MAGIC_SYMLINK | magicmime.MAGIC_ERROR); err != nil {
-		log.Fatal(err)
-	}
-	defer magicmime.Close()
-
-	mimetype, err = magicmime.TypeByFile(file.Path)
-	if err != nil {
-		log.Fatalf("error occured during type lookup: %v", err)
-	}
-
-	// filetype := http.DetectContentType(file.Data)
-	// file.Mime = filetype
-
-	file.Mime = mimetype
-	// log.Printf("mime-type: %v", mimetype)
-	return
-}
-
-// GetFileMagicType returns the textual libmagic type of a file path
-func (file *File) GetFileMagicType() (magictype string, err error) {
-
-	if err := magicmime.Open(magicmime.MAGIC_SYMLINK | magicmime.MAGIC_ERROR); err != nil {
-		log.Fatal(err)
-	}
-	defer magicmime.Close()
-
-	magictype, err = magicmime.TypeByFile(file.Path)
-	if err != nil {
-		log.Fatalf("error occured during type lookup: %v", err)
-	}
-
-	file.Magic = magictype
-	// log.Printf("magic-type: %v", magictype)
 	return
 }
 
@@ -274,8 +341,8 @@ func (file *File) ToMarkdownTable() {
 	table.AddRow(map[string]interface{}{"Field": "SHA1", "Value": file.SHA1})
 	table.AddRow(map[string]interface{}{"Field": "SHA256", "Value": file.SHA256})
 	// table.AddRow(map[string]interface{}{"Field": "SHA512", "Value": file.SHA512})
-	table.AddRow(map[string]interface{}{"Field": "Mime", "Value": file.Mime})
-	table.AddRow(map[string]interface{}{"Field": "Magic", "Value": file.Magic})
+	// table.AddRow(map[string]interface{}{"Field": "Mime", "Value": file.Mime})
+	// table.AddRow(map[string]interface{}{"Field": "Magic", "Value": file.Magic})
 	table.Markdown = true
 	table.Print()
 }
@@ -293,8 +360,8 @@ func (file *File) PrintFileDetails() {
 	table.AddRow(map[string]interface{}{"Field": "SHA256", "Value": file.SHA256})
 	table.AddRow(map[string]interface{}{"Field": "SHA512", "Value": file.SHA512})
 	// table.AddRow(map[string]interface{}{"Field": "Ssdeep", "Value": file.Ssdeep})
-	table.AddRow(map[string]interface{}{"Field": "Mime", "Value": file.Mime})
-	table.AddRow(map[string]interface{}{"Field": "Magic", "Value": file.Magic})
+	// table.AddRow(map[string]interface{}{"Field": "Mime", "Value": file.Mime})
+	// table.AddRow(map[string]interface{}{"Field": "Magic", "Value": file.Magic})
 	table.Markdown = true
 	table.Print()
 	// fmt.Println("Name: ", file.Name)

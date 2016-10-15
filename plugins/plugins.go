@@ -231,6 +231,10 @@ func UpdateEnabledPlugins(docker *client.Docker) {
 
 // UpdateAllPlugins performs a docker pull on all registered plugins checking for updates
 func UpdateAllPlugins(docker *client.Docker) {
+	// Pull busybox (used to copy samples to malice volume)
+	image.Pull(docker, "busybox", "latest")
+	// Pull blacktop/elk (used to store malice scan results data)
+	image.Pull(docker, config.Conf.DB.Image, "latest")
 	plugins := Plugs.Plugins
 	for _, plugin := range plugins {
 		fmt.Println("[Updating Plugin] ===> ", plugin.Name)

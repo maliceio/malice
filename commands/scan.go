@@ -88,9 +88,13 @@ func ScanSample(path string) {
 		// Run all Intel Plugins on the md5 hash associated with the file
 		plugins.RunIntelPlugins(docker, file.MD5, scanID, true)
 
-		log.Debug("Looking for plugins that will run on: ", file.Mime)
+		// Get file's mime type
+		mimeType, err := persist.GetMimeType(docker, file.SHA256)
+		er.CheckError(err)
+
+		log.Debug("Looking for plugins that will run on: ", mimeType)
 		// Iterate over all applicable installed plugins
-		plugins := plugins.GetPluginsForMime(file.Mime, true)
+		plugins := plugins.GetPluginsForMime(mimeType, true)
 		log.Debug("Found these plugins: ")
 		for _, plugin := range plugins {
 			log.Debugf(" - %v", plugin.Name)

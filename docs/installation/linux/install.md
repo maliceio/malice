@@ -22,6 +22,13 @@ $ wget https://github.com/maliceio/malice/releases/download/v0.2.0-alpha/malice_
 $ sudo unzip /tmp/malice.zip -d /usr/local/bin/
 ```
 
+#### Uninstall Malice  
+
+```bash
+$ rm /usr/local/bin/malice
+$ rm -rf ~/.malice
+```
+
 ## Install From Source
 
 #### Install Go
@@ -42,4 +49,12 @@ $ export PATH=$PATH:$GOPATH/bin
 ```bash
 $ sudo apt-get install libmagic-dev
 $ go get -v github.com/maliceio/malice
+```
+
+#### Uninstall Malice  
+
+```bash
+$ rm $GOPATH/src/github.com/maliceio/malice
+$ rm $GOPATH/bin/malice
+$ rm -rf ~/.malice
 ```

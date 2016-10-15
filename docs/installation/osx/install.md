@@ -16,6 +16,15 @@ $ wget https://github.com/maliceio/malice/releases/download/v0.2.0-alpha/malice_
 $ sudo unzip /tmp/malice.zip -d /usr/local/bin/
 ```
 
+#### Uninstall Malice  
+
+```bash
+$ rm /usr/local/bin/malice
+$ rm -rf ~/.malice
+```
+
+> **NOTE:** We are removing the `.malice` config folder in your home directory which also contains gzipped versions of all the files you have scanned.
+
 ## Install With Homebrew
 
 #### Install Malice
@@ -25,3 +34,12 @@ $ brew install https://raw.githubusercontent.com/maliceio/malice/master/contrib/
 ```
 
 > **NOTE:** Included with the homebrew install are zsh completions :sunglasses:
+
+#### Uninstall Malice  
+
+```bash
+$ rm -rf ~/.malice
+$ brew uninstall install https://raw.githubusercontent.com/maliceio/malice/master/contrib/homebrew/Formula/malice.rb
+```
+
+> **NOTE:** We are removing the `.malice` config folder in your home directory which also contains gzipped versions of all the files you have scanned.

@@ -29,6 +29,8 @@ $ rm /usr/local/bin/malice
 $ rm -rf ~/.malice
 ```
 
+> **NOTE:** We are removing the `.malice` config folder in your home directory which also contains gzipped versions of all the files you have scanned.
+
 ## Install From Source
 
 #### Install Go
@@ -58,3 +60,5 @@ $ rm $GOPATH/src/github.com/maliceio/malice
 $ rm $GOPATH/bin/malice
 $ rm -rf ~/.malice
 ```
+
+> **NOTE:** We are removing the `.malice` config folder in your home directory which also contains gzipped versions of all the files you have scanned.

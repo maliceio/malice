@@ -25,6 +25,7 @@ title = "Malice Runtime Configuration"
 
 [database]
   name = "malice-elk"
+  image = "blacktop/elk"
   server = "localhost" # This is for running on Docker for Mac installations.
   ports = [ 9200 ]
   timeout = 10

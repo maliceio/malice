@@ -44,7 +44,7 @@ func getElasticSearchAddr(addr string) string {
 func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
 
 	name := config.Conf.DB.Name
-	image := "blacktop/elk"
+	image := config.Conf.DB.Image
 	binds := []string{"malice:/usr/share/elasticsearch/data"}
 	portBindings := nat.PortMap{
 		"80/tcp":   {{HostIP: "0.0.0.0", HostPort: "80"}},

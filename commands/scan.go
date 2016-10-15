@@ -70,6 +70,7 @@ func ScanSample(path string) {
 
 		file := persist.File{Path: path}
 		file.Init()
+
 		// Output File Hashes
 		file.ToMarkdownTable()
 		// fmt.Println(string(file.ToJSON()))

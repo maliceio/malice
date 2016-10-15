@@ -40,6 +40,7 @@ type webConfig struct {
 
 type databaseConfig struct {
 	Name    string
+	Image   string
 	Server  string
 	Ports   []int
 	Timeout int

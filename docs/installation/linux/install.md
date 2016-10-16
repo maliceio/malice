@@ -17,7 +17,6 @@ $ sudo usermod -aG docker $USER  # You might have to logout for change to take e
 #### Install Malice
 
 ```bash
-$ sudo apt-get install libmagic-dev unzip
 $ wget https://github.com/maliceio/malice/releases/download/v0.2.0-alpha/malice_0.2.0-alpha_linux_amd64.zip -O /tmp/malice.zip
 $ sudo unzip /tmp/malice.zip -d /usr/local/bin/
 ```
@@ -49,7 +48,6 @@ $ export PATH=$PATH:$GOPATH/bin
 #### Install Malice
 
 ```bash
-$ sudo apt-get install libmagic-dev
 $ go get -v github.com/maliceio/malice
 ```
 

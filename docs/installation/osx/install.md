@@ -11,7 +11,6 @@ $ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/inst
 #### Install Malice
 
 ```bash
-$ brew install libmagic
 $ wget https://github.com/maliceio/malice/releases/download/v0.2.0-alpha/malice_0.2.0-alpha_linux_amd64.zip -O /tmp/malice.zip
 $ sudo unzip /tmp/malice.zip -d /usr/local/bin/
 ```

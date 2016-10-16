@@ -9,7 +9,7 @@ class Malice < Formula
   head "https://github.com/maliceio/malice.git"
 
   depends_on "go" => :build
-  depends_on "libmagic" => :run
+  # depends_on "libmagic" => :run
 
   # It's possible that the user wants to manually install Docker and Machine,
   # for example, they want to compile Docker manually

@@ -1,6 +1,7 @@
 package elasticsearch
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -16,7 +17,7 @@ import (
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"
 	er "github.com/maliceio/malice/malice/errors"
-	elastic "gopkg.in/olivere/elastic.v3"
+	elastic "gopkg.in/olivere/elastic.v5"
 )
 
 // PluginResults a malice plugin results object
@@ -69,7 +70,7 @@ func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error)
 		log.Debug("ELK is now online.")
 
 		// Even though it's up it's not ready to index data yet.
-		log.Info("Sleeping for 10 seconds to give blacktop/elk time to initalize.")
+		log.Infof("Sleeping for 10 seconds to give %s time to initalize.", config.Conf.DB.Image)
 		time.Sleep(10 * time.Second)
 
 		return cont, err
@@ -86,12 +87,12 @@ func InitElasticSearch(addr string) error {
 	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
 	utils.Assert(err)
 
-	exists, err := client.IndexExists("malice").Do()
+	exists, err := client.IndexExists("malice").Do(context.Background())
 	utils.Assert(err)
 
 	if !exists {
 		// Index does not exist yet.
-		createIndex, err := client.CreateIndex("malice").BodyString(mapping).Do()
+		createIndex, err := client.CreateIndex("malice").BodyString(mapping).Do(context.Background())
 		utils.Assert(err)
 		if !createIndex.Acknowledged {
 			// Not acknowledged
@@ -120,7 +121,7 @@ func TestConnection(addr string) error {
 	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
 
 	// Ping the Elasticsearch server to get e.g. the version number
-	info, code, err := client.Ping(ElasticAddr).Do()
+	info, code, err := client.Ping(ElasticAddr).Do(context.Background())
 	utils.Assert(err)
 
 	log.WithFields(log.Fields{
@@ -152,10 +153,10 @@ func WriteFileToDatabase(sample map[string]interface{}) elastic.IndexResponse {
 	newScan, err := client.Index().
 		Index("malice").
 		Type("samples").
-		OpType("create").
+		OpType("index").
 		// Id("1").
 		BodyJson(scan).
-		Do()
+		Do(context.Background())
 	utils.Assert(err)
 
 	log.WithFields(log.Fields{
@@ -191,7 +192,7 @@ func WriteHashToDatabase(hash string) elastic.IndexResponse {
 		OpType("create").
 		// Id("1").
 		BodyJson(scan).
-		Do()
+		Do(context.Background())
 	utils.Assert(err)
 
 	log.WithFields(log.Fields{
@@ -218,7 +219,7 @@ func WritePluginResultsToDatabase(results PluginResults) {
 		Index("malice").
 		Type("samples").
 		Id(results.ID).
-		Do()
+		Do(context.Background())
 
 	if err != nil {
 
@@ -236,7 +237,7 @@ func WritePluginResultsToDatabase(results PluginResults) {
 		}
 		update, err := client.Update().Index("malice").Type("samples").Id(getSample.Id).
 			Doc(updateScan).
-			Do()
+			Do(context.Background())
 		utils.Assert(err)
 
 		log.WithFields(log.Fields{
@@ -265,7 +266,7 @@ func WritePluginResultsToDatabase(results PluginResults) {
 			OpType("create").
 			// Id("1").
 			BodyJson(scan).
-			Do()
+			Do(context.Background())
 		utils.Assert(err)
 
 		log.WithFields(log.Fields{

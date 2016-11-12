@@ -83,7 +83,7 @@ func configConfigToml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "config/config.toml", size: 1259, mode: os.FileMode(420), modTime: time.Unix(1477777483, 0)}
+	info := bindataFileInfo{name: "config/config.toml", size: 1259, mode: os.FileMode(420), modTime: time.Unix(1478991382, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }

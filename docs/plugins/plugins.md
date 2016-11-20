@@ -6,7 +6,7 @@ $ malice plugin list --all --detail
 
 | Name          | Description                               | Enabled | Image                | Category | Mime                   |
 | ------------- | ----------------------------------------- | ------- | -------------------- | -------- | ---------------------- |
-| nsrl          | NSRL Database Hash Search                 | false   | malice/nsrl          | intel    | hash                   |
+| nsrl          | NSRL Database Hash Search                 | true    | malice/nsrl          | intel    | hash                   |
 | virustotal    | VirusTotal - files scan and hash lookup   | true    | malice/virustotal    | intel    | hash                   |
 | shadow-server | ShadowServer - hash lookup                | true    | malice/shadow-server | intel    | hash                   |
 | team-cymru    | TeamCymru - hash lookup                   | false   | malice/team-cymru    | intel    | hash                   |

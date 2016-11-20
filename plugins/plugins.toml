@@ -8,7 +8,7 @@
 title = "Malice Plugin Configurations"
 
 [[plugin]]
-  enabled = false
+  enabled = true
   name = "nsrl"
   description = "NSRL Database Hash Search"
   category = "intel"

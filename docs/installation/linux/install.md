@@ -12,6 +12,13 @@ $ sudo apt-get install docker-engine
 $ sudo usermod -aG docker $USER  # You might have to logout for change to take effect
 ```
 
+#### Fix Elasticsearch  
+
+```bash
+echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -w vm.max_map_count=262144
+```
+
 ## Download Pre-Compiled Binary
 
 #### Install Malice

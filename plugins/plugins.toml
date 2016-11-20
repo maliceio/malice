@@ -15,6 +15,7 @@ title = "Malice Plugin Configurations"
   image = "malice/nsrl"
   repository = "https://github.com/maliceio/malice-nsrl.git"
   build = false
+  cmd = "lookup"
   mime = "hash"
   hashtypes = [ "md5" ]
 

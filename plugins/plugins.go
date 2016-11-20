@@ -85,7 +85,12 @@ func (plugin Plugin) buildCmd(args string, logs bool) strslice.StrSlice {
 // RunIntelPlugins run all Intel plugins
 func RunIntelPlugins(docker *client.Docker, hash string, scanID string, logs bool) {
 
+	log.Debug("Looking for Intel plugins...")
 	intelPlugins := GetIntelPlugins(true)
+	log.Debug("Found these plugins: ")
+	for _, plugin := range intelPlugins {
+		log.Debugf(" - %v", plugin.Name)
+	}
 
 	var wg sync.WaitGroup
 	wg.Add(len(intelPlugins))

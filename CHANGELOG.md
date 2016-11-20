@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 
 -	added support for ElasticSearch through use of **blacktop/elk**
 -	add zip plugin place holder
+-	add nsrl lookup plugin
 -	Docs !!!
 -	release binaries
 
@@ -32,7 +33,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- upgrade to the elastic stack 5.0.0
+-	upgrade to the elastic stack 5.0.0
 
 [v0.1.0] - 2016-08-14
 ---------------------

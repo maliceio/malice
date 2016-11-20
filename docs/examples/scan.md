@@ -37,7 +37,35 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
 
 #### ShadowServer
 
--	Not found
+##### AntiVirus
+ - FirstSeen: 11/03/2016 9:09AM
+ - LastSeen: 11/08/2016 2:10AM
+
+| Vendor      | Signature                              |
+| ----------- | -------------------------------------- |
+| QuickHeal   | TrojanAPT.LecnaCBack.MUE.Z3            |
+| MicroWorld  | Backdoor.Lecna.AB                      |
+| Fortinet    | W32/Generic.AC.1FAF5A!tr               |
+| Ikarus      | Backdoor.Win32.Lecna                   |
+| Eset        | Win32/Lecna.W                          |
+| Clam        | PUA.Win.Packer.AcprotectUltraprotect-1 |
+| DrWeb       | BackDoor.Dizhi                         |
+| Symantec    | W32.Lecna.D                            |
+| Avast       | Win32:Lecna-I                          |
+| McAfee      | BackDoor-CSB                           |
+| Sophos      | Troj/Lecna-Q                           |
+| Comodo      | Backdoor.Win32.Lecna.AB                |
+| AhnLab      | Win-Trojan/Lecna.61440                 |
+| K7GW        | Trojan ( 00013a571 )                   |
+| GData       | Backdoor.Lecna.AB                      |
+| TrendMicro  | BKDR_LECNA.SM                          |
+| Microsoft   | Backdoor:Win32/Lecna!dha               |
+| K7          | Trojan ( 00013a571 )                   |
+| Avira       | WORM/Rbot.Gen                          |
+| Authentium  | W32/Lecnac.A.gen!Eldorado              |
+| AVG         | Win32/DH{IIEXEx4XA2EICXwkIiU}          |
+| BitDefender | Backdoor.Lecna.AB                      |
+| FProt       | W32/Trojan.AAWD                        |
 
 #### Yara
 

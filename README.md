@@ -74,11 +74,6 @@ Malice will output the results as a markdown table that can be piped or copied i
 
 > Once the scan completes you can open the [Kibana](https://www.elastic.co/products/kibana) UI and look at the scan results here: [http://localhost](http://localhost) (*assuming you are using Docker for Mac*)
 
--	You will be prompted for a user/pass which defaults to:
-
-	-	**user:** `admin`
-	-	**password:** `admin`
-
 ![kibana-setup](docs/images/kibana-setup.png)
 
 -	Type in **malice** as the `Index name or pattern` and click **Create**.

@@ -8,6 +8,7 @@ $ malice plugin list --all --detail
 | ------------- | ----------------------------------------- | ------- | -------------------- | -------- | ---------------------- |
 | nsrl          | NSRL Database Hash Search                 | true    | malice/nsrl          | intel    | hash                   |
 | virustotal    | VirusTotal - files scan and hash lookup   | true    | malice/virustotal    | intel    | hash                   |
+| totalhash     | #totalhash - hash lookup                  | true    | malice/totalhash     | intel    | hash                   |
 | shadow-server | ShadowServer - hash lookup                | true    | malice/shadow-server | intel    | hash                   |
 | team-cymru    | TeamCymru - hash lookup                   | false   | malice/team-cymru    | intel    | hash                   |
 | fileinfo      | ssdeep/TRiD/exiftool                      | true    | malice/fileinfo      | metadata | *                      |

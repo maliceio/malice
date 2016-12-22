@@ -36,6 +36,21 @@ title = "Malice Plugin Configurations"
 
 [[plugin]]
   enabled = true
+  name = "totalhash"
+  description = "#totalhash - hash lookup"
+  category = "intel"
+  image = "malice/totalhash"
+  repository = "https://github.com/maliceio/malice-totalhash.git"
+  build = false
+  upload = false # Set upload to `true` if you want to upload sample to totalhash.cymru.com
+  user = ""
+  key = ""
+  mime = "hash"
+  hashtypes = [ "sha1" ]
+  env = ["MALICE_TH_USER", "MALICE_TH_KEY"]
+
+[[plugin]]
+  enabled = true
   name = "shadow-server"
   description = "ShadowServer - hash lookup"
   category = "intel"

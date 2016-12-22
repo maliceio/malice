@@ -31,6 +31,12 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
 |-------|-------------------------------------------------------------------------------------------------------------------------------|--------|---------------------|
 | 85%   | [link](https://www.virustotal.com/file/befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408/analysis/1455536823/) | Public | 2016-02-15 11:47:03 |
 
+#### #totalhash
+
+| Found              | URL                                                                                    |
+| ------------------ | -------------------------------------------------------------------------------------- |
+| :white_check_mark: | [link](https://totalhash.cymru.com/analysis/?6b82f126555e7644816df5d4e4614677ee0bda5c) |
+
 #### NSRL Database
 
  - Not Found :grey_question:

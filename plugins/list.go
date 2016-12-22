@@ -2,6 +2,7 @@ package plugins
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/crackcomm/go-clitable"
@@ -61,12 +62,30 @@ func GetPluginByName(name string) Plugin {
 }
 
 // GetIntelPlugins will return all Intel plugins
-func GetIntelPlugins(enabled bool) []Plugin {
+func GetIntelPlugins(hashType string, enabled bool) []Plugin {
+	var intelPlugs []Plugin
 	if enabled {
-		// fmt.Printf("%#v\n", filterPluginsByIntel(Plugs.Plugins))
-		return getIntel(getEnabled(getInstalled()))
+		intelPlugs = getIntel(getEnabled(getInstalled()))
+	} else {
+		intelPlugs = getIntel(getInstalled())
 	}
-	return getIntel(getInstalled())
+	// filter down to intel plugins with apikey's set in ENV
+	var allSet bool
+	var hasEnvPlugs []Plugin
+	for _, plugin := range intelPlugs {
+		allSet = true
+		for _, pluginEnv := range plugin.Env {
+			if os.Getenv(pluginEnv) == "" {
+				allSet = false
+			}
+		}
+		if allSet {
+			if utils.StringInSlice(hashType, plugin.HashTypes) {
+				hasEnvPlugs = append(hasEnvPlugs, plugin)
+			}
+		}
+	}
+	return hasEnvPlugs
 }
 
 // GetPluginsForMime will return all plugins that can consume the mime type file

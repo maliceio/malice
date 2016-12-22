@@ -14,6 +14,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/docker/api/types/strslice"
 	runconfigopts "github.com/docker/docker/runconfig/opts"
+	"github.com/maliceio/go-plugin-utils/utils"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"
@@ -85,8 +86,10 @@ func (plugin Plugin) buildCmd(args string, logs bool) strslice.StrSlice {
 // RunIntelPlugins run all Intel plugins
 func RunIntelPlugins(docker *client.Docker, hash string, scanID string, logs bool) {
 
+	hashType, _ := utils.GetHashType(hash)
+
 	log.Debug("Looking for Intel plugins...")
-	intelPlugins := GetIntelPlugins(true)
+	intelPlugins := GetIntelPlugins(hashType, true)
 	log.Debug("Found these plugins: ")
 	for _, plugin := range intelPlugins {
 		log.Debugf(" - %v", plugin.Name)

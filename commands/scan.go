@@ -86,7 +86,7 @@ func ScanSample(path string) {
 
 		/////////////////////////////////////////////////////////////////
 		// Run all Intel Plugins on the md5 hash associated with the file
-		plugins.RunIntelPlugins(docker, file.MD5, scanID, true)
+		plugins.RunIntelPlugins(docker, file.SHA1, scanID, true)
 
 		// Get file's mime type
 		mimeType, err := persist.GetMimeType(docker, file.SHA256)

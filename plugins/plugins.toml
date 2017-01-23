@@ -98,7 +98,7 @@ title = "Malice Plugin Configurations"
   description = "Avast AntiVirus"
   category = "av"
   image = "malice/avast"
-  repository = "https://github.com/maliceio/malice-av.git#:avast"
+  repository = "https://github.com/maliceio/malice-avast.git"
   build = false
   mime = "*"
 
@@ -108,7 +108,7 @@ title = "Malice Plugin Configurations"
   description = "AVG AntiVirus"
   category = "av"
   image = "malice/avg"
-  repository = "https://github.com/maliceio/malice-av.git#:avg"
+  repository = "https://github.com/maliceio/malice-avg.git"
   build = false
   mime = "*"
 
@@ -118,7 +118,7 @@ title = "Malice Plugin Configurations"
   description = "Bitdefender AntiVirus"
   category = "av"
   image = "malice/bitdefender"
-  repository = "https://github.com/maliceio/malice-av.git#:bitdefender"
+  repository = "https://github.com/maliceio/malice-bitdefender.git"
   build = false
   mime = "*"
 
@@ -128,7 +128,7 @@ title = "Malice Plugin Configurations"
   description = "ClamAV"
   category = "av"
   image = "malice/clamav"
-  repository = "https://github.com/maliceio/malice-av.git#:clamav"
+  repository = "https://github.com/maliceio/malice-clamav.git"
   build = false
   mime = "*"
 
@@ -138,7 +138,7 @@ title = "Malice Plugin Configurations"
   description = "Comodo AntiVirus"
   category = "av"
   image = "malice/comodo"
-  repository = "https://github.com/maliceio/malice-av.git#:comodo"
+  repository = "https://github.com/maliceio/malice-comodo.git"
   build = false
   mime = "*"
 
@@ -148,17 +148,17 @@ title = "Malice Plugin Configurations"
   description = "F-PROT AntiVirus"
   category = "av"
   image = "malice/fprot"
-  repository = "https://github.com/maliceio/malice-av.git#:fprot"
+  repository = "https://github.com/maliceio/malice-fprot.git"
   build = false
   mime = "*"
 
 [[plugin]]
   enabled = true
-  name = "f-secure"
+  name = "fsecure"
   description = "F-Secure AntiVirus"
   category = "av"
-  image = "malice/f-secure"
-  repository = "https://github.com/maliceio/malice-av.git#:f-secure"
+  image = "malice/fsecure"
+  repository = "https://github.com/maliceio/malice-fsecure.git"
   build = false
   mime = "*"
 
@@ -168,7 +168,7 @@ title = "Malice Plugin Configurations"
   description = "Sophos AntiVirus"
   category = "av"
   image = "malice/sophos"
-  repository = "https://github.com/maliceio/malice-av.git#:sophos"
+  repository = "https://github.com/maliceio/malice-sophos.git"
   build = false
   mime = "*"
 

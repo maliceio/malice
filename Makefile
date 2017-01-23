@@ -1,6 +1,7 @@
 NAME=malice
 ARCH=$(shell uname -m)
-VERSION=$(shell gorram github.com/maliceio/malice/version GetHumanVersion)
+# VERSION=$(shell gorram github.com/maliceio/malice/version GetHumanVersion)
+VERSION=0.2.0-alpha
 
 GIT_COMMIT=$(git rev-parse HEAD)
 GIT_DIRTY=$(test -n "`git status --porcelain`" && echo "+CHANGES" || true)

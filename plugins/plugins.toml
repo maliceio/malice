@@ -12,12 +12,12 @@ title = "Malice Plugin Configurations"
   name = "nsrl"
   description = "NSRL Database Hash Search"
   category = "intel"
-  image = "malice/nsrl"
+  image = "malice/nsrl:sha1"
   repository = "https://github.com/maliceio/malice-nsrl.git"
   build = false
   cmd = "lookup"
   mime = "hash"
-  hashtypes = [ "md5" ]
+  hashtypes = [ "sha1" ]
 
 [[plugin]]
   enabled = true

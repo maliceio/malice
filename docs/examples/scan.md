@@ -161,6 +161,12 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
 |----------|--------|-----------|----------|
 | false    |        | 4.6.5.141 | 20160919 |
 
+#### Avast
+
+| Infected | Result              | Engine | Updated  |
+| -------- | ------------------- | ------ | -------- |
+| true     | Win32:Lecna-I [Trj] | 2.1.2  | 20170129 |
+
 #### AVG
 
 | Infected | Result                | Engine    | Updated  |

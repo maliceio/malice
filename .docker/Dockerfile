@@ -1,6 +1,6 @@
 FROM gliderlabs/alpine:edge
 
-MAINTAINER blacktop, https://github.com/blacktop
+LABEL maintainer "https://github.com/blacktop"
 
 RUN apk-install file tini
 RUN apk-install -t build-deps go git mercurial build-base file-dev \

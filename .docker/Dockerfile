@@ -4,7 +4,7 @@ MAINTAINER blacktop, https://github.com/blacktop
 
 RUN apk-install file tini
 RUN apk-install -t build-deps go git mercurial build-base file-dev \
-  && set -x \ 
+  && set -x \
   && echo "Building malice Go binary..." \
   && git clone https://github.com/maliceio/malice.git /go/src/github.com/maliceio/malice \
   && cd /go/src/github.com/maliceio/malice \

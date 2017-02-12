@@ -8,6 +8,8 @@ RUN apk-install -t build-deps go git mercurial build-base file-dev \
   && echo "Building malice Go binary..." \
   && git clone https://github.com/maliceio/malice.git /go/src/github.com/maliceio/malice \
   && cd /go/src/github.com/maliceio/malice \
+  # fix git redirects
+  && git config --global http.https://gopkg.in.followRedirects true \
   && export GOPATH=/go \
   && go version \
   && go get \

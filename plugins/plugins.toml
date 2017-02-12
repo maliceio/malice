@@ -21,7 +21,7 @@ title = "Malice Plugin Configurations"
   env = ["MALICE_TIMEOUT"]
 
 [[plugin]]
-  enabled = true
+  enabled = false
   name = "virustotal"
   description = "VirusTotal - files scan and hash lookup"
   category = "intel"
@@ -36,7 +36,7 @@ title = "Malice Plugin Configurations"
   env = ["MALICE_VT_API", "MALICE_TIMEOUT"]
 
 [[plugin]]
-  enabled = true
+  enabled = false
   name = "totalhash"
   description = "#totalhash - hash lookup"
   category = "intel"
@@ -250,4 +250,3 @@ title = "Malice Plugin Configurations"
   mime = "archive"
   ziptypes = [ "tar", "gz", "p7z" ]
   env = ["MALICE_TIMEOUT"]
-  

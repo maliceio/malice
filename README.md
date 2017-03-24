@@ -86,7 +86,7 @@ Malice will output the results as a markdown table that can be piped or copied i
 
 [![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)][hub]
 [![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)][hub]
-[![Docker Image](https://img.shields.io/badge/docker image-37.04 MB-blue.svg)][hub]
+[![Docker Image](https://img.shields.io/badge/docker%20image-37.04%20MB-blue.svg)][hub]
 
 #### Install/Update all Plugins
 

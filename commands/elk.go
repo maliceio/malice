@@ -12,8 +12,7 @@ func cmdELK(logs bool) error {
 
 	docker := client.NewDockerClient()
 
-	// contJSON, err := &docker StartELK(logs)
-	contJSON, err := elasticsearch.StartELK(docker, logs)
+	contJSON, err := elasticsearch.Start(docker, logs)
 	er.CheckError(err)
 
 	log.WithFields(log.Fields{
@@ -24,7 +23,7 @@ func cmdELK(logs bool) error {
 		"password": "admin",
 		"name":     contJSON.Name,
 		"env":      config.Conf.Environment.Run,
-	}).Info("ELK Container Started")
+	}).Info("Elasticsearch Container Started")
 
 	return nil
 }

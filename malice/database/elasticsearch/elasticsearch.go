@@ -41,8 +41,8 @@ func getElasticSearchAddr(addr string) string {
 	return fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "localhost"))
 }
 
-// StartELK creates an ELK container from the image blacktop/elk
-func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
+// Start creates an Elasticsearch container from the image blacktop/elasticsearch
+func Start(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
 
 	name := config.Conf.DB.Name
 	image := config.Conf.DB.Image

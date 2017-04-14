@@ -48,7 +48,6 @@ func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error)
 	image := config.Conf.DB.Image
 	binds := []string{"malice:/usr/share/elasticsearch/data"}
 	portBindings := nat.PortMap{
-		"80/tcp":   {{HostIP: "0.0.0.0", HostPort: "80"}},
 		"9200/tcp": {{HostIP: "0.0.0.0", HostPort: "9200"}},
 	}
 
@@ -63,11 +62,11 @@ func StartELK(docker *client.Docker, logs bool) (types.ContainerJSONBase, error)
 		log.WithFields(log.Fields{
 			"server":  elasticAddress,
 			"timeout": config.Conf.DB.Timeout,
-		}).Debug("Waiting for ELK to come online.")
+		}).Debug("Waiting for Elasticsearch to come online.")
 		if err = waitforit.WaitForIt(elasticAddress, "", -1, config.Conf.DB.Timeout); err != nil {
 			log.Error(err)
 		}
-		log.Debug("ELK is now online.")
+		log.Debug("Elasticsearch is now online.")
 
 		// Even though it's up it's not ready to index data yet.
 		log.Infof("Sleeping for 10 seconds to give %s time to initalize.", config.Conf.DB.Image)

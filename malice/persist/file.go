@@ -37,15 +37,15 @@ import (
 
 // File is a file object
 type File struct {
-	Name string `json:"name" structs:"name"`
-	Path string `json:"path" structs:"path"`
+	Name string `json:"name,omitempty" structs:"name"`
+	Path string `json:"path,omitempty" structs:"path"`
 	// Valid bool   `json:"valid"`
-	Size string `json:"size" structs:"size"`
+	Size string `json:"size,omitempty" structs:"size"`
 	// CRC32  string
-	MD5    string `json:"md5" structs:"md5"`
-	SHA1   string `json:"sha1" structs:"sha1"`
-	SHA256 string `json:"sha256" structs:"sha256"`
-	SHA512 string `json:"sha512" structs:"sha512"`
+	MD5    string `json:"md5,omitempty" structs:"md5"`
+	SHA1   string `json:"sha1,omitempty" structs:"sha1"`
+	SHA256 string `json:"sha256,omitempty" structs:"sha256"`
+	SHA512 string `json:"sha512,omitempty" structs:"sha512"`
 	// Ssdeep string `json:"ssdeep"`
 	// Arch string `json:"arch"`
 }

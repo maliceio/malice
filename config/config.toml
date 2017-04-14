@@ -9,8 +9,8 @@ title = "Malice Runtime Configuration"
 
 [author]
   name = "blacktop"
-  # organization = "GitHub"
-  # bio = "GitHub Cofounder & CEO\nLikes tater tots and beer."
+  organization = "MaliceIO"
+  bio = "I just like building things."
   # dob = 1979-05-27T07:32:00Z # First class dates? Why not?
 
 [web]
@@ -24,11 +24,18 @@ title = "Malice Runtime Configuration"
   pass = "password"
 
 [database]
-  name = "malice-elk"
-  image = "blacktop/elastic-stack:malice"
+  name = "malice-elastic"
+  image = "blacktop/elasticsearch:5.3"
   server = "localhost" # This is for running on Docker for Mac installations.
   ports = [ 9200 ]
   timeout = 10
+  enabled = true
+
+[ui]
+  name = "malice-kibana"
+  image = "blacktop/kibana:malice"
+  server = "localhost" # This is for running on Docker for Mac installations.
+  ports = [ 443 ]
   enabled = true
 
 [environment]
@@ -39,7 +46,7 @@ title = "Malice Runtime Configuration"
   machine-name = "malice"
   endpoint = "tcp://localhost:2376"
   binds = "malice:/malware:ro"
-  links = "malice-elk:elastic"
+  links = "malice-elastic:elastic"
   timeout = 120
 
 [logger]

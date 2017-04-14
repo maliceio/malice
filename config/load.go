@@ -20,7 +20,8 @@ type Configuration struct {
 	Author      authorInfo
 	Web         webConfig
 	Email       emailConfig
-	DB          databaseConfig `toml:"database"`
+	DB          databaseConfig      `toml:"database"`
+	UI          userInterfaceConfig `toml:ui`
 	Environment envConfig
 	Docker      dockerConfig
 	Logger      loggerConfig
@@ -36,6 +37,14 @@ type authorInfo struct {
 type webConfig struct {
 	URL      string
 	AdminURL string `toml:"admin_url"`
+}
+
+type userInterfaceConfig struct {
+	Name    string
+	Image   string
+	Server  string
+	Ports   []int
+	Enabled bool
 }
 
 type databaseConfig struct {

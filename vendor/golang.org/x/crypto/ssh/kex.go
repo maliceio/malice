@@ -8,8 +8,8 @@ import (
 	"crypto"
 	"crypto/ecdsa"
 	"crypto/elliptic"
-	"crypto/rand"
 	"crypto/subtle"
+	"crypto/rand"
 	"errors"
 	"io"
 	"math/big"
@@ -46,7 +46,7 @@ type kexResult struct {
 	Hash crypto.Hash
 
 	// The session ID, which is the first H computed. This is used
-	// to derive key material inside the transport.
+	// to signal data inside transport.
 	SessionID []byte
 }
 

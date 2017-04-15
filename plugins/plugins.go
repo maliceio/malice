@@ -201,13 +201,13 @@ func (plugin Plugin) UpdatePluginFromRepository(docker *client.Docker) {
 
 	log.Info("[Building Plugin from Source] ===> ", plugin.Name)
 
-	var buildArgs map[string]string
+	var buildArgs map[string]*string
 	var quiet = false
 
 	tags := []string{"malice/" + plugin.Name + ":latest"}
 
 	if config.Conf.Proxy.Enable {
-		buildArgs = runconfigopts.ConvertKVStringsToMap([]string{
+		buildArgs = runconfigopts.ConvertKVStringsToMapWithNil([]string{
 			"HTTP_PROXY=" + config.Conf.Proxy.HTTP,
 			"HTTPS_PROXY=" + config.Conf.Proxy.HTTPS,
 		})

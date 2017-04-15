@@ -13,8 +13,10 @@ import (
 
 	"regexp"
 
-	"github.com/docker/docker/builder"
+	"github.com/docker/docker/api/types"
+	registrytypes "github.com/docker/docker/api/types/registry"
 	"github.com/docker/docker/builder/dockerignore"
+	"github.com/docker/docker/cli/command/image/build"
 	"github.com/docker/docker/pkg/archive"
 	"github.com/docker/docker/pkg/fileutils"
 	"github.com/docker/docker/pkg/jsonmessage"
@@ -23,8 +25,6 @@ import (
 	"github.com/docker/docker/pkg/stringutils"
 	"github.com/docker/docker/pkg/urlutil"
 	"github.com/docker/docker/registry"
-	"github.com/docker/docker/api/types"
-	registrytypes "github.com/docker/docker/api/types/registry"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/docker/client"
 	er "github.com/maliceio/malice/malice/errors"
@@ -44,7 +44,7 @@ func Pull(docker *client.Docker, id string, tag string) {
 }
 
 // Build builds docker image from git repository
-func Build(docker *client.Docker, repository string, tags []string, buildArgs map[string]string, labels map[string]string, quiet bool) {
+func Build(docker *client.Docker, repository string, tags []string, buildArgs map[string]*string, labels map[string]string, quiet bool) {
 
 	var (
 		buildCtx io.ReadCloser
@@ -64,13 +64,13 @@ func Build(docker *client.Docker, repository string, tags []string, buildArgs ma
 
 	switch {
 	case repository == "-":
-		buildCtx, relDockerfile, err = builder.GetContextFromReader(os.Stdin, "")
+		buildCtx, relDockerfile, err = build.GetContextFromReader(os.Stdin, "")
 	case urlutil.IsGitURL(repository):
-		tempDir, relDockerfile, err = builder.GetContextFromGitURL(repository, "")
+		tempDir, relDockerfile, err = build.GetContextFromGitURL(repository, "")
 	case urlutil.IsURL(repository):
-		buildCtx, relDockerfile, err = builder.GetContextFromURL(progBuff, repository, "")
+		buildCtx, relDockerfile, err = build.GetContextFromURL(progBuff, repository, "")
 	default:
-		_, relDockerfile, err = builder.GetContextFromLocalDir(repository, "")
+		_, relDockerfile, err = build.GetContextFromLocalDir(repository, "")
 	}
 
 	if tempDir != "" {
@@ -99,7 +99,7 @@ func Build(docker *client.Docker, repository string, tags []string, buildArgs ma
 			}
 		}
 
-		if err := builder.ValidateContextDirectory(contextDir, excludes); err != nil {
+		if err := build.ValidateContextDirectory(contextDir, excludes); err != nil {
 			log.Fatalf("Error checking context: '%s'.", err)
 		}
 
@@ -175,11 +175,11 @@ func Build(docker *client.Docker, repository string, tags []string, buildArgs ma
 
 // Exists returns APIImages images list and true
 // if the image name exists, otherwise false.
-func Exists(docker *client.Docker, name string) (types.Image, bool, error) {
+func Exists(docker *client.Docker, name string) (types.ImageSummary, bool, error) {
 	log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Debug("Searching for image: ", name)
 	images, err := List(docker, name, false)
 	if err != nil {
-		return types.Image{}, false, err
+		return types.ImageSummary{}, false, err
 	}
 
 	r := regexp.MustCompile(name)
@@ -195,15 +195,14 @@ func Exists(docker *client.Docker, name string) (types.Image, bool, error) {
 	}
 
 	log.WithFields(log.Fields{"env": config.Conf.Environment.Run}).Debug("Image NOT Found: ", name)
-	return types.Image{}, false, nil
+	return types.ImageSummary{}, false, nil
 }
 
 // List lists all images
-func List(docker *client.Docker, name string, all bool) ([]types.Image, error) {
+func List(docker *client.Docker, name string, all bool) ([]types.ImageSummary, error) {
 
 	options := types.ImageListOptions{
-		All:       all,
-		MatchName: name,
+		All: all,
 		// Filters   filters.Args
 	}
 	imageList, err := docker.Client.ImageList(context.Background(), options)

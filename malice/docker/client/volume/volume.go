@@ -4,9 +4,10 @@ import (
 	"regexp"
 
 	log "github.com/Sirupsen/logrus"
-	runconfigopts "github.com/docker/docker/runconfig/opts"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
+	volumetypes "github.com/docker/docker/api/types/volume"
+	runconfigopts "github.com/docker/docker/runconfig/opts"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/docker/client"
 	"golang.org/x/net/context"
@@ -21,7 +22,7 @@ func Exists(docker *client.Docker, name string) (*types.Volume, bool, error) {
 // Create creates a docker volume with the given name
 // returns: error
 func Create(docker *client.Docker, name, driver string, labels []string) error {
-	volReq := types.VolumeCreateRequest{
+	volReq := volumetypes.VolumesCreateBody{
 		Driver: driver,
 		// DriverOpts: opts.driverOpts.GetAll(),
 		Name:   name,
@@ -63,13 +64,13 @@ func parseVolumes(docker *client.Docker, name string, all bool) (*types.Volume, 
 }
 
 // List returns array of types.Containers and error
-func List(docker *client.Docker, all bool) (types.VolumesListResponse, error) {
+func List(docker *client.Docker, all bool) (volumetypes.VolumesListOKBody, error) {
 	// ctx, cancel := context.WithTimeout(context.Background(), config.Conf.Docker.Timeout*time.Second)
 	// defer cancel()
 	filter := filters.Args{}
 	volumes, err := docker.Client.VolumeList(context.Background(), filter)
 	if err != nil {
-		return types.VolumesListResponse{}, err
+		return volumetypes.VolumesListOKBody{}, err
 	}
 	return volumes, nil
 }

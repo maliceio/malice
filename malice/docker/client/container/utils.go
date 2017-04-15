@@ -4,10 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 
 	"golang.org/x/net/context"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/events"
+	"github.com/docker/docker/api/types/filters"
+	"github.com/docker/docker/api/types/versions"
 	er "github.com/maliceio/malice/malice/errors"
 
 	"github.com/maliceio/malice/config"
@@ -16,6 +21,88 @@ import (
 	"github.com/maliceio/malice/malice/docker/client/network"
 	"github.com/maliceio/malice/malice/docker/client/volume"
 )
+
+func waitExitOrRemoved(ctx context.Context, docker *client.Docker, containerID string, waitRemove bool) chan int {
+	if len(containerID) == 0 {
+		// containerID can never be empty
+		panic("Internal Error: waitExitOrRemoved needs a containerID as parameter")
+	}
+
+	var removeErr error
+	statusChan := make(chan int)
+	exitCode := 125
+
+	// Get events via Events API
+	f := filters.NewArgs()
+	f.Add("type", "container")
+	f.Add("container", containerID)
+	options := types.EventsOptions{
+		Filters: f,
+	}
+	eventCtx, cancel := context.WithCancel(ctx)
+	eventq, errq := docker.Client.Events(eventCtx, options)
+
+	eventProcessor := func(e events.Message) bool {
+		stopProcessing := false
+		switch e.Status {
+		case "die":
+			if v, ok := e.Actor.Attributes["exitCode"]; ok {
+				code, cerr := strconv.Atoi(v)
+				if cerr != nil {
+					log.Errorf("failed to convert exitcode '%q' to int: %v", v, cerr)
+				} else {
+					exitCode = code
+				}
+			}
+			if !waitRemove {
+				stopProcessing = true
+			} else {
+				// If we are talking to an older daemon, `AutoRemove` is not supported.
+				// We need to fall back to the old behavior, which is client-side removal
+				if versions.LessThan(docker.Client.ClientVersion(), "1.25") {
+					go func() {
+						removeErr = docker.Client.ContainerRemove(ctx, containerID, types.ContainerRemoveOptions{RemoveVolumes: true})
+						if removeErr != nil {
+							log.Errorf("error removing container: %v", removeErr)
+							cancel() // cancel the event Q
+						}
+					}()
+				}
+			}
+		case "detach":
+			exitCode = 0
+			stopProcessing = true
+		case "destroy":
+			stopProcessing = true
+		}
+		return stopProcessing
+	}
+
+	go func() {
+		defer func() {
+			statusChan <- exitCode // must always send an exit code or the caller will block
+			cancel()
+		}()
+
+		for {
+			select {
+			case <-eventCtx.Done():
+				if removeErr != nil {
+					return
+				}
+			case evt := <-eventq:
+				if eventProcessor(evt) {
+					return
+				}
+			case err := <-errq:
+				log.Errorf("error getting events from daemon: %v", err)
+				return
+			}
+		}
+	}()
+
+	return statusChan
+}
 
 func checkContainerRequirements(docker *client.Docker, containerName, img string) {
 	// Check for existance of malice network

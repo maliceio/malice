@@ -34,6 +34,8 @@ $ go get github.com/moul/http2curl
 - https://github.com/scaleway/scaleway-cli
 - https://github.com/nmonterroso/cowsay-slackapp
 - https://github.com/moul/as-a-service
+- https://github.com/gavv/httpexpect
+- https://github.com/smallnest/goreq
 
 ## License
 

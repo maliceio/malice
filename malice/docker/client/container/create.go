@@ -5,12 +5,12 @@ import (
 	"io"
 	"os"
 
+	"github.com/docker/distribution/reference"
 	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
+	cont "github.com/docker/docker/api/types/container"
 	networktypes "github.com/docker/docker/api/types/network"
 	apiclient "github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/jsonmessage"
-	"github.com/docker/docker/reference"
 	"github.com/docker/docker/registry"
 	"github.com/maliceio/malice/malice/docker/client"
 	er "github.com/maliceio/malice/malice/errors"
@@ -18,7 +18,7 @@ import (
 )
 
 func pullImage(ctx context.Context, docker *client.Docker, image string, out io.Writer) error {
-	ref, err := reference.ParseNamed(image)
+	ref, err := reference.ParseNormalizedNamed(image)
 	if err != nil {
 		return err
 	}
@@ -93,7 +93,7 @@ func newCIDFile(path string) (*cidFile, error) {
 }
 
 // createContainer
-func createContainer(docker *client.Docker, ctx context.Context, config *container.Config, hostConfig *container.HostConfig, networkingConfig *networktypes.NetworkingConfig, cidfile, name string) (*types.ContainerCreateResponse, error) {
+func createContainer(docker *client.Docker, ctx context.Context, config *cont.Config, hostConfig *cont.HostConfig, networkingConfig *networktypes.NetworkingConfig, cidfile, name string) (cont.ContainerCreateCreatedBody, error) {
 	stderr := os.Stderr
 	// log.Info("cidfile: ", cidfile)
 	var containerIDFile *cidFile
@@ -102,7 +102,7 @@ func createContainer(docker *client.Docker, ctx context.Context, config *contain
 		var err error
 		if containerIDFile, err = newCIDFile(cidfile); err != nil {
 			er.CheckError(err)
-			return nil, err
+			return cont.ContainerCreateCreatedBody{}, err
 		}
 		// log.Info("NEW containerIDFile: ", containerIDFile)
 		defer containerIDFile.Close()
@@ -136,7 +136,7 @@ func createContainer(docker *client.Docker, ctx context.Context, config *contain
 
 			// we don't want to write to stdout anything apart from container.ID
 			if err = pullImage(ctx, docker, config.Image, stderr); err != nil {
-				return nil, err
+				return cont.ContainerCreateCreatedBody{}, err
 			}
 			// if ref, ok := ref.(reference.NamedTagged); ok != nil {
 			// 	if err := docker.TagTrusted(ctx, trustedRef, ref); err != nil {
@@ -147,10 +147,10 @@ func createContainer(docker *client.Docker, ctx context.Context, config *contain
 			var retryErr error
 			response, retryErr = docker.Client.ContainerCreate(ctx, config, hostConfig, networkingConfig, name)
 			if retryErr != nil {
-				return nil, retryErr
+				return cont.ContainerCreateCreatedBody{}, retryErr
 			}
 		} else {
-			return nil, err
+			return cont.ContainerCreateCreatedBody{}, err
 		}
 	}
 
@@ -159,8 +159,8 @@ func createContainer(docker *client.Docker, ctx context.Context, config *contain
 	}
 	if containerIDFile != nil {
 		if err = containerIDFile.Write(response.ID); err != nil {
-			return nil, err
+			return cont.ContainerCreateCreatedBody{}, err
 		}
 	}
-	return &response, nil
+	return response, nil
 }

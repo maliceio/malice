@@ -9,7 +9,9 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/api/types/strslice"
+	"github.com/docker/docker/cli"
 	"github.com/docker/go-connections/nat"
+
 	"github.com/maliceio/malice/malice/docker/client"
 	er "github.com/maliceio/malice/malice/errors"
 	"golang.org/x/net/context"
@@ -168,15 +170,15 @@ func Run(
 	// }
 
 	// if opts.autoRemove {
-	defer func() {
-		// Explicitly not sharing the context as it could be "Done" (by calling cancelFun)
-		// and thus the container would not be removed.
-		if err = Remove(docker, createResponse.ID, true, false, true); err != nil {
-			fmt.Fprintf(os.Stderr, "%v\n", err)
-		}
-	}()
+	// defer func() {
+	// 	// Explicitly not sharing the context as it could be "Done" (by calling cancelFun)
+	// 	// and thus the container would not be removed.
+	// 	if err = Remove(docker, createResponse.ID, true, false, true); err != nil {
+	// 		fmt.Fprintf(os.Stderr, "%v\n", err)
+	// 	}
+	// }()
 	// }
-
+	statusChan := waitExitOrRemoved(ctx, docker, createResponse.ID, true)
 	//start the container
 	log.Debugf("Starting containter: %s", createResponse.ID)
 	if err = docker.Client.ContainerStart(ctx, createResponse.ID, types.ContainerStartOptions{}); err != nil {
@@ -187,6 +189,8 @@ func Run(
 			cancelFun()
 			<-errCh
 		}
+
+		<-statusChan
 
 		er.CheckError(err)
 	}
@@ -211,18 +215,18 @@ func Run(
 	// return nil
 	// }
 
-	var status int
+	// var status int64
 
 	// Attached mode
 	// if opts.autoRemove {
 	// Autoremove: wait for the container to finish, retrieve
 	// the exit code and remove the container
-	if status, err = docker.Client.ContainerWait(ctx, createResponse.ID); err != nil {
-		er.CheckError(err)
-	}
-	if _, status, err = getExitCode(docker, ctx, createResponse.ID); err != nil {
-		er.CheckError(err)
-	}
+	// if status, err = docker.Client.ContainerWait(ctx, createResponse.ID); err != nil {
+	// 	er.CheckError(err)
+	// }
+	// if _, status, err = getExitCode(docker, ctx, createResponse.ID); err != nil {
+	// 	er.CheckError(err)
+	// }
 	// } else {
 	// 	// No Autoremove: Simply retrieve the exit code
 	// 	if !config.Tty && hostConfig.RestartPolicy.IsNone() {
@@ -238,8 +242,9 @@ func Run(
 	// 		}
 	// 	}
 	// }
+	status := <-statusChan
 	if status != 0 {
-		return fmt.Errorf("Status: %d", status)
+		return cli.StatusError{StatusCode: status}
 	}
 	return nil
 }

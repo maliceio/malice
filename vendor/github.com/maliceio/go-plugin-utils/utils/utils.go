@@ -1,19 +1,43 @@
 package utils
 
 import (
+	"archive/zip"
 	"bytes"
+	"context"
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"strings"
 
 	"github.com/parnurzeal/gorequest"
 )
+
+// AppHelpTemplate is a default malice plugin help template
+var AppHelpTemplate = `Usage: {{.Name}} {{if .Flags}}[OPTIONS] {{end}}COMMAND [arg...]
+
+{{.Usage}}
+
+Version: {{.Version}}{{if or .Author .Email}}
+
+Author:{{if .Author}}
+  {{.Author}}{{if .Email}} - <{{.Email}}>{{end}}{{else}}
+  {{.Email}}{{end}}{{end}}
+{{if .Flags}}
+Options:
+  {{range .Flags}}{{.}}
+  {{end}}{{end}}
+Commands:
+  {{range .Commands}}{{.Name}}{{with .ShortName}}, {{.}}{{end}}{{ "\t" }}{{.Usage}}
+  {{end}}
+Run '{{.Name}} COMMAND --help' for more information on a command.
+`
 
 var camelingRegex = regexp.MustCompile("[0-9A-Za-z]+")
 
@@ -60,14 +84,26 @@ func GetSHA256(name string) string {
 }
 
 // RunCommand runs cmd on file
-func RunCommand(cmd string, args ...string) string {
+func RunCommand(ctx context.Context, cmd string, args ...string) (string, error) {
 
-	cmdOut, err := exec.Command(cmd, args...).Output()
-	if len(cmdOut) == 0 {
-		Assert(err)
+	var c *exec.Cmd
+
+	if ctx != nil {
+		c = exec.CommandContext(ctx, cmd, args...)
+	} else {
+		c = exec.Command(cmd, args...)
 	}
 
-	return string(cmdOut)
+	output, _ := c.Output()
+
+	// check for exec context timeout
+	if ctx != nil {
+		if ctx.Err() == context.DeadlineExceeded {
+			return "", fmt.Errorf("Command %s timed out.", cmd)
+		}
+	}
+
+	return string(output), nil
 }
 
 func printStatus(resp gorequest.Response, body string, errs []error) {
@@ -113,6 +149,61 @@ func GetHashType(hash string) (string, error) {
 	default:
 		return "", errors.New("This is not a valid hash.")
 	}
+}
+
+// AskForConfirmation prompts user for yes/no response
+func AskForConfirmation() bool {
+	var response string
+	_, err := fmt.Scanln(&response)
+	if err != nil {
+		log.Fatal(err)
+	}
+	okayResponses := []string{"y", "yes"}
+	nokayResponses := []string{"n", "no"}
+	if StringInSlice(strings.ToLower(response), okayResponses) {
+		return true
+	}
+	if StringInSlice(strings.ToLower(response), nokayResponses) {
+		return false
+	}
+	fmt.Println("Please type yes or no and then press enter:")
+	return AskForConfirmation()
+}
+
+// Unzip unzips archive to target location
+func Unzip(archive, target string) error {
+
+	// fmt.Println("Unzip archive ", target)
+
+	reader, err := zip.OpenReader(archive)
+	if err != nil {
+		return err
+	}
+
+	for _, file := range reader.File {
+		filePath := filepath.Join(target, file.Name)
+
+		if file.FileInfo().IsDir() {
+			os.MkdirAll(filePath, file.Mode())
+			continue
+		}
+		fileReader, err := file.Open()
+		if err != nil {
+			return err
+		}
+		defer fileReader.Close()
+
+		targetFile, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
+		if err != nil {
+			return err
+		}
+		defer targetFile.Close()
+
+		if _, err := io.Copy(targetFile, fileReader); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // SliceContainsString returns if slice contains substring

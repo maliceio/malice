@@ -3,7 +3,7 @@ FROM alpine:3.5
 LABEL maintainer "https://github.com/blacktop"
 
 RUN apk add --no-cache file tini
-RUN apk add --no-cache -t build-deps go git mercurial build-base file-dev \
+RUN apk add --no-cache -t build-deps go git mercurial build-base file-dev libc-dev \
   && set -x \
   && echo "Building malice Go binary..." \
   && git clone https://github.com/maliceio/malice.git /go/src/github.com/maliceio/malice \

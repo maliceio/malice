@@ -148,9 +148,9 @@ func WaitForIt(fullConn, host string, port, timeout int) error {
 		return nil
 	}
 
-	if err := pingHTTP(conn, timeout); err != nil {
-		return err
-	}
+	// if err := pingHTTP(conn, timeout); err != nil {
+	// 	return err
+	// }
 
 	return nil
 }

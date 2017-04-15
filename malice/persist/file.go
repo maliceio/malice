@@ -84,7 +84,7 @@ func GetMimeType(docker *client.Docker, arg string) (string, error) {
 	}
 	networkingConfig := &network.NetworkingConfig{}
 
-	contResponse, err := docker.Client.ContainerCreate(context.Background(), createContConf, hostConfig, networkingConfig, "")
+	contResponse, err := docker.Client.ContainerCreate(context.Background(), createContConf, hostConfig, networkingConfig, "fileinfo")
 	if err != nil {
 		return "", err
 	}
@@ -117,6 +117,22 @@ func GetMimeType(docker *client.Docker, arg string) (string, error) {
 	if err != nil && err != io.EOF {
 		return "", err
 	}
+
+	defer func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		contRmOpts := types.ContainerRemoveOptions{
+			RemoveVolumes: true,
+			RemoveLinks:   true,
+			Force:         true,
+		}
+		er.CheckError(docker.Client.ContainerRemove(ctx, contResponse.ID, contRmOpts))
+		log.WithFields(log.Fields{
+			"id":  contResponse.ID,
+			"env": config.Conf.Environment.Run,
+		}).Debug("malice/fileinfo Container Removed")
+	}()
 
 	return strings.TrimSpace(buf1.String()), nil
 }

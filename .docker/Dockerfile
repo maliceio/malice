@@ -1,9 +1,9 @@
-FROM gliderlabs/alpine:edge
+FROM alpine:3.5
 
 LABEL maintainer "https://github.com/blacktop"
 
-RUN apk-install file tini
-RUN apk-install -t build-deps go git mercurial build-base file-dev \
+RUN apk add --no-cache file tini
+RUN apk add --no-cache -t build-deps go git mercurial build-base file-dev \
   && set -x \
   && echo "Building malice Go binary..." \
   && git clone https://github.com/maliceio/malice.git /go/src/github.com/maliceio/malice \
@@ -32,5 +32,4 @@ EXPOSE 80 443
 WORKDIR /malice/samples
 
 ENTRYPOINT ["/sbin/tini","--","malice"]
-
 CMD ["--help"]

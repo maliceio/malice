@@ -28,7 +28,7 @@ title = "Malice Runtime Configuration"
   image = "blacktop/elasticsearch:5.3"
   server = "localhost" # This is for running on Docker for Mac installations.
   ports = [ 9200 ]
-  timeout = 10
+  timeout = 20
   enabled = true
 
 [ui]

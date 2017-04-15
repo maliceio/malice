@@ -11,7 +11,6 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/go-connections/nat"
 	"github.com/maliceio/go-plugin-utils/utils"
-	"github.com/maliceio/go-plugin-utils/waitforit"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/database"
 	"github.com/maliceio/malice/malice/docker/client"
@@ -58,19 +57,29 @@ func Start(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
 		dbInfo, err := container.Inspect(docker, cont.ID)
 		elasticAddress := getElasticSearchAddr(dbInfo.NetworkSettings.IPAddress)
 
+		log.WithFields(log.Fields{
+			// "id":   cont.ID,
+			"ip":   docker.GetIP(),
+			"port": config.Conf.DB.Ports,
+			"name": cont.Name,
+			"env":  config.Conf.Environment.Run,
+		}).Info("Elasticsearch Container Started")
+
 		// Give ELK a few seconds to start
 		log.WithFields(log.Fields{
 			"server":  elasticAddress,
 			"timeout": config.Conf.DB.Timeout,
-		}).Debug("Waiting for Elasticsearch to come online.")
-		if err = waitforit.WaitForIt(elasticAddress, "", -1, config.Conf.DB.Timeout); err != nil {
+		}).Info("Waiting for Elasticsearch to come online.")
+
+		ctx := context.Background()
+		err = WaitForConnection(ctx, "", config.Conf.DB.Timeout)
+		if err != nil {
 			log.Error(err)
 		}
-		log.Debug("Elasticsearch is now online.")
 
 		// Even though it's up it's not ready to index data yet.
-		log.Infof("Sleeping for 10 seconds to give %s time to initalize.", config.Conf.DB.Image)
-		time.Sleep(10 * time.Second)
+		// log.Infof("Sleeping for 10 seconds to give %s time to initalize.", config.Conf.DB.Image)
+		// time.Sleep(10 * time.Second)
 
 		return cont, err
 	}
@@ -81,7 +90,8 @@ func Start(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
 func InitElasticSearch(addr string) error {
 
 	// Test connection to ElasticSearch
-	er.CheckError(TestConnection(addr))
+	_, err := TestConnection(addr)
+	er.CheckError(err)
 
 	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
 	utils.Assert(err)
@@ -107,7 +117,7 @@ func InitElasticSearch(addr string) error {
 }
 
 // TestConnection tests the ElasticSearch connection
-func TestConnection(addr string) error {
+func TestConnection(addr string) (bool, error) {
 
 	var err error
 
@@ -116,12 +126,17 @@ func TestConnection(addr string) error {
 	}
 
 	// connect to ElasticSearch where --link elastic was using via malice in Docker
-	log.Debugf("Attempting to connect to: %s", ElasticAddr)
 	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
+	if err != nil {
+		return false, err
+	}
 
 	// Ping the Elasticsearch server to get e.g. the version number
+	log.Debugf("Attempting to PING to: %s", ElasticAddr)
 	info, code, err := client.Ping(ElasticAddr).Do(context.Background())
-	utils.Assert(err)
+	if err != nil {
+		return false, err
+	}
 
 	log.WithFields(log.Fields{
 		"code":    code,
@@ -130,14 +145,47 @@ func TestConnection(addr string) error {
 		"address": ElasticAddr,
 	}).Debug("ElasticSearch connection successful.")
 
-	return err
+	if code == 200 {
+		return true, err
+	}
+	return false, err
+}
+
+// WaitForConnection waits for connection to Elasticsearch to be ready
+func WaitForConnection(ctx context.Context, addr string, timeout int) error {
+
+	var ready bool
+	var connErr error
+	secondsWaited := 0
+
+	connCtx, cancel := context.WithTimeout(ctx, time.Duration(timeout)*time.Second)
+	defer cancel()
+
+	log.Debug("===> trying to connect to elasticsearch")
+	for {
+		// Try to connect to Elasticsearch
+		select {
+		case <-connCtx.Done():
+			log.WithFields(log.Fields{"timeout": timeout}).Error("connecting to elasticsearch timed out")
+			return connErr
+		default:
+			ready, connErr = TestConnection(addr)
+			if ready {
+				log.Infof("Elasticsearch came online after %d seconds", secondsWaited)
+				return connErr
+			}
+			secondsWaited++
+			time.Sleep(1 * time.Second)
+		}
+	}
 }
 
 // WriteFileToDatabase inserts sample into Database
 func WriteFileToDatabase(sample map[string]interface{}) elastic.IndexResponse {
 
 	// Test connection to ElasticSearch
-	er.CheckError(TestConnection(""))
+	_, err := TestConnection("")
+	er.CheckError(err)
 
 	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
 	utils.Assert(err)

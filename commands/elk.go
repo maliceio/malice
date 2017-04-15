@@ -16,14 +16,6 @@ func cmdELK(logs bool) error {
 	contJSON, err := elasticsearch.Start(docker, logs)
 	er.CheckError(err)
 
-	log.WithFields(log.Fields{
-		// "id":   cont.ID,
-		"ip":   docker.GetIP(),
-		"port": config.Conf.DB.Ports,
-		"name": contJSON.Name,
-		"env":  config.Conf.Environment.Run,
-	}).Info("Elasticsearch Container Started")
-
 	contJSON, err = ui.Start(docker, logs)
 	er.CheckError(err)
 

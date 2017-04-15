@@ -12,6 +12,7 @@ import (
 	"github.com/maliceio/malice/commands"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/logger"
+	"github.com/maliceio/malice/malice/maldirs"
 	"github.com/maliceio/malice/plugins"
 	"github.com/maliceio/malice/version"
 )
@@ -44,7 +45,9 @@ func setDebugOutputLevel() {
 }
 
 // Init initializes Malice
-func Init() {}
+func Init() {
+	maldirs.MakeDirs()
+}
 
 func main() {
 	log.Debugf("Using %d PROCS", runtime.NumCPU())

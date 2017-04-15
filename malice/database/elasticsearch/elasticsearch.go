@@ -4,10 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"os"
+	"path"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	mallog "github.com/Sirupsen/logrus"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/go-connections/nat"
 	"github.com/maliceio/go-plugin-utils/utils"
@@ -16,6 +18,7 @@ import (
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"
 	er "github.com/maliceio/malice/malice/errors"
+	"github.com/maliceio/malice/malice/maldirs"
 	elastic "gopkg.in/olivere/elastic.v5"
 )
 
@@ -57,7 +60,7 @@ func Start(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
 		dbInfo, err := container.Inspect(docker, cont.ID)
 		elasticAddress := getElasticSearchAddr(dbInfo.NetworkSettings.IPAddress)
 
-		log.WithFields(log.Fields{
+		mallog.WithFields(mallog.Fields{
 			// "id":   cont.ID,
 			"ip":   docker.GetIP(),
 			"port": config.Conf.DB.Ports,
@@ -66,7 +69,7 @@ func Start(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
 		}).Info("Elasticsearch Container Started")
 
 		// Give ELK a few seconds to start
-		log.WithFields(log.Fields{
+		mallog.WithFields(mallog.Fields{
 			"server":  elasticAddress,
 			"timeout": config.Conf.DB.Timeout,
 		}).Info("Waiting for Elasticsearch to come online.")
@@ -74,11 +77,11 @@ func Start(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
 		ctx := context.Background()
 		err = WaitForConnection(ctx, "", config.Conf.DB.Timeout)
 		if err != nil {
-			log.Error(err)
+			mallog.Error(err)
 		}
 
 		// Even though it's up it's not ready to index data yet.
-		// log.Infof("Sleeping for 10 seconds to give %s time to initalize.", config.Conf.DB.Image)
+		// mallog.Infof("Sleeping for 10 seconds to give %s time to initalize.", config.Conf.DB.Image)
 		// time.Sleep(10 * time.Second)
 
 		return cont, err
@@ -105,12 +108,12 @@ func InitElasticSearch(addr string) error {
 		utils.Assert(err)
 		if !createIndex.Acknowledged {
 			// Not acknowledged
-			log.Error("Couldn't create Index.")
+			mallog.Error("Couldn't create Index.")
 		} else {
-			log.Debug("Created Index: ", "malice")
+			mallog.Debug("Created Index: ", "malice")
 		}
 	} else {
-		log.Debug("Index malice already exists.")
+		mallog.Debug("Index malice already exists.")
 	}
 
 	return err
@@ -126,19 +129,27 @@ func TestConnection(addr string) (bool, error) {
 	}
 
 	// connect to ElasticSearch where --link elastic was using via malice in Docker
-	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
+	mallog.Debug("creating elasticsearch log file: ", path.Join(maldirs.GetLogsDir(), "elastic.log"))
+	file, err := os.OpenFile(path.Join(maldirs.GetLogsDir(), "elastic.log"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0664)
+	if err != nil {
+		panic(err)
+	}
+	client, err := elastic.NewSimpleClient(
+		elastic.SetURL(ElasticAddr),
+		elastic.SetErrorLog(log.New(file, "ERROR ", log.LstdFlags)),
+	)
 	if err != nil {
 		return false, err
 	}
 
 	// Ping the Elasticsearch server to get e.g. the version number
-	log.Debugf("Attempting to PING to: %s", ElasticAddr)
+	mallog.Debugf("Attempting to PING to: %s", ElasticAddr)
 	info, code, err := client.Ping(ElasticAddr).Do(context.Background())
 	if err != nil {
 		return false, err
 	}
 
-	log.WithFields(log.Fields{
+	mallog.WithFields(mallog.Fields{
 		"code":    code,
 		"cluster": info.ClusterName,
 		"version": info.Version.Number,
@@ -161,17 +172,17 @@ func WaitForConnection(ctx context.Context, addr string, timeout int) error {
 	connCtx, cancel := context.WithTimeout(ctx, time.Duration(timeout)*time.Second)
 	defer cancel()
 
-	log.Debug("===> trying to connect to elasticsearch")
+	mallog.Debug("===> trying to connect to elasticsearch")
 	for {
 		// Try to connect to Elasticsearch
 		select {
 		case <-connCtx.Done():
-			log.WithFields(log.Fields{"timeout": timeout}).Error("connecting to elasticsearch timed out")
+			mallog.WithFields(mallog.Fields{"timeout": timeout}).Error("connecting to elasticsearch timed out")
 			return connErr
 		default:
 			ready, connErr = TestConnection(addr)
 			if ready {
-				log.Infof("Elasticsearch came online after %d seconds", secondsWaited)
+				mallog.Infof("Elasticsearch came online after %d seconds", secondsWaited)
 				return connErr
 			}
 			secondsWaited++
@@ -206,7 +217,7 @@ func WriteFileToDatabase(sample map[string]interface{}) elastic.IndexResponse {
 		Do(context.Background())
 	utils.Assert(err)
 
-	log.WithFields(log.Fields{
+	mallog.WithFields(mallog.Fields{
 		"id":    newScan.Id,
 		"index": newScan.Index,
 		"type":  newScan.Type,
@@ -242,7 +253,7 @@ func WriteHashToDatabase(hash string) elastic.IndexResponse {
 		Do(context.Background())
 	utils.Assert(err)
 
-	log.WithFields(log.Fields{
+	mallog.WithFields(mallog.Fields{
 		"id":    newScan.Id,
 		"index": newScan.Index,
 		"type":  newScan.Type,
@@ -287,7 +298,7 @@ func WritePluginResultsToDatabase(results PluginResults) {
 			Do(context.Background())
 		utils.Assert(err)
 
-		log.WithFields(log.Fields{
+		mallog.WithFields(mallog.Fields{
 			"id":      update.Id,
 			"version": update.Version,
 		}).Debug("New version of sample.")
@@ -316,7 +327,7 @@ func WritePluginResultsToDatabase(results PluginResults) {
 			Do(context.Background())
 		utils.Assert(err)
 
-		log.WithFields(log.Fields{
+		mallog.WithFields(mallog.Fields{
 			"id":    newScan.Id,
 			"index": newScan.Index,
 			"type":  newScan.Type,

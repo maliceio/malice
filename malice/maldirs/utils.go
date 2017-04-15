@@ -30,3 +30,23 @@ func GetPluginsDir() string {
 func GetConfigDir() string {
 	return filepath.Join(GetBaseDir(), "config")
 }
+
+func GetLogsDir() string {
+	return filepath.Join(GetBaseDir(), "logs")
+}
+
+func MakeDirs() {
+	// Make .malice directory if it doesn't exist
+	if _, err := os.Stat(GetSampledsDir()); os.IsNotExist(err) {
+		os.MkdirAll(GetSampledsDir(), 0777)
+	}
+	if _, err := os.Stat(GetPluginsDir()); os.IsNotExist(err) {
+		os.MkdirAll(GetPluginsDir(), 0777)
+	}
+	if _, err := os.Stat(GetConfigDir()); os.IsNotExist(err) {
+		os.MkdirAll(GetConfigDir(), 0777)
+	}
+	if _, err := os.Stat(GetLogsDir()); os.IsNotExist(err) {
+		os.MkdirAll(GetLogsDir(), 0777)
+	}
+}

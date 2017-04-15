@@ -1,17 +1,20 @@
 package elasticsearch
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"log"
 	"os"
 	"path"
+	"strings"
 	"time"
 
 	mallog "github.com/Sirupsen/logrus"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/go-connections/nat"
+	"github.com/docker/go-units"
 	"github.com/maliceio/go-plugin-utils/utils"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/database"
@@ -77,12 +80,29 @@ func Start(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
 		ctx := context.Background()
 		err = WaitForConnection(ctx, "", config.Conf.DB.Timeout)
 		if err != nil {
-			mallog.Error(err)
-		}
+			logOpts := types.ContainerLogsOptions{
+				ShowStdout: true,
+				ShowStderr: true,
+				Follow:     false,
+			}
 
-		// Even though it's up it's not ready to index data yet.
-		// mallog.Infof("Sleeping for 10 seconds to give %s time to initalize.", config.Conf.DB.Image)
-		// time.Sleep(10 * time.Second)
+			logs, _ := docker.Client.ContainerLogs(context.Background(), cont.ID, logOpts)
+			defer logs.Close()
+			// Convert logs to a string
+			buf := new(bytes.Buffer)
+			buf.ReadFrom(logs)
+			logStr := buf.String()
+			mallog.Debug(logStr)
+			// Check if elasticsearch could not start due to lack of RAM
+			if strings.Contains(logStr, "There is insufficient memory for the Java Runtime Environment to continue") {
+				info, err := docker.Client.Info(context.Background())
+				if err != nil {
+					mallog.Error(err)
+				}
+				log.Fatal("You do not have enough RAM to run elasticsearch. Elasticsearch needs at least 2GB and you have: ", units.BytesSize(float64(info.MemTotal)))
+			}
+			er.CheckError(err)
+		}
 
 		return cont, err
 	}
@@ -129,7 +149,6 @@ func TestConnection(addr string) (bool, error) {
 	}
 
 	// connect to ElasticSearch where --link elastic was using via malice in Docker
-	mallog.Debug("creating elasticsearch log file: ", path.Join(maldirs.GetLogsDir(), "elastic.log"))
 	file, err := os.OpenFile(path.Join(maldirs.GetLogsDir(), "elastic.log"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0664)
 	if err != nil {
 		panic(err)

@@ -116,7 +116,14 @@ func InitElasticSearch(addr string) error {
 	_, err := TestConnection(addr)
 	er.CheckError(err)
 
-	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
+	file, err := os.OpenFile(path.Join(maldirs.GetLogsDir(), "elastic.log"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0664)
+	if err != nil {
+		panic(err)
+	}
+	client, err := elastic.NewSimpleClient(
+		elastic.SetURL(ElasticAddr),
+		elastic.SetErrorLog(log.New(file, "ERROR ", log.LstdFlags)),
+	)
 	utils.Assert(err)
 
 	exists, err := client.IndexExists("malice").Do(context.Background())
@@ -217,7 +224,14 @@ func WriteFileToDatabase(sample map[string]interface{}) elastic.IndexResponse {
 	_, err := TestConnection("")
 	er.CheckError(err)
 
-	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
+	file, err := os.OpenFile(path.Join(maldirs.GetLogsDir(), "elastic.log"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0664)
+	if err != nil {
+		panic(err)
+	}
+	client, err := elastic.NewSimpleClient(
+		elastic.SetURL(ElasticAddr),
+		elastic.SetErrorLog(log.New(file, "ERROR ", log.LstdFlags)),
+	)
 	utils.Assert(err)
 
 	scan := map[string]interface{}{
@@ -251,7 +265,14 @@ func WriteHashToDatabase(hash string) elastic.IndexResponse {
 	hashType, err := utils.GetHashType(hash)
 	utils.Assert(err)
 
-	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
+	file, err := os.OpenFile(path.Join(maldirs.GetLogsDir(), "elastic.log"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0664)
+	if err != nil {
+		panic(err)
+	}
+	client, err := elastic.NewSimpleClient(
+		elastic.SetURL(ElasticAddr),
+		elastic.SetErrorLog(log.New(file, "ERROR ", log.LstdFlags)),
+	)
 	utils.Assert(err)
 
 	scan := map[string]interface{}{
@@ -289,7 +310,14 @@ func WritePluginResultsToDatabase(results PluginResults) {
 		ElasticAddr = fmt.Sprintf("http://%s:9200", utils.Getopt("MALICE_ELASTICSEARCH", "elastic"))
 	}
 
-	client, err := elastic.NewSimpleClient(elastic.SetURL(ElasticAddr))
+	file, err := os.OpenFile(path.Join(maldirs.GetLogsDir(), "elastic.log"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0664)
+	if err != nil {
+		panic(err)
+	}
+	client, err := elastic.NewSimpleClient(
+		elastic.SetURL(ElasticAddr),
+		elastic.SetErrorLog(log.New(file, "ERROR ", log.LstdFlags)),
+	)
 	utils.Assert(err)
 
 	getSample, err := client.Get().

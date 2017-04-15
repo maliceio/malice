@@ -150,16 +150,26 @@
 			"revisionTime": "2017-04-13T21:22:18Z"
 		},
 		{
+			"checksumSHA1": "5yWg1fO/KjtAminrRv95foBATB0=",
+			"path": "github.com/docker/docker",
+			"revision": "4845c567eb35d68f35b0b1713a09b0c8d47fe67e",
+			"revisionTime": "2017-04-03T17:15:25Z",
+			"version": "v17.04.0-ce",
+			"versionExact": "v17.04.0-ce"
+		},
+		{
 			"checksumSHA1": "kZwuTfNuNs8LnRqiG9C/WhQFbiM=",
 			"path": "github.com/docker/docker/api",
 			"revision": "41f4c3cf7e270086bb2f6a6bd4622d9aeb8f741f",
 			"revisionTime": "2017-04-13T21:22:18Z"
 		},
 		{
-			"checksumSHA1": "rbjCIKymiTQJ9hxsfmsU/nocG/k=",
+			"checksumSHA1": "8P0KuWEcUdNViBFqobDvWced+EY=",
 			"path": "github.com/docker/docker/api/types",
-			"revision": "41f4c3cf7e270086bb2f6a6bd4622d9aeb8f741f",
-			"revisionTime": "2017-04-13T21:22:18Z"
+			"revision": "4845c567eb35d68f35b0b1713a09b0c8d47fe67e",
+			"revisionTime": "2017-04-03T17:15:25Z",
+			"version": "v17.04.0-ce",
+			"versionExact": "v17.04.0-ce"
 		},
 		{
 			"checksumSHA1": "jVJDbe0IcyjoKc2xbohwzQr+FF0=",
@@ -252,16 +262,20 @@
 			"revisionTime": "2017-04-13T21:22:18Z"
 		},
 		{
-			"checksumSHA1": "TG038VSpjX2kj+cqqSE5B25/dCE=",
+			"checksumSHA1": "qLQRPsUoq+kOPP+J4i3MtMP3Lqw=",
 			"path": "github.com/docker/docker/cli/command/image/build",
-			"revision": "41f4c3cf7e270086bb2f6a6bd4622d9aeb8f741f",
-			"revisionTime": "2017-04-13T21:22:18Z"
+			"revision": "4845c567eb35d68f35b0b1713a09b0c8d47fe67e",
+			"revisionTime": "2017-04-03T17:15:25Z",
+			"version": "v17.04.0-ce",
+			"versionExact": "v17.04.0-ce"
 		},
 		{
-			"checksumSHA1": "UQQxpH8UschstMO90In2QDEUIZ4=",
+			"checksumSHA1": "5Kh5+8bgj82GoNw6s3Ah4FaxEV4=",
 			"path": "github.com/docker/docker/client",
-			"revision": "41f4c3cf7e270086bb2f6a6bd4622d9aeb8f741f",
-			"revisionTime": "2017-04-13T21:22:18Z"
+			"revision": "4845c567eb35d68f35b0b1713a09b0c8d47fe67e",
+			"revisionTime": "2017-04-03T17:15:25Z",
+			"version": "v17.04.0-ce",
+			"versionExact": "v17.04.0-ce"
 		},
 		{
 			"checksumSHA1": "kK/ZpRsTmbHTYGkV7NixaG2rork=",

@@ -3,13 +3,13 @@ package container
 import (
 	"errors"
 	"fmt"
-	"os"
 	"strconv"
 
 	"golang.org/x/net/context"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/events"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/api/types/versions"
@@ -22,6 +22,52 @@ import (
 	"github.com/maliceio/malice/malice/docker/client/volume"
 )
 
+func noNetHostConfig() *container.HostConfig {
+	return &container.HostConfig{
+		Privileged:  false,
+		NetworkMode: "none",
+	}
+}
+
+func getResources() container.Resources {
+	return container.Resources{
+		// // Applicable to all platforms
+		// CPUShares int64 `json:"CpuShares"` // CPU shares (relative weight vs. other containers)
+		Memory:   config.Conf.Docker.Memory, // Memory    int64 // Memory limit (in bytes)
+		NanoCPUs: config.Conf.Docker.CPU,    // NanoCPUs  int64 `json:"NanoCpus"` // CPU quota in units of 10<sup>-9</sup> CPUs.
+
+		// // Applicable to UNIX platforms
+		// CgroupParent         string // Parent cgroup.
+		// BlkioWeight          uint16 // Block IO weight (relative weight vs. other containers)
+		// BlkioWeightDevice    []*blkiodev.WeightDevice
+		// BlkioDeviceReadBps   []*blkiodev.ThrottleDevice
+		// BlkioDeviceWriteBps  []*blkiodev.ThrottleDevice
+		// BlkioDeviceReadIOps  []*blkiodev.ThrottleDevice
+		// BlkioDeviceWriteIOps []*blkiodev.ThrottleDevice
+		// CPUPeriod            int64           `json:"CpuPeriod"`          // CPU CFS (Completely Fair Scheduler) period
+		// CPUQuota             int64           `json:"CpuQuota"`           // CPU CFS (Completely Fair Scheduler) quota
+		// CPURealtimePeriod    int64           `json:"CpuRealtimePeriod"`  // CPU real-time period
+		// CPURealtimeRuntime   int64           `json:"CpuRealtimeRuntime"` // CPU real-time runtime
+		// CpusetCpus           string          // CpusetCpus 0-2, 0,1
+		// CpusetMems           string          // CpusetMems 0-2, 0,1
+		// Devices              []DeviceMapping // List of devices to map inside the container
+		// DeviceCgroupRules    []string        // List of rule to be added to the device cgroup
+		// DiskQuota            int64           // Disk limit (in bytes)
+		// KernelMemory         int64           // Kernel memory limit (in bytes)
+		// MemoryReservation    int64           // Memory soft limit (in bytes)
+		// MemorySwap           int64           // Total memory usage (memory + swap); set `-1` to enable unlimited swap
+		// MemorySwappiness     *int64          // Tuning container memory swappiness behaviour
+		// OomKillDisable       *bool           // Whether to disable OOM Killer or not
+		// PidsLimit            int64           // Setting pids limit for a container
+		// Ulimits              []*units.Ulimit // List of ulimits to be set in the container
+
+		// // Applicable to Windows
+		// CPUCount           int64  `json:"CpuCount"`   // CPU count
+		// CPUPercent         int64  `json:"CpuPercent"` // CPU percent
+		// IOMaximumIOps      uint64 // Maximum IOps for the container system drive
+		// IOMaximumBandwidth uint64 // Maximum IO in bytes per second for the container system drive
+	}
+}
 func waitExitOrRemoved(ctx context.Context, docker *client.Docker, containerID string, waitRemove bool) chan int {
 	if len(containerID) == 0 {
 		// containerID can never be empty
@@ -104,7 +150,7 @@ func waitExitOrRemoved(ctx context.Context, docker *client.Docker, containerID s
 	return statusChan
 }
 
-func checkContainerRequirements(docker *client.Docker, containerName, img string) {
+func checkContainerRequirements(docker *client.Docker, containerName, img string) bool {
 	// Check for existance of malice network
 	if _, exists, _ := network.Exists(docker, "malice"); !exists {
 		log.WithFields(log.Fields{
@@ -128,7 +174,7 @@ func checkContainerRequirements(docker *client.Docker, containerName, img string
 			"name":    containerName,
 			"env":     config.Conf.Environment.Run,
 		}).Error("Container is already running...")
-		os.Exit(0)
+		return false
 	}
 	// Check that we have already pulled the image
 	if _, exists, _ := image.Exists(docker, img); exists {
@@ -142,6 +188,7 @@ func checkContainerRequirements(docker *client.Docker, containerName, img string
 			"env":     config.Conf.Environment.Run}).Debugf("Pulling Image `%s`", img)
 		image.Pull(docker, img, "latest")
 	}
+	return true
 }
 
 // ErrConnectionFailed is an error raised when the connection between the client and the server failed.

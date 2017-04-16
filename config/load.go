@@ -73,6 +73,8 @@ type dockerConfig struct {
 	Timeout  time.Duration
 	Binds    string
 	Links    string
+	CPU      int64
+	Memory   int64
 }
 
 type loggerConfig struct {

@@ -78,13 +78,25 @@ func GetMimeType(docker *client.Docker, arg string) (string, error) {
 		Image: "malice/fileinfo",
 		Cmd:   []string{"-m", arg},
 	}
+	resources := container.Resources{
+		Memory:   config.Conf.Docker.Memory, // Memory    int64 // Memory limit (in bytes)
+		NanoCPUs: config.Conf.Docker.CPU,    // NanoCPUs  int64 `json:"NanoCpus"` // CPU quota in units of 10<sup>-9</sup> CPUs.
+	}
+	log.WithFields(log.Fields{
+		"func": "persist.GetMimeType",
+		"mem":  config.Conf.Docker.Memory,
+		"cpu":  config.Conf.Docker.CPU,
+	}).Debug("setting container resources")
 	hostConfig := &container.HostConfig{
-		Binds:      []string{config.Conf.Docker.Binds},
-		Privileged: false,
+		Privileged:  false,
+		Binds:       []string{config.Conf.Docker.Binds},
+		NetworkMode: "none",
+		Resources:   resources,
+		AutoRemove:  true,
 	}
 	networkingConfig := &network.NetworkingConfig{}
 
-	contResponse, err := docker.Client.ContainerCreate(context.Background(), createContConf, hostConfig, networkingConfig, "mimetype")
+	contResponse, err := docker.Client.ContainerCreate(context.Background(), createContConf, hostConfig, networkingConfig, "getmimetype")
 	if err != nil {
 		return "", err
 	}
@@ -94,6 +106,27 @@ func GetMimeType(docker *client.Docker, arg string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	log.WithFields(log.Fields{
+		"id":   contResponse.ID,
+		"env":  config.Conf.Environment.Run,
+		"func": "persist.GetMimeType",
+	}).Debug("malice/fileinfo Container Started")
+
+	defer func() {
+		// remove container when done
+		contRmOpts := types.ContainerRemoveOptions{
+			RemoveVolumes: true,
+			RemoveLinks:   false,
+			Force:         true,
+		}
+		er.CheckError(docker.Client.ContainerRemove(context.Background(), "getmimetype", contRmOpts))
+		log.WithFields(log.Fields{
+			"id":   contResponse.ID,
+			"env":  config.Conf.Environment.Run,
+			"func": "persist.GetMimeType",
+		}).Debug("malice/fileinfo Container Removed")
+	}()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -118,21 +151,8 @@ func GetMimeType(docker *client.Docker, arg string) (string, error) {
 		return "", err
 	}
 
-	defer func() {
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
-
-		contRmOpts := types.ContainerRemoveOptions{
-			RemoveVolumes: true,
-			RemoveLinks:   true,
-			Force:         true,
-		}
-		er.CheckError(docker.Client.ContainerRemove(ctx, contResponse.ID, contRmOpts))
-		log.WithFields(log.Fields{
-			"id":  contResponse.ID,
-			"env": config.Conf.Environment.Run,
-		}).Debug("malice/fileinfo Container Removed")
-	}()
+	mimetype := strings.TrimSpace(buf1.String())
+	log.Debug("File has mimetype: ", mimetype)
 
 	return strings.TrimSpace(buf1.String()), nil
 }
@@ -146,12 +166,13 @@ func GetFileInfo(docker *client.Docker, arg string, search string) (string, erro
 		Cmd:   []string{arg},
 	}
 	hostConfig := &container.HostConfig{
-		Binds:      []string{config.Conf.Docker.Binds},
-		Privileged: false,
+		Privileged:  false,
+		Binds:       []string{config.Conf.Docker.Binds},
+		NetworkMode: "none",
 	}
 	networkingConfig := &network.NetworkingConfig{}
 
-	contResponse, err := docker.Client.ContainerCreate(context.Background(), createContConf, hostConfig, networkingConfig, "fileinfo")
+	contResponse, err := docker.Client.ContainerCreate(context.Background(), createContConf, hostConfig, networkingConfig, "")
 	if err != nil {
 		return "", err
 	}
@@ -190,6 +211,23 @@ func GetFileInfo(docker *client.Docker, arg string, search string) (string, erro
 	if err != nil {
 		return "", err
 	}
+
+	defer func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		contRmOpts := types.ContainerRemoveOptions{
+			RemoveVolumes: true,
+			RemoveLinks:   true,
+			Force:         true,
+		}
+		er.CheckError(docker.Client.ContainerRemove(ctx, contResponse.ID, contRmOpts))
+		log.WithFields(log.Fields{
+			"id":   contResponse.ID,
+			"env":  config.Conf.Environment.Run,
+			"func": "persist.GetFileInfo",
+		}).Debug("malice/fileinfo Container Removed")
+	}()
 
 	return string(found), nil
 }

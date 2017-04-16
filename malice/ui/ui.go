@@ -31,9 +31,11 @@ func Start(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
 			nil, // env []string,
 		)
 		log.WithFields(log.Fields{
+			"ip":   docker.GetIP(),
+			"port": config.Conf.UI.Ports,
 			"name": contJSON.Name,
 			"env":  config.Conf.Environment.Run,
-		}).Debug("Kibana Container Started")
+		}).Info("Kibana Container Started")
 
 		return contJSON, err
 	}

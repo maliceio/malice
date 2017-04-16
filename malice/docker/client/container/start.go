@@ -33,19 +33,26 @@ func Start(
 
 	if docker.Ping() {
 		// Check that all requirements for the container to run are ready
-		checkContainerRequirements(docker, name, image)
+		if !checkContainerRequirements(docker, name, image) {
+			return types.ContainerJSONBase{}, errors.New("container is already running")
+		}
 
 		createContConf := &container.Config{
 			Image: image,
 			Cmd:   cmd,
 			Env:   env,
 		}
+		// resources := container.Resources{
+		// 	Memory:   config.Conf.Docker.Memory, // Memory: Memory limit (in bytes)
+		// 	NanoCPUs: config.Conf.Docker.CPU,    // NanoCPUs: CPU quota in units of 10<sup>-9</sup> CPUs.
+		// }
 		hostConfig := &container.HostConfig{
 			Binds: binds,
 			// NetworkMode:  "malice",
 			PortBindings: portBindings,
 			Links:        links,
 			Privileged:   false,
+			// Resources:    resources,
 		}
 		networkingConfig := &network.NetworkingConfig{}
 

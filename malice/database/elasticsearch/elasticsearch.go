@@ -58,9 +58,14 @@ func Start(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
 
 	if docker.Ping() {
 		cont, err := container.Start(docker, nil, name, image, logs, binds, portBindings, nil, nil)
-
+		if err != nil {
+			return types.ContainerJSONBase{}, err
+		}
 		// Inspect newly created container to get IP assigned to it
 		dbInfo, err := container.Inspect(docker, cont.ID)
+		if err != nil {
+			mallog.Error(err)
+		}
 		elasticAddress := getElasticSearchAddr(dbInfo.NetworkSettings.IPAddress)
 
 		mallog.WithFields(mallog.Fields{
@@ -101,7 +106,9 @@ func Start(docker *client.Docker, logs bool) (types.ContainerJSONBase, error) {
 				}
 				log.Fatal("You do not have enough RAM to run elasticsearch. Elasticsearch needs at least 2GB and you have: ", units.BytesSize(float64(info.MemTotal)))
 			}
-			er.CheckError(err)
+			if err != nil {
+				mallog.Error(err)
+			}
 		}
 
 		return cont, err

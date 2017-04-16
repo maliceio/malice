@@ -3,7 +3,7 @@ FROM alpine:3.5
 LABEL maintainer "https://github.com/blacktop"
 
 RUN apk add --no-cache file tini
-RUN apk add --no-cache -t build-deps go git mercurial build-base file-dev libc-dev \
+RUN apk add --no-cache -t build-deps go git mercurial build-base gcc file-dev libc-dev \
   && set -x \
   && echo "Building malice Go binary..." \
   && git clone https://github.com/maliceio/malice.git /go/src/github.com/maliceio/malice \
@@ -12,8 +12,8 @@ RUN apk add --no-cache -t build-deps go git mercurial build-base file-dev libc-d
   && git config --global http.https://gopkg.in.followRedirects true \
   && export GOPATH=/go \
   && go version \
-  && go get \
-  && go build -ldflags "-X main.Version=$(cat VERSION) -X main.BuildTime=$(date -u +%Y%m%d)" -o /bin/malice \
+  && go get -d \
+  && CGO_ENABLED=0 go build -ldflags "-X main.Version=$(cat VERSION) -X main.BuildTime=$(date -u +%Y%m%d)" -o /bin/malice \
   && echo "Copy malice config files..." \
   && mkdir /malice \
   && cp /go/src/github.com/maliceio/malice/config/config.toml /malice \

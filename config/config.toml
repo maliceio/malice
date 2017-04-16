@@ -49,7 +49,7 @@ title = "Malice Runtime Configuration"
   links = "malice-elastic:elasticsearch"
   cpu = 500000000 # 50% of availble CPU
   memory = 524288000 # 500MB
-  timeout = 120
+  timeout = 120  
 
 [logger]
   filename = "malice.log"

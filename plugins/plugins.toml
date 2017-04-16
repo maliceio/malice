@@ -21,7 +21,7 @@ title = "Malice Plugin Configurations"
   env = ["MALICE_TIMEOUT"]
 
 [[plugin]]
-  enabled = false
+  enabled = true
   name = "virustotal"
   description = "VirusTotal - files scan and hash lookup"
   category = "intel"
@@ -29,7 +29,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/maliceio/malice-virustotal.git"
   build = false
   upload = false # Set upload to `true` if you want to upload sample to virustotal.com
-  apikey = ""
+  apikey = "2539516d471d7beb6b28a720d7a25024edc0f7590d345fc747418645002ac47b" # This is a test key, please replace with your own
   cmd = "lookup"
   mime = "hash"
   hashtypes = [ "md5", "sha1", "sha256" ]

@@ -81,7 +81,7 @@ Vagrant.configure("2") do |config|
     curl -s https://raw.githubusercontent.com/ZZROTDesign/docker-clean/v2.0.4/docker-clean | sudo tee /usr/local/bin/docker-clean > /dev/null
     sudo chmod +x /usr/local/bin/docker-clean
     echo "Installing Golang ==============================="
-    export GO_VERSION=1.7.1
+    export GO_VERSION=1.8.1
     export ARCH="$(dpkg --print-architecture)"
     wget https://storage.googleapis.com/golang/go$GO_VERSION.linux-$ARCH.tar.gz -O /tmp/go.tar.gz
     tar -C /usr/local -xzf /tmp/go.tar.gz

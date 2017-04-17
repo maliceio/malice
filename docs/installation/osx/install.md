@@ -37,8 +37,10 @@ $ brew install https://raw.githubusercontent.com/maliceio/malice/master/contrib/
 #### Uninstall Malice  
 
 ```bash
+$ brew uninstall malice
 $ rm -rf ~/.malice
-$ brew uninstall install https://raw.githubusercontent.com/maliceio/malice/master/contrib/homebrew/Formula/malice.rb
+$ brew prune
+$ brew cleanup
 ```
 
 > **NOTE:** We are removing the `.malice` config folder in your home directory which also contains gzipped versions of all the files you have scanned.

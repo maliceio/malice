@@ -1,6 +1,7 @@
 REPO=malice
 NAME=malice
 VERSION=$(shell cat .release/VERSION)
+MESSAGE?="New release"
 
 SOURCE_FILES?=$$(go list ./... | grep -v '/vendor/\|/templates/\|/api')
 TEST_PATTERN?=.
@@ -30,6 +31,7 @@ osx: ## Install OSX dev dependencies
 setup: ## Install all the build and lint dependencies
 	@echo "===> Installing deps"
 	go get -u github.com/alecthomas/gometalinter
+	go get -u github.com/shurcooL/markdownfmt	
 	go get -u github.com/jteeuwen/go-bindata/...
 	go get -u github.com/kardianos/govendor
 	go get -u github.com/pierrre/gotestcover
@@ -71,7 +73,7 @@ lint: ## Run all the linters
 
 release: ## Create a new release from the VERSION
 	@echo "===> Creating Release"
-	git tag ${VERSION}
+	git tag -a ${VERSION} -m ${MESSAGE}
 	git push origin ${VERSION}
 	goreleaser --release-notes .release/RELEASE.md
 

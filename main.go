@@ -21,7 +21,7 @@ var version = "master"
 func init() {
 	logger.Init()
 	setDebugOutputLevel()
-	config.Load()
+	config.Load(version)
 	plugins.Load()
 }
 

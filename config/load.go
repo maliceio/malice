@@ -1,15 +1,18 @@
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 	"time"
 
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
 	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/maldirs"
+	"github.com/maliceio/malice/utils"
 )
 
 // Configuration represents the malice runtime configuration.
@@ -92,11 +95,29 @@ type proxyConfig struct {
 // Conf represents the Malice runtime configuration
 var Conf Configuration
 
+// UpdateConfig will update the config on disk with the one embedded in malice
+func UpdateConfig() error {
+	configPath := path.Join(maldirs.GetConfigDir(), "./config.toml")
+	configBackupPath := path.Join(maldirs.GetConfigDir(), "./config.toml.backup")
+	er.CheckError(utils.CopyFile(configPath, configBackupPath))
+	// Read plugin config out of bindata
+	tomlData, err := Asset("config/config.toml")
+	if err != nil {
+		log.Error(err)
+	}
+	if _, err = toml.Decode(string(tomlData), &Conf); err == nil {
+		// Update the config config in the .malice folder
+		er.CheckError(ioutil.WriteFile(configPath, tomlData, 0644))
+		log.Debug("Malice config loaded from config/bindata.go")
+	}
+	return err
+}
+
 // Load config.toml into Conf var
 // Try to load config from
 // - .malice folder       : $HOME/.malice/config.toml
 // - binary embedded file : bindata
-func Load() {
+func Load(version string) {
 
 	var configPath string
 
@@ -106,6 +127,18 @@ func Load() {
 		_, err := toml.DecodeFile(configPath, &Conf)
 		er.CheckError(err)
 		log.Debug("Malice config loaded from: ", configPath)
+		if strings.EqualFold(Conf.Version, version) {
+			// Prompt user to update malice config.toml?
+			log.Info("Newer version of malice config.toml available: ", version)
+			fmt.Println("Would you like to update now? (yes/no)")
+			if utils.AskForConfirmation() {
+				log.Debug("Updating config: ", configPath)
+				er.CheckError(UpdateConfig())
+			}
+			log.Info("Newer version of malice config available: ", version)
+			log.Debug("Updating config: ", configPath)
+			er.CheckError(UpdateConfig())
+		}
 		return
 	}
 

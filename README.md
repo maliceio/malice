@@ -29,7 +29,8 @@ $ eval $(docker-machine env malice)
 #### Install
 
 ```bash
-$ brew install https://raw.githubusercontent.com/maliceio/malice/master/contrib/homebrew/Formula/malice.rb
+$ brew tap maliceio/tap
+$ brew install malice
 ```
 
 ```

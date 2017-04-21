@@ -15,7 +15,7 @@ GIT_DESCRIBE=$(git describe --tags)
 
 bindata: ## Embed binary data in malice program
 	@echo "===> Embedding Binary Data"
-	tomlupdate ${VERSION}	
+	tomlupdate --path config/config.toml ${VERSION}	
 	rm -f config/bindata.go plugins/bindata.go
 	go-bindata -pkg config -ignore=load.go config/...
 	mv bindata.go config/bindata.go

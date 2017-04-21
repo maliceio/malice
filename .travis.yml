@@ -1,10 +1,10 @@
-language: go
 sudo: required
+
+language: go
+go: 1.8
 
 services:
   - docker
-
-go: 1.8
 
 before_install:
   - sudo apt-get update
@@ -14,7 +14,6 @@ before_install:
 
 install:
   - make setup
-  - gem install fpm
 
 script:
   - make test
@@ -24,4 +23,3 @@ script:
 after_success:
   - go get github.com/mattn/goveralls
   - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken="$COVERALLS_TOKEN"
-  - test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash main.go

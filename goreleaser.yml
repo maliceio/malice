@@ -12,7 +12,7 @@ build:
     post: /bin/sh install/scripts/upx.sh
 archive:
   files:
-    - contrib/completion/zsh/_malice      
+    - contrib/completion/zsh/_malice
 brew:
   github:
     owner: maliceio
@@ -20,6 +20,9 @@ brew:
   folder: Formula
   dependencies:
     - git
+  install:|
+    bin.install "malice"
+    zsh_completion.install "contrib/completion/zsh/_malice"
 fpm:
   formats:
     - deb

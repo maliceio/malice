@@ -99,7 +99,7 @@ var Conf Configuration
 func UpdateConfig() error {
 	configPath := path.Join(maldirs.GetConfigDir(), "./config.toml")
 	configBackupPath := path.Join(maldirs.GetConfigDir(), "./config.toml.backup")
-	er.CheckError(utils.CopyFile(configPath, configBackupPath))
+	er.CheckError(utils.CopyFile(configBackupPath, configPath))
 	// Read plugin config out of bindata
 	tomlData, err := Asset("config/config.toml")
 	if err != nil {
@@ -120,7 +120,8 @@ func loadFromToml(configPath, version string) {
 		loadFromBinary(configPath)
 	}
 	log.Debug("Malice config loaded from: ", configPath)
-	if version != "" && strings.EqualFold(Conf.Version, version) {
+	log.Debugf("config.toml version: %s, malice version: %s", Conf.Version, version)
+	if version != "" && !strings.EqualFold(Conf.Version, version) {
 		// Prompt user to update malice config.toml?
 		log.Info("Newer version of malice config.toml available: ", version)
 		fmt.Println("Would you like to update now? (yes/no)")

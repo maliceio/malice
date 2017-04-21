@@ -3,6 +3,7 @@ NAME=malice
 VERSION=$(shell cat .release/VERSION)
 MESSAGE?="New release"
 
+# TODO remove \|/templates/\|/api
 SOURCE_FILES?=$$(go list ./... | grep -v '/vendor/\|/templates/\|/api')
 TEST_PATTERN?=.
 TEST_OPTIONS?=
@@ -28,10 +29,11 @@ osx: ## Install OSX dev dependencies
 	brew bundle
 	gem install --no-ri --no-rdoc fpm
 
+# TODO switch to golang/dep
 setup: ## Install all the build and lint dependencies
 	@echo "===> Installing deps"
 	go get -u github.com/alecthomas/gometalinter
-	go get -u github.com/shurcooL/markdownfmt	
+	go get -u github.com/shurcooL/markdownfmt
 	go get -u github.com/jteeuwen/go-bindata/...
 	go get -u github.com/kardianos/govendor
 	go get -u github.com/pierrre/gotestcover

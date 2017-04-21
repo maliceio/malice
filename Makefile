@@ -42,6 +42,7 @@ setup: ## Install all the build and lint dependencies
 	go get -u github.com/kardianos/govendor
 	go get -u github.com/pierrre/gotestcover
 	go get -u golang.org/x/tools/cmd/cover
+	go get -u github.com/maliceio/malice/utils/tomlupdate
 	govendor sync
 	gometalinter --install
 
@@ -93,6 +94,7 @@ ci: lint test ## Run all the tests and code checks
 
 build: bindata size ## Build a beta version of malice
 	@echo "===> Building Binaries"
+	tomlupdate ${VERSION}
 	go build -ldflags "-X main.version=${VERSION}-beta" -o malice-beta
 
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html

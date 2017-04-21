@@ -42,3 +42,5 @@ debug
 
 .vagrant
 malice-beta
+
+utils/tomlupdate/tomlupdate

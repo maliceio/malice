@@ -6,12 +6,12 @@
 #######################################################################
 
 title = "Malice Runtime Configuration"
+version = 
 
 [author]
   name = "blacktop"
   organization = "MaliceIO"
   bio = "I just like building things."
-  # dob = 1979-05-27T07:32:00Z # First class dates? Why not?
 
 [web]
   url = "0.0.0.0:80"

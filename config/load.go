@@ -17,6 +17,7 @@ import (
 // Configuration represents the malice runtime configuration.
 type Configuration struct {
 	Title       string
+	Version     string
 	Author      authorInfo
 	Web         webConfig
 	Email       emailConfig

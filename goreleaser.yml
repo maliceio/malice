@@ -18,13 +18,9 @@ brew:
     owner: maliceio
     name: homebrew-tap
   folder: Formula
-  dependencies:
-    - git
   install: |
     bin.install "malice"
     zsh_completion.install "contrib/completion/zsh/_malice"
 fpm:
   formats:
     - deb
-  dependencies:
-    - git

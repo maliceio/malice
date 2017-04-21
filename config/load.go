@@ -113,35 +113,28 @@ func UpdateConfig() error {
 	return err
 }
 
-// Load config.toml into Conf var
-// Try to load config from
-// - .malice folder       : $HOME/.malice/config.toml
-// - binary embedded file : bindata
-func Load(version string) {
-
-	var configPath string
-
-	// Check for config config in .malice folder
-	configPath = path.Join(maldirs.GetConfigDir(), "./config.toml")
-	if _, err := os.Stat(configPath); err == nil {
-		_, err := toml.DecodeFile(configPath, &Conf)
-		er.CheckError(err)
-		log.Debug("Malice config loaded from: ", configPath)
-		if version != "" && strings.EqualFold(Conf.Version, version) {
-			// Prompt user to update malice config.toml?
-			log.Info("Newer version of malice config.toml available: ", version)
-			fmt.Println("Would you like to update now? (yes/no)")
-			if utils.AskForConfirmation() {
-				log.Debug("Updating config: ", configPath)
-				er.CheckError(UpdateConfig())
-			}
-			log.Info("Newer version of malice config available: ", version)
+func loadFromToml(configPath, version string) {
+	_, err := toml.DecodeFile(configPath, &Conf)
+	if err != nil {
+		// try the config embedded in malice instead
+		loadFromBinary(configPath)
+	}
+	log.Debug("Malice config loaded from: ", configPath)
+	if version != "" && strings.EqualFold(Conf.Version, version) {
+		// Prompt user to update malice config.toml?
+		log.Info("Newer version of malice config.toml available: ", version)
+		fmt.Println("Would you like to update now? (yes/no)")
+		if utils.AskForConfirmation() {
 			log.Debug("Updating config: ", configPath)
 			er.CheckError(UpdateConfig())
 		}
-		return
+		log.Info("Newer version of malice config available: ", version)
+		log.Debug("Updating config: ", configPath)
+		er.CheckError(UpdateConfig())
 	}
+}
 
+func loadFromBinary(configPath string) {
 	// Read plugin config out of bindata
 	tomlData, err := Asset("config/config.toml")
 	if err != nil {
@@ -155,6 +148,17 @@ func Load(version string) {
 		log.Debug("Malice config loaded from config/bindata.go")
 	}
 	er.CheckError(err)
+}
 
-	return
+// Load config.toml into Conf var
+// Try to load config from
+// - .malice folder       : $HOME/.malice/config.toml
+// - binary embedded file : bindata
+func Load(version string) {
+	// Check for config config in .malice folder
+	configPath := path.Join(maldirs.GetConfigDir(), "./config.toml")
+	if _, err := os.Stat(configPath); err == nil {
+		loadFromToml(configPath, version)
+	}
+	loadFromBinary(configPath)
 }

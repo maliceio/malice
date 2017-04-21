@@ -32,9 +32,10 @@ npm-debug.log
 
 .imdone/config.json
 data/samples/*
-release/
+
 build/
 dist/
+
 .vscode/
 debug
 *.bu

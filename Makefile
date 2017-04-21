@@ -1,6 +1,6 @@
 REPO=malice
 NAME=malice
-VERSION=$(shell cat VERSION)
+VERSION=$(shell cat release/VERSION)
 
 SOURCE_FILES?=$$(go list ./... | grep -v '/vendor/\|/templates/\|/api')
 TEST_PATTERN?=.
@@ -65,12 +65,15 @@ lint: ## Run all the linters
 		--enable=vetshadow \
 		--deadline=10m \
 		./...
+	markdownfmt -w README.md
+	markdownfmt -w CHANGELOG.md
+	markdownfmt -w release/RELEASE.md
 
 release: ## Create a new release from the VERSION
 	@echo "===> Creating Release"
 	git tag ${VERSION}
 	git push origin ${VERSION}
-	goreleaser
+	goreleaser --release-notes release/RELEASE.md
 
 destroy: ## Remove release from the VERSION
 	@echo "===> Deleting Release"

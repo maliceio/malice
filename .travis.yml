@@ -7,9 +7,10 @@ services:
 go: 1.8
 
 before_install:
-  - apt-get update
-  - apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
   - docker --version
+  - docker pull blacktop/elasticsearch
 
 install:
   - make setup
@@ -17,7 +18,8 @@ install:
 
 script:
   - make test
-  - go run main.go --skip-validate --skip-publish
+  - go build -o malice-travis
+  - ./malice-travis elk
 
 after_success:
   - go get github.com/mattn/goveralls

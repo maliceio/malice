@@ -8,6 +8,8 @@ build:
     - linux
   goarch:
     - amd64
+  hooks:
+    post: /bin/sh install/scripts/upx.sh
 brew:
   github:
     owner: maliceio

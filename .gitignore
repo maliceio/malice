@@ -34,6 +34,7 @@ npm-debug.log
 data/samples/*
 release/
 build/
+dist/
 .vscode/
 debug
 *.bu

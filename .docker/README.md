@@ -1,21 +1,13 @@
 ![malice logo](https://raw.githubusercontent.com/maliceio/malice/master/docs/images/logo/malice.png)
 =============================================================================================
 
-[![CircleCI](https://circleci.com/gh/maliceio/malice.png?style=shield)](https://circleci.com/gh/maliceio/malice) [![License](https://img.shields.io/badge/licence-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)](https://hub.docker.com/r/malice/engine/) [![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)](https://hub.docker.com/r/malice/engine/) [![Docker Image](https://img.shields.io/badge/docker%20image-35.63%20MB-blue.svg)](https://hub.docker.com/r/malice/engine/)
+[![CircleCI](https://circleci.com/gh/maliceio/malice.png?style=shield)](https://circleci.com/gh/maliceio/malice) [![License](https://img.shields.io/badge/licence-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)](https://hub.docker.com/r/malice/engine/) [![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)](https://hub.docker.com/r/malice/engine/) [![Docker Image](https://img.shields.io/badge/docker%20image-30.6%20MB-blue.svg)](https://hub.docker.com/r/malice/engine/)
 
 This repository contains a **Dockerfile** of the [Malice Engine](https://github.com/maliceio/malice).
 
 ### Dependencies
 
--	[gliderlabs/alpine:edge](https://index.docker.io/_/gliderlabs/alpine/)
-
-### Image Tags
-
-```bash
-REPOSITORY          TAG                 SIZE
-malice/engine       latest              35.63 MB
-malice/engine       0.1                 35.63 MB
-```
+-	[alpine:3.5](https://hub.docker.com/r/_/alpine/)
 
 ### Installation
 
@@ -55,4 +47,4 @@ See [`CHANGELOG.md`](https://github.com/maliceio/malice/blob/master/CHANGELOG.md
 ### License
 
 Apache License (Version 2.0)  
-Copyright (c) 2013 - 2016 **blacktop** Joshua Maine
+Copyright (c) 2013 - 2017 **blacktop** Joshua Maine

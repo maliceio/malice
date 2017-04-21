@@ -1,5 +1,5 @@
 REPO=malice
-NAME=malice
+NAME=engine
 VERSION=$(shell cat .release/VERSION)
 MESSAGE?="New release"
 
@@ -21,8 +21,12 @@ bindata: ## Embed binary data in malice program
 	go-bindata -pkg plugins -ignore="^.*.go|\\.DS_Store" plugins/...
 	mv bindata.go plugins/bindata.go
 
-docker:
-	docker build -t malice/build-linux-binaries -f .docker/Dockerfile.binaries .
+docker: ## Build docker image
+	cd .docker; docker build -t $(REPO)/$(NAME):$(VERSION) .
+
+size: docker ## Add docker image size to READMEs
+	sed -i.bu 's/docker%20image-.*-blue/docker%20image-$(shell docker images --format "{{.Size}}" $(REPO)/$(NAME):$(VERSION)| cut -d' ' -f1)%20MB-blue/' README.md
+	sed -i.bu 's/docker%20image-.*-blue/docker%20image-$(shell docker images --format "{{.Size}}" $(REPO)/$(NAME):$(VERSION)| cut -d' ' -f1)%20MB-blue/' .docker/README.md
 
 osx: ## Install OSX dev dependencies
 	brew tap homebrew/bundle
@@ -87,7 +91,7 @@ destroy: ## Remove release from the VERSION
 
 ci: lint test ## Run all the tests and code checks
 
-build: bindata ## Build a beta version of malice
+build: bindata size ## Build a beta version of malice
 	@echo "===> Building Binaries"
 	go build -ldflags "-X main.version=${VERSION}-beta" -o malice-beta
 

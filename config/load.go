@@ -14,79 +14,79 @@ import (
 
 // Configuration represents the malice runtime configuration.
 type Configuration struct {
-	Title       string              `toml:"title" json:"title,omitempty"`
-	Version     string              `toml:"version" json:"version,omitempty"`
-	Author      authorInfo          `toml:"author" json:"author,omitempty"`
-	Web         webConfig           `toml:"web" json:"web,omitempty"`
-	Email       emailConfig         `toml:"email" json:"email,omitempty"`
-	DB          databaseConfig      `toml:"database" json:"db,omitempty"`
-	UI          userInterfaceConfig `toml:"ui" json:"ui,omitempty"`
-	Environment envConfig           `toml:"environment" json:"environment,omitempty"`
-	Docker      dockerConfig        `toml:"docker" json:"docker,omitempty"`
-	Logger      loggerConfig        `toml:"logger" json:"logger,omitempty"`
-	Proxy       proxyConfig         `toml:"proxy" json:"proxy,omitempty"`
+	Title       string              `toml:"title"`
+	Version     string              `toml:"version"`
+	Author      authorInfo          `toml:"author"`
+	Web         webConfig           `toml:"web"`
+	Email       emailConfig         `toml:"email"`
+	DB          databaseConfig      `toml:"database"`
+	UI          userInterfaceConfig `toml:"ui"`
+	Environment envConfig           `toml:"environment"`
+	Docker      dockerConfig        `toml:"docker"`
+	Logger      loggerConfig        `toml:"logger"`
+	Proxy       proxyConfig         `toml:"proxy"`
 }
 
 type authorInfo struct {
-	Name         string `json:"name,omitempty"`
-	Organization string `json:"organization,omitempty"`
+	Name         string `toml:"name"`
+	Organization string `toml:"organization"`
 }
 
 type webConfig struct {
-	URL      string `json:"url,omitempty"`
-	AdminURL string `toml:"admin_url" json:"admin_url,omitempty"`
+	URL      string `toml:"url"`
+	AdminURL string `toml:"admin_url"`
 }
 
 type userInterfaceConfig struct {
-	Name    string `json:"name,omitempty"`
-	Image   string `json:"image,omitempty"`
-	Server  string `json:"server,omitempty"`
-	Ports   []int  `json:"ports,omitempty"`
-	Enabled bool   `json:"enabled,omitempty"`
+	Name    string `toml:"name"`
+	Image   string `toml:"image"`
+	Server  string `toml:"server"`
+	Ports   []int  `toml:"ports"`
+	Enabled bool   `toml:"enabled"`
 }
 
 type databaseConfig struct {
-	Name    string `json:"name,omitempty"`
-	Image   string `json:"image,omitempty"`
-	Server  string `json:"server,omitempty"`
-	Ports   []int  `json:"ports,omitempty"`
-	Timeout int    `json:"timeout,omitempty"`
-	Enabled bool   `json:"enabled,omitempty"`
+	Name    string `toml:"name"`
+	Image   string `toml:"image"`
+	Server  string `toml:"server"`
+	Ports   []int  `toml:"ports"`
+	Timeout int    `toml:"timeout"`
+	Enabled bool   `toml:"enabled"`
 }
 
 type emailConfig struct {
-	Host     string `json:"host,omitempty"`
-	port     int    `json:"port,omitempty"`
-	Username string `toml:"user" json:"username,omitempty"`
-	Password string `toml:"pass" json:"password,omitempty"`
+	Host     string `toml:"host"`
+	Port     int    `toml:"port"`
+	Username string `toml:"user"`
+	Password string `toml:"pass"`
 }
 
 type envConfig struct {
-	Run string `json:"run,omitempty"`
+	Run string `toml:"run"`
 }
 
 type dockerConfig struct {
-	Name     string        `toml:"machine-name" json:"name,omitempty"`
-	EndPoint string        `json:"endpoint,omitempty"`
-	Timeout  time.Duration `json:"timeout,omitempty"`
-	Binds    string        `json:"binds,omitempty"`
-	Links    string        `json:"links,omitempty"`
-	CPU      int64         `json:"cpu,omitempty"`
-	Memory   int64         `json:"memory,omitempty"`
+	Name     string        `toml:"machine-name"`
+	EndPoint string        `toml:"endpoint"`
+	Timeout  time.Duration `toml:"timeout"`
+	Binds    string        `toml:"binds"`
+	Links    string        `toml:"links"`
+	CPU      int64         `toml:"cpu"`
+	Memory   int64         `toml:"memory"`
 }
 
 type loggerConfig struct {
-	FileName   string `json:"filename,omitempty"`
-	MaxSize    int    `json:"maxsize,omitempty"`
-	MaxAge     int    `json:"maxage,omitempty"`
-	MaxBackups int    `json:"maxbackups,omitempty"`
-	LocalTime  bool   `json:"localtime,omitempty"`
+	FileName   string `toml:"filename"`
+	MaxSize    int    `toml:"maxsize"`
+	MaxAge     int    `toml:"maxage"`
+	MaxBackups int    `toml:"maxbackups"`
+	LocalTime  bool   `toml:"localtime"`
 }
 
 type proxyConfig struct {
-	Enable bool   `json:"enable,omitempty"`
-	HTTP   string `json:"http,omitempty"`
-	HTTPS  string `json:"https,omitempty"`
+	Enable bool   `toml:"enable"`
+	HTTP   string `toml:"http"`
+	HTTPS  string `toml:"https"`
 }
 
 // Conf represents the Malice runtime configuration

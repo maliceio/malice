@@ -4,6 +4,7 @@ Changelog
 -	Moving away from `blacktop/elastic-stack` in favor of one container per service
 -	Malice will now wait 20 secs for `blacktop/elasticsearch` to start before giving up
 -	Malice will check if elasticsearch fails to start if it is because you don't have enough memory to run it
+-   Added initial ability to upgrade `~/.malice/config/config.toml` when a new version comes out
 
 ### Fixes
 

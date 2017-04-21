@@ -18,7 +18,7 @@ install:
 script:
   - make test
   - go build -o malice-travis
-  - ./malice-travis elk
+  - ./malice-travis -D elk
 
 after_success:
   - go get github.com/mattn/goveralls

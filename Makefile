@@ -75,7 +75,8 @@ release: bindata ## Create a new release from the VERSION
 destroy: ## Remove release from the VERSION
 	@echo "===> Deleting Release"
 	rm -rf dist
-	gh-release destroy maliceio/$(NAME) $(VERSION) $(shell git rev-parse --abbrev-ref HEAD) v$(VERSION)
+	git tag -d ${VERSION}
+	git push origin :refs/tags/${VERSION}
 
 ci: lint test ## Run all the tests and code checks
 

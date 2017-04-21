@@ -14,8 +14,9 @@ import (
 	"github.com/maliceio/malice/malice/logger"
 	"github.com/maliceio/malice/malice/maldirs"
 	"github.com/maliceio/malice/plugins"
-	"github.com/maliceio/malice/version"
 )
+
+var version = "master"
 
 func init() {
 	logger.Init()
@@ -66,7 +67,7 @@ func main() {
 	app.Commands = commands.Commands
 	app.CommandNotFound = commands.CmdNotFound
 	app.Usage = "Open Source Malware Analysis Framework"
-	app.Version = version.GetHumanVersion()
+	app.Version = version
 	app.Copyright = "Copyright (c) 2013 - 2016 'blacktop' Joshua Maine"
 	// app.EnableBashCompletion = true
 

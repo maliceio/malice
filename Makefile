@@ -2,7 +2,7 @@ REPO=malice
 NAME=malice
 VERSION=$(shell cat VERSION)
 
-SOURCE_FILES?=$$(go list ./... | grep -v /vendor/)
+SOURCE_FILES?=$$(go list ./... | grep -v '/vendor/\|/templates/\|/api')
 TEST_PATTERN?=.
 TEST_OPTIONS?=
 

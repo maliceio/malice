@@ -19,7 +19,7 @@ import (
 var version = "master"
 
 func init() {
-	logger.Init()
+	logger.Init(version)
 	setDebugOutputLevel()
 	config.Load(version)
 	plugins.Load()

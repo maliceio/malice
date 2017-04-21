@@ -51,8 +51,8 @@ func InitLogToFile() {
 }
 
 // Init logrus
-func Init() {
-	config.Load("")
+func Init(version string) {
+	config.Load(version)
 	switch config.Conf.Environment.Run {
 	case "development":
 		InitLogToStdout(logrus.InfoLevel)

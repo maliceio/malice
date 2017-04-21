@@ -24,6 +24,7 @@ build: bindata docker
 	docker run --rm -v `pwd`:/go/src/github.com/maliceio/malice:rw -e NAME=$(NAME) -e VERSION=$(VERSION) malice/build-linux-binaries
 
 deps:
+	brew bundle
 	go get -u github.com/progrium/gh-release/...
 	go get -u -f github.com/tools/godep
 	go get github.com/golang/lint/golint

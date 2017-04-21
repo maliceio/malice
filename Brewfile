@@ -1,6 +1,7 @@
 'update'
 'doctor'
 
+brew 'go'
 brew 'jq'
 brew 'upx'
 brew 'gnu-tar'

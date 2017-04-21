@@ -1,0 +1,12 @@
+brew:
+  github:
+    owner: maliceio
+    name: homebrew-tap
+  folder: Formula
+  dependencies:
+    - git
+fpm:
+  formats:
+    - deb
+  dependencies:
+    - git

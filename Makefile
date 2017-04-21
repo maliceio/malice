@@ -31,10 +31,10 @@ setup: ## Install all the build and lint dependencies
 	@echo "===> Installing deps"
 	go get -u github.com/alecthomas/gometalinter
 	go get -u github.com/jteeuwen/go-bindata/...
-	# go get -u npf.io/gorram
+	go get -u github.com/kardianos/govendor
 	go get -u github.com/pierrre/gotestcover
 	go get -u golang.org/x/tools/cmd/cover
-	# dep ensure
+	govendor sync
 	gometalinter --install
 
 test: ## Run all the tests

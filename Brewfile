@@ -3,9 +3,10 @@
 
 brew 'go'
 brew 'jq'
-brew 'upx'
 brew 'gnu-tar'
-tap 'goreleaser/tap/goreleaser'
+
+tap 'goreleaser/tap'
 brew 'goreleaser/tap/goreleaser'
-tap 'goreleaser/tap/goreleaser'
+
+tap 'go-delve/delve'
 brew 'go-delve/delve/delve'

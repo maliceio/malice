@@ -15,16 +15,16 @@ Changelog
 Plugin list
 -----------
 
- nsrl  
- shadow-server  
- fileinfo  
- yara  
- avast  
- avg  
- bitdefender  
- clamav  
- comodo  
- fprot  
- fsecure  
- sophos  
- floss
+  nsrl  
+  shadow-server  
+  fileinfo  
+  yara  
+  avast  
+  avg  
+  bitdefender  
+  clamav  
+  comodo  
+  fprot  
+  fsecure  
+  sophos  
+  floss

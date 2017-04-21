@@ -10,7 +10,6 @@ GIT_COMMIT=$(git rev-parse HEAD)
 GIT_DIRTY=$(test -n "`git status --porcelain`" && echo "+CHANGES" || true)
 GIT_DESCRIBE=$(git describe --tags)
 
-# all: deps test validate
 
 bindata: ## Embed binary data in malice program
 	@echo "===> Embedding Binary Data"
@@ -49,7 +48,6 @@ cover: test ## Run all the tests and opens the coverage report
 fmt: ## gofmt and goimports all go files
 	@echo "===> Formatting Go Files"
 	find . -name '*.go' -not -wholename './vendor/*' | while read -r file; do gofmt -w -s "$$file"; goimports -w "$$file"; done
-
 
 lint: ## Run all the linters
 	@echo "===> Lintting"

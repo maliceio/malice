@@ -66,7 +66,7 @@ lint: ## Run all the linters
 		--deadline=10m \
 		./...
 
-release: bindata ## Create a new release from the VERSION
+release: ## Create a new release from the VERSION
 	@echo "===> Creating Release"
 	git tag ${VERSION}
 	git push origin ${VERSION}

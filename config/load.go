@@ -127,7 +127,7 @@ func Load(version string) {
 		_, err := toml.DecodeFile(configPath, &Conf)
 		er.CheckError(err)
 		log.Debug("Malice config loaded from: ", configPath)
-		if strings.EqualFold(Conf.Version, version) {
+		if version != "" && strings.EqualFold(Conf.Version, version) {
 			// Prompt user to update malice config.toml?
 			log.Info("Newer version of malice config.toml available: ", version)
 			fmt.Println("Would you like to update now? (yes/no)")

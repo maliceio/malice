@@ -10,6 +10,9 @@ build:
     - amd64
   hooks:
     post: /bin/sh install/scripts/upx.sh
+archive:
+  files:
+    - contrib/completion/zsh/_malice      
 brew:
   github:
     owner: maliceio

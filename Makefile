@@ -1,6 +1,6 @@
 REPO=malice
 NAME=malice
-VERSION=$(shell cat release/VERSION)
+VERSION=$(shell cat .release/VERSION)
 
 SOURCE_FILES?=$$(go list ./... | grep -v '/vendor/\|/templates/\|/api')
 TEST_PATTERN?=.
@@ -67,7 +67,7 @@ lint: ## Run all the linters
 		./...
 	markdownfmt -w README.md
 	markdownfmt -w CHANGELOG.md
-	markdownfmt -w release/RELEASE.md
+	markdownfmt -w .release/RELEASE.md
 
 release: ## Create a new release from the VERSION
 	@echo "===> Creating Release"

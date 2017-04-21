@@ -13,6 +13,15 @@ build:
 archive:
   files:
     - contrib/completion/zsh/_malice
+  format: tar.gz
+  format_overrides:
+    - goos: windows
+      format: zip    
+  replacements:
+    amd64: amd64
+    darwin: macOS
+    linux: linux
+    windows: win
 brew:
   github:
     owner: maliceio

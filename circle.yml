@@ -16,7 +16,7 @@ dependencies:
 
 test:
   override:
-    - docker run malice_engine
+    - docker run -D malice_engine
 
 deployment:
   # master:

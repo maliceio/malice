@@ -56,7 +56,7 @@ func main() {
 			// read VERSION
 			ver := c.Args().First()
 			// load config from TOML
-			config.Load()
+			config.Load("")
 			// update config version from VERSION file
 			config.Conf.Version = strings.TrimSpace(string(ver))
 

@@ -31,5 +31,10 @@ brew:
     bin.install "malice"
     zsh_completion.install "contrib/completion/zsh/_malice"
 fpm:
+  vendor: MaliceIO
+  homepage: https://malice.io/
+  maintainer: <Blacktop github.com/blacktop>
+  description: Software to create fast and easy drum rolls.
+  license: Apache 2.0
   formats:
     - deb

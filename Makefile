@@ -82,7 +82,7 @@ ci: lint test ## Run all the tests and code checks
 
 build: bindata ## Build a beta version of malice
 	@echo "===> Building Binaries"
-	go build -o malice-beta
+	go build -ldflags "-X main.version=${VERSION}-beta" -o malice-beta
 
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:

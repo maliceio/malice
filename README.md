@@ -38,7 +38,7 @@ Usage: malice [OPTIONS] COMMAND [arg...]
 
 Open Source Malware Analysis Framework
 
-Version: 0.1.0-alpha, build HEAD
+Version: 0.3.0-beta
 
 Author:
   blacktop - <https://github.com/blacktop>
@@ -53,7 +53,6 @@ Commands:
   watch		Watch a folder
   lookup	Look up a file hash
   elk		Start an ELK docker container
-  web		Start, Stop Web services
   plugin	List, Install or Remove Plugins
   help		Shows a list of commands or help for one command
 

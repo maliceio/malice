@@ -15,6 +15,7 @@ GIT_DESCRIBE=$(git describe --tags)
 
 bindata: ## Embed binary data in malice program
 	@echo "===> Embedding Binary Data"
+	tomlupdate ${VERSION}	
 	rm -f config/bindata.go plugins/bindata.go
 	go-bindata -pkg config -ignore=load.go config/...
 	mv bindata.go config/bindata.go
@@ -37,7 +38,7 @@ osx: ## Install OSX dev dependencies
 setup: ## Install all the build and lint dependencies
 	@echo "===> Installing deps"
 	go get -u github.com/alecthomas/gometalinter
-	go get -u github.com/shurcooL/markdownfmt
+	# go get -u github.com/shurcooL/markdownfmt
 	go get -u github.com/jteeuwen/go-bindata/...
 	go get -u github.com/kardianos/govendor
 	go get -u github.com/pierrre/gotestcover
@@ -94,7 +95,6 @@ ci: lint test ## Run all the tests and code checks
 
 build: bindata size ## Build a beta version of malice
 	@echo "===> Building Binaries"
-	tomlupdate ${VERSION}
 	go build -ldflags "-X main.version=${VERSION}-beta" -o malice-beta
 
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html

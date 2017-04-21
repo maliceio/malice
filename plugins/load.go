@@ -45,7 +45,7 @@ func Load() {
 	var configPath string
 
 	// Check for plugins config in .malice folder
-	configPath = path.Join(maldirs.GetBaseDir(), "./plugins.toml")
+	configPath = path.Join(maldirs.GetPluginsDir(), "./plugins.toml")
 	if _, err := os.Stat(configPath); err == nil {
 		_, err := toml.DecodeFile(configPath, &Plugs)
 		er.CheckError(err)
@@ -60,7 +60,7 @@ func Load() {
 	}
 	if _, err = toml.Decode(string(tomlData), &Plugs); err == nil {
 		// Create .malice folder in the users home directory
-		er.CheckError(os.MkdirAll(maldirs.GetBaseDir(), 0777))
+		er.CheckError(os.MkdirAll(maldirs.GetPluginsDir(), 0777))
 		// Create the plugins config in the .malice folder
 		er.CheckError(ioutil.WriteFile(configPath, tomlData, 0644))
 		log.Debug("Malice plugins loaded from plugins/bindata.go")

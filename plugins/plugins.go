@@ -158,7 +158,7 @@ func InstallPlugin(plugin *Plugin) (err error) {
 	// fmt.Println(buf.String())
 
 	// open plugin config file
-	configPath := path.Join(maldirs.GetBaseDir(), "./plugins.toml")
+	configPath := path.Join(maldirs.GetPluginsDir(), "./plugins.toml")
 	f, err := os.OpenFile(configPath, os.O_APPEND|os.O_WRONLY, 0600)
 	if err != nil {
 		panic(err)
@@ -185,7 +185,7 @@ func DeletePlugin(name string) error {
 	er.CheckError(toml.NewEncoder(buf).Encode(Plugs))
 
 	// open plugin config file
-	configPath := path.Join(maldirs.GetBaseDir(), "./plugins.toml")
+	configPath := path.Join(maldirs.GetPluginsDir(), "./plugins.toml")
 	err := ioutil.WriteFile(configPath, buf.Bytes(), 0644)
 	return err
 }

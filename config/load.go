@@ -104,7 +104,7 @@ func Load() {
 	var configPath string
 
 	// Check for config config in .malice folder
-	configPath = path.Join(maldirs.GetBaseDir(), "./config.toml")
+	configPath = path.Join(maldirs.GetConfigDir(), "./config.toml")
 	if _, err := os.Stat(configPath); err == nil {
 		_, err := toml.DecodeFile(configPath, &Conf)
 		er.CheckError(err)
@@ -119,7 +119,7 @@ func Load() {
 	}
 	if _, err = toml.Decode(string(tomlData), &Conf); err == nil {
 		// Create .malice folder in the users home directory
-		er.CheckError(os.MkdirAll(maldirs.GetBaseDir(), 0777))
+		er.CheckError(os.MkdirAll(maldirs.GetConfigDir(), 0777))
 		// Create the config config in the .malice folder
 		er.CheckError(ioutil.WriteFile(configPath, tomlData, 0644))
 		log.Debug("Malice config loaded from config/bindata.go")

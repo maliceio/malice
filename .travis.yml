@@ -1,21 +1,25 @@
 language: go
-# sudo: false
-go:
-  - 1.7
-  - tip
+sudo: required
 
-env:
-  global:
-    - GOARCH=amd64
+services:
+  - docker
 
-branches:
-  only:
-    - master
+go: 1.8
 
 before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y libmagic-dev
+  - apt-get update
+  - apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
+  - docker --version
 
-install: make deps
+install:
+  - make setup
+  - gem install fpm
+
 script:
-  - go build -o new_malice
+  - make test
+  - go run main.go --skip-validate --skip-publish
+
+after_success:
+  - go get github.com/mattn/goveralls
+  - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken="$COVERALLS_TOKEN"
+  - test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash main.go

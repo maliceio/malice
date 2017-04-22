@@ -160,6 +160,8 @@ func Load(version string) {
 	configPath := path.Join(maldirs.GetConfigDir(), "./config.toml")
 	if _, err := os.Stat(configPath); err == nil {
 		loadFromToml(configPath, version)
+		return
 	}
 	loadFromBinary(configPath)
+	return
 }

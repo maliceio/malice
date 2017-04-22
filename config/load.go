@@ -99,7 +99,7 @@ var Conf Configuration
 func UpdateConfig() error {
 	configPath := path.Join(maldirs.GetConfigDir(), "./config.toml")
 	configBackupPath := path.Join(maldirs.GetConfigDir(), "./config.toml.backup")
-	er.CheckError(utils.CopyFile(configBackupPath, configPath))
+	er.CheckError(os.Rename(configPath, configBackupPath))
 	// Read plugin config out of bindata
 	tomlData, err := Asset("config/config.toml")
 	if err != nil {

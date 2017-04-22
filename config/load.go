@@ -121,7 +121,7 @@ func loadFromToml(configPath, version string) {
 	}
 	log.Debug("Malice config loaded from: ", configPath)
 	log.Debugf("config.toml version: %s, malice version: %s", Conf.Version, version)
-	if version != "master" && !strings.EqualFold(Conf.Version, version) {
+	if version != "dev" && !strings.EqualFold(Conf.Version, version) {
 		// Prompt user to update malice config.toml?
 		log.Info("Newer version of malice config.toml available: ", version)
 		fmt.Println("Would you like to update now? (yes/no)")

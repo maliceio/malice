@@ -15,7 +15,7 @@ GIT_DESCRIBE=$(git describe --tags)
 
 bindata: ## Embed binary data in malice program
 	@echo "===> Embedding Binary Data"
-	tomlupdate --path config/config.toml ${VERSION}	
+	tomlupdate --path config/config.toml ${VERSION}
 	rm -f config/bindata.go plugins/bindata.go
 	go-bindata -pkg config -ignore=load.go config/...
 	mv bindata.go config/bindata.go
@@ -50,11 +50,11 @@ setup: ## Install all the build and lint dependencies
 
 test: ## Run all the tests
 	@echo "===> Running Tests"
-	gotestcover $(TEST_OPTIONS) -covermode=count -coverprofile=coverage.out $(SOURCE_FILES) -run $(TEST_PATTERN) -timeout=30s
+	gotestcover $(TEST_OPTIONS) -covermode=atomic -coverprofile=coverage.txt $(SOURCE_FILES) -run $(TEST_PATTERN) -timeout=30s
 
 cover: test ## Run all the tests and opens the coverage report
 	@echo "===> Running Cover"
-	go tool cover -html=coverage.out
+	go tool cover -html=coverage.txt
 
 fmt: ## gofmt and goimports all go files
 	@echo "===> Formatting Go Files"

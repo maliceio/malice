@@ -29,8 +29,7 @@ $ eval $(docker-machine env malice)
 #### Install
 
 ```bash
-$ brew tap maliceio/tap
-$ brew install malice
+$ brew install maliceio/tap/malice
 ```
 
 ```

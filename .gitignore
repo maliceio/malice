@@ -44,3 +44,5 @@ debug
 malice-beta
 
 utils/tomlupdate/tomlupdate
+
+coverage.txt

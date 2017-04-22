@@ -50,7 +50,8 @@ setup: ## Install all the build and lint dependencies
 
 test: ## Run all the tests
 	@echo "===> Running Tests"
-	gotestcover $(TEST_OPTIONS) -covermode=atomic -coverprofile=coverage.txt $(SOURCE_FILES) -run $(TEST_PATTERN) -timeout=30s
+	echo 'mode: atomic' > coverage.tmp
+	$(SOURCE_FILES) | xargs -n1 -I{} sh -c 'go test -covermode=atomic -coverprofile=coverage.tmp {} && tail -n +2 coverage.tmp >> coverage.txt' && rm coverage.tmp
 
 cover: test ## Run all the tests and opens the coverage report
 	@echo "===> Running Cover"

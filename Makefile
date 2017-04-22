@@ -41,7 +41,6 @@ setup: ## Install all the build and lint dependencies
 	# go get -u github.com/shurcooL/markdownfmt
 	go get -u github.com/jteeuwen/go-bindata/...
 	go get -u github.com/kardianos/govendor
-	go get -u github.com/pierrre/gotestcover
 	go get -u golang.org/x/tools/cmd/cover
 	go get -u github.com/fatih/gomodifytags
 	go get -u github.com/maliceio/malice/utils/tomlupdate

@@ -23,26 +23,11 @@ _testmain.go
 *.test
 *.prof
 
-install/certs/
 *.pem
 
-node_modules/
-
-npm-debug.log
-
-.imdone/config.json
-data/samples/*
-
-build/
 dist/
-
 .vscode/
 debug
 *.bu
-
-.vagrant
-malice-beta
-
-utils/tomlupdate/tomlupdate
 
 coverage.txt

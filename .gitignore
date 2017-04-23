@@ -26,7 +26,6 @@ _testmain.go
 *.pem
 
 dist/
-.vscode/
 debug
 *.bu
 

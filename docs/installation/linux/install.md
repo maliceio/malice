@@ -1,4 +1,5 @@
-# Installation on Linux (**Ubuntu 14.04.5**)
+Installation on Linux (**Ubuntu 14.04.5**\)
+===========================================
 
 #### Install Docker
 
@@ -12,23 +13,24 @@ $ sudo apt-get install docker-engine
 $ sudo usermod -aG docker $USER  # You might have to logout for change to take effect
 ```
 
-#### Fix Elasticsearch  
+#### Fix Elasticsearch
 
 ```bash
 echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
 sudo sysctl -w vm.max_map_count=262144
 ```
 
-## Download Pre-Compiled Binary
+Download Pre-Compiled Binary
+----------------------------
 
 #### Install Malice
 
 ```bash
-$ wget https://github.com/maliceio/malice/releases/download/v0.2.0-alpha/malice_0.2.0-alpha_linux_amd64.zip -O /tmp/malice.zip
-$ sudo unzip /tmp/malice.zip -d /usr/local/bin/
+$ wget https://github.com/maliceio/malice/releases/download/v0.3.2/malice_linux_amd64.tar.gz -O /tmp/malice.tar.gz
+$ sudo tar -xzf /tmp/malice.tar.gz -C /usr/local/bin/
 ```
 
-#### Uninstall Malice  
+#### Uninstall Malice
 
 ```bash
 $ rm /usr/local/bin/malice
@@ -37,7 +39,8 @@ $ rm -rf ~/.malice
 
 > **NOTE:** We are removing the `.malice` config folder in your home directory which also contains gzipped versions of all the files you have scanned.
 
-## Install From Source
+Install From Source
+-------------------
 
 #### Install Go
 
@@ -58,7 +61,7 @@ $ export PATH=$PATH:$GOPATH/bin
 $ go get -v github.com/maliceio/malice
 ```
 
-#### Uninstall Malice  
+#### Uninstall Malice
 
 ```bash
 $ rm $GOPATH/src/github.com/maliceio/malice

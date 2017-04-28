@@ -3,9 +3,9 @@ package formatter
 import (
 	"strings"
 
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/pkg/stringid"
-	"github.com/docker/docker/pkg/stringutils"
+	"github.com/moby/moby/api/types"
+	"github.com/moby/moby/pkg/stringid"
+	"github.com/moby/moby/pkg/stringutils"
 )
 
 const (

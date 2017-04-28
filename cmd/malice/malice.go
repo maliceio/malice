@@ -20,11 +20,11 @@ import (
 	"os"
 
 	"github.com/Sirupsen/logrus"
-	cliconfig "github.com/docker/docker/cli/config"
-	cliflags "github.com/docker/docker/cli/flags"
 	"github.com/maliceio/malice/cli"
 	"github.com/maliceio/malice/cli/command"
 	"github.com/maliceio/malice/cli/command/commands"
+	cliconfig "github.com/moby/moby/cli/config"
+	cliflags "github.com/moby/moby/cli/flags"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )

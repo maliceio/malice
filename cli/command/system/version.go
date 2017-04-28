@@ -1,7 +1,7 @@
 package system
 
 import (
-	"github.com/docker/docker/pkg/templates"
+	"github.com/moby/moby/pkg/templates"
 	"github.com/maliceio/malice/cli"
 	"github.com/maliceio/malice/cli/command"
 	"github.com/spf13/cobra"

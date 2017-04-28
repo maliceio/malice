@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/docker/docker/api/types"
-	cliconfig "github.com/docker/docker/cli/config"
-	"github.com/docker/docker/cli/config/configfile"
-	"github.com/docker/docker/cli/config/credentials"
-	cliflags "github.com/docker/docker/cli/flags"
-	"github.com/docker/docker/client"
+	"github.com/moby/moby/api/types"
+	cliconfig "github.com/moby/moby/cli/config"
+	"github.com/moby/moby/cli/config/configfile"
+	"github.com/moby/moby/cli/config/credentials"
+	cliflags "github.com/moby/moby/cli/flags"
+	"github.com/moby/moby/client"
 	"github.com/spf13/cobra"
 )
 

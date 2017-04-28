@@ -1,0 +1,120 @@
+memo = "801e310ded80c4b0abc58361cf4e720f890981e844135199b1a9ca3b477f0001"
+
+[[projects]]
+  name = "github.com/Azure/go-ansiterm"
+  packages = [".","winterm"]
+  revision = "70b2c90b260171e829f1ebd7c17f600c11858dbe"
+
+[[projects]]
+  name = "github.com/Microsoft/go-winio"
+  packages = ["."]
+  revision = "f778f05015353be65d242f3fedc18695756153bb"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/Nvveen/Gotty"
+  packages = ["."]
+  revision = "cd527374f1e5bff4938207604a14f2e38a9cf512"
+
+[[projects]]
+  name = "github.com/Sirupsen/logrus"
+  packages = ["."]
+  revision = "ba1b36c82c5e05c4f912a88eab0dcd91a171688f"
+  version = "v0.11.5"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/docker/distribution"
+  packages = [".","context","digestset","reference","registry/api/errcode","registry/api/v2","registry/client","registry/client/auth","registry/client/auth/challenge","registry/client/transport","registry/storage/cache","registry/storage/cache/memory","uuid"]
+  revision = "c3e06c6069653bf72034ed907d6749d3928fdacb"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/docker/docker"
+  packages = ["api","api/types","api/types/blkiodev","api/types/container","api/types/events","api/types/filters","api/types/image","api/types/mount","api/types/network","api/types/registry","api/types/strslice","api/types/swarm","api/types/time","api/types/versions","api/types/volume","cli/config","cli/config/configfile","opts","pkg/homedir","pkg/httputils","pkg/idtools","pkg/ioutils","pkg/jsonlog","pkg/jsonmessage","pkg/longpath","pkg/random","pkg/stringid","pkg/system","pkg/tarsum","pkg/term","pkg/term/windows","pkg/tlsconfig","registry"]
+  revision = "83ee902ecc3790c33c1e2d87334074436056bb49"
+
+[[projects]]
+  name = "github.com/docker/docker-credential-helpers"
+  packages = ["client","credentials"]
+  revision = "ce617b3357d60641847e4799af0af7f33cfbc090"
+  version = "v0.5.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/docker/go-connections"
+  packages = ["nat","sockets","tlsconfig"]
+  revision = "e15c02316c12de00874640cd76311849de2aeed5"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/docker/go-units"
+  packages = ["."]
+  revision = "0dadbb0345b35ec7ef35e228dabb8de89a65bf52"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/docker/libtrust"
+  packages = ["."]
+  revision = "aabc10ec26b754e797f9028f4589c5b7bd90dc20"
+
+[[projects]]
+  name = "github.com/gorilla/context"
+  packages = ["."]
+  revision = "aed02d124ae4a0e94fea4541c8effd05bf0c8296"
+
+[[projects]]
+  name = "github.com/gorilla/mux"
+  packages = ["."]
+  revision = "bd09be08ed4377796d312df0a45314e11b8f5dc1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/inconshreveable/mousetrap"
+  packages = ["."]
+  revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/moby/moby"
+  packages = ["api/types","api/types/versions","cli/config","cli/config/configfile","cli/config/credentials","cli/flags","client","pkg/stringid","pkg/stringutils","pkg/templates"]
+  revision = "83ee902ecc3790c33c1e2d87334074436056bb49"
+
+[[projects]]
+  name = "github.com/opencontainers/go-digest"
+  packages = ["."]
+  revision = "aa2ec055abd10d26d539eb630a92241b781ce4bc"
+  version = "v1.0.0-rc0"
+
+[[projects]]
+  name = "github.com/opencontainers/runc"
+  packages = ["libcontainer/user"]
+  revision = "ae7a92e352116f38bce3f7cb3aa2bc590a7e3f65"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/spf13/cobra"
+  packages = ["."]
+  revision = "7b1b6e8dc027253d45fc029bc269d1c019f83a34"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/spf13/pflag"
+  packages = ["."]
+  revision = "2300d0f8576fe575f71aaa5b9bbe4e1b0dc2eb51"
+
+[[projects]]
+  name = "golang.org/x/net"
+  packages = ["context","context/ctxhttp","proxy"]
+  revision = "07b51741c1d6423d4a6abab1c49940ec09cb1aaf"
+
+[[projects]]
+  name = "golang.org/x/sys"
+  packages = ["unix","windows"]
+  revision = "b776ec39b3e54652e09028aaaaac9757f4f8211a"

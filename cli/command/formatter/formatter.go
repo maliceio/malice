@@ -7,7 +7,7 @@ import (
 	"text/tabwriter"
 	"text/template"
 
-	"github.com/docker/docker/pkg/templates"
+	"github.com/moby/moby/pkg/templates"
 	"github.com/pkg/errors"
 )
 

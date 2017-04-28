@@ -12,8 +12,13 @@
   name = "github.com/pkg/errors"
 
 [[dependencies]]
-  branch = "master"
+  name = "github.com/spf13/cobra"
+  source = "https://github.com/dnephin/cobra.git"
+  version = "v1.5.1"
+
+[[dependencies]]
   name = "github.com/spf13/pflag"
+  revision = "9ff6c6923cfffbcd502984b8e0c80539a94968b7"
 
 [[dependencies]]
   name = "golang.org/x/net"

@@ -1,4 +1,4 @@
-memo = "801e310ded80c4b0abc58361cf4e720f890981e844135199b1a9ca3b477f0001"
+memo = "8b754afa512a73553ceb4189de6379c68f7c1794d055143c309e17839a8635c9"
 
 [[projects]]
   name = "github.com/Azure/go-ansiterm"
@@ -98,16 +98,16 @@ memo = "801e310ded80c4b0abc58361cf4e720f890981e844135199b1a9ca3b477f0001"
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
 
 [[projects]]
-  branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "7b1b6e8dc027253d45fc029bc269d1c019f83a34"
+  revision = "0e9ca70a23585bdaab4beba1e7c4c23a1adfa857"
+  source = "https://github.com/dnephin/cobra.git"
+  version = "v1.5.1"
 
 [[projects]]
-  branch = "master"
   name = "github.com/spf13/pflag"
   packages = ["."]
-  revision = "2300d0f8576fe575f71aaa5b9bbe4e1b0dc2eb51"
+  revision = "9ff6c6923cfffbcd502984b8e0c80539a94968b7"
 
 [[projects]]
   name = "golang.org/x/net"

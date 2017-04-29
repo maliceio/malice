@@ -30,3 +30,6 @@ debug
 *.bu
 
 coverage.txt
+
+malice-beta
+data/samples

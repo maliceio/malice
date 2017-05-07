@@ -3,33 +3,39 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+
+	"github.com/hashicorp/vault/api"
 )
 
 func main() {
-	httpRequest()
-	// // tokenValue := os.Getenv("VAULT_TOKEN")
-	// config := api.DefaultConfig()
-	// // config.Address = "http://127.0.0.1:8200"
-	// client, err := api.NewClient(config)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	// tokenValue := os.Getenv("VAULT_TOKEN")
+	config := api.DefaultConfig()
+	// config.Address = "http://127.0.0.1:8200"
+	client, err := api.NewClient(config)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// // client.SetToken(tokenValue)
-	// // if v := client.Token(); v != tokenValue {
-	// // 	log.Fatalf("bad: %s", v)
-	// // }
+	sealStatus, err := client.Sys().SealStatus()
+	if err != nil {
+		fmt.Printf("Error checking seal status: %s", err)
+	}
 
-	// resp, err := client.RawRequest(client.NewRequest("GET", "/v1/sys/init"))
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// // Copy the response
-	// var buf bytes.Buffer
-	// io.Copy(&buf, resp.Body)
-	// fmt.Println(buf.String())
+	fmt.Printf(
+		"Sealed: %v\n"+
+			"Key Shares: %d\n"+
+			"Key Threshold: %d\n"+
+			"Unseal Progress: %d\n"+
+			"Unseal Nonce: %v\n"+
+			"Version: %s",
+		sealStatus.Sealed,
+		sealStatus.N,
+		sealStatus.T,
+		sealStatus.Progress,
+		sealStatus.Nonce,
+		sealStatus.Version)
 }
 
 func httpRequest() {
@@ -42,10 +48,6 @@ func httpRequest() {
 	}
 
 	respBody, _ := ioutil.ReadAll(resp.Body)
-
 	// Display Results
-	// fmt.Println("response Status : ", resp.Status)
-	// fmt.Println("response Headers : ", resp.Header)
-	// fmt.Println("response Body : ", string(respBody))
 	fmt.Println(string(respBody))
 }

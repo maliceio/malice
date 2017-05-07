@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include <grp.h>
 
+#include <bits/sockaddr.h>
 #include <linux/types.h>
 
 // All arguments should be above the stack because it grows down
@@ -302,7 +303,7 @@ static struct nsenter_config process_nl_attributes(int pipenum, char *data, int 
 			int	fds[nslen];
 			char	*nslist[nslen];
 			char	*ns;
-			char	*saveptr = NULL;
+			char	*saveptr;
 
 			for (i = 0; i < nslen; i++) {
 				char *str = NULL;

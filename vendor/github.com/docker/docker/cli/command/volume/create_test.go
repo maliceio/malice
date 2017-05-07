@@ -9,9 +9,8 @@ import (
 	"github.com/docker/docker/api/types"
 	volumetypes "github.com/docker/docker/api/types/volume"
 	"github.com/docker/docker/cli/internal/test"
-	"github.com/docker/docker/pkg/testutil"
+	"github.com/docker/docker/pkg/testutil/assert"
 	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestVolumeCreateErrors(t *testing.T) {
@@ -51,7 +50,7 @@ func TestVolumeCreateErrors(t *testing.T) {
 			cmd.Flags().Set(key, value)
 		}
 		cmd.SetOutput(ioutil.Discard)
-		testutil.ErrorContains(t, cmd.Execute(), tc.expectedError)
+		assert.Error(t, cmd.Execute(), tc.expectedError)
 	}
 }
 
@@ -72,15 +71,15 @@ func TestVolumeCreateWithName(t *testing.T) {
 	// Test by flags
 	cmd := newCreateCommand(cli)
 	cmd.Flags().Set("name", name)
-	assert.NoError(t, cmd.Execute())
-	assert.Equal(t, name, strings.TrimSpace(buf.String()))
+	assert.NilError(t, cmd.Execute())
+	assert.Equal(t, strings.TrimSpace(buf.String()), name)
 
 	// Then by args
 	buf.Reset()
 	cmd = newCreateCommand(cli)
 	cmd.SetArgs([]string{name})
-	assert.NoError(t, cmd.Execute())
-	assert.Equal(t, name, strings.TrimSpace(buf.String()))
+	assert.NilError(t, cmd.Execute())
+	assert.Equal(t, strings.TrimSpace(buf.String()), name)
 }
 
 func TestVolumeCreateWithFlags(t *testing.T) {
@@ -122,8 +121,8 @@ func TestVolumeCreateWithFlags(t *testing.T) {
 	cmd.Flags().Set("opt", "baz=baz")
 	cmd.Flags().Set("label", "lbl1=v1")
 	cmd.Flags().Set("label", "lbl2=v2")
-	assert.NoError(t, cmd.Execute())
-	assert.Equal(t, name, strings.TrimSpace(buf.String()))
+	assert.NilError(t, cmd.Execute())
+	assert.Equal(t, strings.TrimSpace(buf.String()), name)
 }
 
 func compareMap(actual map[string]string, expected map[string]string) bool {

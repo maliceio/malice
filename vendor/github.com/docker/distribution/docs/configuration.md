@@ -268,6 +268,7 @@ compatibility:
   schema1:
     signingkeyfile: /etc/registry/key.json
 validation:
+  enabled: true
   manifests:
     urls:
       allow:
@@ -1027,6 +1028,7 @@ features. Each subsection defines such a feature with configurable behavior.
 
 ```none
 validation:
+  enabled: true
   manifests:
     urls:
       allow:
@@ -1035,15 +1037,14 @@ validation:
         - ^https?://www\.example\.com/
 ```
 
-### `disabled`
+### `enabled`
 
-The `disabled` flag disables the other options in the `validation`
-section. They are enabled by default. This option deprecates the `enabled` flag.
+Use the `enabled` flag to enable the other options in the `validation`
+section. They are disabled by default.
 
 ### `manifests`
 
-Use the `manifests` subsection to configure validation of manifests. If
-`disabled` is `false`, the validation allows nothing.
+Use the `manifest` subsection to configure manifest validation.
 
 #### `urls`
 

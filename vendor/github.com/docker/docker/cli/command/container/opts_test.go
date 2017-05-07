@@ -13,12 +13,11 @@ import (
 
 	"github.com/docker/docker/api/types/container"
 	networktypes "github.com/docker/docker/api/types/network"
-	"github.com/docker/docker/pkg/testutil"
+	"github.com/docker/docker/pkg/testutil/assert"
 	"github.com/docker/docker/runconfig"
 	"github.com/docker/go-connections/nat"
 	"github.com/pkg/errors"
 	"github.com/spf13/pflag"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestValidateAttach(t *testing.T) {
@@ -244,23 +243,23 @@ func TestParseWithMacAddress(t *testing.T) {
 func TestParseWithMemory(t *testing.T) {
 	invalidMemory := "--memory=invalid"
 	_, _, _, err := parseRun([]string{invalidMemory, "img", "cmd"})
-	testutil.ErrorContains(t, err, invalidMemory)
+	assert.Error(t, err, invalidMemory)
 
 	_, hostconfig := mustParse(t, "--memory=1G")
-	assert.Equal(t, int64(1073741824), hostconfig.Memory)
+	assert.Equal(t, hostconfig.Memory, int64(1073741824))
 }
 
 func TestParseWithMemorySwap(t *testing.T) {
 	invalidMemory := "--memory-swap=invalid"
 
 	_, _, _, err := parseRun([]string{invalidMemory, "img", "cmd"})
-	testutil.ErrorContains(t, err, invalidMemory)
+	assert.Error(t, err, invalidMemory)
 
 	_, hostconfig := mustParse(t, "--memory-swap=1G")
-	assert.Equal(t, int64(1073741824), hostconfig.MemorySwap)
+	assert.Equal(t, hostconfig.MemorySwap, int64(1073741824))
 
 	_, hostconfig = mustParse(t, "--memory-swap=-1")
-	assert.Equal(t, int64(-1), hostconfig.MemorySwap)
+	assert.Equal(t, hostconfig.MemorySwap, int64(-1))
 }
 
 func TestParseHostname(t *testing.T) {

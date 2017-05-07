@@ -10,7 +10,7 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/swarm"
 	"github.com/docker/docker/cli/command/formatter"
-	"github.com/stretchr/testify/assert"
+	"github.com/docker/docker/pkg/testutil/assert"
 )
 
 func formatServiceInspect(t *testing.T, format formatter.Format, now time.Time) string {
@@ -136,5 +136,5 @@ func TestJSONFormatWithNoUpdateConfig(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("m2=%+v", m2)
-	assert.Equal(t, m1, m2)
+	assert.DeepEqual(t, m2, m1)
 }

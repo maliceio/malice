@@ -122,6 +122,7 @@ func initializeMaliceCli(maliceCli *command.MaliceCli, flags *pflag.FlagSet, opt
 // are checked.
 func visitAll(root *cobra.Command, fn func(*cobra.Command)) {
 	for _, cmd := range root.Commands() {
+		fmt.Println(cmd)
 		visitAll(cmd, fn)
 	}
 	fn(root)

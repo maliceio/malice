@@ -20,7 +20,6 @@ type copyOptions struct {
 	source      string
 	destination string
 	followLink  bool
-	copyUIDGID  bool
 }
 
 type copyDirection int
@@ -67,7 +66,6 @@ func NewCopyCommand(dockerCli *command.DockerCli) *cobra.Command {
 	flags := cmd.Flags()
 
 	flags.BoolVarP(&opts.followLink, "follow-link", "L", false, "Always follow symbol link in SRC_PATH")
-	flags.BoolVarP(&opts.copyUIDGID, "archive", "a", false, "Archive mode (copy all uid/gid information)")
 
 	return cmd
 }
@@ -94,7 +92,7 @@ func runCopy(dockerCli *command.DockerCli, opts copyOptions) error {
 	case fromContainer:
 		return copyFromContainer(ctx, dockerCli, srcContainer, srcPath, dstPath, cpParam)
 	case toContainer:
-		return copyToContainer(ctx, dockerCli, srcPath, dstContainer, dstPath, cpParam, opts.copyUIDGID)
+		return copyToContainer(ctx, dockerCli, srcPath, dstContainer, dstPath, cpParam)
 	case acrossContainers:
 		// Copying between containers isn't supported.
 		return errors.New("copying between containers is not supported")
@@ -177,7 +175,7 @@ func copyFromContainer(ctx context.Context, dockerCli *command.DockerCli, srcCon
 	return archive.CopyTo(preArchive, srcInfo, dstPath)
 }
 
-func copyToContainer(ctx context.Context, dockerCli *command.DockerCli, srcPath, dstContainer, dstPath string, cpParam *cpConfig, copyUIDGID bool) (err error) {
+func copyToContainer(ctx context.Context, dockerCli *command.DockerCli, srcPath, dstContainer, dstPath string, cpParam *cpConfig) (err error) {
 	if srcPath != "-" {
 		// Get an absolute source path.
 		srcPath, err = resolveLocalPath(srcPath)
@@ -267,7 +265,6 @@ func copyToContainer(ctx context.Context, dockerCli *command.DockerCli, srcPath,
 
 	options := types.CopyToContainerOptions{
 		AllowOverwriteDirWithFile: false,
-		CopyUIDGID:                copyUIDGID,
 	}
 
 	return dockerCli.Client().CopyToContainer(ctx, dstContainer, resolvedDstPath, content, options)

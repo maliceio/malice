@@ -2,6 +2,7 @@ package dockerfile
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -19,7 +20,7 @@ import (
 	"github.com/docker/docker/builder/dockerfile/parser"
 	"github.com/docker/docker/image"
 	"github.com/docker/docker/pkg/stringid"
-	"github.com/pkg/errors"
+	perrors "github.com/pkg/errors"
 	"golang.org/x/net/context"
 )
 
@@ -50,6 +51,7 @@ type Builder struct {
 	docker    builder.Backend
 	context   builder.Context
 	clientCtx context.Context
+	cancel    context.CancelFunc
 
 	runConfig     *container.Config // runconfig for cmd, run, entrypoint etc.
 	flags         *BFlags
@@ -62,7 +64,10 @@ type Builder struct {
 	disableCommit bool
 	cacheBusted   bool
 	buildArgs     *buildArgs
-	escapeToken   rune
+	directive     parser.Directive
+
+	// TODO: remove once docker.Commit can receive a tag
+	id string
 
 	imageCache builder.ImageCache
 	from       builder.Image
@@ -112,8 +117,10 @@ func NewBuilder(clientCtx context.Context, config *types.ImageBuildOptions, back
 	if config == nil {
 		config = new(types.ImageBuildOptions)
 	}
+	ctx, cancel := context.WithCancel(clientCtx)
 	b = &Builder{
-		clientCtx:     clientCtx,
+		clientCtx:     ctx,
+		cancel:        cancel,
 		options:       config,
 		Stdout:        os.Stdout,
 		Stderr:        os.Stderr,
@@ -121,10 +128,16 @@ func NewBuilder(clientCtx context.Context, config *types.ImageBuildOptions, back
 		context:       buildContext,
 		runConfig:     new(container.Config),
 		tmpContainers: map[string]struct{}{},
+		id:            stringid.GenerateNonCryptoID(),
 		buildArgs:     newBuildArgs(config.BuildArgs),
-		escapeToken:   parser.DefaultEscapeToken,
+		directive: parser.Directive{
+			EscapeSeen:           false,
+			LookingForDirectives: true,
+		},
 	}
 	b.imageContexts = &imageContexts{b: b}
+
+	parser.SetEscapeToken(parser.DefaultEscapeToken, &b.directive) // Assume the default token for escape
 	return b, nil
 }
 
@@ -173,6 +186,17 @@ func sanitizeRepoAndTags(names []string) ([]reference.Named, error) {
 
 // build runs the Dockerfile builder from a context and a docker object that allows to make calls
 // to Docker.
+//
+// This will (barring errors):
+//
+// * read the dockerfile from context
+// * parse the dockerfile if not already parsed
+// * walk the AST and execute it by dispatching to handlers. If Remove
+//   or ForceRemove is set, additional cleanup around containers happens after
+//   processing.
+// * Tag image, if applicable.
+// * Print a happy message and return the image ID.
+//
 func (b *Builder) build(stdout io.Writer, stderr io.Writer, out io.Writer) (string, error) {
 	defer b.imageContexts.unmount()
 
@@ -180,7 +204,7 @@ func (b *Builder) build(stdout io.Writer, stderr io.Writer, out io.Writer) (stri
 	b.Stderr = stderr
 	b.Output = out
 
-	dockerfile, err := b.readAndParseDockerfile()
+	dockerfile, err := b.readDockerfile()
 	if err != nil {
 		return "", err
 	}
@@ -190,43 +214,17 @@ func (b *Builder) build(stdout io.Writer, stderr io.Writer, out io.Writer) (stri
 		return "", err
 	}
 
-	addNodesForLabelOption(dockerfile.AST, b.options.Labels)
+	addNodesForLabelOption(dockerfile, b.options.Labels)
 
-	if err := checkDispatchDockerfile(dockerfile.AST); err != nil {
-		return "", err
-	}
-
-	shortImageID, err := b.dispatchDockerfileWithCancellation(dockerfile)
-	if err != nil {
-		return "", err
-	}
-
-	b.warnOnUnusedBuildArgs()
-
-	if b.image == "" {
-		return "", errors.New("No image was generated. Is your Dockerfile empty?")
-	}
-
-	if b.options.Squash {
-		if err := b.squashBuild(); err != nil {
-			return "", err
+	var shortImgID string
+	total := len(dockerfile.Children)
+	for _, n := range dockerfile.Children {
+		if err := b.checkDispatch(n, false); err != nil {
+			return "", perrors.Wrapf(err, "Dockerfile parse error line %d", n.StartLine)
 		}
 	}
 
-	fmt.Fprintf(b.Stdout, "Successfully built %s\n", shortImageID)
-	if err := b.tagImages(repoAndTags); err != nil {
-		return "", err
-	}
-	return b.image, nil
-}
-
-func (b *Builder) dispatchDockerfileWithCancellation(dockerfile *parser.Result) (string, error) {
-	// TODO: pass this to dispatchRequest instead
-	b.escapeToken = dockerfile.EscapeToken
-
-	total := len(dockerfile.AST.Children)
-	var shortImgID string
-	for i, n := range dockerfile.AST.Children {
+	for i, n := range dockerfile.Children {
 		select {
 		case <-b.clientCtx.Done():
 			logrus.Debug("Builder: build cancelled!")
@@ -255,23 +253,37 @@ func (b *Builder) dispatchDockerfileWithCancellation(dockerfile *parser.Result) 
 	}
 
 	if b.options.Target != "" && !b.imageContexts.isCurrentTarget(b.options.Target) {
-		return "", errors.Errorf("failed to reach build target %s in Dockerfile", b.options.Target)
+		return "", perrors.Errorf("failed to reach build target %s in Dockerfile", b.options.Target)
 	}
 
-	return shortImgID, nil
-}
+	b.warnOnUnusedBuildArgs()
 
-func (b *Builder) squashBuild() error {
-	var fromID string
-	var err error
-	if b.from != nil {
-		fromID = b.from.ImageID()
+	if b.image == "" {
+		return "", errors.New("No image was generated. Is your Dockerfile empty?")
 	}
-	b.image, err = b.docker.SquashImage(b.image, fromID)
-	if err != nil {
-		return errors.Wrap(err, "error squashing image")
+
+	if b.options.Squash {
+		var fromID string
+		if b.from != nil {
+			fromID = b.from.ImageID()
+		}
+		b.image, err = b.docker.SquashImage(b.image, fromID)
+		if err != nil {
+			return "", perrors.Wrap(err, "error squashing image")
+		}
 	}
-	return nil
+
+	fmt.Fprintf(b.Stdout, "Successfully built %s\n", shortImgID)
+
+	imageID := image.ID(b.image)
+	for _, rt := range repoAndTags {
+		if err := b.docker.TagImageWithReference(imageID, rt); err != nil {
+			return "", err
+		}
+		fmt.Fprintf(b.Stdout, "Successfully tagged %s\n", reference.FamiliarString(rt))
+	}
+
+	return b.image, nil
 }
 
 func addNodesForLabelOption(dockerfile *parser.Node, labels map[string]string) {
@@ -292,20 +304,14 @@ func (b *Builder) warnOnUnusedBuildArgs() {
 	}
 }
 
-func (b *Builder) tagImages(repoAndTags []reference.Named) error {
-	imageID := image.ID(b.image)
-	for _, rt := range repoAndTags {
-		if err := b.docker.TagImageWithReference(imageID, rt); err != nil {
-			return err
-		}
-		fmt.Fprintf(b.Stdout, "Successfully tagged %s\n", reference.FamiliarString(rt))
-	}
-	return nil
-}
-
 // hasFromImage returns true if the builder has processed a `FROM <image>` line
 func (b *Builder) hasFromImage() bool {
 	return b.image != "" || b.noBaseImage
+}
+
+// Cancel cancels an ongoing Dockerfile build.
+func (b *Builder) Cancel() {
+	b.cancel()
 }
 
 // BuildFromConfig builds directly from `changes`, treating it as if it were the contents of a Dockerfile
@@ -323,13 +329,13 @@ func BuildFromConfig(config *container.Config, changes []string) (*container.Con
 		return nil, err
 	}
 
-	result, err := parser.Parse(bytes.NewBufferString(strings.Join(changes, "\n")))
+	ast, err := parser.Parse(bytes.NewBufferString(strings.Join(changes, "\n")), &b.directive)
 	if err != nil {
 		return nil, err
 	}
 
 	// ensure that the commands are valid
-	for _, n := range result.AST.Children {
+	for _, n := range ast.Children {
 		if !validCommitCommands[n.Value] {
 			return nil, fmt.Errorf("%s is not a valid change command", n.Value)
 		}
@@ -340,35 +346,18 @@ func BuildFromConfig(config *container.Config, changes []string) (*container.Con
 	b.Stderr = ioutil.Discard
 	b.disableCommit = true
 
-	if err := checkDispatchDockerfile(result.AST); err != nil {
-		return nil, err
-	}
-
-	if err := dispatchFromDockerfile(b, result); err != nil {
-		return nil, err
-	}
-	return b.runConfig, nil
-}
-
-func checkDispatchDockerfile(dockerfile *parser.Node) error {
-	for _, n := range dockerfile.Children {
-		if err := checkDispatch(n); err != nil {
-			return errors.Wrapf(err, "Dockerfile parse error line %d", n.StartLine)
+	total := len(ast.Children)
+	for _, n := range ast.Children {
+		if err := b.checkDispatch(n, false); err != nil {
+			return nil, err
 		}
 	}
-	return nil
-}
-
-func dispatchFromDockerfile(b *Builder, result *parser.Result) error {
-	// TODO: pass this to dispatchRequest instead
-	b.escapeToken = result.EscapeToken
-	ast := result.AST
-	total := len(ast.Children)
 
 	for i, n := range ast.Children {
 		if err := b.dispatch(i, total, n); err != nil {
-			return err
+			return nil, err
 		}
 	}
-	return nil
+
+	return b.runConfig, nil
 }

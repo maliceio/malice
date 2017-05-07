@@ -1,9 +1,8 @@
 package dockerfile
 
 import (
+	"github.com/docker/docker/pkg/testutil/assert"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func strPtr(source string) *string {
@@ -38,7 +37,7 @@ func TestGetAllAllowed(t *testing.T) {
 		"ArgFromMeta":                         "frommeta1",
 		"ArgFromMetaOverriden":                "fromdockerfile3",
 	}
-	assert.Equal(t, expected, all)
+	assert.DeepEqual(t, all, expected)
 }
 
 func TestGetAllMeta(t *testing.T) {
@@ -60,5 +59,5 @@ func TestGetAllMeta(t *testing.T) {
 		"ArgOverriddenByOptions":        "fromopt2",
 		"ArgNoDefaultInMetaFromOptions": "fromopt3",
 	}
-	assert.Equal(t, expected, all)
+	assert.DeepEqual(t, all, expected)
 }

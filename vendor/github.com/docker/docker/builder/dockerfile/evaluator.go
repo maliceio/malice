@@ -20,13 +20,13 @@
 package dockerfile
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
 	"github.com/docker/docker/builder/dockerfile/command"
 	"github.com/docker/docker/builder/dockerfile/parser"
-	"github.com/docker/docker/runconfig/opts"
-	"github.com/pkg/errors"
+	runconfigopts "github.com/docker/docker/runconfig/opts"
 )
 
 // Environment variable interpolation will happen on these statements only.
@@ -180,14 +180,14 @@ func (b *Builder) evaluateEnv(cmd string, str string, envs []string) ([]string, 
 			return []string{word}, err
 		}
 	}
-	return processFunc(str, envs, b.escapeToken)
+	return processFunc(str, envs, b.directive.EscapeToken)
 }
 
 // buildArgsWithoutConfigEnv returns a list of key=value pairs for all the build
 // args that are not overriden by runConfig environment variables.
 func (b *Builder) buildArgsWithoutConfigEnv() []string {
 	envs := []string{}
-	configEnv := b.runConfigEnvMapping()
+	configEnv := runconfigopts.ConvertKVStringsToMap(b.runConfig.Env)
 
 	for key, val := range b.buildArgs.GetAllAllowed() {
 		if _, ok := configEnv[key]; !ok {
@@ -197,16 +197,13 @@ func (b *Builder) buildArgsWithoutConfigEnv() []string {
 	return envs
 }
 
-func (b *Builder) runConfigEnvMapping() map[string]string {
-	return opts.ConvertKVStringsToMap(b.runConfig.Env)
-}
-
 // checkDispatch does a simple check for syntax errors of the Dockerfile.
 // Because some of the instructions can only be validated through runtime,
 // arg, env, etc., this syntax check will not be complete and could not replace
 // the runtime check. Instead, this function is only a helper that allows
 // user to find out the obvious error in Dockerfile earlier on.
-func checkDispatch(ast *parser.Node) error {
+// onbuild bool: indicate if instruction XXX is part of `ONBUILD XXX` trigger
+func (b *Builder) checkDispatch(ast *parser.Node, onbuild bool) error {
 	cmd := ast.Value
 	upperCasedCmd := strings.ToUpper(cmd)
 
@@ -224,9 +221,19 @@ func checkDispatch(ast *parser.Node) error {
 		}
 	}
 
+	// The instruction is part of ONBUILD trigger (not the instruction itself)
+	if onbuild {
+		switch upperCasedCmd {
+		case "ONBUILD":
+			return errors.New("Chaining ONBUILD via `ONBUILD ONBUILD` isn't allowed")
+		case "MAINTAINER", "FROM":
+			return fmt.Errorf("%s isn't allowed as an ONBUILD trigger", upperCasedCmd)
+		}
+	}
+
 	if _, ok := evaluateTable[cmd]; ok {
 		return nil
 	}
 
-	return errors.Errorf("unknown instruction: %s", upperCasedCmd)
+	return fmt.Errorf("Unknown instruction: %s", upperCasedCmd)
 }

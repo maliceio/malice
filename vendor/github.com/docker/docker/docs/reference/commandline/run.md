@@ -70,7 +70,6 @@ Options:
       --help                          Print usage
   -h, --hostname string               Container host name
       --init                          Run an init inside the container that forwards signals and reaps processes
-      --init-path string              Path to the docker-init binary
   -i, --interactive                   Keep STDIN open even if not attached
       --io-maxbandwidth string        Maximum IO bandwidth limit for the system drive (Windows only)
                                       (Windows only). The format is `<number><unit>`.
@@ -365,46 +364,75 @@ system's interfaces.
 $ docker run -e MYVAR1 --env MYVAR2=foo --env-file ./env.list ubuntu bash
 ```
 
-Use the `-e`, `--env`, and `--env-file` flags to set simple (non-array)
-environment variables in the container you're running, or overwrite variables
-that are defined in the Dockerfile of the image you're running.
+This sets simple (non-array) environmental variables in the container. For
+illustration all three
+flags are shown here. Where `-e`, `--env` take an environment variable and
+value, or if no `=` is provided, then that variable's current value, set via
+`export`, is passed through (i.e. `$MYVAR1` from the host is set to `$MYVAR1`
+in the container). When no `=` is provided and that variable is not defined
+in the client's environment then that variable will be removed from the
+container's list of environment variables. All three flags, `-e`, `--env` and
+`--env-file` can be repeated.
 
-You can define the variable and its value when running the container:
+Regardless of the order of these three flags, the `--env-file` are processed
+first, and then `-e`, `--env` flags. This way, the `-e` or `--env` will
+override variables as needed.
 
 ```bash
-$ docker run --env VAR1=value1 --env VAR2=value2 ubuntu env | grep VAR
-VAR1=value1
-VAR2=value2
+$ cat ./env.list
+TEST_FOO=BAR
+$ docker run --env TEST_FOO="This is a test" --env-file ./env.list busybox env | grep TEST_FOO
+TEST_FOO=This is a test
 ```
 
-You can also use variables that you've exported to your local environment:
+The `--env-file` flag takes a filename as an argument and expects each line
+to be in the `VAR=VAL` format, mimicking the argument passed to `--env`. Comment
+lines need only be prefixed with `#`
+
+An example of a file passed with `--env-file`
 
 ```bash
-export VAR1=value1
-export VAR2=value2
+$ cat ./env.list
+TEST_FOO=BAR
 
-$ docker run --env VAR1 --env VAR2 ubuntu env | grep VAR
-VAR1=value1
-VAR2=value2
-```
+# this is a comment
+TEST_APP_DEST_HOST=10.10.0.127
+TEST_APP_DEST_PORT=8888
+_TEST_BAR=FOO
+TEST_APP_42=magic
+helloWorld=true
+123qwe=bar
+org.spring.config=something
 
-When running the command, the Docker CLI client checks the value the variable
-has in your local environment and passes it to the container.
-If no `=` is provided and that variable is not exported in your local
-environment, the variable won't be set in the container.
+# pass through this variable from the caller
+TEST_PASSTHROUGH
+$ TEST_PASSTHROUGH=howdy docker run --env-file ./env.list busybox env
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=5198e0745561
+TEST_FOO=BAR
+TEST_APP_DEST_HOST=10.10.0.127
+TEST_APP_DEST_PORT=8888
+_TEST_BAR=FOO
+TEST_APP_42=magic
+helloWorld=true
+TEST_PASSTHROUGH=howdy
+HOME=/root
+123qwe=bar
+org.spring.config=something
 
-You can also load the environment variables from a file. This file should use
-the syntax `<variable>= value`, and `#` for comments.
-
-```bash
-$ cat env.list
-# This is a comment
-VAR1=value1
-VAR2=value2
-
-$ docker run --env-file env.list ubuntu env | grep VAR
-VAR1=value1
-VAR2=value2
+$ docker run --env-file ./env.list busybox env
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=5198e0745561
+TEST_FOO=BAR
+TEST_APP_DEST_HOST=10.10.0.127
+TEST_APP_DEST_PORT=8888
+_TEST_BAR=FOO
+TEST_APP_42=magic
+helloWorld=true
+TEST_PASSTHROUGH=
+HOME=/root
+123qwe=bar
+org.spring.config=something
 ```
 
 ### Set metadata on container (-l, --label, --label-file)
@@ -586,11 +614,11 @@ Use Docker's `--restart` to specify a container's *restart policy*. A restart
 policy controls whether the Docker daemon restarts a container after exit.
 Docker supports the following restart policies:
 
-| Policy    | Result                                                                                                                                                                                                                                                           |
-|:----------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `no`      | Do not automatically restart the container when it exits. This is the default.                                                                                                                                                                                   |
-| `failure` | Restart only if the container exits with a non-zero exit status. Optionally, limit the number of restart retries the Docker daemon attempts.                                                                                                                     |
-| `always`  | Always restart the container regardless of the exit status. When you specify always, the Docker daemon will try to restart the container indefinitely. The container will also always start on daemon startup, regardless of the current state of the container. |
+| Policy            | Result                                  |
+|-------------------|-----------------------------------------|
+| `no`              | Do not automatically restart the container when it exits. This is the default. |
+| `failure`         | Restart only if the container exits with a non-zero exit status. Optionally, limit the number of restart retries the Docker daemon attempts. |
+| `always`          | Always restart the container regardless of the exit status. When you specify always, the Docker daemon will try to restart the container indefinitely. The container will also always start on daemon startup, regardless of the current state of the container. |
 
 ```bash
 $ docker run --restart=always redis
@@ -715,7 +743,7 @@ On Windows, `--isolation` can take one of these values:
 
 
 | Value     | Description                                                                                |
-|:----------|:-------------------------------------------------------------------------------------------|
+|-----------|--------------------------------------------------------------------------------------------|
 | `default` | Use the value specified by the Docker daemon's `--exec-opt` or system default (see below). |
 | `process` | Shared-kernel namespace isolation (not supported on Windows client operating systems).     |
 | `hyperv`  | Hyper-V hypervisor partition-based isolation.                                              |

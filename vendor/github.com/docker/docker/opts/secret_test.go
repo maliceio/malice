@@ -4,77 +4,76 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"github.com/docker/docker/pkg/testutil/assert"
 )
 
 func TestSecretOptionsSimple(t *testing.T) {
 	var opt SecretOpt
 
 	testCase := "app-secret"
-	assert.NoError(t, opt.Set(testCase))
+	assert.NilError(t, opt.Set(testCase))
 
 	reqs := opt.Value()
-	require.Len(t, reqs, 1)
+	assert.Equal(t, len(reqs), 1)
 	req := reqs[0]
-	assert.Equal(t, "app-secret", req.SecretName)
-	assert.Equal(t, "app-secret", req.File.Name)
-	assert.Equal(t, "0", req.File.UID)
-	assert.Equal(t, "0", req.File.GID)
+	assert.Equal(t, req.SecretName, "app-secret")
+	assert.Equal(t, req.File.Name, "app-secret")
+	assert.Equal(t, req.File.UID, "0")
+	assert.Equal(t, req.File.GID, "0")
 }
 
 func TestSecretOptionsSourceTarget(t *testing.T) {
 	var opt SecretOpt
 
 	testCase := "source=foo,target=testing"
-	assert.NoError(t, opt.Set(testCase))
+	assert.NilError(t, opt.Set(testCase))
 
 	reqs := opt.Value()
-	require.Len(t, reqs, 1)
+	assert.Equal(t, len(reqs), 1)
 	req := reqs[0]
-	assert.Equal(t, "foo", req.SecretName)
-	assert.Equal(t, "testing", req.File.Name)
+	assert.Equal(t, req.SecretName, "foo")
+	assert.Equal(t, req.File.Name, "testing")
 }
 
 func TestSecretOptionsShorthand(t *testing.T) {
 	var opt SecretOpt
 
 	testCase := "src=foo,target=testing"
-	assert.NoError(t, opt.Set(testCase))
+	assert.NilError(t, opt.Set(testCase))
 
 	reqs := opt.Value()
-	require.Len(t, reqs, 1)
+	assert.Equal(t, len(reqs), 1)
 	req := reqs[0]
-	assert.Equal(t, "foo", req.SecretName)
+	assert.Equal(t, req.SecretName, "foo")
 }
 
 func TestSecretOptionsCustomUidGid(t *testing.T) {
 	var opt SecretOpt
 
 	testCase := "source=foo,target=testing,uid=1000,gid=1001"
-	assert.NoError(t, opt.Set(testCase))
+	assert.NilError(t, opt.Set(testCase))
 
 	reqs := opt.Value()
-	require.Len(t, reqs, 1)
+	assert.Equal(t, len(reqs), 1)
 	req := reqs[0]
-	assert.Equal(t, "foo", req.SecretName)
-	assert.Equal(t, "testing", req.File.Name)
-	assert.Equal(t, "1000", req.File.UID)
-	assert.Equal(t, "1001", req.File.GID)
+	assert.Equal(t, req.SecretName, "foo")
+	assert.Equal(t, req.File.Name, "testing")
+	assert.Equal(t, req.File.UID, "1000")
+	assert.Equal(t, req.File.GID, "1001")
 }
 
 func TestSecretOptionsCustomMode(t *testing.T) {
 	var opt SecretOpt
 
 	testCase := "source=foo,target=testing,uid=1000,gid=1001,mode=0444"
-	assert.NoError(t, opt.Set(testCase))
+	assert.NilError(t, opt.Set(testCase))
 
 	reqs := opt.Value()
-	require.Len(t, reqs, 1)
+	assert.Equal(t, len(reqs), 1)
 	req := reqs[0]
-	assert.Equal(t, "foo", req.SecretName)
-	assert.Equal(t, "testing", req.File.Name)
-	assert.Equal(t, "1000", req.File.UID)
-	assert.Equal(t, "1001", req.File.GID)
-	assert.Equal(t, os.FileMode(0444), req.File.Mode)
+	assert.Equal(t, req.SecretName, "foo")
+	assert.Equal(t, req.File.Name, "testing")
+	assert.Equal(t, req.File.UID, "1000")
+	assert.Equal(t, req.File.GID, "1001")
+	assert.Equal(t, req.File.Mode, os.FileMode(0444))
 }

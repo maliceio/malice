@@ -8,7 +8,7 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/pkg/stringid"
-	"github.com/stretchr/testify/assert"
+	"github.com/docker/docker/pkg/testutil/assert"
 )
 
 func TestVolumeContext(t *testing.T) {
@@ -131,9 +131,9 @@ foobar_bar
 		testcase.context.Output = out
 		err := VolumeWrite(testcase.context, volumes)
 		if err != nil {
-			assert.EqualError(t, err, testcase.expected)
+			assert.Error(t, err, testcase.expected)
 		} else {
-			assert.Equal(t, testcase.expected, out.String())
+			assert.Equal(t, out.String(), testcase.expected)
 		}
 	}
 }
@@ -158,7 +158,7 @@ func TestVolumeContextWriteJSON(t *testing.T) {
 		if err := json.Unmarshal([]byte(line), &m); err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, expectedJSONs[i], m)
+		assert.DeepEqual(t, m, expectedJSONs[i])
 	}
 }
 
@@ -178,6 +178,6 @@ func TestVolumeContextWriteJSONField(t *testing.T) {
 		if err := json.Unmarshal([]byte(line), &s); err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, volumes[i].Name, s)
+		assert.Equal(t, s, volumes[i].Name)
 	}
 }

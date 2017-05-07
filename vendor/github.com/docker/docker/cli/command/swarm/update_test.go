@@ -13,9 +13,8 @@ import (
 	"github.com/pkg/errors"
 	// Import builders to get the builder function as package function
 	. "github.com/docker/docker/cli/internal/test/builders"
-	"github.com/docker/docker/pkg/testutil"
+	"github.com/docker/docker/pkg/testutil/assert"
 	"github.com/docker/docker/pkg/testutil/golden"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestSwarmUpdateErrors(t *testing.T) {
@@ -80,7 +79,7 @@ func TestSwarmUpdateErrors(t *testing.T) {
 			cmd.Flags().Set(key, value)
 		}
 		cmd.SetOutput(ioutil.Discard)
-		testutil.ErrorContains(t, cmd.Execute(), tc.expectedError)
+		assert.Error(t, cmd.Execute(), tc.expectedError)
 	}
 }
 
@@ -176,9 +175,9 @@ func TestSwarmUpdate(t *testing.T) {
 			cmd.Flags().Set(key, value)
 		}
 		cmd.SetOutput(buf)
-		assert.NoError(t, cmd.Execute())
+		assert.NilError(t, cmd.Execute())
 		actual := buf.String()
 		expected := golden.Get(t, []byte(actual), fmt.Sprintf("update-%s.golden", tc.name))
-		testutil.EqualNormalizedString(t, testutil.RemoveSpace, actual, string(expected))
+		assert.EqualNormalizedString(t, assert.RemoveSpace, actual, string(expected))
 	}
 }

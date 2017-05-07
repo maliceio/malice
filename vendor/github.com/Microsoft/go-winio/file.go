@@ -1,3 +1,5 @@
+// +build windows
+
 package winio
 
 import (
@@ -13,6 +15,7 @@ import (
 //sys createIoCompletionPort(file syscall.Handle, port syscall.Handle, key uintptr, threadCount uint32) (newport syscall.Handle, err error) = CreateIoCompletionPort
 //sys getQueuedCompletionStatus(port syscall.Handle, bytes *uint32, key *uintptr, o **ioOperation, timeout uint32) (err error) = GetQueuedCompletionStatus
 //sys setFileCompletionNotificationModes(h syscall.Handle, flags uint8) (err error) = SetFileCompletionNotificationModes
+//sys timeBeginPeriod(period uint32) (n int32) = winmm.timeBeginPeriod
 
 const (
 	cFILE_SKIP_COMPLETION_PORT_ON_SUCCESS = 1
@@ -117,6 +120,8 @@ func (f *win32File) prepareIo() (*ioOperation, error) {
 
 // ioCompletionProcessor processes completed async IOs forever
 func ioCompletionProcessor(h syscall.Handle) {
+	// Set the timer resolution to 1. This fixes a performance regression in golang 1.6.
+	timeBeginPeriod(1)
 	for {
 		var bytes uint32
 		var key uintptr
@@ -213,4 +218,8 @@ func (f *win32File) SetReadDeadline(t time.Time) error {
 func (f *win32File) SetWriteDeadline(t time.Time) error {
 	f.writeDeadline = t
 	return nil
+}
+
+func (f *win32File) Flush() error {
+	return syscall.FlushFileBuffers(f.handle)
 }

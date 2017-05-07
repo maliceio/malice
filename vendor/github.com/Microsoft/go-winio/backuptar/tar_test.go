@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"io/ioutil"
 	"os"
+	"path/filepath"
+	"reflect"
 	"testing"
 
 	"github.com/Microsoft/go-winio"
@@ -61,5 +63,22 @@ func TestRoundTrip(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	ensurePresent(t, hdr.Winheaders, "fileattr", "sd", "accesstime", "changetime", "createtime", "writetime")
+	name, size, bi2, err := FileInfoFromHeader(hdr)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if name != filepath.ToSlash(f.Name()) {
+		t.Errorf("got name %s, expected %s", name, filepath.ToSlash(f.Name()))
+	}
+
+	if size != fi.Size() {
+		t.Errorf("got size %d, expected %d", size, fi.Size())
+	}
+
+	if !reflect.DeepEqual(*bi, *bi2) {
+		t.Errorf("got %#v, expected %#v", *bi, *bi2)
+	}
+
+	ensurePresent(t, hdr.Winheaders, "fileattr", "sd")
 }

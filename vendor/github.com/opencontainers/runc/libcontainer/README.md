@@ -77,7 +77,7 @@ config := &configs.Config{
 		Parent: "system",
 		Resources: &configs.Resources{
 			MemorySwappiness: nil,
-			AllowAllDevices:  nil,
+			AllowAllDevices:  false,
 			AllowedDevices:   configs.DefaultAllowedDevices,
 		},
 	},
@@ -186,8 +186,8 @@ process := &libcontainer.Process{
 
 err := container.Start(process)
 if err != nil {
-	container.Destroy()
 	logrus.Fatal(err)
+	container.Destroy()
 	return
 }
 
@@ -219,9 +219,6 @@ container.Resume()
 
 // send signal to container's init process.
 container.Signal(signal)
-
-// update container resource constraints.
-container.Set(config)
 ```
 
 

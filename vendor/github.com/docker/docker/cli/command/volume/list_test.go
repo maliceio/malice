@@ -13,9 +13,8 @@ import (
 	"github.com/pkg/errors"
 	// Import builders to get the builder function as package function
 	. "github.com/docker/docker/cli/internal/test/builders"
-	"github.com/docker/docker/pkg/testutil"
+	"github.com/docker/docker/pkg/testutil/assert"
 	"github.com/docker/docker/pkg/testutil/golden"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestVolumeListErrors(t *testing.T) {
@@ -48,7 +47,7 @@ func TestVolumeListErrors(t *testing.T) {
 			cmd.Flags().Set(key, value)
 		}
 		cmd.SetOutput(ioutil.Discard)
-		testutil.ErrorContains(t, cmd.Execute(), tc.expectedError)
+		assert.Error(t, cmd.Execute(), tc.expectedError)
 	}
 }
 
@@ -69,10 +68,10 @@ func TestVolumeListWithoutFormat(t *testing.T) {
 	}, buf)
 	cli.SetConfigfile(&configfile.ConfigFile{})
 	cmd := newListCommand(cli)
-	assert.NoError(t, cmd.Execute())
+	assert.NilError(t, cmd.Execute())
 	actual := buf.String()
 	expected := golden.Get(t, []byte(actual), "volume-list-without-format.golden")
-	testutil.EqualNormalizedString(t, testutil.RemoveSpace, actual, string(expected))
+	assert.EqualNormalizedString(t, assert.RemoveSpace, actual, string(expected))
 }
 
 func TestVolumeListWithConfigFormat(t *testing.T) {
@@ -94,10 +93,10 @@ func TestVolumeListWithConfigFormat(t *testing.T) {
 		VolumesFormat: "{{ .Name }} {{ .Driver }} {{ .Labels }}",
 	})
 	cmd := newListCommand(cli)
-	assert.NoError(t, cmd.Execute())
+	assert.NilError(t, cmd.Execute())
 	actual := buf.String()
 	expected := golden.Get(t, []byte(actual), "volume-list-with-config-format.golden")
-	testutil.EqualNormalizedString(t, testutil.RemoveSpace, actual, string(expected))
+	assert.EqualNormalizedString(t, assert.RemoveSpace, actual, string(expected))
 }
 
 func TestVolumeListWithFormat(t *testing.T) {
@@ -118,8 +117,8 @@ func TestVolumeListWithFormat(t *testing.T) {
 	cli.SetConfigfile(&configfile.ConfigFile{})
 	cmd := newListCommand(cli)
 	cmd.Flags().Set("format", "{{ .Name }} {{ .Driver }} {{ .Labels }}")
-	assert.NoError(t, cmd.Execute())
+	assert.NilError(t, cmd.Execute())
 	actual := buf.String()
 	expected := golden.Get(t, []byte(actual), "volume-list-with-format.golden")
-	testutil.EqualNormalizedString(t, testutil.RemoveSpace, actual, string(expected))
+	assert.EqualNormalizedString(t, assert.RemoveSpace, actual, string(expected))
 }

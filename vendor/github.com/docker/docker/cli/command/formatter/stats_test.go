@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/docker/docker/pkg/stringid"
-	"github.com/stretchr/testify/assert"
+	"github.com/docker/docker/pkg/testutil/assert"
 )
 
 func TestContainerStatsContext(t *testing.T) {
@@ -116,9 +116,9 @@ container2  --
 		te.context.Output = &out
 		err := ContainerStatsWrite(te.context, stats, "linux")
 		if err != nil {
-			assert.EqualError(t, err, te.expected)
+			assert.Error(t, err, te.expected)
 		} else {
-			assert.Equal(t, te.expected, out.String())
+			assert.Equal(t, out.String(), te.expected)
 		}
 	}
 }
@@ -182,9 +182,9 @@ container2  --  --
 		te.context.Output = &out
 		err := ContainerStatsWrite(te.context, stats, "windows")
 		if err != nil {
-			assert.EqualError(t, err, te.expected)
+			assert.Error(t, err, te.expected)
 		} else {
-			assert.Equal(t, te.expected, out.String())
+			assert.Equal(t, out.String(), te.expected)
 		}
 	}
 }
@@ -259,7 +259,7 @@ func TestContainerStatsContextWriteWithNoStatsWindows(t *testing.T) {
 
 	for _, context := range contexts {
 		ContainerStatsWrite(context.context, []StatsEntry{}, "windows")
-		assert.Equal(t, context.expected, out.String())
+		assert.Equal(t, out.String(), context.expected)
 		// Clean buffer
 		out.Reset()
 	}

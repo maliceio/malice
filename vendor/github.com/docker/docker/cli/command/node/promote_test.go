@@ -10,8 +10,7 @@ import (
 	"github.com/pkg/errors"
 	// Import builders to get the builder function as package function
 	. "github.com/docker/docker/cli/internal/test/builders"
-	"github.com/docker/docker/pkg/testutil"
-	"github.com/stretchr/testify/assert"
+	"github.com/docker/docker/pkg/testutil/assert"
 )
 
 func TestNodePromoteErrors(t *testing.T) {
@@ -48,7 +47,7 @@ func TestNodePromoteErrors(t *testing.T) {
 			}, buf))
 		cmd.SetArgs(tc.args)
 		cmd.SetOutput(ioutil.Discard)
-		testutil.ErrorContains(t, cmd.Execute(), tc.expectedError)
+		assert.Error(t, cmd.Execute(), tc.expectedError)
 	}
 }
 
@@ -67,7 +66,7 @@ func TestNodePromoteNoChange(t *testing.T) {
 			},
 		}, buf))
 	cmd.SetArgs([]string{"nodeID"})
-	assert.NoError(t, cmd.Execute())
+	assert.NilError(t, cmd.Execute())
 }
 
 func TestNodePromoteMultipleNode(t *testing.T) {
@@ -85,5 +84,5 @@ func TestNodePromoteMultipleNode(t *testing.T) {
 			},
 		}, buf))
 	cmd.SetArgs([]string{"nodeID1", "nodeID2"})
-	assert.NoError(t, cmd.Execute())
+	assert.NilError(t, cmd.Execute())
 }

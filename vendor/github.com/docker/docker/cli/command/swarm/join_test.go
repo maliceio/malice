@@ -9,9 +9,8 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/swarm"
 	"github.com/docker/docker/cli/internal/test"
-	"github.com/docker/docker/pkg/testutil"
+	"github.com/docker/docker/pkg/testutil/assert"
 	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestSwarmJoinErrors(t *testing.T) {
@@ -57,7 +56,7 @@ func TestSwarmJoinErrors(t *testing.T) {
 			}, buf))
 		cmd.SetArgs(tc.args)
 		cmd.SetOutput(ioutil.Discard)
-		testutil.ErrorContains(t, cmd.Execute(), tc.expectedError)
+		assert.Error(t, cmd.Execute(), tc.expectedError)
 	}
 }
 
@@ -97,7 +96,7 @@ func TestSwarmJoin(t *testing.T) {
 				infoFunc: tc.infoFunc,
 			}, buf))
 		cmd.SetArgs([]string{"remote"})
-		assert.NoError(t, cmd.Execute())
+		assert.NilError(t, cmd.Execute())
 		assert.Equal(t, strings.TrimSpace(buf.String()), tc.expected)
 	}
 }

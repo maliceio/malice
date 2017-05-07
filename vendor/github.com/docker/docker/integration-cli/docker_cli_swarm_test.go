@@ -1539,7 +1539,8 @@ func (s *DockerTrustedSwarmSuite) TestTrustedServiceCreate(c *check.C) {
 	repoName := s.trustSuite.setupTrustedImage(c, "trusted-pull")
 
 	name := "trusted"
-	cli.Docker(cli.Args("-D", "service", "create", "--name", name, repoName, "top"), trustedCmd, cli.Daemon(d.Daemon)).Assert(c, icmd.Expected{
+	serviceCmd := d.Command("-D", "service", "create", "--name", name, repoName, "top")
+	icmd.RunCmd(serviceCmd, trustedCmd).Assert(c, icmd.Expected{
 		Err: "resolved image tag to",
 	})
 
@@ -1551,12 +1552,13 @@ func (s *DockerTrustedSwarmSuite) TestTrustedServiceCreate(c *check.C) {
 
 	repoName = fmt.Sprintf("%v/untrustedservicecreate/createtest:latest", privateRegistryURL)
 	// tag the image and upload it to the private registry
-	cli.DockerCmd(c, "tag", "busybox", repoName)
-	cli.DockerCmd(c, "push", repoName)
-	cli.DockerCmd(c, "rmi", repoName)
+	dockerCmd(c, "tag", "busybox", repoName)
+	dockerCmd(c, "push", repoName)
+	dockerCmd(c, "rmi", repoName)
 
 	name = "untrusted"
-	cli.Docker(cli.Args("service", "create", "--name", name, repoName, "top"), trustedCmd, cli.Daemon(d.Daemon)).Assert(c, icmd.Expected{
+	serviceCmd = d.Command("service", "create", "--name", name, repoName, "top")
+	icmd.RunCmd(serviceCmd, trustedCmd).Assert(c, icmd.Expected{
 		ExitCode: 1,
 		Err:      "Error: remote trust data does not exist",
 	})
@@ -1574,31 +1576,34 @@ func (s *DockerTrustedSwarmSuite) TestTrustedServiceUpdate(c *check.C) {
 	name := "myservice"
 
 	// Create a service without content trust
-	cli.Docker(cli.Args("service", "create", "--name", name, repoName, "top"), cli.Daemon(d.Daemon)).Assert(c, icmd.Success)
+	_, err := d.Cmd("service", "create", "--name", name, repoName, "top")
+	c.Assert(err, checker.IsNil)
 
-	result := cli.Docker(cli.Args("service", "inspect", "--pretty", name), cli.Daemon(d.Daemon))
-	c.Assert(result.Error, checker.IsNil, check.Commentf(result.Combined()))
+	out, err := d.Cmd("service", "inspect", "--pretty", name)
+	c.Assert(err, checker.IsNil, check.Commentf(out))
 	// Daemon won't insert the digest because this is disabled by
 	// DOCKER_SERVICE_PREFER_OFFLINE_IMAGE.
-	c.Assert(result.Combined(), check.Not(checker.Contains), repoName+"@", check.Commentf(result.Combined()))
+	c.Assert(out, check.Not(checker.Contains), repoName+"@", check.Commentf(out))
 
-	cli.Docker(cli.Args("-D", "service", "update", "--image", repoName, name), trustedCmd, cli.Daemon(d.Daemon)).Assert(c, icmd.Expected{
+	serviceCmd := d.Command("-D", "service", "update", "--image", repoName, name)
+	icmd.RunCmd(serviceCmd, trustedCmd).Assert(c, icmd.Expected{
 		Err: "resolved image tag to",
 	})
 
-	cli.Docker(cli.Args("service", "inspect", "--pretty", name), cli.Daemon(d.Daemon)).Assert(c, icmd.Expected{
-		Out: repoName + "@",
-	})
+	out, err = d.Cmd("service", "inspect", "--pretty", name)
+	c.Assert(err, checker.IsNil, check.Commentf(out))
+	c.Assert(out, checker.Contains, repoName+"@", check.Commentf(out))
 
 	// Try trusted service update on an untrusted tag.
 
 	repoName = fmt.Sprintf("%v/untrustedservicecreate/createtest:latest", privateRegistryURL)
 	// tag the image and upload it to the private registry
-	cli.DockerCmd(c, "tag", "busybox", repoName)
-	cli.DockerCmd(c, "push", repoName)
-	cli.DockerCmd(c, "rmi", repoName)
+	dockerCmd(c, "tag", "busybox", repoName)
+	dockerCmd(c, "push", repoName)
+	dockerCmd(c, "rmi", repoName)
 
-	cli.Docker(cli.Args("service", "update", "--image", repoName, name), trustedCmd, cli.Daemon(d.Daemon)).Assert(c, icmd.Expected{
+	serviceCmd = d.Command("service", "update", "--image", repoName, name)
+	icmd.RunCmd(serviceCmd, trustedCmd).Assert(c, icmd.Expected{
 		ExitCode: 1,
 		Err:      "Error: remote trust data does not exist",
 	})

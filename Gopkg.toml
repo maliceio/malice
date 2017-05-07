@@ -4,6 +4,10 @@
   version = ">=0.11.0, <1.0.0"
 
 [[dependencies]]
+  name = "github.com/hashicorp/vault"
+  version = "v0.7.1"
+
+[[dependencies]]
   branch = "master"
   name = "github.com/moby/moby"
 
@@ -12,13 +16,16 @@
   name = "github.com/pkg/errors"
 
 [[dependencies]]
+  branch = "master"
   name = "github.com/spf13/cobra"
-  source = "https://github.com/dnephin/cobra.git"
-  version = "v1.5.1"
 
 [[dependencies]]
+  branch = "master"
   name = "github.com/spf13/pflag"
-  revision = "9ff6c6923cfffbcd502984b8e0c80539a94968b7"
+
+[[dependencies]]
+  branch = "master"
+  name = "github.com/spf13/viper"
 
 [[dependencies]]
   name = "golang.org/x/net"

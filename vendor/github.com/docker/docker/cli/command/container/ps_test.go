@@ -4,13 +4,13 @@ import (
 	"testing"
 
 	"github.com/docker/docker/opts"
-	"github.com/stretchr/testify/assert"
+	"github.com/docker/docker/pkg/testutil/assert"
 )
 
 func TestBuildContainerListOptions(t *testing.T) {
 	filters := opts.NewFilterOpt()
-	assert.NoError(t, filters.Set("foo=bar"))
-	assert.NoError(t, filters.Set("baz=foo"))
+	assert.NilError(t, filters.Set("foo=bar"))
+	assert.NilError(t, filters.Set("baz=foo"))
 
 	contexts := []struct {
 		psOpts          *psOptions
@@ -101,12 +101,12 @@ func TestBuildContainerListOptions(t *testing.T) {
 
 	for _, c := range contexts {
 		options, err := buildContainerListOptions(c.psOpts)
-		assert.NoError(t, err)
+		assert.NilError(t, err)
 
 		assert.Equal(t, c.expectedAll, options.All)
 		assert.Equal(t, c.expectedSize, options.Size)
 		assert.Equal(t, c.expectedLimit, options.Limit)
-		assert.Equal(t, len(c.expectedFilters), options.Filters.Len())
+		assert.Equal(t, options.Filters.Len(), len(c.expectedFilters))
 
 		for k, v := range c.expectedFilters {
 			f := options.Filters

@@ -6,7 +6,7 @@ import (
 
 	"github.com/docker/docker/cli/compose/convert"
 	"github.com/docker/docker/cli/internal/test"
-	"github.com/stretchr/testify/assert"
+	"github.com/docker/docker/pkg/testutil/assert"
 	"golang.org/x/net/context"
 )
 
@@ -23,5 +23,5 @@ func TestPruneServices(t *testing.T) {
 
 	pruneServices(ctx, dockerCli, namespace, services)
 
-	assert.Equal(t, buildObjectIDs([]string{objectName("foo", "remove")}), client.removedServices)
+	assert.DeepEqual(t, client.removedServices, buildObjectIDs([]string{objectName("foo", "remove")}))
 }

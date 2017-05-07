@@ -334,9 +334,8 @@ func (c *Cluster) Cleanup() {
 		c.mu.Unlock()
 		return
 	}
+	defer c.mu.Unlock()
 	state := c.currentNodeState()
-	c.mu.Unlock()
-
 	if state.IsActiveManager() {
 		active, reachable, unreachable, err := managerStats(state.controlClient, state.NodeID())
 		if err == nil {
@@ -346,15 +345,11 @@ func (c *Cluster) Cleanup() {
 			}
 		}
 	}
-
 	if err := node.Stop(); err != nil {
 		logrus.Errorf("failed to shut down cluster node: %v", err)
 		signal.DumpStacks("")
 	}
-
-	c.mu.Lock()
 	c.nr = nil
-	c.mu.Unlock()
 }
 
 func managerStats(client swarmapi.ControlClient, currentNodeID string) (current bool, reachable int, unreachable int, err error) {

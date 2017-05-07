@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/docker/docker/cli/internal/test"
-	"github.com/stretchr/testify/assert"
+	"github.com/docker/docker/pkg/testutil/assert"
 )
 
 func TestRemoveStack(t *testing.T) {
@@ -17,20 +17,20 @@ func TestRemoveStack(t *testing.T) {
 		objectName("bar", "service1"),
 		objectName("bar", "service2"),
 	}
-	allServiceIDs := buildObjectIDs(allServices)
+	allServicesIDs := buildObjectIDs(allServices)
 
 	allNetworks := []string{
 		objectName("foo", "network1"),
 		objectName("bar", "network1"),
 	}
-	allNetworkIDs := buildObjectIDs(allNetworks)
+	allNetworksIDs := buildObjectIDs(allNetworks)
 
 	allSecrets := []string{
 		objectName("foo", "secret1"),
 		objectName("foo", "secret2"),
 		objectName("bar", "secret1"),
 	}
-	allSecretIDs := buildObjectIDs(allSecrets)
+	allSecretsIDs := buildObjectIDs(allSecrets)
 
 	cli := &fakeClient{
 		services: allServices,
@@ -40,22 +40,22 @@ func TestRemoveStack(t *testing.T) {
 	cmd := newRemoveCommand(test.NewFakeCli(cli, &bytes.Buffer{}))
 	cmd.SetArgs([]string{"foo", "bar"})
 
-	assert.NoError(t, cmd.Execute())
-	assert.Equal(t, allServiceIDs, cli.removedServices)
-	assert.Equal(t, allNetworkIDs, cli.removedNetworks)
-	assert.Equal(t, allSecretIDs, cli.removedSecrets)
+	assert.NilError(t, cmd.Execute())
+	assert.DeepEqual(t, cli.removedServices, allServicesIDs)
+	assert.DeepEqual(t, cli.removedNetworks, allNetworksIDs)
+	assert.DeepEqual(t, cli.removedSecrets, allSecretsIDs)
 }
 
 func TestSkipEmptyStack(t *testing.T) {
 	buf := new(bytes.Buffer)
 	allServices := []string{objectName("bar", "service1"), objectName("bar", "service2")}
-	allServiceIDs := buildObjectIDs(allServices)
+	allServicesIDs := buildObjectIDs(allServices)
 
 	allNetworks := []string{objectName("bar", "network1")}
-	allNetworkIDs := buildObjectIDs(allNetworks)
+	allNetworksIDs := buildObjectIDs(allNetworks)
 
 	allSecrets := []string{objectName("bar", "secret1")}
-	allSecretIDs := buildObjectIDs(allSecrets)
+	allSecretsIDs := buildObjectIDs(allSecrets)
 
 	cli := &fakeClient{
 		services: allServices,
@@ -65,22 +65,22 @@ func TestSkipEmptyStack(t *testing.T) {
 	cmd := newRemoveCommand(test.NewFakeCli(cli, buf))
 	cmd.SetArgs([]string{"foo", "bar"})
 
-	assert.NoError(t, cmd.Execute())
+	assert.NilError(t, cmd.Execute())
 	assert.Contains(t, buf.String(), "Nothing found in stack: foo")
-	assert.Equal(t, allServiceIDs, cli.removedServices)
-	assert.Equal(t, allNetworkIDs, cli.removedNetworks)
-	assert.Equal(t, allSecretIDs, cli.removedSecrets)
+	assert.DeepEqual(t, cli.removedServices, allServicesIDs)
+	assert.DeepEqual(t, cli.removedNetworks, allNetworksIDs)
+	assert.DeepEqual(t, cli.removedSecrets, allSecretsIDs)
 }
 
 func TestContinueAfterError(t *testing.T) {
 	allServices := []string{objectName("foo", "service1"), objectName("bar", "service1")}
-	allServiceIDs := buildObjectIDs(allServices)
+	allServicesIDs := buildObjectIDs(allServices)
 
 	allNetworks := []string{objectName("foo", "network1"), objectName("bar", "network1")}
-	allNetworkIDs := buildObjectIDs(allNetworks)
+	allNetworksIDs := buildObjectIDs(allNetworks)
 
 	allSecrets := []string{objectName("foo", "secret1"), objectName("bar", "secret1")}
-	allSecretIDs := buildObjectIDs(allSecrets)
+	allSecretsIDs := buildObjectIDs(allSecrets)
 
 	removedServices := []string{}
 	cli := &fakeClient{
@@ -100,8 +100,8 @@ func TestContinueAfterError(t *testing.T) {
 	cmd := newRemoveCommand(test.NewFakeCli(cli, &bytes.Buffer{}))
 	cmd.SetArgs([]string{"foo", "bar"})
 
-	assert.EqualError(t, cmd.Execute(), "Failed to remove some resources from stack: foo")
-	assert.Equal(t, allServiceIDs, removedServices)
-	assert.Equal(t, allNetworkIDs, cli.removedNetworks)
-	assert.Equal(t, allSecretIDs, cli.removedSecrets)
+	assert.Error(t, cmd.Execute(), "Failed to remove some resources from stack: foo")
+	assert.DeepEqual(t, removedServices, allServicesIDs)
+	assert.DeepEqual(t, cli.removedNetworks, allNetworksIDs)
+	assert.DeepEqual(t, cli.removedSecrets, allSecretsIDs)
 }

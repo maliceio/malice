@@ -5,7 +5,7 @@ package main
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/docker/docker/pkg/testutil/assert"
 )
 
 func TestDaemonCommand(t *testing.T) {
@@ -13,5 +13,5 @@ func TestDaemonCommand(t *testing.T) {
 	cmd.SetArgs([]string{"--version"})
 	err := cmd.Execute()
 
-	assert.EqualError(t, err, "Please run `dockerd`")
+	assert.Error(t, err, "Please run `dockerd`")
 }

@@ -1,20 +1,10 @@
-memo = "8b754afa512a73553ceb4189de6379c68f7c1794d055143c309e17839a8635c9"
-
-[[projects]]
-  name = "github.com/Azure/go-ansiterm"
-  packages = [".","winterm"]
-  revision = "70b2c90b260171e829f1ebd7c17f600c11858dbe"
+memo = "0f0d2b408d74510ad1d1a3020be2b3f236d88c7b120c6cf94cbcdfdd88a53809"
 
 [[projects]]
   name = "github.com/Microsoft/go-winio"
   packages = ["."]
-  revision = "f778f05015353be65d242f3fedc18695756153bb"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/Nvveen/Gotty"
-  packages = ["."]
-  revision = "cd527374f1e5bff4938207604a14f2e38a9cf512"
+  revision = "f3b1913901892ada21d52d0cffe1d4c7080d36b7"
+  version = "v0.3.9"
 
 [[projects]]
   name = "github.com/Sirupsen/logrus"
@@ -23,34 +13,28 @@ memo = "8b754afa512a73553ceb4189de6379c68f7c1794d055143c309e17839a8635c9"
   version = "v0.11.5"
 
 [[projects]]
-  branch = "master"
   name = "github.com/docker/distribution"
-  packages = [".","context","digestset","reference","registry/api/errcode","registry/api/v2","registry/client","registry/client/auth","registry/client/auth/challenge","registry/client/transport","registry/storage/cache","registry/storage/cache/memory","uuid"]
-  revision = "c3e06c6069653bf72034ed907d6749d3928fdacb"
+  packages = ["digest","reference"]
+  revision = "a25b9ef0c9fe242ac04bb20d3a028442b7d266b6"
+  version = "v2.6.1"
 
 [[projects]]
-  branch = "master"
   name = "github.com/docker/docker"
-  packages = ["api","api/types","api/types/blkiodev","api/types/container","api/types/events","api/types/filters","api/types/image","api/types/mount","api/types/network","api/types/registry","api/types/strslice","api/types/swarm","api/types/time","api/types/versions","api/types/volume","cli/config","cli/config/configfile","opts","pkg/homedir","pkg/httputils","pkg/idtools","pkg/ioutils","pkg/jsonlog","pkg/jsonmessage","pkg/longpath","pkg/random","pkg/stringid","pkg/system","pkg/tarsum","pkg/term","pkg/term/windows","pkg/tlsconfig","registry"]
-  revision = "83ee902ecc3790c33c1e2d87334074436056bb49"
+  packages = ["api","api/types","api/types/blkiodev","api/types/container","api/types/events","api/types/filters","api/types/image","api/types/mount","api/types/network","api/types/registry","api/types/strslice","api/types/swarm","api/types/time","api/types/versions","api/types/volume","cli/config","cli/config/configfile","opts","pkg/homedir","pkg/idtools","pkg/ioutils","pkg/longpath","pkg/random","pkg/system","pkg/tlsconfig"]
+  revision = "c57fdb2a14cfba584686ddad909e3006284d10aa"
+  version = "v17.05.0-ce-rc2"
 
 [[projects]]
-  name = "github.com/docker/docker-credential-helpers"
-  packages = ["client","credentials"]
-  revision = "ce617b3357d60641847e4799af0af7f33cfbc090"
-  version = "v0.5.0"
-
-[[projects]]
-  branch = "master"
   name = "github.com/docker/go-connections"
   packages = ["nat","sockets","tlsconfig"]
-  revision = "e15c02316c12de00874640cd76311849de2aeed5"
+  revision = "990a1a1a70b0da4c4cb70e117971a4f0babfbf1a"
+  version = "v0.2.1"
 
 [[projects]]
-  branch = "master"
   name = "github.com/docker/go-units"
   packages = ["."]
-  revision = "0dadbb0345b35ec7ef35e228dabb8de89a65bf52"
+  revision = "f2d77a61e3c169b43402a0a1e84f06daf29b8190"
+  version = "v0.3.1"
 
 [[projects]]
   branch = "master"
@@ -59,14 +43,16 @@ memo = "8b754afa512a73553ceb4189de6379c68f7c1794d055143c309e17839a8635c9"
   revision = "aabc10ec26b754e797f9028f4589c5b7bd90dc20"
 
 [[projects]]
-  name = "github.com/gorilla/context"
+  name = "github.com/fsnotify/fsnotify"
   packages = ["."]
-  revision = "aed02d124ae4a0e94fea4541c8effd05bf0c8296"
+  revision = "629574ca2a5df945712d3079857300b5e4da0236"
+  version = "v1.4.2"
 
 [[projects]]
-  name = "github.com/gorilla/mux"
-  packages = ["."]
-  revision = "bd09be08ed4377796d312df0a45314e11b8f5dc1"
+  branch = "master"
+  name = "github.com/hashicorp/hcl"
+  packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
+  revision = "7fa7fff964d035e8a162cce3a164b3ad02ad651b"
 
 [[projects]]
   branch = "master"
@@ -75,39 +61,82 @@ memo = "8b754afa512a73553ceb4189de6379c68f7c1794d055143c309e17839a8635c9"
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/moby/moby"
-  packages = ["api/types","api/types/versions","cli/config","cli/config/configfile","cli/config/credentials","cli/flags","client","pkg/stringid","pkg/stringutils","pkg/templates"]
-  revision = "83ee902ecc3790c33c1e2d87334074436056bb49"
+  name = "github.com/magiconair/properties"
+  packages = ["."]
+  revision = "f917359f079a3759162704eaa8caeec3d01d9f91"
+  version = "v1.7.2"
 
 [[projects]]
-  name = "github.com/opencontainers/go-digest"
+  branch = "master"
+  name = "github.com/mitchellh/mapstructure"
   packages = ["."]
-  revision = "aa2ec055abd10d26d539eb630a92241b781ce4bc"
-  version = "v1.0.0-rc0"
+  revision = "cc8532a8e9a55ea36402aa21efdf403a60d34096"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/moby/moby"
+  packages = ["api/types","api/types/versions","cli/config","cli/config/configfile","cli/flags","client","pkg/stringid","pkg/stringutils","pkg/templates"]
+  revision = "f0bb1d7a4a5bf16b9fff1259742c6baf70858c5f"
 
 [[projects]]
   name = "github.com/opencontainers/runc"
   packages = ["libcontainer/user"]
-  revision = "ae7a92e352116f38bce3f7cb3aa2bc590a7e3f65"
+  revision = "baf6536d6259209c3edfa2b22237af82942d3dfa"
+  version = "v0.1.1"
+
+[[projects]]
+  name = "github.com/pelletier/go-buffruneio"
+  packages = ["."]
+  revision = "c37440a7cf42ac63b919c752ca73a85067e05992"
+  version = "v0.2.0"
+
+[[projects]]
+  name = "github.com/pelletier/go-toml"
+  packages = ["."]
+  revision = "13d49d4606eb801b8f01ae542b4afc4c6ee3d84a"
+  version = "v0.5.0"
 
 [[projects]]
   branch = "master"
   name = "github.com/pkg/errors"
   packages = ["."]
-  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  revision = "ff09b135c25aae272398c51a07235b90a75aa4f0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/spf13/afero"
+  packages = [".","mem"]
+  revision = "9be650865eab0c12963d8753212f4f9c66cdcf12"
+
+[[projects]]
+  name = "github.com/spf13/cast"
+  packages = ["."]
+  revision = "acbeb36b902d72a7a4c18e8f3241075e7ab763e4"
+  version = "v1.1.0"
+
+[[projects]]
+  branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "0e9ca70a23585bdaab4beba1e7c4c23a1adfa857"
-  source = "https://github.com/dnephin/cobra.git"
-  version = "v1.5.1"
+  revision = "7b1b6e8dc027253d45fc029bc269d1c019f83a34"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/spf13/jwalterweatherman"
+  packages = ["."]
+  revision = "fa7ca7e836cf3a8bb4ebf799f472c12d7e903d66"
+
+[[projects]]
+  branch = "master"
   name = "github.com/spf13/pflag"
   packages = ["."]
-  revision = "9ff6c6923cfffbcd502984b8e0c80539a94968b7"
+  revision = "f1d95a35e132e8a1868023a08932b14f0b8b8fcb"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/spf13/viper"
+  packages = ["."]
+  revision = "0967fc9aceab2ce9da34061253ac10fb99bba5b2"
 
 [[projects]]
   name = "golang.org/x/net"
@@ -115,6 +144,19 @@ memo = "8b754afa512a73553ceb4189de6379c68f7c1794d055143c309e17839a8635c9"
   revision = "07b51741c1d6423d4a6abab1c49940ec09cb1aaf"
 
 [[projects]]
+  branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "b776ec39b3e54652e09028aaaaac9757f4f8211a"
+  revision = "9ccfe848b9db8435a24c424abbc07a921adf1df5"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/text"
+  packages = ["internal/gen","internal/triegen","internal/ucd","transform","unicode/cldr","unicode/norm"]
+  revision = "470f45bf29f4147d6fbd7dfd0a02a848e49f5bf4"
+
+[[projects]]
+  branch = "v2"
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  revision = "cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b"

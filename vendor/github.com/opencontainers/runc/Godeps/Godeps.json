@@ -8,9 +8,9 @@
 			"Rev": "26709e2714106fb8ad40b773b711ebce25b78914"
 		},
 		{
-			"ImportPath": "github.com/urfave/cli",
-			"Comment": "v1.17.0-57-gedb24d0",
-			"Rev": "edb24d02aa3cea2319c33f2836d4a5133907fe4c"
+			"ImportPath": "github.com/codegangsta/cli",
+			"Comment": "1.2.0-187-gc31a797",
+			"Rev": "c31a7975863e7810c92e2e288a9ab074f9a88f29"
 		},
 		{
 			"ImportPath": "github.com/coreos/go-systemd/activation",
@@ -58,12 +58,12 @@
 		},
 		{
 			"ImportPath": "github.com/opencontainers/runtime-spec/specs-go",
-			"Comment": "v1.0.0-rc1",
-			"Rev": "06479209bdc0d4135911688c18157bd39bd99c22"
+			"Comment": "v0.5.0-34-g6e08c69",
+			"Rev": "6e08c6983ef8c2173f10ca09266907d4e9e71716"
 		},
 		{
 			"ImportPath": "github.com/seccomp/libseccomp-golang",
-			"Rev": "32f571b70023028bd57d9288c20efbcb237f3ce0"
+			"Rev": "1b506fc7c24eec5a3693cdcbed40d9c226cfc6a1"
 		},
 		{
 			"ImportPath": "github.com/syndtr/gocapability/capability",

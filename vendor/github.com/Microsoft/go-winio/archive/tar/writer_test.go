@@ -720,3 +720,20 @@ func TestFormatNumeric(t *testing.T) {
 		}
 	}
 }
+
+func TestFormatPAXTime(t *testing.T) {
+	t1 := time.Date(2000, 1, 1, 11, 0, 0, 0, time.UTC)
+	t2 := time.Date(2000, 1, 1, 11, 0, 0, 100, time.UTC)
+	t3 := time.Date(1960, 1, 1, 11, 0, 0, 0, time.UTC)
+	t4 := time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
+	verify := func(time time.Time, s string) {
+		p := formatPAXTime(time)
+		if p != s {
+			t.Errorf("for %v, expected %s, got %s", time, s, p)
+		}
+	}
+	verify(t1, "946724400")
+	verify(t2, "946724400.000000100")
+	verify(t3, "-315579600")
+	verify(t4, "0")
+}

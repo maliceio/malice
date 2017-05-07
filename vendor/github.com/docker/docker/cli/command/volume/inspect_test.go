@@ -11,9 +11,8 @@ import (
 	"github.com/pkg/errors"
 	// Import builders to get the builder function as package function
 	. "github.com/docker/docker/cli/internal/test/builders"
-	"github.com/docker/docker/pkg/testutil"
+	"github.com/docker/docker/pkg/testutil/assert"
 	"github.com/docker/docker/pkg/testutil/golden"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestVolumeInspectErrors(t *testing.T) {
@@ -65,7 +64,7 @@ func TestVolumeInspectErrors(t *testing.T) {
 			cmd.Flags().Set(key, value)
 		}
 		cmd.SetOutput(ioutil.Discard)
-		testutil.ErrorContains(t, cmd.Execute(), tc.expectedError)
+		assert.Error(t, cmd.Execute(), tc.expectedError)
 	}
 }
 
@@ -103,10 +102,10 @@ func TestVolumeInspectWithoutFormat(t *testing.T) {
 			}, buf),
 		)
 		cmd.SetArgs(tc.args)
-		assert.NoError(t, cmd.Execute())
+		assert.NilError(t, cmd.Execute())
 		actual := buf.String()
 		expected := golden.Get(t, []byte(actual), fmt.Sprintf("volume-inspect-without-format.%s.golden", tc.name))
-		testutil.EqualNormalizedString(t, testutil.RemoveSpace, actual, string(expected))
+		assert.EqualNormalizedString(t, assert.RemoveSpace, actual, string(expected))
 	}
 }
 
@@ -144,9 +143,9 @@ func TestVolumeInspectWithFormat(t *testing.T) {
 		)
 		cmd.SetArgs(tc.args)
 		cmd.Flags().Set("format", tc.format)
-		assert.NoError(t, cmd.Execute())
+		assert.NilError(t, cmd.Execute())
 		actual := buf.String()
 		expected := golden.Get(t, []byte(actual), fmt.Sprintf("volume-inspect-with-format.%s.golden", tc.name))
-		testutil.EqualNormalizedString(t, testutil.RemoveSpace, actual, string(expected))
+		assert.EqualNormalizedString(t, assert.RemoveSpace, actual, string(expected))
 	}
 }

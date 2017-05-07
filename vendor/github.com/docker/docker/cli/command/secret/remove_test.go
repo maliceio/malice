@@ -7,9 +7,8 @@ import (
 	"testing"
 
 	"github.com/docker/docker/cli/internal/test"
-	"github.com/docker/docker/pkg/testutil"
+	"github.com/docker/docker/pkg/testutil/assert"
 	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestSecretRemoveErrors(t *testing.T) {
@@ -39,7 +38,7 @@ func TestSecretRemoveErrors(t *testing.T) {
 		)
 		cmd.SetArgs(tc.args)
 		cmd.SetOutput(ioutil.Discard)
-		testutil.ErrorContains(t, cmd.Execute(), tc.expectedError)
+		assert.Error(t, cmd.Execute(), tc.expectedError)
 	}
 }
 
@@ -55,9 +54,9 @@ func TestSecretRemoveWithName(t *testing.T) {
 	}, buf)
 	cmd := newSecretRemoveCommand(cli)
 	cmd.SetArgs(names)
-	assert.NoError(t, cmd.Execute())
-	assert.Equal(t, names, strings.Split(strings.TrimSpace(buf.String()), "\n"))
-	assert.Equal(t, names, removedSecrets)
+	assert.NilError(t, cmd.Execute())
+	assert.EqualStringSlice(t, strings.Split(strings.TrimSpace(buf.String()), "\n"), names)
+	assert.EqualStringSlice(t, removedSecrets, names)
 }
 
 func TestSecretRemoveContinueAfterError(t *testing.T) {
@@ -77,6 +76,6 @@ func TestSecretRemoveContinueAfterError(t *testing.T) {
 
 	cmd := newSecretRemoveCommand(cli)
 	cmd.SetArgs(names)
-	assert.EqualError(t, cmd.Execute(), "error removing secret: foo")
-	assert.Equal(t, names, removedSecrets)
+	assert.Error(t, cmd.Execute(), "error removing secret: foo")
+	assert.EqualStringSlice(t, removedSecrets, names)
 }

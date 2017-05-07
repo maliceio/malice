@@ -1,13 +1,10 @@
 package command
 
 import (
-	"fmt"
 	"io"
 
 	"github.com/moby/moby/api/types"
-	cliconfig "github.com/moby/moby/cli/config"
 	"github.com/moby/moby/cli/config/configfile"
-	"github.com/moby/moby/cli/config/credentials"
 	cliflags "github.com/moby/moby/cli/flags"
 	"github.com/moby/moby/client"
 	"github.com/spf13/cobra"
@@ -88,7 +85,7 @@ func addAll(to, from map[string]types.AuthConfig) {
 // Initialize the MaliceCli runs initialization that must happen after command
 // line flags are parsed.
 func (cli *MaliceCli) Initialize(opts *cliflags.ClientOptions) error {
-	cli.configFile = LoadDefaultConfigFile(cli.err)
+	// cli.configFile = LoadDefaultConfigFile(cli.err)
 
 	var err error
 
@@ -154,16 +151,16 @@ func NewMaliceCli(in io.ReadCloser, out, err io.Writer) *MaliceCli {
 
 // LoadDefaultConfigFile attempts to load the default config file and returns
 // an initialized ConfigFile struct if none is found.
-func LoadDefaultConfigFile(err io.Writer) *configfile.ConfigFile {
-	configFile, e := cliconfig.Load(cliconfig.Dir())
-	if e != nil {
-		fmt.Fprintf(err, "WARNING: Error loading config file:%v\n", e)
-	}
-	if !configFile.ContainsAuth() {
-		credentials.DetectDefaultStore(configFile)
-	}
-	return configFile
-}
+// func LoadDefaultConfigFile(err io.Writer) *configfile.ConfigFile {
+// 	configFile, e := cliconfig.Load(cliconfig.Dir())
+// 	if e != nil {
+// 		fmt.Fprintf(err, "WARNING: Error loading config file:%v\n", e)
+// 	}
+// 	if !configFile.ContainsAuth() {
+// 		credentials.DetectDefaultStore(configFile)
+// 	}
+// 	return configFile
+// }
 
 // // NewAPIClientFromFlags creates a new APIClient from command line flags
 // func NewAPIClientFromFlags(opts *cliflags.CommonOptions, configFile *configfile.ConfigFile) (client.APIClient, error) {

@@ -4,27 +4,27 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/docker/docker/pkg/testutil/assert"
 )
 
 func TestParseStringFunctions(t *testing.T) {
 	tm, err := Parse(`{{join (split . ":") "/"}}`)
-	assert.NoError(t, err)
+	assert.NilError(t, err)
 
 	var b bytes.Buffer
-	assert.NoError(t, tm.Execute(&b, "text:with:colon"))
+	assert.NilError(t, tm.Execute(&b, "text:with:colon"))
 	want := "text/with/colon"
-	assert.Equal(t, want, b.String())
+	assert.Equal(t, b.String(), want)
 }
 
 func TestNewParse(t *testing.T) {
 	tm, err := NewParse("foo", "this is a {{ . }}")
-	assert.NoError(t, err)
+	assert.NilError(t, err)
 
 	var b bytes.Buffer
-	assert.NoError(t, tm.Execute(&b, "string"))
+	assert.NilError(t, tm.Execute(&b, "string"))
 	want := "this is a string"
-	assert.Equal(t, want, b.String())
+	assert.Equal(t, b.String(), want)
 }
 
 func TestParseTruncateFunction(t *testing.T) {
@@ -50,10 +50,10 @@ func TestParseTruncateFunction(t *testing.T) {
 
 	for _, testCase := range testCases {
 		tm, err := Parse(testCase.template)
-		assert.NoError(t, err)
+		assert.NilError(t, err)
 
 		var b bytes.Buffer
-		assert.NoError(t, tm.Execute(&b, source))
-		assert.Equal(t, testCase.expected, b.String())
+		assert.NilError(t, tm.Execute(&b, source))
+		assert.Equal(t, b.String(), testCase.expected)
 	}
 }

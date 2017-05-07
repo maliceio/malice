@@ -13,9 +13,8 @@ import (
 	"github.com/pkg/errors"
 	// Import builders to get the builder function as package function
 	. "github.com/docker/docker/cli/internal/test/builders"
-	"github.com/docker/docker/pkg/testutil"
+	"github.com/docker/docker/pkg/testutil/assert"
 	"github.com/docker/docker/pkg/testutil/golden"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestSecretListErrors(t *testing.T) {
@@ -44,7 +43,7 @@ func TestSecretListErrors(t *testing.T) {
 		)
 		cmd.SetArgs(tc.args)
 		cmd.SetOutput(ioutil.Discard)
-		testutil.ErrorContains(t, cmd.Execute(), tc.expectedError)
+		assert.Error(t, cmd.Execute(), tc.expectedError)
 	}
 }
 
@@ -71,10 +70,10 @@ func TestSecretList(t *testing.T) {
 	cli.SetConfigfile(&configfile.ConfigFile{})
 	cmd := newSecretListCommand(cli)
 	cmd.SetOutput(buf)
-	assert.NoError(t, cmd.Execute())
+	assert.NilError(t, cmd.Execute())
 	actual := buf.String()
 	expected := golden.Get(t, []byte(actual), "secret-list.golden")
-	testutil.EqualNormalizedString(t, testutil.RemoveSpace, actual, string(expected))
+	assert.EqualNormalizedString(t, assert.RemoveSpace, actual, string(expected))
 }
 
 func TestSecretListWithQuietOption(t *testing.T) {
@@ -92,10 +91,10 @@ func TestSecretListWithQuietOption(t *testing.T) {
 	cli.SetConfigfile(&configfile.ConfigFile{})
 	cmd := newSecretListCommand(cli)
 	cmd.Flags().Set("quiet", "true")
-	assert.NoError(t, cmd.Execute())
+	assert.NilError(t, cmd.Execute())
 	actual := buf.String()
 	expected := golden.Get(t, []byte(actual), "secret-list-with-quiet-option.golden")
-	testutil.EqualNormalizedString(t, testutil.RemoveSpace, actual, string(expected))
+	assert.EqualNormalizedString(t, assert.RemoveSpace, actual, string(expected))
 }
 
 func TestSecretListWithConfigFormat(t *testing.T) {
@@ -114,10 +113,10 @@ func TestSecretListWithConfigFormat(t *testing.T) {
 		SecretFormat: "{{ .Name }} {{ .Labels }}",
 	})
 	cmd := newSecretListCommand(cli)
-	assert.NoError(t, cmd.Execute())
+	assert.NilError(t, cmd.Execute())
 	actual := buf.String()
 	expected := golden.Get(t, []byte(actual), "secret-list-with-config-format.golden")
-	testutil.EqualNormalizedString(t, testutil.RemoveSpace, actual, string(expected))
+	assert.EqualNormalizedString(t, assert.RemoveSpace, actual, string(expected))
 }
 
 func TestSecretListWithFormat(t *testing.T) {
@@ -134,18 +133,18 @@ func TestSecretListWithFormat(t *testing.T) {
 	}, buf)
 	cmd := newSecretListCommand(cli)
 	cmd.Flags().Set("format", "{{ .Name }} {{ .Labels }}")
-	assert.NoError(t, cmd.Execute())
+	assert.NilError(t, cmd.Execute())
 	actual := buf.String()
 	expected := golden.Get(t, []byte(actual), "secret-list-with-format.golden")
-	testutil.EqualNormalizedString(t, testutil.RemoveSpace, actual, string(expected))
+	assert.EqualNormalizedString(t, assert.RemoveSpace, actual, string(expected))
 }
 
 func TestSecretListWithFilter(t *testing.T) {
 	buf := new(bytes.Buffer)
 	cli := test.NewFakeCli(&fakeClient{
 		secretListFunc: func(options types.SecretListOptions) ([]swarm.Secret, error) {
-			assert.Equal(t, "foo", options.Filters.Get("name")[0], "foo")
-			assert.Equal(t, "lbl1=Label-bar", options.Filters.Get("label")[0])
+			assert.Equal(t, options.Filters.Get("name")[0], "foo")
+			assert.Equal(t, options.Filters.Get("label")[0], "lbl1=Label-bar")
 			return []swarm.Secret{
 				*Secret(SecretID("ID-foo"),
 					SecretName("foo"),
@@ -166,8 +165,8 @@ func TestSecretListWithFilter(t *testing.T) {
 	cmd := newSecretListCommand(cli)
 	cmd.Flags().Set("filter", "name=foo")
 	cmd.Flags().Set("filter", "label=lbl1=Label-bar")
-	assert.NoError(t, cmd.Execute())
+	assert.NilError(t, cmd.Execute())
 	actual := buf.String()
 	expected := golden.Get(t, []byte(actual), "secret-list-with-filter.golden")
-	testutil.EqualNormalizedString(t, testutil.RemoveSpace, actual, string(expected))
+	assert.EqualNormalizedString(t, assert.RemoveSpace, actual, string(expected))
 }

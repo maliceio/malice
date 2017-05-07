@@ -10,7 +10,7 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/pkg/stringid"
-	"github.com/stretchr/testify/assert"
+	"github.com/docker/docker/pkg/testutil/assert"
 )
 
 func TestContainerPsContext(t *testing.T) {
@@ -245,9 +245,9 @@ conta               "ubuntu" 24 hours ago//.FOOBAR_BAR
 		testcase.context.Output = out
 		err := ContainerWrite(testcase.context, containers)
 		if err != nil {
-			assert.EqualError(t, err, testcase.expected)
+			assert.Error(t, err, testcase.expected)
 		} else {
-			assert.Equal(t, testcase.expected, out.String())
+			assert.Equal(t, out.String(), testcase.expected)
 		}
 	}
 }
@@ -334,7 +334,7 @@ func TestContainerContextWriteJSON(t *testing.T) {
 		if err := json.Unmarshal([]byte(line), &m); err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, expectedJSONs[i], m)
+		assert.DeepEqual(t, m, expectedJSONs[i])
 	}
 }
 
@@ -354,7 +354,7 @@ func TestContainerContextWriteJSONField(t *testing.T) {
 		if err := json.Unmarshal([]byte(line), &s); err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, containers[i].ID, s)
+		assert.Equal(t, s, containers[i].ID)
 	}
 }
 

@@ -9,7 +9,7 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/pkg/stringid"
-	"github.com/stretchr/testify/assert"
+	"github.com/docker/docker/pkg/testutil/assert"
 )
 
 func TestImageContext(t *testing.T) {
@@ -265,9 +265,9 @@ image_id: imageID3
 		testcase.context.Output = out
 		err := ImageWrite(testcase.context, images)
 		if err != nil {
-			assert.EqualError(t, err, testcase.expected)
+			assert.Error(t, err, testcase.expected)
 		} else {
-			assert.Equal(t, testcase.expected, out.String())
+			assert.Equal(t, out.String(), testcase.expected)
 		}
 	}
 }
@@ -320,7 +320,7 @@ func TestImageContextWriteWithNoImage(t *testing.T) {
 
 	for _, context := range contexts {
 		ImageWrite(context.context, images)
-		assert.Equal(t, context.expected, out.String())
+		assert.Equal(t, out.String(), context.expected)
 		// Clean buffer
 		out.Reset()
 	}

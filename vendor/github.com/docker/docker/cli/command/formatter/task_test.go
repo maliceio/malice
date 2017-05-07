@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/docker/docker/api/types/swarm"
-	"github.com/stretchr/testify/assert"
+	"github.com/docker/docker/pkg/testutil/assert"
 )
 
 func TestTaskContextWrite(t *testing.T) {
@@ -76,9 +76,9 @@ foobar_bar foo2
 		testcase.context.Output = out
 		err := TaskWrite(testcase.context, tasks, names, nodes)
 		if err != nil {
-			assert.EqualError(t, err, testcase.expected)
+			assert.Error(t, err, testcase.expected)
 		} else {
-			assert.Equal(t, testcase.expected, out.String())
+			assert.Equal(t, out.String(), testcase.expected)
 		}
 	}
 }
@@ -102,6 +102,6 @@ func TestTaskContextWriteJSONField(t *testing.T) {
 		if err := json.Unmarshal([]byte(line), &s); err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, tasks[i].ID, s)
+		assert.Equal(t, s, tasks[i].ID)
 	}
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/docker/docker/cli/command"
 	"github.com/docker/docker/cli/debug"
-	"github.com/stretchr/testify/assert"
+	"github.com/docker/docker/pkg/testutil/assert"
 )
 
 func TestClientDebugEnabled(t *testing.T) {
@@ -18,9 +18,9 @@ func TestClientDebugEnabled(t *testing.T) {
 	cmd.Flags().Set("debug", "true")
 
 	err := cmd.PersistentPreRunE(cmd, []string{})
-	assert.NoError(t, err)
-	assert.Equal(t, "1", os.Getenv("DEBUG"))
-	assert.Equal(t, logrus.DebugLevel, logrus.GetLevel())
+	assert.NilError(t, err)
+	assert.Equal(t, os.Getenv("DEBUG"), "1")
+	assert.Equal(t, logrus.GetLevel(), logrus.DebugLevel)
 }
 
 func TestExitStatusForInvalidSubcommandWithHelpFlag(t *testing.T) {
@@ -28,5 +28,5 @@ func TestExitStatusForInvalidSubcommandWithHelpFlag(t *testing.T) {
 	cmd := newDockerCommand(command.NewDockerCli(os.Stdin, discard, discard))
 	cmd.SetArgs([]string{"help", "invalid"})
 	err := cmd.Execute()
-	assert.EqualError(t, err, "unknown help topic: invalid")
+	assert.Error(t, err, "unknown help topic: invalid")
 }

@@ -9,18 +9,18 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/swarm"
 	composetypes "github.com/docker/docker/cli/compose/types"
-	"github.com/stretchr/testify/assert"
+	"github.com/docker/docker/pkg/testutil/assert"
 )
 
 func TestConvertRestartPolicyFromNone(t *testing.T) {
 	policy, err := convertRestartPolicy("no", nil)
-	assert.NoError(t, err)
-	assert.Equal(t, (*swarm.RestartPolicy)(nil), policy)
+	assert.NilError(t, err)
+	assert.Equal(t, policy, (*swarm.RestartPolicy)(nil))
 }
 
 func TestConvertRestartPolicyFromUnknown(t *testing.T) {
 	_, err := convertRestartPolicy("unknown", nil)
-	assert.EqualError(t, err, "unknown restart policy: unknown")
+	assert.Error(t, err, "unknown restart policy: unknown")
 }
 
 func TestConvertRestartPolicyFromAlways(t *testing.T) {
@@ -28,8 +28,8 @@ func TestConvertRestartPolicyFromAlways(t *testing.T) {
 	expected := &swarm.RestartPolicy{
 		Condition: swarm.RestartPolicyConditionAny,
 	}
-	assert.NoError(t, err)
-	assert.Equal(t, expected, policy)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, policy, expected)
 }
 
 func TestConvertRestartPolicyFromFailure(t *testing.T) {
@@ -39,8 +39,8 @@ func TestConvertRestartPolicyFromFailure(t *testing.T) {
 		Condition:   swarm.RestartPolicyConditionOnFailure,
 		MaxAttempts: &attempts,
 	}
-	assert.NoError(t, err)
-	assert.Equal(t, expected, policy)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, policy, expected)
 }
 
 func strPtr(val string) *string {
@@ -54,7 +54,7 @@ func TestConvertEnvironment(t *testing.T) {
 	}
 	env := convertEnvironment(source)
 	sort.Strings(env)
-	assert.Equal(t, []string{"foo=bar", "key=value"}, env)
+	assert.DeepEqual(t, env, []string{"foo=bar", "key=value"})
 }
 
 func TestConvertResourcesFull(t *testing.T) {
@@ -69,7 +69,7 @@ func TestConvertResourcesFull(t *testing.T) {
 		},
 	}
 	resources, err := convertResources(source)
-	assert.NoError(t, err)
+	assert.NilError(t, err)
 
 	expected := &swarm.ResourceRequirements{
 		Limits: &swarm.Resources{
@@ -81,7 +81,7 @@ func TestConvertResourcesFull(t *testing.T) {
 			MemoryBytes: 200000000,
 		},
 	}
-	assert.Equal(t, expected, resources)
+	assert.DeepEqual(t, resources, expected)
 }
 
 func TestConvertResourcesOnlyMemory(t *testing.T) {
@@ -94,7 +94,7 @@ func TestConvertResourcesOnlyMemory(t *testing.T) {
 		},
 	}
 	resources, err := convertResources(source)
-	assert.NoError(t, err)
+	assert.NilError(t, err)
 
 	expected := &swarm.ResourceRequirements{
 		Limits: &swarm.Resources{
@@ -104,7 +104,7 @@ func TestConvertResourcesOnlyMemory(t *testing.T) {
 			MemoryBytes: 200000000,
 		},
 	}
-	assert.Equal(t, expected, resources)
+	assert.DeepEqual(t, resources, expected)
 }
 
 func TestConvertHealthcheck(t *testing.T) {
@@ -123,8 +123,8 @@ func TestConvertHealthcheck(t *testing.T) {
 	}
 
 	healthcheck, err := convertHealthcheck(source)
-	assert.NoError(t, err)
-	assert.Equal(t, expected, healthcheck)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, healthcheck, expected)
 }
 
 func TestConvertHealthcheckDisable(t *testing.T) {
@@ -134,8 +134,8 @@ func TestConvertHealthcheckDisable(t *testing.T) {
 	}
 
 	healthcheck, err := convertHealthcheck(source)
-	assert.NoError(t, err)
-	assert.Equal(t, expected, healthcheck)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, healthcheck, expected)
 }
 
 func TestConvertHealthcheckDisableWithTest(t *testing.T) {
@@ -144,7 +144,7 @@ func TestConvertHealthcheckDisableWithTest(t *testing.T) {
 		Test:    []string{"EXEC", "touch"},
 	}
 	_, err := convertHealthcheck(source)
-	assert.EqualError(t, err, "test and disable can't be set at the same time")
+	assert.Error(t, err, "test and disable can't be set")
 }
 
 func TestConvertEndpointSpec(t *testing.T) {
@@ -178,8 +178,8 @@ func TestConvertEndpointSpec(t *testing.T) {
 		},
 	}
 
-	assert.NoError(t, err)
-	assert.Equal(t, expected, *endpoint)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, *endpoint, expected)
 }
 
 func TestConvertServiceNetworksOnlyDefault(t *testing.T) {
@@ -195,8 +195,8 @@ func TestConvertServiceNetworksOnlyDefault(t *testing.T) {
 		},
 	}
 
-	assert.NoError(t, err)
-	assert.Equal(t, expected, configs)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, configs, expected)
 }
 
 func TestConvertServiceNetworks(t *testing.T) {
@@ -235,8 +235,8 @@ func TestConvertServiceNetworks(t *testing.T) {
 	sortedConfigs := byTargetSort(configs)
 	sort.Sort(&sortedConfigs)
 
-	assert.NoError(t, err)
-	assert.Equal(t, expected, []swarm.NetworkAttachmentConfig(sortedConfigs))
+	assert.NilError(t, err)
+	assert.DeepEqual(t, []swarm.NetworkAttachmentConfig(sortedConfigs), expected)
 }
 
 func TestConvertServiceNetworksCustomDefault(t *testing.T) {
@@ -260,8 +260,8 @@ func TestConvertServiceNetworksCustomDefault(t *testing.T) {
 		},
 	}
 
-	assert.NoError(t, err)
-	assert.Equal(t, expected, []swarm.NetworkAttachmentConfig(configs))
+	assert.NilError(t, err)
+	assert.DeepEqual(t, []swarm.NetworkAttachmentConfig(configs), expected)
 }
 
 type byTargetSort []swarm.NetworkAttachmentConfig
@@ -276,43 +276,4 @@ func (s byTargetSort) Less(i, j int) bool {
 
 func (s byTargetSort) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
-}
-
-func TestConvertDNSConfigEmpty(t *testing.T) {
-	dnsConfig, err := convertDNSConfig(nil, nil)
-
-	assert.NoError(t, err)
-	assert.Equal(t, (*swarm.DNSConfig)(nil), dnsConfig)
-}
-
-var (
-	nameservers = []string{"8.8.8.8", "9.9.9.9"}
-	search      = []string{"dc1.example.com", "dc2.example.com"}
-)
-
-func TestConvertDNSConfigAll(t *testing.T) {
-	dnsConfig, err := convertDNSConfig(nameservers, search)
-	assert.NoError(t, err)
-	assert.Equal(t, &swarm.DNSConfig{
-		Nameservers: nameservers,
-		Search:      search,
-	}, dnsConfig)
-}
-
-func TestConvertDNSConfigNameservers(t *testing.T) {
-	dnsConfig, err := convertDNSConfig(nameservers, nil)
-	assert.NoError(t, err)
-	assert.Equal(t, &swarm.DNSConfig{
-		Nameservers: nameservers,
-		Search:      nil,
-	}, dnsConfig)
-}
-
-func TestConvertDNSConfigSearch(t *testing.T) {
-	dnsConfig, err := convertDNSConfig(nil, search)
-	assert.NoError(t, err)
-	assert.Equal(t, &swarm.DNSConfig{
-		Nameservers: nil,
-		Search:      search,
-	}, dnsConfig)
 }

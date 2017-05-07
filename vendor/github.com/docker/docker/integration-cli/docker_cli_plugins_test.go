@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/docker/docker/integration-cli/checker"
-	"github.com/docker/docker/integration-cli/cli"
 	icmd "github.com/docker/docker/pkg/testutil/cmd"
 	"github.com/go-check/check"
 )
@@ -305,26 +304,31 @@ func (s *DockerTrustSuite) TestPluginTrustedInstall(c *check.C) {
 
 	trustedName := s.setupTrustedplugin(c, pNameWithTag, "trusted-plugin-install")
 
-	cli.Docker(cli.Args("plugin", "install", "--grant-all-permissions", trustedName), trustedCmd).Assert(c, icmd.Expected{
+	icmd.RunCmd(icmd.Command(dockerBinary, "plugin", "install", "--grant-all-permissions", trustedName), trustedCmd).Assert(c, icmd.Expected{
 		Out: trustedName,
 	})
 
-	out := cli.DockerCmd(c, "plugin", "ls").Combined()
+	out, _, err := dockerCmdWithError("plugin", "ls")
+	c.Assert(err, checker.IsNil)
 	c.Assert(out, checker.Contains, "true")
 
-	out = cli.DockerCmd(c, "plugin", "disable", trustedName).Combined()
+	out, _, err = dockerCmdWithError("plugin", "disable", trustedName)
+	c.Assert(err, checker.IsNil)
 	c.Assert(strings.TrimSpace(out), checker.Contains, trustedName)
 
-	out = cli.DockerCmd(c, "plugin", "enable", trustedName).Combined()
+	out, _, err = dockerCmdWithError("plugin", "enable", trustedName)
+	c.Assert(err, checker.IsNil)
 	c.Assert(strings.TrimSpace(out), checker.Contains, trustedName)
 
-	out = cli.DockerCmd(c, "plugin", "rm", "-f", trustedName).Combined()
+	out, _, err = dockerCmdWithError("plugin", "rm", "-f", trustedName)
+	c.Assert(err, checker.IsNil)
 	c.Assert(strings.TrimSpace(out), checker.Contains, trustedName)
 
 	// Try untrusted pull to ensure we pushed the tag to the registry
-	cli.Docker(cli.Args("plugin", "install", "--disable-content-trust=true", "--grant-all-permissions", trustedName), trustedCmd).Assert(c, SuccessDownloaded)
+	icmd.RunCmd(icmd.Command(dockerBinary, "plugin", "install", "--disable-content-trust=true", "--grant-all-permissions", trustedName), trustedCmd).Assert(c, SuccessDownloaded)
 
-	out = cli.DockerCmd(c, "plugin", "ls").Combined()
+	out, _, err = dockerCmdWithError("plugin", "ls")
+	c.Assert(err, checker.IsNil)
 	c.Assert(out, checker.Contains, "true")
 
 }
@@ -334,12 +338,12 @@ func (s *DockerTrustSuite) TestPluginUntrustedInstall(c *check.C) {
 
 	pluginName := fmt.Sprintf("%v/dockercliuntrusted/plugintest:latest", privateRegistryURL)
 	// install locally and push to private registry
-	cli.DockerCmd(c, "plugin", "install", "--grant-all-permissions", "--alias", pluginName, pNameWithTag)
-	cli.DockerCmd(c, "plugin", "push", pluginName)
-	cli.DockerCmd(c, "plugin", "rm", "-f", pluginName)
+	dockerCmd(c, "plugin", "install", "--grant-all-permissions", "--alias", pluginName, pNameWithTag)
+	dockerCmd(c, "plugin", "push", pluginName)
+	dockerCmd(c, "plugin", "rm", "-f", pluginName)
 
 	// Try trusted install on untrusted plugin
-	cli.Docker(cli.Args("plugin", "install", "--grant-all-permissions", pluginName), trustedCmd).Assert(c, icmd.Expected{
+	icmd.RunCmd(icmd.Command(dockerBinary, "plugin", "install", "--grant-all-permissions", pluginName), trustedCmd).Assert(c, icmd.Expected{
 		ExitCode: 1,
 		Err:      "Error: remote trust data does not exist",
 	})

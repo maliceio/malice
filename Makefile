@@ -84,7 +84,8 @@ release: ## Create a new release from the VERSION
 	@echo "===> Creating Release"
 	git tag -a ${VERSION} -m ${MESSAGE}
 	git push origin ${VERSION}
-	goreleaser --release-notes .release/RELEASE.md
+	# goreleaser --release-notes .release/RELEASE.md
+	goreleaser
 
 destroy: ## Remove release from the VERSION
 	@echo "===> Deleting Release"

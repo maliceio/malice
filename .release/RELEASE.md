@@ -13,6 +13,7 @@ Changelog
 -	[x] monitor logs to output important info as to why it might not start (not enough RAM etc)
 -	[x] add `~/.malice/logs/elastic.log` to catch ES errors
 -	[x] fix `plugin update --all` to only update **enabled** plugins
+-	[x] fix config.toml updater
 
 Plugin list
 -----------

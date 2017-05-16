@@ -123,15 +123,12 @@ func loadFromToml(configPath, version string) {
 	log.Debugf("config.toml version: %s, malice version: %s", Conf.Version, version)
 	if version != "dev" && !strings.EqualFold(Conf.Version, version) {
 		// Prompt user to update malice config.toml?
-		log.Info("Newer version of malice config.toml available: ", version)
+		log.Infof("Newer version of malice config.toml available: %s, you currently have %s", version, Conf.Version)
 		fmt.Println("Would you like to update now? (yes/no)")
 		if utils.AskForConfirmation() {
 			log.Debug("Updating config: ", configPath)
 			er.CheckError(UpdateConfig())
 		}
-		log.Info("Newer version of malice config available: ", version)
-		log.Debug("Updating config: ", configPath)
-		er.CheckError(UpdateConfig())
 	}
 }
 

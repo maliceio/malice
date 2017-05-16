@@ -12,6 +12,7 @@ Changelog
 -	[x] wait for ES to fully start (not just a dumb 10 sec wait)
 -	[x] monitor logs to output important info as to why it might not start (not enough RAM etc)
 -	[x] add `~/.malice/logs/elastic.log` to catch ES errors
+-	[x] fix `plugin update --all` to only update **enabled** plugins
 
 Plugin list
 -----------

@@ -14,7 +14,7 @@ Install/Update all Plugins
 --------------------------
 
 ```bash
-docker run --rm -v /var/run/docker.sock:/var/run/docker.sock malice/engine plugin update
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock malice/engine plugin update --all
 ```
 
 Scan a file

@@ -158,7 +158,7 @@ func cmdRemovePlugin(name string) error {
 func cmdUpdatePlugin(name string, all bool, source bool) error {
 	docker := client.NewDockerClient()
 	if all {
-		plugins.UpdateAllPlugins(docker)
+		plugins.UpdateEnabledPlugins(docker)
 	} else {
 		if name == "" {
 			log.Error("Please enter a valid plugin name.")

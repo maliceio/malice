@@ -186,6 +186,17 @@ title = "Malice Plugin Configurations"
 
 [[plugin]]
   enabled = false
+  name = "windows-defender"
+  description = "Windows Defender AntiVirus"
+  category = "av"
+  image = "malice/windows-defender"
+  repository = "https://github.com/maliceio/malice-windows-defender.git"
+  build = false
+  mime = "*"
+  env = ["MALICE_TIMEOUT"]
+
+[[plugin]]
+  enabled = false
   name = "pe"
   description = "PE - tool to triage portable executables"
   category = "exe"

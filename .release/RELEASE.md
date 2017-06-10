@@ -5,7 +5,7 @@ Changelog
 -	Malice will now wait 20 secs for `blacktop/elasticsearch` to start before giving up
 -	Malice will check if elasticsearch fails to start if it is because you don't have enough memory to run it
 -	Added initial ability to upgrade `~/.malice/config/config.toml` when a new version comes out
-- Added windows-defender plugin (not supported on Docker for Mac) you need to enable it in the plugin config
+-	Added windows-defender plugin (not supported on Docker for Mac) you need to enable it in the plugin config
 
 ### Fixes
 

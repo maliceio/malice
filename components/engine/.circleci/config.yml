@@ -45,7 +45,7 @@ jobs:
             mkdir /tmp/artifacts;
             docker images --format "{{.Size}}" app > /tmp/artifacts/size;
       - store_artifacts:
-          path: /tmp/artifacts              
+          path: /tmp/artifacts
       - run:
           name: Save Docker image layer cache
           command: |

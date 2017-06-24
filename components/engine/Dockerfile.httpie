@@ -1,0 +1,8 @@
+FROM alpine:latest
+
+RUN apk add --no-cache py2-pip=9.0.1-r1 \
+  && pip install httpie \
+  && rm -r /root/.cache
+
+ENTRYPOINT [ "http" ]
+CMD [ "--help" ]

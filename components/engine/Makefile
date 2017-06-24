@@ -1,3 +1,4 @@
+ORG=maliceio
 REPO=malice
 NAME=engine
 VERSION=$(shell cat VERSION)
@@ -24,12 +25,16 @@ test:
 	docker-compose -f docker-compose.ci.yml run httpie http://engine:3333/login username=admin password=admin
 
 circle:
-	curl https://circleci.com/api/v1.1/project/github/maliceio/${NAME}/:build_num/artifacts$CIRCLE_TOKEN	grep -o ‘https://[^”]*’ > artifacts.txt
-<artifacts.txt xargs -P4 -I % wget %$CIRCLE_TOKEN
+	http https://circleci.com/api/v1.1/project/github/${ORG}/${NAME} | jq '.[0].build_num' > .circleci/build_num
+	http "$(shell http https://circleci.com/api/v1.1/project/github/${ORG}/${NAME}/$(shell cat .circleci/build_num)/artifacts${CIRCLE_TOKEN} | jq '.[].url')" > .circleci/SIZE
+
+cisize: circle
+	sed -i.bu 's/docker%20image-.*-blue/docker%20image-$(shell cat .circleci/SIZE)-blue/' README.md
+
 clean:
 	docker-clean stop
 	docker rmi maliceengine_httpie
 	docker rmi $(REPO)/$(NAME)
 	docker rmi $(REPO)/$(NAME):$(VERSION)
 
-.PHONY: build dev size tags test gotest clean circle
+.PHONY: build dev size tags test gotest clean circle cisize

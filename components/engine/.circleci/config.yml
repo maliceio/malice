@@ -39,7 +39,13 @@ jobs:
           command: |
             docker version
             docker build --cache-from=app -t app .
-            docker image list app
+      - run:
+          name: Get Docker image size
+          command: |
+            mkdir /tmp/artifacts;
+            docker images --format "{{.Size}}" app > /tmp/artifacts/size;
+      - store_artifacts:
+          path: /tmp/artifacts              
       - run:
           name: Save Docker image layer cache
           command: |

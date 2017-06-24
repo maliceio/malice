@@ -23,10 +23,13 @@ test:
 	docker-compose -f ./docker-compose.ci.yml up -d
 	docker-compose -f docker-compose.ci.yml run httpie http://engine:3333/login username=admin password=admin
 
+circle:
+	curl https://circleci.com/api/v1.1/project/github/maliceio/${NAME}/:build_num/artifacts$CIRCLE_TOKEN	grep -o ‘https://[^”]*’ > artifacts.txt
+<artifacts.txt xargs -P4 -I % wget %$CIRCLE_TOKEN
 clean:
 	docker-clean stop
 	docker rmi maliceengine_httpie
 	docker rmi $(REPO)/$(NAME)
 	docker rmi $(REPO)/$(NAME):$(VERSION)
 
-.PHONY: build dev size tags test gotest clean
+.PHONY: build dev size tags test gotest clean circle

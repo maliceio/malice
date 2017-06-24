@@ -2,6 +2,18 @@
 
 
 [[projects]]
+  name = "github.com/Microsoft/go-winio"
+  packages = ["."]
+  revision = "f533f7a102197536779ea3a8cb881d639e21ec5a"
+  version = "v0.4.2"
+
+[[projects]]
+  name = "github.com/Sirupsen/logrus"
+  packages = ["."]
+  revision = "202f25545ea4cf9b191ff7f846df5d87c9382c2b"
+  version = "v1.0.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/apex/log"
   packages = [".","handlers/es","handlers/multi","handlers/text"]
@@ -12,6 +24,30 @@
   packages = ["."]
   revision = "f7347d7c16fc8297bf5b7215b9e4847a5ca05d90"
   version = "v2.3.1"
+
+[[projects]]
+  name = "github.com/docker/distribution"
+  packages = ["digest","reference"]
+  revision = "a25b9ef0c9fe242ac04bb20d3a028442b7d266b6"
+  version = "v2.6.1"
+
+[[projects]]
+  name = "github.com/docker/docker"
+  packages = ["api/types","api/types/blkiodev","api/types/container","api/types/events","api/types/filters","api/types/mount","api/types/network","api/types/reference","api/types/registry","api/types/strslice","api/types/swarm","api/types/time","api/types/versions","api/types/volume","client","pkg/tlsconfig"]
+  revision = "092cba3727bb9b4a2f0e922cd6c0f93ea270e363"
+  version = "v1.13.1"
+
+[[projects]]
+  name = "github.com/docker/go-connections"
+  packages = ["nat","sockets","tlsconfig"]
+  revision = "990a1a1a70b0da4c4cb70e117971a4f0babfbf1a"
+  version = "v0.2.1"
+
+[[projects]]
+  name = "github.com/docker/go-units"
+  packages = ["."]
+  revision = "f2d77a61e3c169b43402a0a1e84f06daf29b8190"
+  version = "v0.3.1"
 
 [[projects]]
   branch = "master"
@@ -44,6 +80,12 @@
   version = "v0.0.2"
 
 [[projects]]
+  name = "github.com/opencontainers/runc"
+  packages = ["libcontainer/user"]
+  revision = "baf6536d6259209c3edfa2b22237af82942d3dfa"
+  version = "v0.1.1"
+
+[[projects]]
   name = "github.com/pkg/errors"
   packages = ["."]
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
@@ -64,13 +106,13 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["context"]
+  packages = ["context","context/ctxhttp","proxy"]
   revision = "5f8847ae0d0e90b6a9dc8148e7ad616874625171"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = ["unix","windows"]
   revision = "c23410a886927bab8ca5e80b08af6a56faeb330d"
 
 [[projects]]
@@ -94,6 +136,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "6af09a72749aadc72f2b4e4140877a3b516fc485d0c1392200725e8db97c3a22"
+  inputs-digest = "11173cb7187721e0a04dc148331e779a148dd5540a12e2af9e8c733bb36ba6e1"
   solver-name = "gps-cdcl"
   solver-version = 1

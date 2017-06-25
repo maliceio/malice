@@ -134,7 +134,7 @@ func NewEnvClient() (*Client, error) {
 
 	host := os.Getenv("MALICE_HOST")
 	if host == "" {
-		host = DefaultDockerHost
+		host = DefaultMaliceHost
 	}
 	version := os.Getenv("MALICE_API_VERSION")
 	if version == "" {

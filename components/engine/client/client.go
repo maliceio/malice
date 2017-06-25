@@ -14,7 +14,7 @@ You use the library by creating a client object and calling methods on it. The
 client can be created either from environment variables with NewEnvClient, or
 configured manually with NewClient.
 
-For example, to list running containers (the equivalent of "docker ps"):
+For example, to list running containers (the equivalent of "malice ps"):
 
 	package main
 
@@ -54,11 +54,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/docker/docker/api/types/versions"
 	"github.com/docker/go-connections/sockets"
 	"github.com/docker/go-connections/tlsconfig"
 	"github.com/maliceio/engine/api"
 	"github.com/maliceio/engine/api/types"
+	"github.com/maliceio/engine/api/types/versions"
 	"golang.org/x/net/context"
 )
 
@@ -66,7 +66,7 @@ import (
 var ErrRedirect = errors.New("unexpected redirect in response")
 
 // Client is the API client that performs all operations
-// against a docker server.
+// against a malice server.
 type Client struct {
 	// scheme sets the scheme for the client
 	scheme string
@@ -92,7 +92,7 @@ type Client struct {
 // If the request is non-GET return `ErrRedirect`. Otherwise use the last response.
 //
 // Go 1.8 changes behavior for HTTP redirects (specificlaly 301, 307, and 308) in the client .
-// The Docker client (and by extension docker API client) can be made to to send a request
+// The Malice client (and by extension malice API client) can be made to to send a request
 // like POST /containers//start where what would normally be in the name section of the URL is empty.
 // This triggers an HTTP 301 from the daemon.
 // In go 1.8 this 301 will be converted to a GET request, and ends up getting a 404 from the daemon.
@@ -106,17 +106,17 @@ func CheckRedirect(req *http.Request, via []*http.Request) error {
 }
 
 // NewEnvClient initializes a new API client based on environment variables.
-// Use MALICE_HOST to set the url to the docker server.
+// Use MALICE_HOST to set the url to the malice server.
 // Use MALICE_API_VERSION to set the version of the API to reach, leave empty for latest.
 // Use MALICE_CERT_PATH to load the TLS certificates from.
 // Use MALICE_TLS_VERIFY to enable or disable TLS verification, off by default.
 func NewEnvClient() (*Client, error) {
 	var client *http.Client
-	if dockerCertPath := os.Getenv("MALICE_CERT_PATH"); dockerCertPath != "" {
+	if maliceCertPath := os.Getenv("MALICE_CERT_PATH"); maliceCertPath != "" {
 		options := tlsconfig.Options{
-			CAFile:             filepath.Join(dockerCertPath, "ca.pem"),
-			CertFile:           filepath.Join(dockerCertPath, "cert.pem"),
-			KeyFile:            filepath.Join(dockerCertPath, "key.pem"),
+			CAFile:             filepath.Join(maliceCertPath, "ca.pem"),
+			CertFile:           filepath.Join(maliceCertPath, "cert.pem"),
+			KeyFile:            filepath.Join(maliceCertPath, "key.pem"),
 			InsecureSkipVerify: os.Getenv("MALICE_TLS_VERIFY") == "",
 		}
 		tlsc, err := tlsconfig.Client(options)
@@ -203,7 +203,7 @@ func NewClient(host string, version string, client *http.Client, httpHeaders map
 // Close ensures that transport.Client is closed
 // especially needed while using NewClient with *http.Client = nil
 // for example
-// client.NewClient("unix:///var/run/docker.sock", nil, "v1.18", map[string]string{"User-Agent": "engine-api-cli-1.0"})
+// client.NewClient("unix:///var/run/malice.sock", nil, "v1.18", map[string]string{"User-Agent": "engine-api-cli-1.0"})
 func (cli *Client) Close() error {
 
 	if t, ok := cli.client.Transport.(*http.Transport); ok {

@@ -27,8 +27,6 @@ test:
 circle:
 	http https://circleci.com/api/v1.1/project/github/${ORG}/${NAME} | jq '.[0].build_num' > .circleci/build_num
 	http "$(shell http https://circleci.com/api/v1.1/project/github/${ORG}/${NAME}/$(shell cat .circleci/build_num)/artifacts${CIRCLE_TOKEN} | jq '.[].url')" > .circleci/SIZE
-
-cisize: circle
 	sed -i.bu 's/docker%20image-.*-blue/docker%20image-$(shell cat .circleci/SIZE)-blue/' README.md
 
 clean:

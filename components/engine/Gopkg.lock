@@ -14,12 +14,6 @@
   version = "v1.0.0"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/apex/log"
-  packages = [".","handlers/es","handlers/multi","handlers/text"]
-  revision = "8f3a15d95392c8fc202d1e1059f46df21dff2992"
-
-[[projects]]
   name = "github.com/appleboy/gin-jwt"
   packages = ["."]
   revision = "f7347d7c16fc8297bf5b7215b9e4847a5ca05d90"
@@ -93,18 +87,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/smartystreets/go-aws-auth"
-  packages = ["."]
-  revision = "8ef1316913ee4f44bc48c2456e44a5c1c68ea53b"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/tj/go-elastic"
-  packages = [".","aliases","batch"]
-  revision = "9a9a2a21e071e6e38f236740c3b650e7316ae67e"
-
-[[projects]]
-  branch = "master"
   name = "golang.org/x/net"
   packages = ["context","context/ctxhttp","proxy"]
   revision = "5f8847ae0d0e90b6a9dc8148e7ad616874625171"
@@ -136,6 +118,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "11173cb7187721e0a04dc148331e779a148dd5540a12e2af9e8c733bb36ba6e1"
+  inputs-digest = "bec68ecb29b1ff981846976fca2a3668753650d34d118fc534ec1c6b5fb6dbbc"
   solver-name = "gps-cdcl"
   solver-version = 1

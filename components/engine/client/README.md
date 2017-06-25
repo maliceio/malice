@@ -11,8 +11,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/malice/engine/api/types"
-	"github.com/malice/engine/client"
+	"github.com/maliceio/engine/api/types"
+	"github.com/maliceio/engine/client"
 )
 
 func main() {
@@ -32,4 +32,4 @@ func main() {
 }
 ```
 
-[Full documentation is available on GoDoc.](https://godoc.org/github.com/malice/engine/client)
+[Full documentation is available on GoDoc.](https://godoc.org/github.com/maliceio/engine/client)

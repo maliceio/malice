@@ -1,12 +1,12 @@
 /*
-Package client is a Go client for the Docker Engine API.
+Package client is a Go client for the Malice Engine API.
 
-The "docker" command uses this package to communicate with the daemon. It can also
+The "malice" command uses this package to communicate with the daemon. It can also
 be used by your own Go applications to do anything the command-line interface does
 - running containers, pulling images, managing swarms, etc.
 
 For more information about the Engine API, see the documentation:
-https://docs.docker.com/engine/reference/api/
+https://docs.malice.io/engine/reference/api/
 
 Usage
 
@@ -22,8 +22,8 @@ For example, to list running containers (the equivalent of "docker ps"):
 		"context"
 		"fmt"
 
-		"github.com/malice/engine/api/types"
-		"github.com/malice/engine/client"
+		"github.com/maliceio/engine/api/types"
+		"github.com/maliceio/engine/client"
 	)
 
 	func main() {
@@ -54,11 +54,11 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/docker/docker/api/types/versions"
 	"github.com/docker/go-connections/sockets"
 	"github.com/docker/go-connections/tlsconfig"
-	"github.com/malice/engine/api"
-	"github.com/malice/engine/api/types"
-	"github.com/malice/engine/api/types/versions"
+	"github.com/maliceio/engine/api"
+	"github.com/maliceio/engine/api/types"
 	"golang.org/x/net/context"
 )
 
@@ -106,18 +106,18 @@ func CheckRedirect(req *http.Request, via []*http.Request) error {
 }
 
 // NewEnvClient initializes a new API client based on environment variables.
-// Use DOCKER_HOST to set the url to the docker server.
-// Use DOCKER_API_VERSION to set the version of the API to reach, leave empty for latest.
-// Use DOCKER_CERT_PATH to load the TLS certificates from.
-// Use DOCKER_TLS_VERIFY to enable or disable TLS verification, off by default.
+// Use MALICE_HOST to set the url to the docker server.
+// Use MALICE_API_VERSION to set the version of the API to reach, leave empty for latest.
+// Use MALICE_CERT_PATH to load the TLS certificates from.
+// Use MALICE_TLS_VERIFY to enable or disable TLS verification, off by default.
 func NewEnvClient() (*Client, error) {
 	var client *http.Client
-	if dockerCertPath := os.Getenv("DOCKER_CERT_PATH"); dockerCertPath != "" {
+	if dockerCertPath := os.Getenv("MALICE_CERT_PATH"); dockerCertPath != "" {
 		options := tlsconfig.Options{
 			CAFile:             filepath.Join(dockerCertPath, "ca.pem"),
 			CertFile:           filepath.Join(dockerCertPath, "cert.pem"),
 			KeyFile:            filepath.Join(dockerCertPath, "key.pem"),
-			InsecureSkipVerify: os.Getenv("DOCKER_TLS_VERIFY") == "",
+			InsecureSkipVerify: os.Getenv("MALICE_TLS_VERIFY") == "",
 		}
 		tlsc, err := tlsconfig.Client(options)
 		if err != nil {
@@ -132,11 +132,11 @@ func NewEnvClient() (*Client, error) {
 		}
 	}
 
-	host := os.Getenv("DOCKER_HOST")
+	host := os.Getenv("MALICE_HOST")
 	if host == "" {
 		host = DefaultDockerHost
 	}
-	version := os.Getenv("DOCKER_API_VERSION")
+	version := os.Getenv("MALICE_API_VERSION")
 	if version == "" {
 		version = api.DefaultVersion
 	}
@@ -145,7 +145,7 @@ func NewEnvClient() (*Client, error) {
 	if err != nil {
 		return cli, err
 	}
-	if os.Getenv("DOCKER_API_VERSION") != "" {
+	if os.Getenv("MALICE_API_VERSION") != "" {
 		cli.manualOverride = true
 	}
 	return cli, nil
@@ -235,7 +235,7 @@ func (cli *Client) getAPIPath(p string, query url.Values) string {
 
 // ClientVersion returns the version string associated with this
 // instance of the Client. Note that this value can be changed
-// via the DOCKER_API_VERSION env var.
+// via the MALICE_API_VERSION env var.
 // This operation doesn't acquire a mutex.
 func (cli *Client) ClientVersion() string {
 	return cli.version
@@ -257,7 +257,7 @@ func (cli *Client) NegotiateAPIVersionPing(p types.Ping) {
 
 	// try the latest version before versioning headers existed
 	if p.APIVersion == "" {
-		p.APIVersion = "1.24"
+		cli.version = "1.24"
 	}
 
 	// if server version is lower than the current cli, downgrade
@@ -276,7 +276,7 @@ func (cli *Client) DaemonHost() string {
 func ParseHost(host string) (string, string, string, error) {
 	protoAddrParts := strings.SplitN(host, "://", 2)
 	if len(protoAddrParts) == 1 {
-		return "", "", "", fmt.Errorf("unable to parse docker host `%s`", host)
+		return "", "", "", fmt.Errorf("unable to parse malice host `%s`", host)
 	}
 
 	var basePath string

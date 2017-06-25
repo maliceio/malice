@@ -5,6 +5,10 @@ NOTES
 
  - https://github.com/moby/moby/tree/master/api
 
+### Vault
+
+ - https://github.com/hashicorp/vault
+
 ### Gin
 
  - https://github.com/gin-gonic/gin

@@ -16,3 +16,4 @@
 vendor
 README.md.bu
 .circleci/build_num
+debug

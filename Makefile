@@ -15,7 +15,7 @@ GIT_DESCRIBE=$(git describe --tags)
 
 bindata: ## Embed binary data in malice program
 	@echo "===> Embedding Binary Data"
-	tomlupdate --path config/config.toml ${VERSION}
+	tomlupdate --path config/config.toml $(VERSION)
 	rm -f config/bindata.go plugins/bindata.go
 	go-bindata -pkg config -ignore=load.go config/...
 	mv bindata.go config/bindata.go
@@ -82,16 +82,16 @@ lint: ## Run all the linters
 
 release: ## Create a new release from the VERSION
 	@echo "===> Creating Release"
-	git tag -a ${VERSION} -m ${MESSAGE}
-	git push origin ${VERSION}
+	git tag -a $(VERSION) -m ${MESSAGE}
+	git push origin $(VERSION)
 	# goreleaser --release-notes .release/RELEASE.md
 	goreleaser
 
 destroy: ## Remove release from the VERSION
 	@echo "===> Deleting Release"
 	rm -rf dist
-	git tag -d ${VERSION}
-	git push origin :refs/tags/${VERSION}
+	git tag -d $(VERSION)
+	git push origin :refs/tags/$(VERSION)
 
 ci: lint test ## Run all the tests and code checks
 

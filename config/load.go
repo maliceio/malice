@@ -113,10 +113,11 @@ func UpdateConfig() error {
 	return err
 }
 
-func loadFromToml(configPath, version string) {
+func LoadFromToml(configPath, version string) {
 	_, err := toml.DecodeFile(configPath, &Conf)
 	if err != nil {
 		// try the config embedded in malice instead
+		log.Debug("Malice config loaded from embedded binary data")
 		loadFromBinary(configPath)
 	}
 	log.Debug("Malice config loaded from: ", configPath)
@@ -156,7 +157,7 @@ func Load(version string) {
 	// Check for config config in .malice folder
 	configPath := path.Join(maldirs.GetConfigDir(), "./config.toml")
 	if _, err := os.Stat(configPath); err == nil {
-		loadFromToml(configPath, version)
+		LoadFromToml(configPath, version)
 		return
 	}
 	loadFromBinary(configPath)

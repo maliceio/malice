@@ -54,11 +54,11 @@ func main() {
 		}
 		if c.Args().Present() {
 			// read VERSION
-			ver := c.Args().First()
+			ver := strings.TrimSpace(string(c.Args().First()))
 			// load config from TOML
-			config.Load("")
+			config.LoadFromToml("config/config.toml", ver)
 			// update config version from VERSION file
-			config.Conf.Version = strings.TrimSpace(string(ver))
+			config.Conf.Version = ver
 
 			buf := new(bytes.Buffer)
 			if err := toml.NewEncoder(buf).Encode(config.Conf); err != nil {

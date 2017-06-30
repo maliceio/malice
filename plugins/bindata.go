@@ -94,7 +94,7 @@ func pluginsPluginsToml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "plugins/plugins.toml", size: 6784, mode: os.FileMode(420), modTime: time.Unix(1498702359, 0)}
+	info := bindataFileInfo{name: "plugins/plugins.toml", size: 6784, mode: os.FileMode(420), modTime: time.Unix(1498789947, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -114,7 +114,7 @@ func pluginsTemplatesPythonDockerignore() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "plugins/templates/python/.dockerignore", size: 106, mode: os.FileMode(420), modTime: time.Unix(1498701938, 0)}
+	info := bindataFileInfo{name: "plugins/templates/python/.dockerignore", size: 106, mode: os.FileMode(420), modTime: time.Unix(1498789947, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -134,7 +134,7 @@ func pluginsTemplatesPythonGitignoreTemplate() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "plugins/templates/python/.gitignore.template", size: 712, mode: os.FileMode(493), modTime: time.Unix(1498701938, 0)}
+	info := bindataFileInfo{name: "plugins/templates/python/.gitignore.template", size: 712, mode: os.FileMode(493), modTime: time.Unix(1498789947, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -154,7 +154,7 @@ func pluginsTemplatesPythonChangelogMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "plugins/templates/python/CHANGELOG.md", size: 65, mode: os.FileMode(493), modTime: time.Unix(1498701938, 0)}
+	info := bindataFileInfo{name: "plugins/templates/python/CHANGELOG.md", size: 65, mode: os.FileMode(493), modTime: time.Unix(1498789947, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -174,7 +174,7 @@ func pluginsTemplatesPythonDockerfile() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "plugins/templates/python/Dockerfile", size: 517, mode: os.FileMode(420), modTime: time.Unix(1498701938, 0)}
+	info := bindataFileInfo{name: "plugins/templates/python/Dockerfile", size: 517, mode: os.FileMode(420), modTime: time.Unix(1498789947, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -194,7 +194,7 @@ func pluginsTemplatesPythonLicenseMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "plugins/templates/python/LICENSE.md", size: 1071, mode: os.FileMode(493), modTime: time.Unix(1498701938, 0)}
+	info := bindataFileInfo{name: "plugins/templates/python/LICENSE.md", size: 1071, mode: os.FileMode(493), modTime: time.Unix(1498789947, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -214,7 +214,7 @@ func pluginsTemplatesPythonReadmeShortTxt() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "plugins/templates/python/README-short.txt", size: 24, mode: os.FileMode(420), modTime: time.Unix(1498701938, 0)}
+	info := bindataFileInfo{name: "plugins/templates/python/README-short.txt", size: 24, mode: os.FileMode(420), modTime: time.Unix(1498789947, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -234,7 +234,7 @@ func pluginsTemplatesPythonReadmeMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "plugins/templates/python/README.md", size: 183, mode: os.FileMode(493), modTime: time.Unix(1498701938, 0)}
+	info := bindataFileInfo{name: "plugins/templates/python/README.md", size: 183, mode: os.FileMode(493), modTime: time.Unix(1498789947, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -254,7 +254,7 @@ func pluginsTemplatesPythonCircleYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "plugins/templates/python/circle.yml", size: 600, mode: os.FileMode(420), modTime: time.Unix(1498701938, 0)}
+	info := bindataFileInfo{name: "plugins/templates/python/circle.yml", size: 600, mode: os.FileMode(420), modTime: time.Unix(1498789947, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -274,7 +274,7 @@ func pluginsTemplatesPythonPluginToml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "plugins/templates/python/plugin.toml", size: 837, mode: os.FileMode(420), modTime: time.Unix(1498701938, 0)}
+	info := bindataFileInfo{name: "plugins/templates/python/plugin.toml", size: 837, mode: os.FileMode(420), modTime: time.Unix(1498789947, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -294,7 +294,7 @@ func pluginsTemplatesPythonRequirementsTxt() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "plugins/templates/python/requirements.txt", size: 33, mode: os.FileMode(420), modTime: time.Unix(1498701938, 0)}
+	info := bindataFileInfo{name: "plugins/templates/python/requirements.txt", size: 33, mode: os.FileMode(420), modTime: time.Unix(1498789947, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -314,7 +314,7 @@ func pluginsTemplatesPythonScanPy() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "plugins/templates/python/scan.py", size: 690, mode: os.FileMode(420), modTime: time.Unix(1498701938, 0)}
+	info := bindataFileInfo{name: "plugins/templates/python/scan.py", size: 690, mode: os.FileMode(420), modTime: time.Unix(1498789947, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }

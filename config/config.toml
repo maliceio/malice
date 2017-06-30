@@ -6,7 +6,7 @@
 #######################################################################
 
 title = "Malice Runtime Configuration"
-version = "v0.3.7"
+version = "v0.3.8"
 
 [author]
   name = "blacktop"
@@ -24,7 +24,7 @@ version = "v0.3.7"
 
 [database]
   name = "malice-elastic"
-  image = "blacktop/elasticsearch:5.3"
+  image = "blacktop/elasticsearch:5.4"
   server = "localhost"
   ports = [9200]
   timeout = 20

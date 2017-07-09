@@ -1,7 +1,5 @@
 ### Plugin List
 
-https://github.com/maliceio/plugins
-
 ```bash
 $ malice plugin list --all --detail
 ```

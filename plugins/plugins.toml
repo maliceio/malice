@@ -119,6 +119,19 @@ title = "Malice Plugin Configurations"
   env = ["MALICE_TIMEOUT"]
 
 [[plugin]]
+  enabled = false
+  name = "avira"
+  description = "Avira AntiVirus"
+  category = "av"
+  image = "malice/avira"
+  repository = "https://github.com/malice-plugins/avira.git"
+  build = false
+  mime = "*"
+  env = ["MALICE_TIMEOUT"]
+  keysrc = "~/.malice/plugins/avira/hbedv.key"
+  keydst = "/opt/avira/hbedv.key"  
+
+[[plugin]]
   enabled = true
   name = "bitdefender"
   description = "Bitdefender AntiVirus"

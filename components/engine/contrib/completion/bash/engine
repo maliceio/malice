@@ -244,10 +244,105 @@ _malice_daemon()
     noun_aliases=()
 }
 
+_malice_plugin_install()
+{
+    last_command="malice_plugin_install"
+    commands=()
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
+    flags+=("--config=")
+
+    must_have_one_flag=()
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
+_malice_plugin_list()
+{
+    last_command="malice_plugin_list"
+    commands=()
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
+    flags+=("--config=")
+
+    must_have_one_flag=()
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
+_malice_plugin_remove()
+{
+    last_command="malice_plugin_remove"
+    commands=()
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
+    flags+=("--config=")
+
+    must_have_one_flag=()
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
+_malice_plugin_search()
+{
+    last_command="malice_plugin_search"
+    commands=()
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
+    flags+=("--config=")
+
+    must_have_one_flag=()
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
+_malice_plugin_update()
+{
+    last_command="malice_plugin_update"
+    commands=()
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
+    flags+=("--config=")
+
+    must_have_one_flag=()
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
 _malice_plugin()
 {
     last_command="malice_plugin"
     commands=()
+    commands+=("install")
+    commands+=("list")
+    commands+=("remove")
+    commands+=("search")
+    commands+=("update")
 
     flags=()
     two_word_flags=()

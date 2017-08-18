@@ -30,6 +30,10 @@ brew:
   folder: Formula
   homepage: "https://github.com/maliceio/engine"
   description: "Open Source Malware Analysis Framework."
+  install: |
+    bin.install "engine"
+    zsh_completion.install "contrib/completion/zsh/_engine"
+    bash_completion.install "contrib/completion/bash/engine"
   test: |
     system "#{bin}/engine --version"
   

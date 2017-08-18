@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+
+tag="$1"
+MESSAGE="New release ${tag}"
+
+# This script creates a release tag
+
+if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+    echo -e ' - Tag already exists...'
+else
+	git tag -a $tag -m "$MESSAGE"  
+	git push origin $tag
+fi

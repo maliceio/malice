@@ -52,9 +52,8 @@ stop: ## Kill running malice-engine docker containers
 
 release: ## Create a new release from the VERSION
 	@echo "===> Creating Release"
-	git tag -a ${VERSION} -m ${MESSAGE}
-	git push origin ${VERSION}
-	goreleaser --rm-dist
+	@hack/make/release ${VERSION}
+	@goreleaser --rm-dist
 
 destroy: ## Remove release from the VERSION
 	@echo "===> Deleting Release"

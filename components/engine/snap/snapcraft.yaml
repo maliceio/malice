@@ -1,0 +1,13 @@
+
+name: malice
+version: 0.3.11
+summary: Open Source Malware Analysis Framework..
+description: |
+  Malice's mission is to be a free open source version of VirusTotal that anyone can use at any scale from an independent researcher to a fortune 500 company.
+grade: stable
+confinement: strict
+architectures:
+- amd64
+apps:
+  engine:
+    command: engine

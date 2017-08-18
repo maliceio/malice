@@ -1,0 +1,5 @@
+brew "snapcraft"
+brew "squashfs"
+brew "rpm"
+brew "fpm"
+brew "docker-clean"

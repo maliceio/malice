@@ -1,5 +1,8 @@
 build:
+
   binary: engine
+  env:
+    - CGO_ENABLED=0  
   goos:
     - windows
     - darwin
@@ -8,6 +11,7 @@ build:
     - amd64
   # hooks:
   #   post: /bin/sh install/scripts/upx.sh
+
 archive:
   format: tar.gz
   format_overrides:
@@ -18,6 +22,7 @@ archive:
     darwin: macOS
     linux: linux
     windows: win
+  
 brew:
   github:
     owner: maliceio
@@ -27,3 +32,15 @@ brew:
   description: "Open Source Malware Analysis Framework."
   test: |
     system "#{bin}/engine --version"
+  
+snapcraft:
+  name: malice
+  summary: Open Source Malware Analysis Framework..
+  description: |
+    Malice's mission is to be a free open source version of VirusTotal that anyone can use at any scale from an independent researcher to a fortune 500 company.
+  grade: stable
+  confinement: strict
+  apps:
+    malice:
+      plugs: ["home", "network"]
+      daemon: simple

@@ -1,4 +1,4 @@
-// Copyright © 2017 blacktop <https://github.com/maliceio>
+// Copyright © 2017 NAME HERE <EMAIL ADDRESS>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,30 +14,32 @@
 
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"fmt"
 
-// pluginCmd represents the plugin command
-var pluginCmd = &cobra.Command{
-	Use:   "plugin",
-	Short: "List, Install or Remove Plugins",
+	"github.com/spf13/cobra"
+)
+
+// listCmd represents the list command
+var listCmd = &cobra.Command{
+	Use:   "list",
+	Short: "List installed plugins",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: Work your own magic here
-		cmd.Help()
+		fmt.Println("list called")
 	},
 }
 
 func init() {
-	RootCmd.AddCommand(pluginCmd)
+	pluginCmd.AddCommand(listCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// pluginCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// pluginCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
+	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

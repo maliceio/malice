@@ -28,9 +28,6 @@ var cfgFile string
 var RootCmd = &cobra.Command{
 	Use:   "malice",
 	Short: "Open Source Malware Analysis Framework",
-	Long: `Malice's mission is to be a free open source version
-of VirusTotal that anyone can use at any scale from
-an independent researcher to a fortune 500 company.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
@@ -55,7 +52,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.malice/config.toml)")
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	RootCmd.Flags().BoolP("completions", "c", false, "Generate bash/zsh completions")
 }
 
 // initConfig reads in config file and ENV variables if set.

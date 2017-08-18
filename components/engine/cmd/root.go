@@ -53,6 +53,10 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	RootCmd.Flags().BoolP("completions", "c", false, "Generate bash/zsh completions")
+	// RootCmd.GenBashCompletionFile("contrib/completion/bash/malice")
+	// out, _ := os.Create("contrib/completion/zsh/_malice")
+	// defer out.Close()
+	// RootCmd.GenZshCompletion(out)
 }
 
 // initConfig reads in config file and ENV variables if set.

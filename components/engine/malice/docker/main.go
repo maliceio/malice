@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"os"
 
@@ -16,6 +17,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println("Client Version: ", cli.ClientVersion())
 
 	_, err = cli.ImagePull(ctx, "docker.io/library/alpine", types.ImagePullOptions{})
 	if err != nil {

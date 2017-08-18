@@ -65,6 +65,7 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	}
 
+	viper.SetConfigType("toml")
 	viper.SetConfigName(".malice/config.toml") // name of config file (without extension)
 	viper.AddConfigPath(os.Getenv("HOME"))     // adding home directory as first search path
 	viper.AutomaticEnv()                       // read in environment variables that match

@@ -15,8 +15,6 @@ services:
       - PORT=3333
 
   httpie:
-    build:
-      context: .
-      dockerfile: Dockerfile.httpie
+    image: blacktop/httpie
     links:
       - api

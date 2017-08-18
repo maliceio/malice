@@ -9,7 +9,8 @@ docs*
 terraform*
 
 README.md
-README.md.bu\NOTES.md
+README.md.bu
+NOTES.md
 LICENSE
 CHANGELOG.md
 Makefile

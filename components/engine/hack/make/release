@@ -8,6 +8,8 @@ MESSAGE="New release ${tag}"
 
 if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
     echo -e ' - Tag already exists...'
+	git tag -d $tag 
+	git push origin :refs/tags/$tag
 else
 	git tag -a $tag -m "$MESSAGE"  
 	git push origin $tag

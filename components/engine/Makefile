@@ -55,12 +55,6 @@ release: ## Create a new release from the VERSION
 	@hack/make/release ${VERSION}
 	@goreleaser --rm-dist
 
-destroy: ## Remove release from the VERSION
-	@echo "===> Deleting Release"
-	rm -rf dist
-	git tag -d ${VERSION}
-	git push origin :refs/tags/${VERSION}
-
 circle: ci-size ## Get docker image size from CircleCI
 	@sed -i.bu 's/docker%20image-.*-blue/docker%20image-$(shell cat .circleci/SIZE)-blue/' README.md
 	@echo "===> Image size is: $(shell cat .circleci/SIZE)"
@@ -78,6 +72,7 @@ clean: ## Clean docker image and stop all running containers
 	docker rmi maliceengine_httpie || true
 	docker rmi $(ORG)/$(NAME) || true
 	docker rmi $(ORG)/$(NAME):$(VERSION) || true
+	rm -rf dist || true	
 
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:

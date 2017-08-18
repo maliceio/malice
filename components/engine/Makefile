@@ -1,4 +1,4 @@
-.PHONY: build dev size tags tar test run ssh circle node push dockerfile
+.PHONY: build dev size tags tar test run ssh circle push
 
 REPO=maliceio/engine
 ORG=malice
@@ -9,6 +9,11 @@ MESSAGE?="New release $(VERSION)"
 
 all: gotest build size test
 
+dev: ## Setup dev env
+	@go get -u github.com/LK4D4/vndr
+	vndr
+	hack/validate/vendor
+
 build: ## Build docker image
 	docker build -t $(ORG)/$(NAME):$(VERSION) .
 
@@ -17,13 +22,6 @@ size: tags ## Update docker image size in README.md
 
 tags: ## Show all docker image tags
 	docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}" $(ORG)/$(NAME)
-
-daemon: stop ## Run malice engine daemon
-	@echo "===> Starting kibana elasticsearch..."
-	@docker run --init -d --name engine $(ORG)/$(NAME):$(VERSION)
-
-ssh: ## SSH into docker image
-	@docker run --init -it --rm --entrypoint=sh $(ORG)/$(NAME):$(VERSION)
 
 tar: ## Export tar of docker image
 	docker save $(ORG)/$(NAME):$(VERSION) -o $(NAME).tar
@@ -38,6 +36,19 @@ test: ## Test malice engine
 push: build ## Push docker image to docker registry
 	@echo "===> Pushing $(ORG)/$(NAME):$(VERSION) to docker hub..."
 	@docker push $(ORG)/$(NAME):$(VERSION)
+
+daemon: stop ## Run malice engine daemon
+	@echo "===> Starting malice engine daemon..."
+	@docker run --init -d --name $(NAME) $(ORG)/$(NAME):$(VERSION)
+
+run: stop ## Run docker container
+	@docker run --init -it --rm --name $(NAME) $(ORG)/$(NAME):$(VERSION)
+
+ssh: ## SSH into docker image
+	@docker run --init -it --rm --entrypoint=sh $(ORG)/$(NAME):$(VERSION)
+
+stop: ## Kill running malice-engine docker containers
+	@docker rm -f $(NAME) || true
 
 release: ## Create a new release from the VERSION
 	@echo "===> Creating Release"
@@ -68,9 +79,6 @@ clean: ## Clean docker image and stop all running containers
 	docker rmi maliceengine_httpie || true
 	docker rmi $(ORG)/$(NAME) || true
 	docker rmi $(ORG)/$(NAME):$(VERSION) || true
-
-stop: ## Kill running malice-engine docker containers
-	@docker rm -f engine || true
 
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:

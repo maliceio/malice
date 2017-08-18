@@ -4,6 +4,8 @@ REPO=maliceio/engine
 ORG=malice
 NAME=engine
 VERSION=$(shell cat VERSION)
+MESSAGE?="New release $VERSION"
+
 
 all: gotest build size test
 

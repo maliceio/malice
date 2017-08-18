@@ -13,6 +13,9 @@ build:
   #   post: /bin/sh install/scripts/upx.sh
 
 archive:
+  files:
+    - contrib/completion/zsh/_engine
+    - contrib/completion/bash/engine
   format: tar.gz
   format_overrides:
     - goos: windows

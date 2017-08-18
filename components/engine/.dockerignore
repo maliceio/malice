@@ -1,12 +1,17 @@
 # Ignore .git folder
 .git*
-
 .gitignore
+.gitattributes
+
+.circle*
+.vscode*
+docs*
+terraform*
+
 README.md
-README.md.bu
+README.md.bu\NOTES.md
 LICENSE
 CHANGELOG.md
-.circle
 Makefile
-docs*
+
 docker-compose.ci.yml

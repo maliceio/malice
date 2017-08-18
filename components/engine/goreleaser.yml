@@ -1,0 +1,29 @@
+build:
+  binary: engine
+  goos:
+    - windows
+    - darwin
+    - linux
+  goarch:
+    - amd64
+  # hooks:
+  #   post: /bin/sh install/scripts/upx.sh
+archive:
+  format: tar.gz
+  format_overrides:
+    - goos: windows
+      format: zip
+  replacements:
+    amd64: amd64
+    darwin: macOS
+    linux: linux
+    windows: win
+brew:
+  github:
+    owner: maliceio
+    name: homebrew-tap
+  folder: Formula
+  homepage: "https://github.com/maliceio/engine"
+  description: "Open Source Malware Analysis Framework."
+  test: |
+    system "#{bin}/engine --version"

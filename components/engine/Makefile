@@ -37,6 +37,18 @@ push: build ## Push docker image to docker registry
 	@echo "===> Pushing $(ORG)/$(NAME):$(VERSION) to docker hub..."
 	@docker push $(ORG)/$(NAME):$(VERSION)
 
+release: ## Create a new release from the VERSION
+	@echo "===> Creating Release"
+	git tag -a ${VERSION} -m ${MESSAGE}
+	git push origin ${VERSION}
+	goreleaser --rm-dist
+
+destroy: ## Remove release from the VERSION
+	@echo "===> Deleting Release"
+	rm -rf dist
+	git tag -d ${VERSION}
+	git push origin :refs/tags/${VERSION}
+
 circle: ci-size ## Get docker image size from CircleCI
 	@sed -i.bu 's/docker%20image-.*-blue/docker%20image-$(shell cat .circleci/SIZE)-blue/' README.md
 	@echo "===> Image size is: $(shell cat .circleci/SIZE)"

@@ -1,7 +1,10 @@
-version: '3'
+version: '3.3'
+
 services:
+
   elasticsearch:
-    image: blacktop/elasticsearch
+    image: malice/elasticsearch
+
   api:
     build:
       context: .
@@ -10,6 +13,7 @@ services:
       - "3333:3333"
     environment:
       - PORT=3333
+
   httpie:
     build:
       context: .

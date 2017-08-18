@@ -21,7 +21,7 @@ import (
 )
 
 // removeCmd represents the remove command
-var removeCmd = &cobra.Command{
+var pluginRemoveCmd = &cobra.Command{
 	Use:   "remove",
 	Short: "Remove malice plugin",
 	Long:  ``,
@@ -31,7 +31,7 @@ var removeCmd = &cobra.Command{
 }
 
 func init() {
-	pluginCmd.AddCommand(removeCmd)
+	pluginCmd.AddCommand(pluginRemoveCmd)
 
 	// Here you will define your flags and configuration settings.
 

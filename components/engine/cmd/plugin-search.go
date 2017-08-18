@@ -21,7 +21,7 @@ import (
 )
 
 // searchCmd represents the search command
-var searchCmd = &cobra.Command{
+var pluginSearchCmd = &cobra.Command{
 	Use:   "search",
 	Short: "Search malice plugins",
 	Long:  ``,
@@ -31,7 +31,7 @@ var searchCmd = &cobra.Command{
 }
 
 func init() {
-	pluginCmd.AddCommand(searchCmd)
+	pluginCmd.AddCommand(pluginSearchCmd)
 
 	// Here you will define your flags and configuration settings.
 

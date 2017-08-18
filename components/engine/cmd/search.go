@@ -20,26 +20,26 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// listCmd represents the list command
-var pluginListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List installed plugins",
+// searchCmd represents the search command
+var searchCmd = &cobra.Command{
+	Use:   "search",
+	Short: "Search for malware",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list called")
+		fmt.Println("search called")
 	},
 }
 
 func init() {
-	pluginCmd.AddCommand(pluginListCmd)
+	RootCmd.AddCommand(searchCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// searchCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// searchCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

@@ -14,11 +14,7 @@
 
 package cmd
 
-import (
-	"fmt"
-
-	"github.com/spf13/cobra"
-)
+import "github.com/spf13/cobra"
 
 // webCmd represents the web command
 var webCmd = &cobra.Command{
@@ -26,8 +22,7 @@ var webCmd = &cobra.Command{
 	Short: "Start malice web UI",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: Work your own magic here
-		fmt.Println("web called")
+		cmd.Help()
 	},
 }
 

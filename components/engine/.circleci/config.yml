@@ -45,11 +45,12 @@ jobs:
           command: |
             set -x
             docker run --rm app --help
-      - run:
-          name: Run tests
-          command: |
-            docker-compose -f ./docker-compose.ci.yml up -d
-            docker-compose -f docker-compose.ci.yml run httpie http://api:3333/login username=admin password=admin
+      # - run:
+      #     name: Run tests
+      #     command: |
+      #       docker-compose -f ./docker-compose.ci.yml up -d
+      #       docker-compose -f docker-compose.ci.yml run httpie http://api:3333/login username=admin password=admin
+
       # - deploy:
       #     name: Push application Docker image
       #     command: |

@@ -8,3 +8,10 @@ engine [WIP]
 ---
 
 :warning: This is the malice re-write and is not yet ready for general consumption. :warning:
+
+Install
+-------
+
+```sh
+$ brew install maliceio/tap/engine
+```

@@ -1,5 +1,5 @@
 #############################################
-# [golang builder]  #########################
+## [golang builder]  ########################
 #############################################
 FROM golang:1.8.3 as builder
 
@@ -11,7 +11,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo \
   -ldflags "-X main.Version=$(cat VERSION) -X main.BuildTime=$(date -u +%Y%m%d)" -o app .
 
 #############################################
-# [malice image] ############################
+## [malice image] ###########################
 #############################################
 FROM alpine:3.6
 

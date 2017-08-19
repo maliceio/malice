@@ -1,4 +1,4 @@
-engine [WIP]
+engine [WIP] :construction: 
 ============
 
 [![Circle CI](https://circleci.com/gh/maliceio/engine.png?style=shield)](https://circleci.com/gh/maliceio/engine) [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org) [![GoDoc](https://godoc.org/github.com/maliceio/engine?status.svg)](https://godoc.org/github.com/maliceio/engine)
@@ -7,7 +7,7 @@ engine [WIP]
 
 ---
 
-:warning: This is the malice re-write and is not yet ready for general consumption. :warning:
+This is the malice re-write and is not yet ready for general consumption. :warning:
 
 Install
 -------

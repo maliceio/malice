@@ -1,4 +1,4 @@
-Go client for the Docker Engine API
+Go client for the Malice Engine API
 ===================================
 
 The `malice` command uses this package to communicate with the daemon. It can also be used by your own Go applications to do anything the command-line interface does – running scans, installing plugins, managing swarms, etc.

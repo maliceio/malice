@@ -17,31 +17,41 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/moby/moby/cli"
 	"github.com/spf13/cobra"
 )
 
 // daemonCmd represents the daemon command
 var daemonCmd = &cobra.Command{
-	Use:   "daemon",
-	Short: "Start the malice daemon",
-	Long:  ``,
-	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: Work your own magic here
-		fmt.Println("daemon called")
+	Use:           "daemon",
+	Short:         "Start the malice daemon",
+	SilenceUsage:  true,
+	SilenceErrors: true,
+	Args:          cli.NoArgs,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return runDaemon(cmd.Flags())
 	},
 }
 
 func init() {
 	RootCmd.AddCommand(daemonCmd)
 
-	// Here you will define your flags and configuration settings.
+	daemonCmd.Flags().BoolP("version", "v", false, "Show malice version")
+}
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// daemonCmd.PersistentFlags().String("foo", "", "A help for foo")
+func runDaemon() error {
+	if daemonCmd.PersistentFlags().Lookup("version") {
+		showVersion()
+		return nil
+	}
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// daemonCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	daemon := NewDaemon()
 
+	err = daemon.start(opts)
+	notifyShutdown(err)
+	return err
+}
+
+func showVersion() {
+	fmt.Printf("Malice version %s, build %s\n", maliceversion.Version, maliceversion.GitCommit)
 }

@@ -17,13 +17,12 @@ FROM alpine:3.6
 
 LABEL maintainer "https://github.com/blacktop"
 
-RUN apk --no-cache add ca-certificates
-
-COPY --from=builder /go/src/github.com/maliceio/engine/app /bin/malice
-
 ENV MALICE_STORAGE_PATH /malice
 ENV MALICE_IN_DOCKER true
 
+RUN apk --no-cache add ca-certificates
+
+COPY --from=builder /go/src/github.com/maliceio/engine/app /bin/malice
 WORKDIR /malice/samples
 
 VOLUME ["/malice/config"]

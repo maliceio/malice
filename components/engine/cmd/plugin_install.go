@@ -23,7 +23,7 @@ import (
 // pluginInstallCmd represents the pluginInstall command
 var pluginInstallCmd = &cobra.Command{
 	Use:   "install",
-	Short: "Install malice plugin",
+	Short: "Install plugin",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("plugin install called")

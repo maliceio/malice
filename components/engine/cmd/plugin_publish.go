@@ -22,7 +22,7 @@ import (
 
 // pluginPublishCmd represents the plugin_publish command
 var pluginPublishCmd = &cobra.Command{
-	Use:   "plugin_publish",
+	Use:   "publish",
 	Short: "Publish plugin to the malice store",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {

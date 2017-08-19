@@ -23,7 +23,7 @@ import (
 // searchCmd represents the search command
 var pluginSearchCmd = &cobra.Command{
 	Use:   "search",
-	Short: "Search malice plugins",
+	Short: "Search plugins",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("search called")

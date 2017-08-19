@@ -23,7 +23,7 @@ import (
 // removeCmd represents the remove command
 var pluginRemoveCmd = &cobra.Command{
 	Use:   "remove",
-	Short: "Remove malice plugin",
+	Short: "Remove plugin",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("remove called")

@@ -17,12 +17,17 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
+var (
+	cfgFile = os.Getenv("MALICE_CONFIG")
+	// Verbose verbose output flag
+	Verbose bool
+)
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -67,9 +72,9 @@ func initConfig() {
 	}
 
 	viper.SetConfigType("toml")
-	viper.SetConfigName(".malice/config.toml") // name of config file (without extension)
-	viper.AddConfigPath(os.Getenv("HOME"))     // adding home directory as first search path
-	viper.AutomaticEnv()                       // read in environment variables that match
+	viper.SetConfigName(filepath.Join(configFileDir, "config", "config.toml")) // name of config file (without extension)
+	viper.AddConfigPath(os.Getenv("HOME"))                                     // adding home directory as first search path
+	viper.AutomaticEnv()                                                       // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {

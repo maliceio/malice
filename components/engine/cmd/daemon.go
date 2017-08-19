@@ -16,10 +16,39 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
-	"github.com/moby/moby/cli"
+	"github.com/maliceio/engine/daemon/config"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
+
+const (
+	// DefaultCaFile is the default filename for the CA pem file
+	DefaultCaFile = "ca.pem"
+	// DefaultKeyFile is the default filename for the key pem file
+	DefaultKeyFile = "key.pem"
+	// DefaultCertFile is the default filename for the cert pem file
+	DefaultCertFile = "cert.pem"
+)
+
+var (
+	maliceCertPath  = os.Getenv("MALICE_CERT_PATH")
+	maliceTLSVerify = os.Getenv("MALICE_TLS_VERIFY") != ""
+)
+
+type daemonOptions struct {
+	version      bool
+	configFile   string
+	daemonConfig *config.Config
+	flags        *pflag.FlagSet
+	Debug        bool
+	Hosts        []string
+	LogLevel     string
+	TLS          bool
+	TLSVerify    bool
+	// TLSOptions   *tlsconfig.Options
+}
 
 // daemonCmd represents the daemon command
 var daemonCmd = &cobra.Command{
@@ -27,20 +56,20 @@ var daemonCmd = &cobra.Command{
 	Short:         "Start the malice daemon",
 	SilenceUsage:  true,
 	SilenceErrors: true,
-	Args:          cli.NoArgs,
+	Args:          NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return runDaemon(cmd.Flags())
+		return runDaemon()
 	},
 }
 
 func init() {
 	RootCmd.AddCommand(daemonCmd)
 
-	daemonCmd.Flags().BoolP("version", "v", false, "Show malice version")
+	daemonCmd.Flags().BoolVarP("version", "v", false, "Show malice version")
 }
 
 func runDaemon() error {
-	if daemonCmd.PersistentFlags().Lookup("version") {
+	if daemonCmd.Flags().GetBool("version") {
 		showVersion()
 		return nil
 	}

@@ -1,12 +1,12 @@
 /*
-Package client is a Go client for the Docker Engine API.
+Package client is a Go client for the Malice Engine API.
 
-The "docker" command uses this package to communicate with the daemon. It can also
+The "malice" command uses this package to communicate with the daemon. It can also
 be used by your own Go applications to do anything the command-line interface does
 - running containers, pulling images, managing swarms, etc.
 
 For more information about the Engine API, see the documentation:
-https://docs.docker.com/engine/reference/api/
+https://docs.malice.io/engine/reference/api/
 
 Usage
 
@@ -14,7 +14,7 @@ You use the library by creating a client object and calling methods on it. The
 client can be created either from environment variables with NewEnvClient, or
 configured manually with NewClient.
 
-For example, to list running containers (the equivalent of "docker ps"):
+For example, to list running containers (the equivalent of "malice plugin ls"):
 
 	package main
 
@@ -22,8 +22,8 @@ For example, to list running containers (the equivalent of "docker ps"):
 		"context"
 		"fmt"
 
-		"github.com/docker/docker/api/types"
-		"github.com/docker/docker/client"
+		"github.com/maliceio/engine/api/types"
+		"github.com/maliceio/engine/client"
 	)
 
 	func main() {
@@ -32,13 +32,13 @@ For example, to list running containers (the equivalent of "docker ps"):
 			panic(err)
 		}
 
-		containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
+		plugins, err := cli.PluginList(context.Background(), types.PluginListListOptions{})
 		if err != nil {
 			panic(err)
 		}
 
-		for _, container := range containers {
-			fmt.Printf("%s %s\n", container.ID[:10], container.Image)
+		for _, plugin := range plugins {
+			fmt.Printf("%s %s\n", plugin.Name, plugin.Image)
 		}
 	}
 
@@ -55,13 +55,16 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/docker/docker/api"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/versions"
 	"github.com/docker/go-connections/sockets"
 	"github.com/docker/go-connections/tlsconfig"
+	"github.com/maliceio/engine/api"
+	"github.com/maliceio/engine/api/types"
+	"github.com/maliceio/engine/api/types/versions"
 	"golang.org/x/net/context"
 )
+
+// DefaultMaliceHost defines os specific default if MALICE_HOST is unset
+const DefaultMaliceHost = "unix:///var/run/malice.sock"
 
 // ErrRedirect is the error returned by checkRedirect when the request is non-GET.
 var ErrRedirect = errors.New("unexpected redirect in response")
@@ -93,7 +96,7 @@ type Client struct {
 // If the request is non-GET return `ErrRedirect`. Otherwise use the last response.
 //
 // Go 1.8 changes behavior for HTTP redirects (specifically 301, 307, and 308) in the client .
-// The Docker client (and by extension docker API client) can be made to to send a request
+// The Malice client (and by extension docker API client) can be made to to send a request
 // like POST /containers//start where what would normally be in the name section of the URL is empty.
 // This triggers an HTTP 301 from the daemon.
 // In go 1.8 this 301 will be converted to a GET request, and ends up getting a 404 from the daemon.
@@ -107,18 +110,18 @@ func CheckRedirect(req *http.Request, via []*http.Request) error {
 }
 
 // NewEnvClient initializes a new API client based on environment variables.
-// Use DOCKER_HOST to set the url to the docker server.
-// Use DOCKER_API_VERSION to set the version of the API to reach, leave empty for latest.
-// Use DOCKER_CERT_PATH to load the TLS certificates from.
-// Use DOCKER_TLS_VERIFY to enable or disable TLS verification, off by default.
+// Use MALICE_HOST to set the url to the docker server.
+// Use MALICE_API_VERSION to set the version of the API to reach, leave empty for latest.
+// Use MALICE_CERT_PATH to load the TLS certificates from.
+// Use MALICE_TLS_VERIFY to enable or disable TLS verification, off by default.
 func NewEnvClient() (*Client, error) {
 	var client *http.Client
-	if dockerCertPath := os.Getenv("DOCKER_CERT_PATH"); dockerCertPath != "" {
+	if dockerCertPath := os.Getenv("MALICE_CERT_PATH"); dockerCertPath != "" {
 		options := tlsconfig.Options{
 			CAFile:             filepath.Join(dockerCertPath, "ca.pem"),
 			CertFile:           filepath.Join(dockerCertPath, "cert.pem"),
 			KeyFile:            filepath.Join(dockerCertPath, "key.pem"),
-			InsecureSkipVerify: os.Getenv("DOCKER_TLS_VERIFY") == "",
+			InsecureSkipVerify: os.Getenv("MALICE_TLS_VERIFY") == "",
 		}
 		tlsc, err := tlsconfig.Client(options)
 		if err != nil {
@@ -133,11 +136,11 @@ func NewEnvClient() (*Client, error) {
 		}
 	}
 
-	host := os.Getenv("DOCKER_HOST")
+	host := os.Getenv("MALICE_HOST")
 	if host == "" {
-		host = DefaultDockerHost
+		host = DefaultMaliceHost
 	}
-	version := os.Getenv("DOCKER_API_VERSION")
+	version := os.Getenv("MALICE_API_VERSION")
 	if version == "" {
 		version = api.DefaultVersion
 	}
@@ -146,7 +149,7 @@ func NewEnvClient() (*Client, error) {
 	if err != nil {
 		return cli, err
 	}
-	if os.Getenv("DOCKER_API_VERSION") != "" {
+	if os.Getenv("MALICE_API_VERSION") != "" {
 		cli.manualOverride = true
 	}
 	return cli, nil
@@ -181,11 +184,6 @@ func NewClient(host string, version string, client *http.Client, httpHeaders map
 	scheme := "http"
 	tlsConfig := resolveTLSConfig(client.Transport)
 	if tlsConfig != nil {
-		// TODO(stevvooe): This isn't really the right way to write clients in Go.
-		// `NewClient` should probably only take an `*http.Client` and work from there.
-		// Unfortunately, the model of having a host-ish/url-thingy as the connection
-		// string has us confusing protocol and transport layers. We continue doing
-		// this to avoid breaking existing clients but this should be addressed.
 		scheme = "https"
 	}
 
@@ -236,7 +234,7 @@ func (cli *Client) getAPIPath(p string, query url.Values) string {
 
 // ClientVersion returns the version string associated with this
 // instance of the Client. Note that this value can be changed
-// via the DOCKER_API_VERSION env var.
+// via the MALICE_API_VERSION env var.
 // This operation doesn't acquire a mutex.
 func (cli *Client) ClientVersion() string {
 	return cli.version

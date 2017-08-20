@@ -22,13 +22,13 @@ func main() {
 		panic(err)
 	}
 
-	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
+	plugins, err := cli.PluginList(context.Background(), types.PluginListListOptions{})
 	if err != nil {
 		panic(err)
 	}
 
-	for _, container := range containers {
-		fmt.Printf("%s %s\n", container.ID[:10], container.Image)
+	for _, plugin := range plugins {
+		fmt.Printf("%s %s\n", plugin.Name, plugin.Image)
 	}
 }
 ```

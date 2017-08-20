@@ -19,8 +19,8 @@ import (
 	"os"
 
 	"github.com/maliceio/engine/daemon/config"
+	"github.com/maliceio/engine/malice/version"
 	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 )
 
 const (
@@ -37,19 +37,6 @@ var (
 	maliceTLSVerify = os.Getenv("MALICE_TLS_VERIFY") != ""
 )
 
-type daemonOptions struct {
-	version      bool
-	configFile   string
-	daemonConfig *config.Config
-	flags        *pflag.FlagSet
-	Debug        bool
-	Hosts        []string
-	LogLevel     string
-	TLS          bool
-	TLSVerify    bool
-	// TLSOptions   *tlsconfig.Options
-}
-
 // daemonCmd represents the daemon command
 var daemonCmd = &cobra.Command{
 	Use:           "daemon",
@@ -58,7 +45,10 @@ var daemonCmd = &cobra.Command{
 	SilenceErrors: true,
 	Args:          NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return runDaemon()
+		opts := newDaemonOptions(config.New())
+		installConfigFlags(opts.daemonConfig, cmd.Flags())
+
+		return runDaemon(opts)
 	},
 }
 
@@ -68,7 +58,7 @@ func init() {
 	daemonCmd.Flags().BoolVarP("version", "v", false, "Show malice version")
 }
 
-func runDaemon() error {
+func runDaemon(opts) error {
 	if daemonCmd.Flags().GetBool("version") {
 		showVersion()
 		return nil
@@ -82,5 +72,5 @@ func runDaemon() error {
 }
 
 func showVersion() {
-	fmt.Printf("Malice version %s, build %s\n", maliceversion.Version, maliceversion.GitCommit)
+	fmt.Printf("Malice version %s, build %s\n", version.Version, version.GitCommit)
 }

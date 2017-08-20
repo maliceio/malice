@@ -19,6 +19,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/maliceio/engine/cmd/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -72,9 +73,9 @@ func initConfig() {
 	}
 
 	viper.SetConfigType("toml")
-	viper.SetConfigName(filepath.Join(configFileDir, "config", "config.toml")) // name of config file (without extension)
-	viper.AddConfigPath(os.Getenv("HOME"))                                     // adding home directory as first search path
-	viper.AutomaticEnv()                                                       // read in environment variables that match
+	viper.SetConfigName(filepath.Join(config.Dir(), "config", "config.toml")) // name of config file (without extension)
+	// viper.AddConfigPath(os.Getenv("HOME"))                                    // adding home directory as first search path
+	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {

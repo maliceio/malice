@@ -1,0 +1,12 @@
+package main
+
+import (
+	"net/http"
+
+	context "golang.org/x/net/context"
+
+  {{ range .DefaultImports }}{{ printf "%q" . }}
+  {{ end }}
+  {{ range $key, $value := .Imports }}{{ $key }} {{ printf "%q" $value }}
+  {{ end }}
+)

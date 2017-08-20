@@ -23,7 +23,7 @@ import (
 // pluginCreateCmd represents the plugin_create command
 var pluginCreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a new plugin",
+	Short: "Create new plugin",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()

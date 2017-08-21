@@ -10,7 +10,10 @@ MESSAGE?="New release $(VERSION)"
 all: gotest build size test
 
 dev: ## Setup dev env
-	@go get -u github.com/LK4D4/vndr
+	@echo "===> Installing deps"
+	go get -u github.com/jteeuwen/go-bindata/...
+	go get -u github.com/LK4D4/vndr
+	go get -u github.com/maliceio/malice/utils/tomlupdate	
 	vndr
 	hack/validate/vendor
 

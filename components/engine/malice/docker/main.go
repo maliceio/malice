@@ -8,6 +8,8 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
+	"github.com/docker/docker/pkg/jsonmessage"
+	"github.com/docker/go-connections/nat"
 	"golang.org/x/net/context"
 )
 
@@ -20,15 +22,21 @@ func main() {
 
 	fmt.Println("Client Version: ", cli.ClientVersion())
 
-	_, err = cli.ImagePull(ctx, "docker.io/library/alpine", types.ImagePullOptions{})
+	responseBody, err := cli.ImagePull(ctx, "malice/elasticsearch", types.ImagePullOptions{})
 	if err != nil {
 		panic(err)
 	}
+	defer responseBody.Close()
+	jsonmessage.DisplayJSONMessagesStream(responseBody, os.Stdout, os.Stdout.Fd(), true, nil)
 
-	resp, err := cli.ContainerCreate(ctx, &container.Config{
-		Image: "alpine",
-		Cmd:   []string{"echo", "hello world"},
-	}, nil, nil, "")
+	config := &container.Config{
+		Image: "malice/elasticsearch",
+	}
+	portBindings := nat.PortMap{
+		"9200/tcp": {{HostIP: "0.0.0.0", HostPort: "9200"}},
+	}
+	hostConfig := &container.HostConfig{PortBindings: portBindings}
+	resp, err := cli.ContainerCreate(ctx, config, hostConfig, nil, "malice-elasticsearch")
 	if err != nil {
 		panic(err)
 	}
@@ -37,14 +45,28 @@ func main() {
 		panic(err)
 	}
 
-	// if _, err = cli.ContainerWait(ctx, resp.ID, container.WaitConditionNotRunning); err != nil {
-	// 	panic(err)
+	// resultC, errC := cli.ContainerWait(ctx, resp.ID, container.WaitConditionNotRunning)
+	// select {
+	// case err := <-errC:
+	// 	log.Fatal(err)
+	// case result := <-resultC:
+	// 	fmt.Println(result.StatusCode)
+	// 	// return result.StatusCode, b.String(), nil
 	// }
 
-	out, err := cli.ContainerLogs(ctx, resp.ID, types.ContainerLogsOptions{ShowStdout: true})
+	options := types.ContainerLogsOptions{
+		ShowStdout: true,
+		ShowStderr: true,
+		// Since       string
+		// Timestamps  bool
+		Follow: true,
+		// Tail        string
+	}
+	logs, err := cli.ContainerLogs(ctx, resp.ID, options)
 	if err != nil {
 		panic(err)
 	}
+	defer logs.Close()
 
-	io.Copy(os.Stdout, out)
+	io.Copy(os.Stdout, logs)
 }

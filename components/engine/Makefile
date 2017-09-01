@@ -13,9 +13,13 @@ dev: ## Setup dev env
 	@echo "===> Installing deps"
 	go get -u github.com/jteeuwen/go-bindata/...
 	go get -u github.com/LK4D4/vndr
-	go get -u github.com/maliceio/malice/utils/tomlupdate	
+	go get -u github.com/maliceio/malice/utils/tomlupdate
 	vndr
 	hack/validate/vendor
+
+vendor: vendor.conf ## check that vendor matches vendor.conf
+	vndr 2> /dev/null
+	hack/validate/check-git-diff vendor
 
 build: ## Build docker image
 	docker build -t $(ORG)/$(NAME):$(VERSION) .
@@ -75,7 +79,7 @@ clean: ## Clean docker image and stop all running containers
 	docker rmi maliceengine_httpie || true
 	docker rmi $(ORG)/$(NAME) || true
 	docker rmi $(ORG)/$(NAME):$(VERSION) || true
-	rm -rf dist || true	
+	rm -rf dist || true
 
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:

@@ -19,15 +19,13 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/maliceio/engine/malice/version"
+	"github.com/maliceio/engine/cli"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 var (
 	cfgDaemonFile = os.Getenv("MALICE_CONFIG")
-	// Version version output flag
-	Version bool
 )
 
 // daemonCmd represents the daemon command
@@ -36,7 +34,7 @@ var daemonCmd = &cobra.Command{
 	Short:         "Start the malice daemon",
 	SilenceUsage:  true,
 	SilenceErrors: true,
-	Args:          NoArgs,
+	Args:          cli.NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// opts := newDaemonOptions(config.New())
 		// installConfigFlags(opts.daemonConfig, cmd.Flags())
@@ -48,15 +46,9 @@ var daemonCmd = &cobra.Command{
 func init() {
 	initDaemonConfig()
 	RootCmd.AddCommand(daemonCmd)
-
-	daemonCmd.Flags().BoolVarP(&Version, "version", "v", false, "Show malice version")
 }
 
 func runDaemon() error {
-	if Version {
-		showVersion()
-		return nil
-	}
 
 	// daemon := NewDaemon()
 
@@ -64,10 +56,6 @@ func runDaemon() error {
 	// notifyShutdown(err)
 	// return err
 	return nil
-}
-
-func showVersion() {
-	fmt.Printf("Malice version %s, build %s\n", version.Version, version.GitCommit)
 }
 
 // initConfig reads in config file and ENV variables if set.

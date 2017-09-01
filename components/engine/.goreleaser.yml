@@ -1,16 +1,16 @@
-build:
 
-  binary: engine
-  env:
-    - CGO_ENABLED=0  
-  goos:
-    - windows
-    - darwin
-    - linux
-  goarch:
-    - amd64
-  # hooks:
-  #   post: /bin/sh install/scripts/upx.sh
+builds:
+  -
+    binary: engine
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+    ldflags: -s -w -X malice.version.Version={{.Version}} -X malice.version.BuildTime={{.Date}} -X malice.version.GitCommit={{.Commit}}
 
 archive:
   files:
@@ -25,7 +25,7 @@ archive:
     darwin: macOS
     linux: linux
     windows: win
-  
+
 brew:
   github:
     owner: maliceio

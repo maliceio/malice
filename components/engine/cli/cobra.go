@@ -79,7 +79,7 @@ func operationSubCommands(cmd *cobra.Command) []*cobra.Command {
 }
 
 func wrappedFlagUsages(cmd *cobra.Command) string {
-	width := 80
+	width := 120
 	// if ws, err := term.GetWinsize(0); err == nil {
 	// 	width = int(ws.Width)
 	// }
@@ -99,8 +99,10 @@ func managementSubCommands(cmd *cobra.Command) []*cobra.Command {
 var usageTemplate = `Usage:
 {{- if not .HasSubCommands}}	{{.UseLine}}{{end}}
 {{- if .HasSubCommands}}	{{ .CommandPath}} COMMAND{{end}}
+
 {{ .Short | trim }}
 {{- if gt .Aliases 0}}
+
 Aliases:
   {{.NameAndAliases}}
 {{- end}}
@@ -109,22 +111,26 @@ Examples:
 {{ .Example }}
 {{- end}}
 {{- if .HasFlags}}
+
 Options:
 {{ wrappedFlagUsages . | trimRightSpace}}
 {{- end}}
 {{- if hasManagementSubCommands . }}
+
 Management Commands:
 {{- range managementSubCommands . }}
   {{rpad .Name .NamePadding }} {{.Short}}
 {{- end}}
 {{- end}}
 {{- if hasSubCommands .}}
+
 Commands:
 {{- range operationSubCommands . }}
   {{rpad .Name .NamePadding }} {{.Short}}
 {{- end}}
 {{- end}}
 {{- if .HasSubCommands }}
+
 Run '{{.CommandPath}} COMMAND --help' for more information on a command.
 {{- end}}
 `

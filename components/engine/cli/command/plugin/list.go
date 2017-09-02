@@ -1,10 +1,10 @@
 package plugin
 
 import (
-	"github.com/docker/docker/opts"
 	"github.com/maliceio/engine/cli"
 	"github.com/maliceio/engine/cli/command"
 	"github.com/maliceio/engine/cli/command/formatter"
+	"github.com/maliceio/engine/opts"
 	"github.com/spf13/cobra"
 	"golang.org/x/net/context"
 )
@@ -16,7 +16,7 @@ type listOptions struct {
 	filter  opts.FilterOpt
 }
 
-func newListCommand(dockerCli *command.DockerCli) *cobra.Command {
+func newListCommand(maliceCli *command.MaliceCli) *cobra.Command {
 	opts := listOptions{filter: opts.NewFilterOpt()}
 
 	cmd := &cobra.Command{
@@ -25,7 +25,7 @@ func newListCommand(dockerCli *command.DockerCli) *cobra.Command {
 		Aliases: []string{"list"},
 		Args:    cli.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return runList(dockerCli, opts)
+			return runList(maliceCli, opts)
 		},
 	}
 
@@ -39,23 +39,23 @@ func newListCommand(dockerCli *command.DockerCli) *cobra.Command {
 	return cmd
 }
 
-func runList(dockerCli *command.DockerCli, opts listOptions) error {
-	plugins, err := dockerCli.Client().PluginList(context.Background(), opts.filter.Value())
+func runList(maliceCli *command.MaliceCli, opts listOptions) error {
+	plugins, err := maliceCli.Client().PluginList(context.Background(), opts.filter.Value())
 	if err != nil {
 		return err
 	}
 
 	format := opts.format
 	if len(format) == 0 {
-		if len(dockerCli.ConfigFile().PluginsFormat) > 0 && !opts.quiet {
-			format = dockerCli.ConfigFile().PluginsFormat
+		if len(maliceCli.ConfigFile().PluginsFormat) > 0 && !opts.quiet {
+			format = maliceCli.ConfigFile().PluginsFormat
 		} else {
 			format = formatter.TableFormatKey
 		}
 	}
 
 	pluginsCtx := formatter.Context{
-		Output: dockerCli.Out(),
+		// Output: maliceCli.Out(),
 		Format: formatter.NewPluginFormat(format, opts.quiet),
 		Trunc:  !opts.noTrunc,
 	}

@@ -8,26 +8,25 @@ import (
 
 // NewPluginCommand returns a cobra command for `plugin` subcommands
 // nolint: interfacer
-func NewPluginCommand(dockerCli *command.DockerCli) *cobra.Command {
+func NewPluginCommand(maliceCli *command.MaliceCli) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "plugin",
 		Short: "Manage plugins",
 		Args:  cli.NoArgs,
-		RunE:  command.ShowHelp(dockerCli.Err()),
-		Tags:  map[string]string{"version": "1.25"},
+		RunE:  command.ShowHelp(maliceCli.Err()),
 	}
 
 	cmd.AddCommand(
-		// newDisableCommand(dockerCli),
-		// newEnableCommand(dockerCli),
-		// newInspectCommand(dockerCli),
-		// newInstallCommand(dockerCli),
-		newListCommand(dockerCli),
-		// newRemoveCommand(dockerCli),
-		// newSetCommand(dockerCli),
-		// newPushCommand(dockerCli),
-		// newCreateCommand(dockerCli),
-		// newUpgradeCommand(dockerCli),
+		// newDisableCommand(maliceCli),
+		// newEnableCommand(maliceCli),
+		// newInspectCommand(maliceCli),
+		// newInstallCommand(maliceCli),
+		newListCommand(maliceCli),
+		// newRemoveCommand(maliceCli),
+		// newSetCommand(maliceCli),
+		// newPushCommand(maliceCli),
+		// newCreateCommand(maliceCli),
+		// newUpgradeCommand(maliceCli),
 	)
 	return cmd
 }

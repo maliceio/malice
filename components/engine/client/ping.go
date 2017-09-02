@@ -7,7 +7,7 @@ import (
 	"golang.org/x/net/context"
 )
 
-// Ping pings the server and returns the value of the "OS-Type" & "API-Version" headers
+// Ping pings the server and returns the value of the "Docker-Experimental", "OS-Type" & "API-Version" headers
 func (cli *Client) Ping(ctx context.Context) (types.Ping, error) {
 	var ping types.Ping
 	req, err := cli.buildRequest("GET", path.Join(cli.basePath, "/_ping"), nil, nil)

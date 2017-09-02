@@ -11,11 +11,7 @@ builds:
     goarch:
       - amd64
     ldflags: |
-      "-s \
-      -w \
-      -X malice.version.Version={{.Version}} \
-      -X malice.version.BuildTime={{.Date}} \
-      -X malice.version.GitCommit={{.Commit}}"
+      -s -w -X malice.version.Version={{.Version}} -X malice.version.BuildTime={{.Date}} -X malice.version.GitCommit={{.Commit}}
 
 archive:
   files:

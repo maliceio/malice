@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#
+# Build a static binary for the host OS/ARCH
+#
+
+set -eu -o pipefail
+
+source ./hack/build/.variables
+
+echo "Downloading golang deps"
+cd /go/src/"${SOURCE}"
+go get -v -d
+
+echo "Building statically linked $TARGET"
+export CGO_ENABLED=0
+go build -i -o "${TARGET}" -a -installsuffix cgo --ldflags "${LDFLAGS}" "${SOURCE}"
+
+ln -sf "$(basename "${TARGET}")" build/malice

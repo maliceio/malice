@@ -19,7 +19,7 @@ $ brew install maliceio/tap/engine
 Docker Image
 ------------
 
-[![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)](https://hub.docker.com/r/malice/engine/) [![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)](https://hub.docker.com/r/malice/engine/) [![Docker Image](https://img.shields.io/badge/docker%20image-14.4MB-blue.svg)](https://hub.docker.com/r/malice/engine/)
+[![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)](https://hub.docker.com/r/malice/engine/) [![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)](https://hub.docker.com/r/malice/engine/) [![Docker Image](https://img.shields.io/badge/docker%20image-10.9MB-blue.svg)](https://hub.docker.com/r/malice/engine/)
 
 License
 -------

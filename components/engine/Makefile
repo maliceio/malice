@@ -3,8 +3,10 @@
 REPO=maliceio/engine
 ORG=malice
 NAME=engine
-VERSION=$(shell cat VERSION)
+VERSION = $(shell cat VERSION)
 MESSAGE?="New release $(VERSION)"
+GITCOMMIT = $(shell git rev-parse --short HEAD 2> /dev/null || true)
+DOCKER_BUILD_ARGS = --build-arg VERSION=$(VERSION) --build-arg GITCOMMIT=$(GITCOMMIT)
 
 
 all: gotest build size test
@@ -22,7 +24,7 @@ vendor: vendor.conf ## check that vendor matches vendor.conf
 	hack/validate/check-git-diff vendor
 
 build: ## Build docker image
-	docker build -t $(ORG)/$(NAME):$(VERSION) .
+	docker build $(DOCKER_BUILD_ARGS) -t $(ORG)/$(NAME):$(VERSION) .
 
 size: tags ## Update docker image size in README.md
 	sed -i.bu 's/docker%20image-.*-blue/docker%20image-$(shell docker images --format "{{.Size}}" $(ORG)/$(NAME):$(VERSION)| cut -d' ' -f1)-blue/' README.md
@@ -49,7 +51,7 @@ daemon: stop ## Run malice engine daemon
 	@docker run --init -d --name $(NAME) $(ORG)/$(NAME):$(VERSION)
 
 run: stop ## Run docker container
-	@docker run --init -it --rm --name $(NAME) $(ORG)/$(NAME):$(VERSION)
+	docker run --init -it --rm --name $(NAME) $(ORG)/$(NAME):$(VERSION)
 
 ssh: ## SSH into docker image
 	@docker run --init -it --rm --entrypoint=sh $(ORG)/$(NAME):$(VERSION)

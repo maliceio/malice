@@ -3,12 +3,13 @@
 #############################################
 FROM golang:1.8.3 as builder
 
+ARG VERSION
+ARG GITCOMMIT
+
 COPY . /go/src/github.com/maliceio/engine
 WORKDIR /go/src/github.com/maliceio/engine/
 
-RUN go get -v -d
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo \
-  -ldflags "-X main.Version=$(cat VERSION) -X main.BuildTime=$(date -u +%Y%m%d)" -o app .
+RUN hack/build/binary
 
 #############################################
 ## [malice image] ###########################
@@ -22,7 +23,7 @@ ENV MALICE_IN_DOCKER true
 
 RUN apk --no-cache add ca-certificates
 
-COPY --from=builder /go/src/github.com/maliceio/engine/app /bin/malice
+COPY --from=builder /go/src/github.com/maliceio/engine/cmd/malice/build/malice /bin/malice
 WORKDIR /malice/samples
 
 VOLUME ["/malice/config"]

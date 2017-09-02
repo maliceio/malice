@@ -2,6 +2,7 @@ NOTES
 =====
 
 ### API
+
  - https://goa.design
 
 ### Docker
@@ -37,3 +38,9 @@ NOTES
 
  - https://github.com/awnumar/memguard
  - https://github.com/hashicorp/vault
+
+### DB Store
+
+> To store malice client state (plugins)  
+
+ - https://github.com/boltdb/bolt

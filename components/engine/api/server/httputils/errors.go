@@ -8,7 +8,7 @@ import (
 	"github.com/maliceio/engine/api/errdefs"
 	"github.com/maliceio/engine/api/types"
 	"github.com/maliceio/engine/api/types/versions"
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 )
@@ -28,7 +28,7 @@ type causer interface {
 // GetHTTPErrorStatusCode retrieves status code from error message.
 func GetHTTPErrorStatusCode(err error) int {
 	if err == nil {
-		logrus.WithFields(logrus.Fields{"error": err}).Error("unexpected HTTP error handling")
+		log.WithFields(log.Fields{"error": err}).Error("unexpected HTTP error handling")
 		return http.StatusInternalServerError
 	}
 
@@ -67,7 +67,7 @@ func GetHTTPErrorStatusCode(err error) int {
 			return GetHTTPErrorStatusCode(e.Cause())
 		}
 
-		logrus.WithFields(logrus.Fields{
+		log.WithFields(log.Fields{
 			"module":     "api",
 			"error_type": fmt.Sprintf("%T", err),
 		}).Debugf("FIXME: Got an API for which error does not match any expected type!!!: %+v", err)

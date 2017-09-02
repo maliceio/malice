@@ -8,7 +8,6 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/coreos/etcd/version"
 	"github.com/docker/go-connections/sockets"
 	"github.com/docker/go-connections/tlsconfig"
 	"github.com/maliceio/engine/api"
@@ -16,6 +15,7 @@ import (
 	"github.com/maliceio/engine/cli/config/configfile"
 	cliflags "github.com/maliceio/engine/cli/flags"
 	"github.com/maliceio/engine/client"
+	"github.com/maliceio/engine/malice/version"
 	mopts "github.com/maliceio/engine/opts"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"

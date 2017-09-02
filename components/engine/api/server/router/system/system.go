@@ -1,9 +1,9 @@
 package system
 
 import (
-	"github.com/docker/docker/api/server/router"
-	"github.com/docker/docker/builder/fscache"
-	"github.com/docker/docker/daemon/cluster"
+	"github.com/maliceio/engine/api/server/router"
+	"github.com/maliceio/engine/builder/fscache"
+	"github.com/maliceio/engine/daemon/cluster"
 )
 
 // systemRouter provides information about the Docker system overall.

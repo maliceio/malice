@@ -12,11 +12,11 @@ builds:
     goarch:
       - amd64
     ldflags: >
-      -s \
+      "-s \
       -w \
       -X github.com/maliceio/engine/malice/version.Version={{.Version}} \
       -X github.com/maliceio/engine/malice/version.BuildTime={{.Date}} \
-      -X github.com/maliceio/engine/malice/version.GitCommit={{.Commit}}
+      -X github.com/maliceio/engine/malice/version.GitCommit={{.Commit}}"
 
 archive:
   files:

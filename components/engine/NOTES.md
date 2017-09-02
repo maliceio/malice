@@ -33,3 +33,7 @@ NOTES
 
  - https://github.com/appleboy/gofight
  
+ ### Security
+
+ - https://github.com/awnumar/memguard
+ - https://github.com/hashicorp/vault

@@ -11,8 +11,12 @@ builds:
       - linux
     goarch:
       - amd64
-    ldflags: |
-      -s -w -X malice.version.Version={{.Version}} -X malice.version.BuildTime={{.Date}} -X malice.version.GitCommit={{.Commit}}
+    ldflags: >
+      -s \
+      -w \
+      -X github.com/maliceio/engine/malice/version.Version={{.Version}} \
+      -X github.com/maliceio/engine/malice/version.BuildTime={{.Date}} \
+      -X github.com/maliceio/engine/malice/version.GitCommit={{.Commit}}
 
 archive:
   files:

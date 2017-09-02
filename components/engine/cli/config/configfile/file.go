@@ -14,6 +14,7 @@ type ConfigFile struct {
 	HTTPHeaders   map[string]string `json:"HttpHeaders,omitempty"`
 	PluginsFormat string            `json:"pluginsFormat,omitempty"`
 	Filename      string            `json:"-"` // Note: for internal use only
+	PruneFilters  []string          `json:"pruneFilters,omitempty"`
 }
 
 // SaveToWriter encodes and writes out all the authorization information to

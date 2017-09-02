@@ -1,6 +1,7 @@
 
 builds:
   -
+    main: ./cmd/malice
     binary: engine
     env:
       - CGO_ENABLED=0

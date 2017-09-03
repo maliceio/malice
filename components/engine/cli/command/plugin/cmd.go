@@ -17,16 +17,16 @@ func NewPluginCommand(maliceCli *command.MaliceCli) *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		// newDisableCommand(maliceCli),
-		// newEnableCommand(maliceCli),
-		// newInspectCommand(maliceCli),
-		// newInstallCommand(maliceCli),
+		newDisableCommand(maliceCli),
+		newEnableCommand(maliceCli),
+		newInspectCommand(maliceCli),
+		newInstallCommand(maliceCli),
 		newListCommand(maliceCli),
-		// newRemoveCommand(maliceCli),
-		// newSetCommand(maliceCli),
-		// newPushCommand(maliceCli),
-		// newCreateCommand(maliceCli),
-		// newUpgradeCommand(maliceCli),
+		newRemoveCommand(maliceCli),
+		newSetCommand(maliceCli),
+		newPushCommand(maliceCli),
+		newCreateCommand(maliceCli),
+		newUpgradeCommand(maliceCli),
 	)
 	return cmd
 }

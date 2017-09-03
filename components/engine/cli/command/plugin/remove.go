@@ -1,13 +1,9 @@
 package plugin
 
 import (
-	"fmt"
-
 	"github.com/maliceio/engine/cli"
 	"github.com/maliceio/engine/cli/command"
-	"github.com/maliceio/engine/api/types"
 	"github.com/spf13/cobra"
-	"golang.org/x/net/context"
 )
 
 type rmOptions struct {
@@ -16,7 +12,7 @@ type rmOptions struct {
 	plugins []string
 }
 
-func newRemoveCommand(dockerCli *command.DockerCli) *cobra.Command {
+func newRemoveCommand(maliceCli *command.MaliceCli) *cobra.Command {
 	var opts rmOptions
 
 	cmd := &cobra.Command{
@@ -26,7 +22,7 @@ func newRemoveCommand(dockerCli *command.DockerCli) *cobra.Command {
 		Args:    cli.RequiresMinArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			opts.plugins = args
-			return runRemove(dockerCli, &opts)
+			return runRemove(maliceCli, &opts)
 		},
 	}
 
@@ -35,21 +31,21 @@ func newRemoveCommand(dockerCli *command.DockerCli) *cobra.Command {
 	return cmd
 }
 
-func runRemove(dockerCli *command.DockerCli, opts *rmOptions) error {
-	ctx := context.Background()
-
-	var errs cli.Errors
-	for _, name := range opts.plugins {
-		// TODO: pass names to api instead of making multiple api calls
-		if err := dockerCli.Client().PluginRemove(ctx, name, types.PluginRemoveOptions{Force: opts.force}); err != nil {
-			errs = append(errs, err)
-			continue
-		}
-		fmt.Fprintln(dockerCli.Out(), name)
-	}
-	// Do not simplify to `return errs` because even if errs == nil, it is not a nil-error interface value.
-	if errs != nil {
-		return errs
-	}
+func runRemove(maliceCli *command.MaliceCli, opts *rmOptions) error {
+	// ctx := context.Background()
+	//
+	// var errs cli.Errors
+	// for _, name := range opts.plugins {
+	// 	// TODO: pass names to api instead of making multiple api calls
+	// 	if err := maliceCli.Client().PluginRemove(ctx, name, types.PluginRemoveOptions{Force: opts.force}); err != nil {
+	// 		errs = append(errs, err)
+	// 		continue
+	// 	}
+	// 	fmt.Fprintln(maliceCli.Out(), name)
+	// }
+	// // Do not simplify to `return errs` because even if errs == nil, it is not a nil-error interface value.
+	// if errs != nil {
+	// 	return errs
+	// }
 	return nil
 }

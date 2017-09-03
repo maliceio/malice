@@ -3,9 +3,7 @@ package plugin
 import (
 	"github.com/maliceio/engine/cli"
 	"github.com/maliceio/engine/cli/command"
-	"github.com/maliceio/engine/cli/command/inspect"
 	"github.com/spf13/cobra"
-	"golang.org/x/net/context"
 )
 
 type inspectOptions struct {
@@ -13,7 +11,7 @@ type inspectOptions struct {
 	format      string
 }
 
-func newInspectCommand(dockerCli *command.DockerCli) *cobra.Command {
+func newInspectCommand(maliceCli *command.MaliceCli) *cobra.Command {
 	var opts inspectOptions
 
 	cmd := &cobra.Command{
@@ -22,7 +20,7 @@ func newInspectCommand(dockerCli *command.DockerCli) *cobra.Command {
 		Args:  cli.RequiresMinArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			opts.pluginNames = args
-			return runInspect(dockerCli, opts)
+			return runInspect(maliceCli, opts)
 		},
 	}
 
@@ -31,12 +29,13 @@ func newInspectCommand(dockerCli *command.DockerCli) *cobra.Command {
 	return cmd
 }
 
-func runInspect(dockerCli *command.DockerCli, opts inspectOptions) error {
-	client := dockerCli.Client()
-	ctx := context.Background()
-	getRef := func(ref string) (interface{}, []byte, error) {
-		return client.PluginInspectWithRaw(ctx, ref)
-	}
-
-	return inspect.Inspect(dockerCli.Out(), opts.pluginNames, opts.format, getRef)
+func runInspect(maliceCli *command.MaliceCli, opts inspectOptions) error {
+	// client := maliceCli.Client()
+	// ctx := context.Background()
+	// getRef := func(ref string) (interface{}, []byte, error) {
+	// 	return client.PluginInspectWithRaw(ctx, ref)
+	// }
+	//
+	// return inspect.Inspect(maliceCli.Out(), opts.pluginNames, opts.format, getRef)
+	return nil
 }

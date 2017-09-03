@@ -1,14 +1,9 @@
 package plugin
 
 import (
-	"fmt"
-
 	"github.com/maliceio/engine/cli"
 	"github.com/maliceio/engine/cli/command"
-	"github.com/maliceio/engine/api/types"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"golang.org/x/net/context"
 )
 
 type enableOpts struct {
@@ -16,7 +11,7 @@ type enableOpts struct {
 	name    string
 }
 
-func newEnableCommand(dockerCli *command.DockerCli) *cobra.Command {
+func newEnableCommand(maliceCli *command.MaliceCli) *cobra.Command {
 	var opts enableOpts
 
 	cmd := &cobra.Command{
@@ -25,7 +20,7 @@ func newEnableCommand(dockerCli *command.DockerCli) *cobra.Command {
 		Args:  cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			opts.name = args[0]
-			return runEnable(dockerCli, &opts)
+			return runEnable(maliceCli, &opts)
 		},
 	}
 
@@ -34,15 +29,15 @@ func newEnableCommand(dockerCli *command.DockerCli) *cobra.Command {
 	return cmd
 }
 
-func runEnable(dockerCli *command.DockerCli, opts *enableOpts) error {
-	name := opts.name
-	if opts.timeout < 0 {
-		return errors.Errorf("negative timeout %d is invalid", opts.timeout)
-	}
-
-	if err := dockerCli.Client().PluginEnable(context.Background(), name, types.PluginEnableOptions{Timeout: opts.timeout}); err != nil {
-		return err
-	}
-	fmt.Fprintln(dockerCli.Out(), name)
+func runEnable(maliceCli *command.MaliceCli, opts *enableOpts) error {
+	// name := opts.name
+	// if opts.timeout < 0 {
+	// 	return errors.Errorf("negative timeout %d is invalid", opts.timeout)
+	// }
+	//
+	// if err := maliceCli.Client().PluginEnable(context.Background(), name, types.PluginEnableOptions{Timeout: opts.timeout}); err != nil {
+	// 	return err
+	// }
+	// fmt.Fprintln(maliceCli.Out(), name)
 	return nil
 }

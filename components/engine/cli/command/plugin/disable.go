@@ -1,16 +1,12 @@
 package plugin
 
 import (
-	"fmt"
-
 	"github.com/maliceio/engine/cli"
 	"github.com/maliceio/engine/cli/command"
-	"github.com/maliceio/engine/api/types"
 	"github.com/spf13/cobra"
-	"golang.org/x/net/context"
 )
 
-func newDisableCommand(dockerCli *command.DockerCli) *cobra.Command {
+func newDisableCommand(maliceCli *command.MaliceCli) *cobra.Command {
 	var force bool
 
 	cmd := &cobra.Command{
@@ -18,7 +14,7 @@ func newDisableCommand(dockerCli *command.DockerCli) *cobra.Command {
 		Short: "Disable a plugin",
 		Args:  cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return runDisable(dockerCli, args[0], force)
+			return runDisable(maliceCli, args[0], force)
 		},
 	}
 
@@ -27,10 +23,10 @@ func newDisableCommand(dockerCli *command.DockerCli) *cobra.Command {
 	return cmd
 }
 
-func runDisable(dockerCli *command.DockerCli, name string, force bool) error {
-	if err := dockerCli.Client().PluginDisable(context.Background(), name, types.PluginDisableOptions{Force: force}); err != nil {
-		return err
-	}
-	fmt.Fprintln(dockerCli.Out(), name)
+func runDisable(maliceCli *command.MaliceCli, name string, force bool) error {
+	// if err := maliceCli.Client().PluginDisable(context.Background(), name, types.PluginDisableOptions{Force: force}); err != nil {
+	// 	return err
+	// }
+	// fmt.Fprintln(maliceCli.Out(), name)
 	return nil
 }

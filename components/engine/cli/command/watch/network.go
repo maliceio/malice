@@ -1,4 +1,4 @@
-package web
+package watch
 
 import (
 	"github.com/maliceio/engine/cli"
@@ -6,21 +6,21 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type backupOpts struct {
+type networkOpts struct {
 	timeout int
 	name    string
 }
 
-func newBackUpCommand(maliceCli *command.MaliceCli) *cobra.Command {
-	var opts backupOpts
+func newNetworkCaptureCommand(maliceCli *command.MaliceCli) *cobra.Command {
+	var opts networkOpts
 
 	cmd := &cobra.Command{
-		Use:   "backup [OPTIONS] FILE",
-		Short: "Backup malice database",
+		Use:   "network [OPTIONS] INTERFACE",
+		Short: "Start network file capture",
 		Args:  cli.RequiresMinArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			opts.name = args[0]
-			return runBackUp(maliceCli, &opts)
+			return runNetworkCapture(maliceCli, &opts)
 		},
 	}
 
@@ -29,6 +29,6 @@ func newBackUpCommand(maliceCli *command.MaliceCli) *cobra.Command {
 	return cmd
 }
 
-func runBackUp(maliceCli *command.MaliceCli, opts *backupOpts) error {
+func runNetworkCapture(maliceCli *command.MaliceCli, opts *networkOpts) error {
 	return nil
 }

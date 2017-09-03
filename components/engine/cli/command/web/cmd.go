@@ -16,6 +16,10 @@ func NewWebCommand(maliceCli *command.MaliceCli) *cobra.Command {
 		RunE:  command.ShowHelp(maliceCli.Err()),
 	}
 
-	cmd.AddCommand()
+	cmd.AddCommand(
+		newStartCommand(maliceCli),
+		newStopCommand(maliceCli),
+		newBackUpCommand(maliceCli),
+	)
 	return cmd
 }

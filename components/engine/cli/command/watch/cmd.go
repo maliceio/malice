@@ -11,11 +11,14 @@ import (
 func NewWatchCommand(maliceCli *command.MaliceCli) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "watch",
-		Short: "Watch for files to scan",
+		Short: "Manage watch",
 		Args:  cli.NoArgs,
 		RunE:  command.ShowHelp(maliceCli.Err()),
 	}
 
-	cmd.AddCommand()
+	cmd.AddCommand(
+		newWatchFolderCommand(maliceCli),
+		newNetworkCaptureCommand(maliceCli),
+	)
 	return cmd
 }

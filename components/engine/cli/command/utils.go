@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/docker/docker/pkg/system"
 	"github.com/maliceio/engine/api/types/filters"
-	"github.com/maliceio/engine/pkg/system"
 )
 
 // CopyToFile writes the content of the reader to the specified file

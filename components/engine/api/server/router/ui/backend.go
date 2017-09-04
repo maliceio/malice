@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/docker/distribution/reference"
-	enginetypes "github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/filters"
-	"github.com/docker/docker/plugin"
+	enginetypes "github.com/maliceio/engine/api/types"
+	"github.com/maliceio/engine/api/types/filters"
+	"github.com/maliceio/engine/plugin"
 	"golang.org/x/net/context"
 )
 

@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
 	"github.com/maliceio/engine/api/errdefs"
 	"github.com/maliceio/engine/api/types"
 	"github.com/maliceio/engine/api/types/versions"
-	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 )

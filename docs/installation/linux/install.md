@@ -25,8 +25,10 @@ Download Pre-Compiled Binary
 
 #### Install Malice
 
+> **NOTE:** Grab the **latest** release [here](https://github.com/maliceio/malice/releases/latest)
+
 ```bash
-$ wget https://github.com/maliceio/malice/releases/download/v0.3.2/malice_linux_amd64.tar.gz -O /tmp/malice.tar.gz
+$ wget https://github.com/maliceio/malice/releases/download/0.3.11/malice_linux_amd64.tar.gz -O /tmp/malice.tar.gz
 $ sudo tar -xzf /tmp/malice.tar.gz -C /usr/local/bin/
 ```
 
@@ -45,7 +47,7 @@ Install From Source
 #### Install Go
 
 ```bash
-$ GO_VERSION=1.7.1
+$ GO_VERSION=1.8.3
 $ ARCH="$(dpkg --print-architecture)"
 $ wget https://storage.googleapis.com/golang/go$GO_VERSION.linux-$ARCH.tar.gz -O /tmp/go.tar.gz
 $ tar -C /usr/local -xzf /tmp/go.tar.gz

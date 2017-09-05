@@ -1,0 +1,62 @@
+# Copyright (c) 2013 - 2017 blacktop Joshua Maine, All Rights Reserved.
+# See LICENSE for license information.
+
+#######################################################################
+# MALICE Configuration #################################################
+#######################################################################
+
+title = "Malice Runtime Configuration"
+version = "v0.3.11"
+
+[author]
+  name = "blacktop"
+  organization = "MaliceIO"
+
+[web]
+  url = "0.0.0.0:80"
+  admin_url = "127.0.0.1:3333"
+
+[email]
+  host = "smtp.example.com"
+  port = 25
+  user = "username"
+  pass = "password"
+
+[database]
+  name = "malice-elastic"
+  image = "malice/elasticsearch:5.5"
+  server = "localhost"
+  ports = [9200]
+  timeout = 20
+  enabled = true
+
+[ui]
+  name = "malice-kibana"
+  image = "malice/kibana:5.5"
+  server = "localhost"
+  ports = [443]
+  enabled = true
+
+[environment]
+  run = "development"
+
+[docker]
+  machine-name = "malice"
+  endpoint = "tcp://localhost:2376"
+  timeout = 120
+  binds = "malice:/malware:ro"
+  links = "malice-elastic:elasticsearch"
+  cpu = 500000000
+  memory = 524288000
+
+[logger]
+  filename = "malice.log"
+  maxsize = 10
+  maxage = 30
+  maxbackups = 7
+  localtime = false
+
+[proxy]
+  enable = false
+  http = ""
+  https = ""

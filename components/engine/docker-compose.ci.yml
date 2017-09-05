@@ -1,0 +1,29 @@
+version: '3.3'
+
+services:
+
+  elasticsearch:
+    image: malice/elasticsearch
+
+  api:
+    build:
+      context: .
+    image: malice/engine
+    ports:
+      - "3333:3333"
+    environment:
+      - PORT=3333
+    secrets:
+      — AWS_BUCKET_NAME
+      — AWS_ACCESS_KEY_ID
+      — AWS_SECRET_ACCESS_KEY
+    networks:
+      — backend
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  httpie:
+    image: blacktop/httpie
+    links:
+      - api

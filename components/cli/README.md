@@ -1,0 +1,2 @@
+# cli
+The Malice CLI

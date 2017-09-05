@@ -1,0 +1,72 @@
+
+builds:
+  -
+    main: ./cmd/malice
+    binary: malice
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+    ldflags: |-
+      -s
+      -w
+      -X github.com/maliceio/cli/version.Version={{.Version}}
+      -X github.com/maliceio/cli/malice/version.BuildTime={{.Date}}
+      -X github.com/maliceio/cli/malice/version.GitCommit={{.Commit}}
+
+archive:
+  files:
+    - contrib/completion/zsh/_malice
+    - contrib/completion/bash/malice
+  format: tar.gz
+  format_overrides:
+    - goos: windows
+      format: zip
+  replacements:
+    amd64: amd64
+    darwin: macOS
+    linux: linux
+    windows: win
+
+brew:
+  github:
+    owner: maliceio
+    name: homebrew-tap
+  folder: Formula
+  homepage: "https://github.com/maliceio/malice"
+  description: "Open Source Malware Analysis Framework."
+  install: |
+    bin.install "malice"
+    zsh_completion.install "contrib/completion/zsh/_malice"
+    bash_completion.install "contrib/completion/bash/malice"
+  test: |
+    system "#{bin}/malice --version"
+cli
+fpm:
+  vendor: MaliceIO
+  homepage: https://malice.io/
+  maintainer: <Blacktop github.com/blacktop>
+  description: Open Source Malware Analysis Framework.
+  license: Apache 2.0
+  formats:
+    - deb
+    - rpm
+  files:
+    "contrib/completion/zsh/_malice": "$HOME/.zsh/completion/_malice"
+    "contrib/completion/bash/malice": "/etc/bash_completion.d/malice"
+
+snapcraft:
+  name: malice
+  summary: Open Source Malware Analysis Framework.
+  description: |
+    Malice's mission is to be a free open source version of VirusTotal that anyone can use at any scale from an independent researcher to a fortune 500 company.
+  grade: stable
+  confinement: strict
+  apps:
+    malice:
+      plugs: ["home", "network"]
+      daemon: simple

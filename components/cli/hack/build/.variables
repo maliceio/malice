@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -eu
+
+VERSION=${VERSION:-"unknown-version"}
+GITCOMMIT=${GITCOMMIT:-$(git rev-parse --short HEAD 2> /dev/null || true)}
+BUILDTIME=${BUILDTIME:-$(date --utc --rfc-3339 ns 2> /dev/null | sed -e 's/ /T/')}
+
+export LDFLAGS="\
+    -s \
+    -w \
+    -X github.com/maliceio/cli/malice/version.GitCommit=${GITCOMMIT} \
+    -X github.com/maliceio/cli/malice/version.BuildTime=${BUILDTIME} \
+    -X github.com/maliceio/cli/malice/version.Version=${VERSION} \
+    ${LDFLAGS:-} \
+"
+echo "$LDFLAGS"
+GOOS="${GOOS:-$(go env GOHOSTOS)}"
+GOARCH="${GOARCH:-$(go env GOHOSTARCH)}"
+export TARGET="build/malice-$GOOS-$GOARCH"
+export SOURCE="github.com/maliceio/cli/cmd/malice"

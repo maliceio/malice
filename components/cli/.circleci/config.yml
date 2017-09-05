@@ -1,0 +1,62 @@
+version: 2
+jobs:
+  build:
+    working_directory: /app
+    docker:
+      - image: docker:17.07.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 17.07.0-ce
+      - restore_cache:
+          keys:
+            - v1-{{ .Branch }}
+          paths:
+            - /caches/app.tar
+      - run:
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i /caches/app.tar | true
+      - run:
+          name: Build application Docker image
+          command: |
+            docker version
+            docker build --cache-from=app -t app .
+      - run:
+          name: Get Docker image size
+          command: |
+            mkdir /tmp/artifacts;
+            docker images --format "{{.Size}}" app > /tmp/artifacts/size;
+      - store_artifacts:
+          path: /tmp/artifacts
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/app.tar app
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/app.tar
+      - run:
+          name: Run image tests
+          no_output_timeout: 1m
+          command: |
+            set -x
+            docker run --rm app --help
+      # - run:
+      #     name: Run tests
+      #     command: |
+      #       docker-compose -f ./docker-compose.ci.yml up -d
+      #       docker-compose -f docker-compose.ci.yml run httpie http://api:3333/login username=admin password=admin
+
+      # - deploy:
+      #     name: Push application Docker image
+      #     command: |
+      #       if [ "${CIRCLE_BRANCH}" == "master" ]; then
+      #         login="$(aws ecr get-login)"
+      #         ${login}
+      #         docker tag app "${ECR_ENDPOINT}/app:${CIRCLE_SHA1}"
+      #         docker push "${ECR_ENDPOINT}/app:${CIRCLE_SHA1}"
+      #       fi

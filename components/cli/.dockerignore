@@ -1,0 +1,18 @@
+# Ignore .git folder
+.git*
+.gitignore
+.gitattributes
+
+.circle*
+.vscode*
+docs*
+terraform*
+
+README.md
+README.md.bu
+NOTES.md
+LICENSE
+CHANGELOG.md
+Makefile
+
+docker-compose.ci.yml

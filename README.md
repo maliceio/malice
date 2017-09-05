@@ -37,7 +37,7 @@ Usage: malice [OPTIONS] COMMAND [arg...]
 
 Open Source Malware Analysis Framework
 
-Version: 0.3.0-beta
+Version: 0.3.11
 
 Author:
   blacktop - <https://github.com/blacktop>
@@ -114,10 +114,20 @@ Documentation
 
 ### Known Issues :warning:
 
-I have noticed when running the new **5.0** version of [blacktop/elastic-stack](https://github.com/blacktop/docker-elastic-stack) on a linux host you need to increase the memory map areas with the following command
+I have noticed when running the new **5.0+** version of [malice/elasticsearch](https://github.com/maliceio/elasticsearch) on a linux host you need to increase the memory map areas with the following command
 
 ```bash
 sudo sysctl -w vm.max_map_count=262144
+```
+
+Elasticsearch requires at least **4GB** of RAM to run. You can lower it to **2GB** by running the following *\(**before running a scan**\)*:
+
+```bash
+$ docker run -d \
+         -p 9200:9200 \
+         -name malice-elastic \
+         -e ES_JAVA_OPTS="-Xms2g -Xmx2g" \
+         malice/elasticsearch
 ```
 
 ### Issues

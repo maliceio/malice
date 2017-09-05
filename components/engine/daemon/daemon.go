@@ -1,9 +1,10 @@
 package daemon
 
 import (
+	"github.com/Sirupsen/logrus"
 	"github.com/maliceio/engine/daemon/config"
-	"github.com/maliceio/engine/plugin"
 	"github.com/maliceio/engine/malice/version"
+	"github.com/maliceio/engine/plugin"
 )
 
 // Daemon holds information about the Docker daemon.
@@ -34,10 +35,10 @@ type Daemon struct {
 // requests from the webserver.
 func NewDaemon(config *config.Config) (daemon *Daemon, err error) {
 
-		// Validate platform-specific requirements
-		if err := checkSystem(); err != nil {
-			return nil, err
-		}
+	// Validate platform-specific requirements
+	if err := checkSystem(); err != nil {
+		return nil, err
+	}
 
 	d := &Daemon{
 		configStore: config,
@@ -80,11 +81,11 @@ func NewDaemon(config *config.Config) (daemon *Daemon, err error) {
 	// }
 
 	logrus.WithFields(logrus.Fields{
-		"version":        version.Version,
-		"commit":         version.GitCommit,
+		"version": version.Version,
+		"commit":  version.GitCommit,
 	}).Info("Malice daemon")
 
-	return d nill
+	return d, nil
 }
 
 func (daemon *Daemon) waitForStartupDone() {

@@ -59,7 +59,7 @@ func parsePluginOutput(pluginOutput string, all bool) resultsData {
 	}
 	// build results data
 	for i := 0; i < len(keepLines); i++ {
-		
+
 	}
 
 	return results
@@ -103,18 +103,18 @@ func main() {
 	app.Usage = "{{ usage }}"
 	var table bool
 	var all bool
-	var elasitcsearch string
+	var elasticsearch string
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
 			Name:  "verbose, V",
 			Usage: "verbose output",
 		},
 		cli.StringFlag{
-			Name:        "elasitcsearch",
+			Name:        "elasticsearch",
 			Value:       "",
-			Usage:       "elasitcsearch address for Malice to store results",
+			Usage:       "elasticsearch address for Malice to store results",
 			EnvVar:      "MALICE_ELASTICSEARCH",
-			Destination: &elasitcsearch,
+			Destination: &elasticsearch,
 		},
 		cli.BoolFlag{
 			Name:   "post, p",

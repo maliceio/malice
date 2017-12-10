@@ -1,4 +1,4 @@
-FROM alpine:3.6
+FROM alpine:3.5
 
 LABEL maintainer "https://github.com/blacktop"
 
@@ -12,7 +12,8 @@ RUN apk add --no-cache -t build-deps go git mercurial build-base gcc file-dev li
   && git config --global http.https://gopkg.in.followRedirects true \
   && export GOPATH=/go \
   && go version \
-  && CGO_ENABLED=0 go build -i -a -installsuffix cgo -ldflags "-X main.Version=$(cat VERSION) -X main.BuildTime=$(date -u +%Y%m%d)" -o /bin/malice \
+  && go get -d \
+  && CGO_ENABLED=0 go build -ldflags "-X main.Version=$(cat VERSION) -X main.BuildTime=$(date -u +%Y%m%d)" -o /bin/malice \
   && echo "Copy malice config files..." \
   && mkdir /malice \
   && cp /go/src/github.com/maliceio/malice/config/config.toml /malice \

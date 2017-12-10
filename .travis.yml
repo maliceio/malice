@@ -7,10 +7,8 @@ services:
   - docker
 
 before_install:
-  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
   - sudo apt-get update
-  - sudo apt-get -y install docker-ce
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
   - docker --version
   - docker pull blacktop/elasticsearch
   - sudo sysctl -w vm.max_map_count=262144
@@ -22,7 +20,7 @@ install:
 script:
   - make test
   - ./malice-travis -D elk
-  - go test -race -coverprofile=coverage.txt -covermode=atomic
+  - go test -race -coverprofile=coverage.txt -covermode=atomic  
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

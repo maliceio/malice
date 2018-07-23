@@ -129,7 +129,7 @@ title = "Malice Plugin Configurations"
   mime = "*"
   env = ["MALICE_TIMEOUT"]
   keysrc = "~/.malice/plugins/avira/hbedv.key"
-  keydst = "/opt/avira/hbedv.key"  
+  keydst = "/opt/avira/hbedv.key"
 
 [[plugin]]
   enabled = true
@@ -264,7 +264,7 @@ title = "Malice Plugin Configurations"
   env = ["MALICE_TIMEOUT"]
 
 [[plugin]]
-  enabled = false
+  enabled = true
   name = "pdf"
   description = "PDF - tool to triage PDF documents"
   category = "document"

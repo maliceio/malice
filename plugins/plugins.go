@@ -34,6 +34,8 @@ func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID strin
 	env := plugin.getPluginEnv()
 
 	env = append(env, "MALICE_SCANID="+scanID)
+	env = append(env, "MALICE_ELASTICSEARCH=elasticsearch")
+
 	log.WithFields(log.Fields{
 		"name": plugin.Name,
 		"env":  config.Conf.Environment.Run,
@@ -116,9 +118,6 @@ func (plugin *Plugin) getPluginEnv() []string {
 	for _, pluginEnv := range plugin.Env {
 		if os.Getenv(pluginEnv) != "" {
 			env = append(env, fmt.Sprintf("%s=%s", pluginEnv, os.Getenv(pluginEnv)))
-			if strings.EqualFold(pluginEnv, "MALICE_ELASTICSEARCH") {
-				env = append(env, fmt.Sprintf("%s=%s", pluginEnv, "elasticsearch"))
-			}
 		}
 	}
 	return env

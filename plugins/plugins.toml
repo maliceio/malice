@@ -273,7 +273,7 @@ title = "Malice Plugin Configurations"
   build = false
   mime = "application/pdf"
   cmd = "scan"
-  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH"]
+  env = ["MALICE_TIMEOUT"]
 
 [[plugin]]
   enabled = false

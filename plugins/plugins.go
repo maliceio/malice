@@ -79,11 +79,11 @@ func (plugin Plugin) buildCmd(args string, logs bool) strslice.StrSlice {
 	if plugin.APIKey != "" {
 		cmdStr = append(cmdStr, "--api", plugin.APIKey)
 	}
-	if logs {
-		cmdStr = append(cmdStr, "-t")
-	}
 	if plugin.Cmd != "" {
 		cmdStr = append(cmdStr, plugin.Cmd)
+	}
+	if logs {
+		cmdStr = append(cmdStr, "-t")
 	}
 	cmdStr = append(cmdStr, args)
 

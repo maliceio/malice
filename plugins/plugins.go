@@ -116,6 +116,9 @@ func (plugin *Plugin) getPluginEnv() []string {
 	for _, pluginEnv := range plugin.Env {
 		if os.Getenv(pluginEnv) != "" {
 			env = append(env, fmt.Sprintf("%s=%s", pluginEnv, os.Getenv(pluginEnv)))
+			if strings.EqualFold(pluginEnv, "MALICE_ELASTICSEARCH") {
+				env = append(env, fmt.Sprintf("%s=%s", pluginEnv, "elasticsearch"))
+			}
 		}
 	}
 	return env

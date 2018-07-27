@@ -272,8 +272,8 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/pdf.git"
   build = false
   mime = "application/pdf"
-  cmd = "scan --elasticsearch elasticsearch"
-  env = ["MALICE_TIMEOUT"]
+  cmd = "scan"
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH"]
 
 [[plugin]]
   enabled = false

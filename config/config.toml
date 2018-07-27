@@ -1,4 +1,4 @@
-# Copyright (c) 2013 - 2017 blacktop Joshua Maine, All Rights Reserved.
+# Copyright (c) 2013 - 2018 blacktop Joshua Maine, All Rights Reserved.
 # See LICENSE for license information.
 
 #######################################################################
@@ -6,7 +6,7 @@
 #######################################################################
 
 title = "Malice Runtime Configuration"
-version = "v0.3.11"
+version = "v0.3.12"
 
 [author]
   name = "blacktop"

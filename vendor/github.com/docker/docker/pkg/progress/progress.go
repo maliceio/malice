@@ -16,9 +16,6 @@ type Progress struct {
 	Current int64
 	Total   int64
 
-	// If true, don't show xB/yB
-	HideCounts bool
-
 	// Aux contains extra information not presented to the user, such as
 	// digests for push signing.
 	Aux interface{}

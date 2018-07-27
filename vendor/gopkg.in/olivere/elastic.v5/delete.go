@@ -5,10 +5,11 @@
 package elastic
 
 import (
+	"context"
 	"fmt"
 	"net/url"
 
-	"golang.org/x/net/context"
+	"net/http"
 
 	"gopkg.in/olivere/elastic.v5/uritemplates"
 )
@@ -169,7 +170,9 @@ func (s *DeleteService) Validate() error {
 	return nil
 }
 
-// Do executes the operation.
+// Do executes the operation. If the document is not found (404), Elasticsearch will
+// still return a response. This response is serialized and returned as well. In other
+// words, for HTTP status code 404, both an error and a response might be returned.
 func (s *DeleteService) Do(ctx context.Context) (*DeleteResponse, error) {
 	// Check pre-conditions
 	if err := s.Validate(); err != nil {
@@ -183,7 +186,7 @@ func (s *DeleteService) Do(ctx context.Context) (*DeleteResponse, error) {
 	}
 
 	// Get HTTP response
-	res, err := s.client.PerformRequest(ctx, "DELETE", path, params, nil)
+	res, err := s.client.PerformRequest(ctx, "DELETE", path, params, nil, http.StatusNotFound)
 	if err != nil {
 		return nil, err
 	}
@@ -193,6 +196,12 @@ func (s *DeleteService) Do(ctx context.Context) (*DeleteResponse, error) {
 	if err := s.client.decoder.Decode(res.Body, ret); err != nil {
 		return nil, err
 	}
+
+	// If we have a 404, we return both a result and an error, just like ES does
+	if res.StatusCode == http.StatusNotFound {
+		return ret, &Error{Status: http.StatusNotFound}
+	}
+
 	return ret, nil
 }
 
@@ -200,10 +209,15 @@ func (s *DeleteService) Do(ctx context.Context) (*DeleteResponse, error) {
 
 // DeleteResponse is the outcome of running DeleteService.Do.
 type DeleteResponse struct {
-	// TODO _shards { total, failed, successful }
-	Found   bool   `json:"found"`
-	Index   string `json:"_index"`
-	Type    string `json:"_type"`
-	Id      string `json:"_id"`
-	Version int64  `json:"_version"`
+	Index         string      `json:"_index,omitempty"`
+	Type          string      `json:"_type,omitempty"`
+	Id            string      `json:"_id,omitempty"`
+	Version       int64       `json:"_version,omitempty"`
+	Result        string      `json:"result,omitempty"`
+	Shards        *shardsInfo `json:"_shards,omitempty"`
+	SeqNo         int64       `json:"_seq_no,omitempty"`
+	PrimaryTerm   int64       `json:"_primary_term,omitempty"`
+	Status        int         `json:"status,omitempty"`
+	ForcedRefresh bool        `json:"forced_refresh,omitempty"`
+	Found         bool        `json:"found,omitempty"`
 }

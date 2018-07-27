@@ -41,6 +41,13 @@ conn, err := p.Get()
 // to the pool).
 conn.Close()
 
+// close the underlying connection instead of returning it to pool
+// it is useful when acceptor has already closed connection and conn.Write() returns error
+if pc, ok := conn.(*pool.PoolConn); ok {
+  pc.MarkUnusable()
+  pc.Close()
+}
+
 // close pool any time you want, this closes all the connections inside a pool
 p.Close()
 

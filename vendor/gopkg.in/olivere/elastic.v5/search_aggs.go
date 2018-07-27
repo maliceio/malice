@@ -248,6 +248,21 @@ func (a Aggregations) Filters(name string) (*AggregationBucketFilters, bool) {
 	return nil, false
 }
 
+// AdjacencyMatrix returning a form of adjacency matrix.
+// See: https://www.elastic.co/guide/en/elasticsearch/reference/5.6/search-aggregations-bucket-adjacency-matrix-aggregation.html
+func (a Aggregations) AdjacencyMatrix(name string) (*AggregationBucketAdjacencyMatrix, bool) {
+	if raw, found := a[name]; found {
+		agg := new(AggregationBucketAdjacencyMatrix)
+		if raw == nil {
+			return agg, true
+		}
+		if err := json.Unmarshal(*raw, agg); err == nil {
+			return agg, true
+		}
+	}
+	return nil, false
+}
+
 // Missing returns missing results.
 // See: https://www.elastic.co/guide/en/elasticsearch/reference/5.2/search-aggregations-bucket-missing-aggregation.html
 func (a Aggregations) Missing(name string) (*AggregationSingleBucket, bool) {
@@ -353,6 +368,21 @@ func (a Aggregations) Sampler(name string) (*AggregationSingleBucket, bool) {
 	return nil, false
 }
 
+// DiversifiedSampler returns diversified_sampler aggregation results.
+// See: https://www.elastic.co/guide/en/elasticsearch/reference/5.6/search-aggregations-bucket-diversified-sampler-aggregation.html
+func (a Aggregations) DiversifiedSampler(name string) (*AggregationSingleBucket, bool) {
+	if raw, found := a[name]; found {
+		agg := new(AggregationSingleBucket)
+		if raw == nil {
+			return agg, true
+		}
+		if err := json.Unmarshal(*raw, agg); err == nil {
+			return agg, true
+		}
+	}
+	return nil, false
+}
+
 // Range returns range aggregation results.
 // See: https://www.elastic.co/guide/en/elasticsearch/reference/5.2/search-aggregations-bucket-range-aggregation.html
 func (a Aggregations) Range(name string) (*AggregationBucketRangeItems, bool) {
@@ -398,9 +428,9 @@ func (a Aggregations) DateRange(name string) (*AggregationBucketRangeItems, bool
 	return nil, false
 }
 
-// IPv4Range returns IPv4 range aggregation results.
-// See: https://www.elastic.co/guide/en/elasticsearch/reference/5.2/search-aggregations-bucket-iprange-aggregation.html
-func (a Aggregations) IPv4Range(name string) (*AggregationBucketRangeItems, bool) {
+// IPRange returns IP range aggregation results.
+// See: https://www.elastic.co/guide/en/elasticsearch/reference/5.6/search-aggregations-bucket-iprange-aggregation.html
+func (a Aggregations) IPRange(name string) (*AggregationBucketRangeItems, bool) {
 	if raw, found := a[name]; found {
 		agg := new(AggregationBucketRangeItems)
 		if raw == nil {
@@ -473,6 +503,21 @@ func (a Aggregations) GeoHash(name string) (*AggregationBucketKeyItems, bool) {
 	return nil, false
 }
 
+// GeoCentroid returns geo-centroid aggregation results.
+// See: https://www.elastic.co/guide/en/elasticsearch/reference/5.6/search-aggregations-metrics-geocentroid-aggregation.html
+func (a Aggregations) GeoCentroid(name string) (*AggregationGeoCentroidMetric, bool) {
+	if raw, found := a[name]; found {
+		agg := new(AggregationGeoCentroidMetric)
+		if raw == nil {
+			return agg, true
+		}
+		if err := json.Unmarshal(*raw, agg); err == nil {
+			return agg, true
+		}
+	}
+	return nil, false
+}
+
 // GeoDistance returns geo distance aggregation results.
 // See: https://www.elastic.co/guide/en/elasticsearch/reference/5.2/search-aggregations-bucket-geodistance-aggregation.html
 func (a Aggregations) GeoDistance(name string) (*AggregationBucketRangeItems, bool) {
@@ -523,6 +568,21 @@ func (a Aggregations) SumBucket(name string) (*AggregationPipelineSimpleValue, b
 func (a Aggregations) StatsBucket(name string) (*AggregationPipelineStatsMetric, bool) {
 	if raw, found := a[name]; found {
 		agg := new(AggregationPipelineStatsMetric)
+		if raw == nil {
+			return agg, true
+		}
+		if err := json.Unmarshal(*raw, agg); err == nil {
+			return agg, true
+		}
+	}
+	return nil, false
+}
+
+// PercentilesBucket returns stats bucket pipeline aggregation results.
+// See https://www.elastic.co/guide/en/elasticsearch/reference/5.2/search-aggregations-pipeline-percentiles-bucket-aggregation.html
+func (a Aggregations) PercentilesBucket(name string) (*AggregationPipelinePercentilesMetric, bool) {
+	if raw, found := a[name]; found {
+		agg := new(AggregationPipelinePercentilesMetric)
 		if raw == nil {
 			return agg, true
 		}
@@ -890,6 +950,41 @@ func (a *AggregationGeoBoundsMetric) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// -- Geo Centroid --
+
+// AggregationGeocentroidMetric is a metric as returned by a GeoCentroid aggregation.
+type AggregationGeoCentroidMetric struct {
+	Aggregations
+
+	Location struct {
+		Latitude  float64 `json:"lat"`
+		Longitude float64 `json:"lon"`
+	} `json:"location"`
+
+	Count int // `json:"count,omitempty"`
+
+	Meta map[string]interface{} // `json:"meta,omitempty"`
+}
+
+// UnmarshalJSON decodes JSON data and initializes an AggregationGeoCentroidMetric structure.
+func (a *AggregationGeoCentroidMetric) UnmarshalJSON(data []byte) error {
+	var aggs map[string]*json.RawMessage
+	if err := json.Unmarshal(data, &aggs); err != nil {
+		return err
+	}
+	if v, ok := aggs["location"]; ok && v != nil {
+		json.Unmarshal(*v, &a.Location)
+	}
+	if v, ok := aggs["meta"]; ok && v != nil {
+		json.Unmarshal(*v, &a.Meta)
+	}
+	if v, ok := aggs["count"]; ok && v != nil {
+		json.Unmarshal(*v, &a.Count)
+	}
+	a.Aggregations = aggs
+	return nil
+}
+
 // -- Single bucket --
 
 // AggregationSingleBucket is a single bucket, returned e.g. via an aggregation of type Global.
@@ -1183,6 +1278,33 @@ func (a *AggregationBucketFilters) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// -- Bucket AdjacencyMatrix --
+
+// AggregationBucketAdjacencyMatrix is a multi-bucket aggregation that is returned
+// with a AdjacencyMatrix aggregation.
+type AggregationBucketAdjacencyMatrix struct {
+	Aggregations
+
+	Buckets []*AggregationBucketKeyItem //`json:"buckets"`
+	Meta    map[string]interface{}      // `json:"meta,omitempty"`
+}
+
+// UnmarshalJSON decodes JSON data and initializes an AggregationBucketAdjacencyMatrix structure.
+func (a *AggregationBucketAdjacencyMatrix) UnmarshalJSON(data []byte) error {
+	var aggs map[string]*json.RawMessage
+	if err := json.Unmarshal(data, &aggs); err != nil {
+		return err
+	}
+	if v, ok := aggs["buckets"]; ok && v != nil {
+		json.Unmarshal(*v, &a.Buckets)
+	}
+	if v, ok := aggs["meta"]; ok && v != nil {
+		json.Unmarshal(*v, &a.Meta)
+	}
+	a.Aggregations = aggs
+	return nil
+}
+
 // -- Bucket histogram items --
 
 // AggregationBucketHistogramItems is a bucket aggregation that is returned
@@ -1399,6 +1521,33 @@ func (a *AggregationPipelineStatsMetric) UnmarshalJSON(data []byte) error {
 	}
 	if v, ok := aggs["sum_as_string"]; ok && v != nil {
 		json.Unmarshal(*v, &a.SumAsString)
+	}
+	if v, ok := aggs["meta"]; ok && v != nil {
+		json.Unmarshal(*v, &a.Meta)
+	}
+	a.Aggregations = aggs
+	return nil
+}
+
+// -- Pipeline percentiles
+
+// AggregationPipelinePercentilesMetric is the value returned by a pipeline
+// percentiles Metric aggregation
+type AggregationPipelinePercentilesMetric struct {
+	Aggregations
+
+	Values map[string]float64     // `json:"values"`
+	Meta   map[string]interface{} // `json:"meta,omitempty"`
+}
+
+// UnmarshalJSON decodes JSON data and initializes an AggregationPipelinePercentilesMetric structure.
+func (a *AggregationPipelinePercentilesMetric) UnmarshalJSON(data []byte) error {
+	var aggs map[string]*json.RawMessage
+	if err := json.Unmarshal(data, &aggs); err != nil {
+		return err
+	}
+	if v, ok := aggs["values"]; ok && v != nil {
+		json.Unmarshal(*v, &a.Values)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
 		json.Unmarshal(*v, &a.Meta)

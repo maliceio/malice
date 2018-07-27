@@ -179,10 +179,10 @@ type Info struct {
 	Error            string
 
 	RemoteManagers []Peer
-	Nodes          int `json:",omitempty"`
-	Managers       int `json:",omitempty"`
+	Nodes          int
+	Managers       int
 
-	Cluster *ClusterInfo `json:",omitempty"`
+	Cluster ClusterInfo
 }
 
 // Peer represents a peer.

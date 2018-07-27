@@ -5,11 +5,9 @@
 package elastic
 
 import (
+	"context"
 	"fmt"
 	"net/url"
-	"strings"
-
-	"golang.org/x/net/context"
 )
 
 // ClearScrollService clears one or more scroll contexts by their ids.
@@ -82,7 +80,9 @@ func (s *ClearScrollService) Do(ctx context.Context) (*ClearScrollResponse, erro
 	}
 
 	// Setup HTTP request body
-	body := strings.Join(s.scrollId, ",")
+	body := map[string][]string{
+		"scroll_id": s.scrollId,
+	}
 
 	// Get HTTP response
 	res, err := s.client.PerformRequest(ctx, "DELETE", path, params, body)

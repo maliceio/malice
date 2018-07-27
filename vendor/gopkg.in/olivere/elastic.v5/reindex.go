@@ -5,10 +5,9 @@
 package elastic
 
 import (
+	"context"
 	"fmt"
 	"net/url"
-
-	"golang.org/x/net/context"
 )
 
 // ReindexService is a method to copy documents from one index to another.
@@ -21,6 +20,7 @@ type ReindexService struct {
 	waitForActiveShards string
 	waitForCompletion   *bool
 	requestsPerSecond   *int
+	slices              *int
 	body                interface{}
 	source              *ReindexSource
 	destination         *ReindexDestination
@@ -49,6 +49,12 @@ func (s *ReindexService) WaitForActiveShards(waitForActiveShards string) *Reinde
 // -1 means set no throttle as does "unlimited" which is the only non-float this accepts.
 func (s *ReindexService) RequestsPerSecond(requestsPerSecond int) *ReindexService {
 	s.requestsPerSecond = &requestsPerSecond
+	return s
+}
+
+// Slices specifies the number of slices this task should be divided into. Defaults to 1.
+func (s *ReindexService) Slices(slices int) *ReindexService {
+	s.slices = &slices
 	return s
 }
 
@@ -180,6 +186,9 @@ func (s *ReindexService) buildURL() (string, url.Values, error) {
 	if s.requestsPerSecond != nil {
 		params.Set("requests_per_second", fmt.Sprintf("%v", *s.requestsPerSecond))
 	}
+	if s.slices != nil {
+		params.Set("slices", fmt.Sprintf("%v", *s.slices))
+	}
 	if s.waitForActiveShards != "" {
 		params.Set("wait_for_active_shards", s.waitForActiveShards)
 	}
@@ -281,11 +290,53 @@ func (s *ReindexService) Do(ctx context.Context) (*BulkIndexByScrollResponse, er
 	return ret, nil
 }
 
+// DoAsync executes the reindexing operation asynchronously by starting a new task.
+// Callers need to use the Task Management API to watch the outcome of the reindexing
+// operation.
+func (s *ReindexService) DoAsync(ctx context.Context) (*StartTaskResult, error) {
+	// Check pre-conditions
+	if err := s.Validate(); err != nil {
+		return nil, err
+	}
+
+	// DoAsync only makes sense with WaitForCompletion set to true
+	if s.waitForCompletion != nil && *s.waitForCompletion {
+		return nil, fmt.Errorf("cannot start a task with WaitForCompletion set to true")
+	}
+	f := false
+	s.waitForCompletion = &f
+
+	// Get URL for request
+	path, params, err := s.buildURL()
+	if err != nil {
+		return nil, err
+	}
+
+	// Setup HTTP request body
+	body, err := s.getBody()
+	if err != nil {
+		return nil, err
+	}
+
+	// Get HTTP response
+	res, err := s.client.PerformRequest(ctx, "POST", path, params, body)
+	if err != nil {
+		return nil, err
+	}
+
+	// Return operation response
+	ret := new(StartTaskResult)
+	if err := s.client.decoder.Decode(res.Body, ret); err != nil {
+		return nil, err
+	}
+	return ret, nil
+}
+
 // -- Source of Reindex --
 
 // ReindexSource specifies the source of a Reindex process.
 type ReindexSource struct {
-	searchType   string // default in ES is "query_then_fetch"
+	searchType   string
 	indices      []string
 	types        []string
 	routing      *string
@@ -296,6 +347,7 @@ type ReindexSource struct {
 	sorts        []SortInfo
 	sorters      []Sorter
 	searchSource *SearchSource
+	remoteInfo   *ReindexRemoteInfo
 }
 
 // NewReindexSource creates a new ReindexSource.
@@ -360,9 +412,15 @@ func (s *ReindexSource) SortWithInfo(info SortInfo) *ReindexSource {
 	return s
 }
 
-// SortBy	adds a sort order.
+// SortBy adds a sort order.
 func (s *ReindexSource) SortBy(sorter ...Sorter) *ReindexSource {
 	s.sorters = append(s.sorters, sorter...)
+	return s
+}
+
+// RemoteInfo sets up reindexing from a remote cluster.
+func (s *ReindexSource) RemoteInfo(ri *ReindexRemoteInfo) *ReindexSource {
+	s.remoteInfo = ri
 	return s
 }
 
@@ -416,6 +474,14 @@ func (r *ReindexSource) Source() (interface{}, error) {
 		source["scroll"] = r.scroll
 	}
 
+	if r.remoteInfo != nil {
+		src, err := r.remoteInfo.Source()
+		if err != nil {
+			return nil, err
+		}
+		source["remote"] = src
+	}
+
 	if len(r.sorters) > 0 {
 		var sortarr []interface{}
 		for _, sorter := range r.sorters {
@@ -439,6 +505,72 @@ func (r *ReindexSource) Source() (interface{}, error) {
 	}
 
 	return source, nil
+}
+
+// ReindexRemoteInfo contains information for reindexing from a remote cluster.
+type ReindexRemoteInfo struct {
+	host           string
+	username       string
+	password       string
+	socketTimeout  string // e.g. "1m" or "30s"
+	connectTimeout string // e.g. "1m" or "30s"
+}
+
+// NewReindexRemoteInfo creates a new ReindexRemoteInfo.
+func NewReindexRemoteInfo() *ReindexRemoteInfo {
+	return &ReindexRemoteInfo{}
+}
+
+// Host sets the host information of the remote cluster.
+// It must be of the form "http(s)://<hostname>:<port>"
+func (ri *ReindexRemoteInfo) Host(host string) *ReindexRemoteInfo {
+	ri.host = host
+	return ri
+}
+
+// Username sets the username to authenticate with the remote cluster.
+func (ri *ReindexRemoteInfo) Username(username string) *ReindexRemoteInfo {
+	ri.username = username
+	return ri
+}
+
+// Password sets the password to authenticate with the remote cluster.
+func (ri *ReindexRemoteInfo) Password(password string) *ReindexRemoteInfo {
+	ri.password = password
+	return ri
+}
+
+// SocketTimeout sets the socket timeout to connect with the remote cluster.
+// Use ES compatible values like e.g. "30s" or "1m".
+func (ri *ReindexRemoteInfo) SocketTimeout(timeout string) *ReindexRemoteInfo {
+	ri.socketTimeout = timeout
+	return ri
+}
+
+// ConnectTimeout sets the connection timeout to connect with the remote cluster.
+// Use ES compatible values like e.g. "30s" or "1m".
+func (ri *ReindexRemoteInfo) ConnectTimeout(timeout string) *ReindexRemoteInfo {
+	ri.connectTimeout = timeout
+	return ri
+}
+
+// Source returns the serializable JSON data for the request.
+func (ri *ReindexRemoteInfo) Source() (interface{}, error) {
+	res := make(map[string]interface{})
+	res["host"] = ri.host
+	if len(ri.username) > 0 {
+		res["username"] = ri.username
+	}
+	if len(ri.password) > 0 {
+		res["password"] = ri.password
+	}
+	if len(ri.socketTimeout) > 0 {
+		res["socket_timeout"] = ri.socketTimeout
+	}
+	if len(ri.connectTimeout) > 0 {
+		res["connect_timeout"] = ri.connectTimeout
+	}
+	return res, nil
 }
 
 // -source Destination of Reindex --

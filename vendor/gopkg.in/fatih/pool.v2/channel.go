@@ -50,18 +50,19 @@ func NewChannelPool(initialCap, maxCap int, factory Factory) (Pool, error) {
 	return c, nil
 }
 
-func (c *channelPool) getConns() chan net.Conn {
+func (c *channelPool) getConnsAndFactory() (chan net.Conn, Factory) {
 	c.mu.Lock()
 	conns := c.conns
+	factory := c.factory
 	c.mu.Unlock()
-	return conns
+	return conns, factory
 }
 
 // Get implements the Pool interfaces Get() method. If there is no new
 // connection available in the pool, a new connection will be created via the
 // Factory() method.
 func (c *channelPool) Get() (net.Conn, error) {
-	conns := c.getConns()
+	conns, factory := c.getConnsAndFactory()
 	if conns == nil {
 		return nil, ErrClosed
 	}
@@ -76,7 +77,7 @@ func (c *channelPool) Get() (net.Conn, error) {
 
 		return c.wrapConn(conn), nil
 	default:
-		conn, err := c.factory()
+		conn, err := factory()
 		if err != nil {
 			return nil, err
 		}
@@ -128,4 +129,7 @@ func (c *channelPool) Close() {
 	}
 }
 
-func (c *channelPool) Len() int { return len(c.getConns()) }
+func (c *channelPool) Len() int {
+	conns, _ := c.getConnsAndFactory()
+	return len(conns)
+}

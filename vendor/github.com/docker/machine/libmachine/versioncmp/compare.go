@@ -27,12 +27,12 @@ func compare(v1, v2 string) int {
 
 	// All releases before the community edition (differentiated by
 	// presence of the "ce" string in the version string) are "less than"
-	// any community edition release (first occuring in March 2017).
+	// any community edition release (first occurring in March 2017).
 	if strings.Contains(v1, ceEdition) && !strings.Contains(v2, ceEdition) {
-		return -1
+		return 1
 	}
 	if !strings.Contains(v1, ceEdition) && strings.Contains(v2, ceEdition) {
-		return 1
+		return -1
 	}
 
 	// Without this tag, both are pre-CE versions.

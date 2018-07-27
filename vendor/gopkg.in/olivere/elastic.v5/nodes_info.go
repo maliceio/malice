@@ -5,12 +5,11 @@
 package elastic
 
 import (
+	"context"
 	"fmt"
 	"net/url"
 	"strings"
 	"time"
-
-	"golang.org/x/net/context"
 
 	"gopkg.in/olivere/elastic.v5/uritemplates"
 )
@@ -150,6 +149,9 @@ type NodesInfoNode struct {
 	HTTPAddress string `json:"http_address"`
 	// HTTPSAddress, e.g. "127.0.0.1:9200"
 	HTTPSAddress string `json:"https_address"`
+
+	// Roles of the node, e.g. [master, ingest, data]
+	Roles []string `json:"roles"`
 
 	// Attributes of the node.
 	Attributes map[string]interface{} `json:"attributes"`

@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/docker/docker/pkg/term"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -52,7 +51,7 @@ var helpCommand = &cobra.Command{
 	RunE: func(c *cobra.Command, args []string) error {
 		cmd, args, e := c.Root().Find(args)
 		if cmd == nil || e != nil || len(args) > 0 {
-			return errors.Errorf("unknown help topic: %v", strings.Join(args, " "))
+			return fmt.Errorf("unknown help topic: %v", strings.Join(args, " "))
 		}
 
 		helpFunc := cmd.HelpFunc()

@@ -267,7 +267,7 @@ func (info *FileInfo) addChanges(oldInfo *FileInfo, changes *[]Change) {
 	}
 
 	for name, newChild := range info.children {
-		oldChild := oldChildren[name]
+		oldChild, _ := oldChildren[name]
 		if oldChild != nil {
 			// change?
 			oldStat := oldChild.stat
@@ -279,7 +279,7 @@ func (info *FileInfo) addChanges(oldInfo *FileInfo, changes *[]Change) {
 			// breaks down is if some code intentionally hides a change by setting
 			// back mtime
 			if statDifferent(oldStat, newStat) ||
-				!bytes.Equal(oldChild.capability, newChild.capability) {
+				bytes.Compare(oldChild.capability, newChild.capability) != 0 {
 				change := Change{
 					Path: newChild.path(),
 					Kind: ChangeModify,

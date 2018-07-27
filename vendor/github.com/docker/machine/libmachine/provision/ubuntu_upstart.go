@@ -76,7 +76,7 @@ func (provisioner *UbuntuProvisioner) Package(name string, action pkgaction.Pack
 	switch action {
 	case pkgaction.Install, pkgaction.Upgrade:
 		packageAction = "install"
-	case pkgaction.Remove:
+	case pkgaction.Remove, pkgaction.Purge:
 		packageAction = "remove"
 		updateMetadata = false
 	}
@@ -157,9 +157,6 @@ func (provisioner *UbuntuProvisioner) Provision(swarmOptions swarm.Options, auth
 		return err
 	}
 
-	if err := configureSwarm(provisioner, swarmOptions, provisioner.AuthOptions); err != nil {
-		return err
-	}
-
-	return nil
+	err = configureSwarm(provisioner, swarmOptions, provisioner.AuthOptions)
+	return err
 }

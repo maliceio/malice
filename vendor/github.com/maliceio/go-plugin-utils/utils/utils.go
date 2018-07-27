@@ -94,12 +94,15 @@ func RunCommand(ctx context.Context, cmd string, args ...string) (string, error)
 		c = exec.Command(cmd, args...)
 	}
 
-	output, _ := c.Output()
+	output, err := c.Output()
+	if err != nil {
+		return string(output), err
+	}
 
 	// check for exec context timeout
 	if ctx != nil {
 		if ctx.Err() == context.DeadlineExceeded {
-			return "", fmt.Errorf("Command %s timed out.", cmd)
+			return "", fmt.Errorf("command %s timed out", cmd)
 		}
 	}
 
@@ -147,7 +150,7 @@ func GetHashType(hash string) (string, error) {
 	case validSHA512.MatchString(hash):
 		return "sha512", nil
 	default:
-		return "", errors.New("This is not a valid hash.")
+		return "", errors.New("this is not a valid hash")
 	}
 }
 
@@ -179,6 +182,7 @@ func Unzip(archive, target string) error {
 	if err != nil {
 		return err
 	}
+	defer reader.Close()
 
 	for _, file := range reader.File {
 		filePath := filepath.Join(target, file.Name)

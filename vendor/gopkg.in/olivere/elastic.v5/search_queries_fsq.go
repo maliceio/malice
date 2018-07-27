@@ -35,13 +35,11 @@ func NewFunctionScoreQuery() *FunctionScoreQuery {
 // Query sets the query for the function score query.
 func (q *FunctionScoreQuery) Query(query Query) *FunctionScoreQuery {
 	q.query = query
-	q.filter = nil
 	return q
 }
 
 // Filter sets the filter for the function score query.
 func (q *FunctionScoreQuery) Filter(filter Query) *FunctionScoreQuery {
-	q.query = nil
 	q.filter = filter
 	return q
 }
@@ -107,7 +105,8 @@ func (q *FunctionScoreQuery) Source() (interface{}, error) {
 			return nil, err
 		}
 		query["query"] = src
-	} else if q.filter != nil {
+	}
+	if q.filter != nil {
 		src, err := q.filter.Source()
 		if err != nil {
 			return nil, err
@@ -115,18 +114,7 @@ func (q *FunctionScoreQuery) Source() (interface{}, error) {
 		query["filter"] = src
 	}
 
-	if len(q.filters) == 1 && q.filters[0] == nil {
-		// Weight needs to be serialized on this level.
-		if weight := q.scoreFuncs[0].GetWeight(); weight != nil {
-			query["weight"] = weight
-		}
-		// Serialize the score function
-		src, err := q.scoreFuncs[0].Source()
-		if err != nil {
-			return nil, err
-		}
-		query[q.scoreFuncs[0].Name()] = src
-	} else {
+	if len(q.filters) > 0 {
 		funcs := make([]interface{}, len(q.filters))
 		for i, filter := range q.filters {
 			hsh := make(map[string]interface{})

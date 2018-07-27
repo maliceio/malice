@@ -4,6 +4,8 @@
 
 package elastic
 
+//go:generate easyjson bulk_update_request.go
+
 import (
 	"encoding/json"
 	"fmt"
@@ -31,13 +33,52 @@ type BulkUpdateRequest struct {
 	docAsUpsert     *bool
 	detectNoop      *bool
 	doc             interface{}
+	returnSource    *bool
 
 	source []string
+
+	useEasyJSON bool
+}
+
+//easyjson:json
+type bulkUpdateRequestCommand map[string]bulkUpdateRequestCommandOp
+
+//easyjson:json
+type bulkUpdateRequestCommandOp struct {
+	Id              string `json:"_id,omitempty"`
+	Index           string `json:"_index,omitempty"`
+	Type            string `json:"_type,omitempty"`
+	Parent          string `json:"_parent,omitempty"`
+	RetryOnConflict *int   `json:"_retry_on_conflict,omitempty"`
+	Routing         string `json:"_routing,omitempty"`
+	Version         int64  `json:"_version,omitempty"`
+	VersionType     string `json:"_version_type,omitempty"`
+}
+
+//easyjson:json
+type bulkUpdateRequestCommandData struct {
+	DetectNoop     *bool       `json:"detect_noop,omitempty"`
+	Doc            interface{} `json:"doc,omitempty"`
+	DocAsUpsert    *bool       `json:"doc_as_upsert,omitempty"`
+	Upsert         interface{} `json:"upsert,omitempty"`
+	Script         interface{} `json:"script,omitempty"`
+	ScriptedUpsert *bool       `json:"scripted_upsert,omitempty"`
+	Source         *bool       `json:"_source,omitempty"`
 }
 
 // NewBulkUpdateRequest returns a new BulkUpdateRequest.
 func NewBulkUpdateRequest() *BulkUpdateRequest {
 	return &BulkUpdateRequest{}
+}
+
+// UseEasyJSON is an experimental setting that enables serialization
+// with github.com/mailru/easyjson, which should in faster serialization
+// time and less allocations, but removed compatibility with encoding/json,
+// usage of unsafe etc. See https://github.com/mailru/easyjson#issues-notes-and-limitations
+// for details. This setting is disabled by default.
+func (r *BulkUpdateRequest) UseEasyJSON(enable bool) *BulkUpdateRequest {
+	r.useEasyJSON = enable
+	return r
 }
 
 // Index specifies the Elasticsearch index to use for this update request.
@@ -155,6 +196,15 @@ func (r *BulkUpdateRequest) Upsert(doc interface{}) *BulkUpdateRequest {
 	return r
 }
 
+// ReturnSource specifies whether Elasticsearch should return the source
+// after the update. In the request, this responds to the `_source` field.
+// It is false by default.
+func (r *BulkUpdateRequest) ReturnSource(source bool) *BulkUpdateRequest {
+	r.returnSource = &source
+	r.source = nil
+	return r
+}
+
 // String returns the on-wire representation of the update request,
 // concatenated as a single string.
 func (r *BulkUpdateRequest) String() string {
@@ -163,25 +213,6 @@ func (r *BulkUpdateRequest) String() string {
 		return fmt.Sprintf("error: %v", err)
 	}
 	return strings.Join(lines, "\n")
-}
-
-func (r *BulkUpdateRequest) getSourceAsString(data interface{}) (string, error) {
-	switch t := data.(type) {
-	default:
-		body, err := json.Marshal(data)
-		if err != nil {
-			return "", err
-		}
-		return string(body), nil
-	case json.RawMessage:
-		return string(t), nil
-	case *json.RawMessage:
-		return string(*t), nil
-	case string:
-		return t, nil
-	case *string:
-		return *t, nil
-	}
 }
 
 // Source returns the on-wire representation of the update request,
@@ -202,68 +233,64 @@ func (r *BulkUpdateRequest) Source() ([]string, error) {
 	lines := make([]string, 2)
 
 	// "update" ...
-	command := make(map[string]interface{})
-	updateCommand := make(map[string]interface{})
-	if r.index != "" {
-		updateCommand["_index"] = r.index
+	updateCommand := bulkUpdateRequestCommandOp{
+		Index:           r.index,
+		Type:            r.typ,
+		Id:              r.id,
+		Routing:         r.routing,
+		Parent:          r.parent,
+		Version:         r.version,
+		VersionType:     r.versionType,
+		RetryOnConflict: r.retryOnConflict,
 	}
-	if r.typ != "" {
-		updateCommand["_type"] = r.typ
+	command := bulkUpdateRequestCommand{
+		"update": updateCommand,
 	}
-	if r.id != "" {
-		updateCommand["_id"] = r.id
+
+	var err error
+	var body []byte
+	if r.useEasyJSON {
+		// easyjson
+		body, err = command.MarshalJSON()
+	} else {
+		// encoding/json
+		body, err = json.Marshal(command)
 	}
-	if r.routing != "" {
-		updateCommand["_routing"] = r.routing
-	}
-	if r.parent != "" {
-		updateCommand["_parent"] = r.parent
-	}
-	if r.version > 0 {
-		updateCommand["_version"] = r.version
-	}
-	if r.versionType != "" {
-		updateCommand["_version_type"] = r.versionType
-	}
-	if r.retryOnConflict != nil {
-		updateCommand["_retry_on_conflict"] = *r.retryOnConflict
-	}
-	command["update"] = updateCommand
-	line, err := json.Marshal(command)
 	if err != nil {
 		return nil, err
 	}
-	lines[0] = string(line)
+
+	lines[0] = string(body)
 
 	// 2nd line: {"doc" : { ... }} or {"script": {...}}
-	source := make(map[string]interface{})
-	if r.docAsUpsert != nil {
-		source["doc_as_upsert"] = *r.docAsUpsert
+	data := bulkUpdateRequestCommandData{
+		DocAsUpsert:    r.docAsUpsert,
+		DetectNoop:     r.detectNoop,
+		Upsert:         r.upsert,
+		ScriptedUpsert: r.scriptedUpsert,
+		Doc:            r.doc,
+		Source:         r.returnSource,
 	}
-	if r.detectNoop != nil {
-		source["detect_noop"] = *r.detectNoop
-	}
-	if r.upsert != nil {
-		source["upsert"] = r.upsert
-	}
-	if r.scriptedUpsert != nil {
-		source["scripted_upsert"] = *r.scriptedUpsert
-	}
-	if r.doc != nil {
-		// {"doc":{...}}
-		source["doc"] = r.doc
-	} else if r.script != nil {
-		// {"script":...}
-		src, err := r.script.Source()
+	if r.script != nil {
+		script, err := r.script.Source()
 		if err != nil {
 			return nil, err
 		}
-		source["script"] = src
+		data.Script = script
 	}
-	lines[1], err = r.getSourceAsString(source)
+
+	if r.useEasyJSON {
+		// easyjson
+		body, err = data.MarshalJSON()
+	} else {
+		// encoding/json
+		body, err = json.Marshal(data)
+	}
 	if err != nil {
 		return nil, err
 	}
+
+	lines[1] = string(body)
 
 	r.source = lines
 	return lines, nil

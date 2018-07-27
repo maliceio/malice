@@ -9,7 +9,7 @@ import "errors"
 // Script holds all the paramaters necessary to compile or find in cache
 // and then execute a script.
 //
-// See https://www.elastic.co/guide/en/elasticsearch/reference/5.2/modules-scripting.html
+// See https://www.elastic.co/guide/en/elasticsearch/reference/5.6/modules-scripting.html
 // for details of scripting.
 type Script struct {
 	script string
@@ -84,21 +84,26 @@ func (s *Script) Params(params map[string]interface{}) *Script {
 
 // Source returns the JSON serializable data for this Script.
 func (s *Script) Source() (interface{}, error) {
-	if s.typ == "" && s.lang == "" && len(s.params) == 0 {
-		return s.script, nil
-	}
 	source := make(map[string]interface{})
-	if s.typ == "" {
+
+	// In 5.5 and earlier, the type can "inline", "id", or "file".
+	// In 5.6+, the type can be "source", "id", or "file".
+	// So we use "inline" here to keep compatibility with 5.5 and earlier.
+	// Notice that this will trigger a deprecation warning in 5.6.
+	if s.typ == "" || s.typ == "inline" {
 		source["inline"] = s.script
 	} else {
+		// "id" or "file"
 		source[s.typ] = s.script
 	}
+
 	if s.lang != "" {
 		source["lang"] = s.lang
 	}
 	if len(s.params) > 0 {
 		source["params"] = s.params
 	}
+
 	return source, nil
 }
 

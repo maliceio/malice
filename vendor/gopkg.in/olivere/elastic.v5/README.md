@@ -107,101 +107,9 @@ The client connects to Elasticsearch on `http://127.0.0.1:9200` by default.
 You typically create one client for your app. Here's a complete example of
 creating a client, creating an index, adding a document, executing a search etc.
 
-```go
-// Create a context
-ctx := context.Background()
+An example is available [here](https://olivere.github.io/elastic/)
 
-// Create a client
-client, err := elastic.NewClient()
-if err != nil {
-    // Handle error
-    panic(err)
-}
-
-// Create an index
-_, err = client.CreateIndex("twitter").Do(ctx)
-if err != nil {
-    // Handle error
-    panic(err)
-}
-
-// Add a document to the index
-tweet := Tweet{User: "olivere", Message: "Take Five"}
-_, err = client.Index().
-    Index("twitter").
-    Type("tweet").
-    Id("1").
-    BodyJson(tweet).
-    Refresh("true").
-    Do(ctx)
-if err != nil {
-    // Handle error
-    panic(err)
-}
-
-// Search with a term query
-termQuery := elastic.NewTermQuery("user", "olivere")
-searchResult, err := client.Search().
-    Index("twitter").   // search in index "twitter"
-    Query(termQuery).   // specify the query
-    Sort("user", true). // sort by "user" field, ascending
-    From(0).Size(10).   // take documents 0-9
-    Pretty(true).       // pretty print request and response JSON
-    Do(ctx)             // execute
-if err != nil {
-    // Handle error
-    panic(err)
-}
-
-// searchResult is of type SearchResult and returns hits, suggestions,
-// and all kinds of other information from Elasticsearch.
-fmt.Printf("Query took %d milliseconds\n", searchResult.TookInMillis)
-
-// Each is a convenience function that iterates over hits in a search result.
-// It makes sure you don't need to check for nil values in the response.
-// However, it ignores errors in serialization. If you want full control
-// over iterating the hits, see below.
-var ttyp Tweet
-for _, item := range searchResult.Each(reflect.TypeOf(ttyp)) {
-    if t, ok := item.(Tweet); ok {
-        fmt.Printf("Tweet by %s: %s\n", t.User, t.Message)
-    }
-}
-// TotalHits is another convenience function that works even when something goes wrong.
-fmt.Printf("Found a total of %d tweets\n", searchResult.TotalHits())
-
-// Here's how you iterate through results with full control over each step.
-if searchResult.Hits.TotalHits > 0 {
-    fmt.Printf("Found a total of %d tweets\n", searchResult.Hits.TotalHits)
-
-    // Iterate through results
-    for _, hit := range searchResult.Hits.Hits {
-        // hit.Index contains the name of the index
-
-        // Deserialize hit.Source into a Tweet (could also be just a map[string]interface{}).
-        var t Tweet
-        err := json.Unmarshal(*hit.Source, &t)
-        if err != nil {
-            // Deserialization failed
-        }
-
-        // Work with tweet
-        fmt.Printf("Tweet by %s: %s\n", t.User, t.Message)
-    }
-} else {
-    // No hits
-    fmt.Print("Found no tweets\n")
-}
-
-// Delete the index again
-_, err = client.DeleteIndex("twitter").Do(ctx)
-if err != nil {
-    // Handle error
-    panic(err)
-}
-```
-
-Here's a [link to a complete working example](https://gist.github.com/olivere/114347ff9d9cfdca7bdc0ecea8b82263).
+Here's a [link to a complete working example for v3](https://gist.github.com/olivere/114347ff9d9cfdca7bdc0ecea8b82263).
 
 See the [wiki](https://github.com/olivere/elastic/wiki) for more details.
 
@@ -227,7 +135,7 @@ See the [wiki](https://github.com/olivere/elastic/wiki) for more details.
 - [x] Search
 - [x] Search Template
 - [ ] Multi Search Template
-- [ ] Search Shards API
+- [x] Search Shards API
 - [x] Suggesters
   - [x] Term Suggester
   - [x] Phrase Suggester
@@ -236,9 +144,10 @@ See the [wiki](https://github.com/olivere/elastic/wiki) for more details.
 - [x] Multi Search API
 - [x] Count API
 - [ ] Search Exists API
-- [ ] Validate API
+- [x] Validate API
 - [x] Explain API
-- [ ] Profile API
+- [x] Profile API
+- [x] Field Capabilities API
 - [x] Field Stats API
 
 ### Aggregations
@@ -248,7 +157,7 @@ See the [wiki](https://github.com/olivere/elastic/wiki) for more details.
   - [x] Cardinality
   - [x] Extended Stats
   - [x] Geo Bounds
-  - [ ] Geo Centroid
+  - [x] Geo Centroid
   - [x] Max
   - [x] Min
   - [x] Percentiles
@@ -259,9 +168,11 @@ See the [wiki](https://github.com/olivere/elastic/wiki) for more details.
   - [x] Top Hits
   - [x] Value Count
 - Bucket Aggregations
+  - [x] Adjacency Matrix
   - [x] Children
   - [x] Date Histogram
   - [x] Date Range
+  - [x] Diversified Sampler
   - [x] Filter
   - [x] Filters
   - [x] Geo Distance
@@ -284,7 +195,7 @@ See the [wiki](https://github.com/olivere/elastic/wiki) for more details.
   - [x] Sum Bucket
   - [x] Stats Bucket
   - [ ] Extended Stats Bucket
-  - [ ] Percentiles Bucket
+  - [x] Percentiles Bucket
   - [x] Moving Average
   - [x] Cumulative Sum
   - [x] Bucket Script
@@ -302,11 +213,11 @@ See the [wiki](https://github.com/olivere/elastic/wiki) for more details.
 - [x] Indices Exists
 - [x] Open / Close Index
 - [x] Shrink Index
-- [ ] Rollover Index
+- [x] Rollover Index
 - [x] Put Mapping
 - [x] Get Mapping
-- [ ] Get Field Mapping
-- [ ] Types Exists
+- [x] Get Field Mapping
+- [x] Types Exists
 - [x] Index Aliases
 - [x] Update Indices Settings
 - [x] Get Settings
@@ -314,7 +225,7 @@ See the [wiki](https://github.com/olivere/elastic/wiki) for more details.
 - [x] Index Templates
 - [ ] Shadow Replica Indices
 - [x] Indices Stats
-- [ ] Indices Segments
+- [x] Indices Segments
 - [ ] Indices Recovery
 - [ ] Indices Shard Stores
 - [ ] Clear Cache
@@ -458,8 +369,9 @@ and
 
 Elastic uses portions of the
 [uritemplates](https://github.com/jtacoma/uritemplates) library
-by Joshua Tacoma and
-[backoff](https://github.com/cenkalti/backoff) by Cenk Altı.
+by Joshua Tacoma,
+[backoff](https://github.com/cenkalti/backoff) by Cenk Altı and
+[leaktest](https://github.com/fortytw2/leaktest) by Ian Chiles.
 
 ## LICENSE
 

@@ -1,9 +1,10 @@
 ![malice logo](https://raw.githubusercontent.com/maliceio/malice/master/docs/images/logo/malice.png)
 
+:warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning:
 
-# :warning: I will be presenting `malice` at the Blackhat USA Arsenal on August 9th @ 1pm :warning:
+# I will be presenting `malice` at the Blackhat USA Arsenal on August 9th @ 1pm
 
-___
+## :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning:
 
 # malice
 

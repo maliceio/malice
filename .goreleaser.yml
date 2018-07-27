@@ -62,7 +62,7 @@ nfpm:
   - rpm
   files:
     "contrib/completion/zsh/_malice": "$HOME/.zsh/completion/_malice"
-    "contrib/completion/bash/malice": "/etc/bash_completion.d/malice"
+  #   "contrib/completion/bash/malice": "/etc/bash_completion.d/malice"
   #   "scripts/etc/init.d/": "/etc/init.d"
   #   "path/**/glob": "/var/foo/glob"
   # config_files:

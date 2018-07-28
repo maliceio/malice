@@ -45,12 +45,12 @@
   version = "v1.0.6"
 
 [[projects]]
-  digest = "1:2209584c0f7c9b68c23374e659357ab546e1b70eec2761f03280f69a8fd23d77"
-  name = "github.com/cenk/backoff"
+  digest = "1:40261f597e43f31aaf9f8658b85c082773217943056f1be137635e769c0798c9"
+  name = "github.com/apex/log"
   packages = ["."]
   pruneopts = "UT"
-  revision = "2ea60e5f094469f9e65adb9cd103795b73ae743e"
-  version = "v2.0.0"
+  revision = "0296d6eb16bb28f8a0c55668affcf4876dc269be"
+  version = "v1.0.0"
 
 [[projects]]
   digest = "1:a311d238523ce1a4df108421ba20724c643500d32f6c594df95a59e1e7ad42f6"
@@ -275,14 +275,6 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:364b908b9b27b97ab838f2f6f1b1f46281fa29b978a037d72a9b1d4f6d940190"
-  name = "github.com/hailocab/go-hostpool"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "e80d13ce29ede4452c43dea11e79b9bc8a15b478"
-
-[[projects]]
-  branch = "master"
   digest = "1:a361611b8c8c75a1091f00027767f7779b29cb37c456a71b8f2604c88057ab40"
   name = "github.com/hashicorp/hcl"
   packages = [
@@ -339,23 +331,22 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:cfa6fbdcefa7b4743da2b7bf1d2e9da7e15c9586837ab5dcadb05e61b23993e7"
+  digest = "1:86240a19b39e661eaf6fe0f4e5d1b687d26be4a35a3f73a6649fe0813e24c6fc"
   name = "github.com/malice-plugins/go-plugin-utils"
-  packages = ["database/elasticsearch"]
+  packages = ["database"]
   pruneopts = "UT"
-  revision = "0a05e02bd07190005839b2a88cf317d83282066e"
+  revision = "4aca82f951321de6f99b51717f248deb9851ee0d"
 
 [[projects]]
   branch = "master"
-  digest = "1:40140c51dca491ba6c11c4907f3defb63ddf550ba52d700f1fd707973c263994"
+  digest = "1:e8f9ccb874c1d7fd26552b07aaee7e1f9ec2003b9d96528301424b137a2a9897"
   name = "github.com/maliceio/go-plugin-utils"
   packages = [
     "database/elasticsearch",
     "utils",
-    "waitforit",
   ]
   pruneopts = "UT"
-  revision = "0a05e02bd07190005839b2a88cf317d83282066e"
+  revision = "4aca82f951321de6f99b51717f248deb9851ee0d"
 
 [[projects]]
   digest = "1:e2d1d410fb367567c2b53ed9e2d719d3c1f0891397bb2fa49afd747cfbf1e8e4"
@@ -388,6 +379,18 @@
   packages = ["."]
   pruneopts = "UT"
   revision = "9ac6cf4d929b2fa8fd2d2e6dec5bb0feb4f4911d"
+
+[[projects]]
+  digest = "1:d2997d9a773171df32642730331692fdf3f98fc51911067b708f92cfdc55708b"
+  name = "github.com/olivere/elastic"
+  packages = [
+    ".",
+    "config",
+    "uritemplates",
+  ]
+  pruneopts = "UT"
+  revision = "e1da71ef4bb6941f2051f5cc1c4d3e56b1978cf3"
+  version = "v6.1.26"
 
 [[projects]]
   digest = "1:ee4d4af67d93cc7644157882329023ce9a7bcfce956a079069a9405521c7cc8d"
@@ -501,7 +504,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:6f7223a460cbb0191f2f4256bd95a2f762079c6c87e0c526f01d2e041cbdb989"
+  digest = "1:014ee502e4880ffba2a0103cefa6af78cf8767ce08bc29376e6b86cdcaa2ec06"
   name = "golang.org/x/crypto"
   packages = [
     "curve25519",
@@ -509,7 +512,6 @@
     "ed25519/internal/edwards25519",
     "internal/chacha20",
     "internal/subtle",
-    "pbkdf2",
     "poly1305",
     "ssh",
     "ssh/terminal",
@@ -539,14 +541,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:79892302c9dee7bd4d161ecf7f9b57ad3ae548720ec66f018e4fefe2598e208b"
+  digest = "1:8742e6e73627b2877c3f723bc1823d5667ec59011242480309dc90fa862512aa"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "10b189e7aa37dd026e4c1c16d84c6515a393f8ed"
+  revision = "bd9dbc187b6e1dacfdd2722a87e83093c2d7bd6e"
 
 [[projects]]
   digest = "1:a2ab62866c75542dd18d2b069fec854577a20211d7c0ea6ae746072a1dccdd18"
@@ -622,45 +624,12 @@
   version = "v1.13.0"
 
 [[projects]]
-  digest = "1:aaf67eb481c968f2ceac80653a31e28aa9a34f6733f2b17758048b21ad2eb9d0"
-  name = "gopkg.in/dancannon/gorethink.v2"
-  packages = [
-    ".",
-    "encoding",
-    "ql2",
-    "types",
-  ]
-  pruneopts = "UT"
-  revision = "016a1d3b4d15951ab2e39bd3596718ba94d298ba"
-  version = "v2.2.2"
-
-[[projects]]
-  digest = "1:546db0bd0542751aff1e75052dd1fa0b0a1cee681d43bfa9ffac7c22714c1070"
-  name = "gopkg.in/fatih/pool.v2"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "010e0b745d12eaf8426c95f9c3924d81dd0b668f"
-  version = "v2.0.0"
-
-[[projects]]
   digest = "1:c805e517269b0ba4c21ded5836019ed7d16953d4026cb7d00041d039c7906be9"
   name = "gopkg.in/natefinch/lumberjack.v2"
   packages = ["."]
   pruneopts = "UT"
   revision = "a96e63847dc3c67d17befa69c303767e2f84e54f"
   version = "v2.1"
-
-[[projects]]
-  digest = "1:4448b4b6b0db938f045be61c9b4b61009f2db5cdb4d3ae20e28d234f7c0b7b6a"
-  name = "gopkg.in/olivere/elastic.v5"
-  packages = [
-    ".",
-    "config",
-    "uritemplates",
-  ]
-  pruneopts = "UT"
-  revision = "52741dc2ce53629cbe1e673869040d886cba2cd5"
-  version = "v5.0.70"
 
 [[projects]]
   digest = "1:342378ac4dcb378a5448dd723f0784ae519383532f5e70ade24132c4c8693202"
@@ -676,6 +645,7 @@
   input-imports = [
     "github.com/BurntSushi/toml",
     "github.com/Sirupsen/logrus",
+    "github.com/apex/log",
     "github.com/cloudflare/cfssl/log",
     "github.com/crackcomm/go-clitable",
     "github.com/docker/distribution/reference",
@@ -724,17 +694,15 @@
     "github.com/fsnotify/fsnotify",
     "github.com/gorilla/mux",
     "github.com/jordan-wright/email",
-    "github.com/malice-plugins/go-plugin-utils/database/elasticsearch",
     "github.com/maliceio/go-plugin-utils/database/elasticsearch",
     "github.com/maliceio/go-plugin-utils/utils",
-    "github.com/maliceio/go-plugin-utils/waitforit",
     "github.com/mattn/go-runewidth",
     "github.com/parnurzeal/gorequest",
+    "github.com/pkg/errors",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
     "github.com/urfave/cli",
     "golang.org/x/net/context",
-    "gopkg.in/dancannon/gorethink.v2",
     "gopkg.in/natefinch/lumberjack.v2",
   ]
   solver-name = "gps-cdcl"

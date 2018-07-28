@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/pkg/errors"
 )
 
@@ -46,6 +47,8 @@ var acceptedCBCCiphers = []uint16{
 	tls.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
 	tls.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
 	tls.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+	tls.TLS_RSA_WITH_AES_256_CBC_SHA,
+	tls.TLS_RSA_WITH_AES_128_CBC_SHA,
 }
 
 // DefaultServerAcceptedCiphers should be uses by code which already has a crypto/tls
@@ -63,34 +66,22 @@ var allTLSVersions = map[uint16]struct{}{
 }
 
 // ServerDefault returns a secure-enough TLS configuration for the server TLS configuration.
-func ServerDefault(ops ...func(*tls.Config)) *tls.Config {
-	tlsconfig := &tls.Config{
-		// Avoid fallback by default to SSL protocols < TLS1.2
-		MinVersion:               tls.VersionTLS12,
+func ServerDefault() *tls.Config {
+	return &tls.Config{
+		// Avoid fallback to SSL protocols < TLS1.0
+		MinVersion:               tls.VersionTLS10,
 		PreferServerCipherSuites: true,
 		CipherSuites:             DefaultServerAcceptedCiphers,
 	}
-
-	for _, op := range ops {
-		op(tlsconfig)
-	}
-
-	return tlsconfig
 }
 
 // ClientDefault returns a secure-enough TLS configuration for the client TLS configuration.
-func ClientDefault(ops ...func(*tls.Config)) *tls.Config {
-	tlsconfig := &tls.Config{
+func ClientDefault() *tls.Config {
+	return &tls.Config{
 		// Prefer TLS1.2 as the client minimum
 		MinVersion:   tls.VersionTLS12,
 		CipherSuites: clientCipherSuites,
 	}
-
-	for _, op := range ops {
-		op(tlsconfig)
-	}
-
-	return tlsconfig
 }
 
 // certPool returns an X.509 certificate pool from `caFile`, the certificate file.
@@ -115,6 +106,7 @@ func certPool(caFile string, exclusivePool bool) (*x509.CertPool, error) {
 	if !certPool.AppendCertsFromPEM(pem) {
 		return nil, fmt.Errorf("failed to append certificates from PEM file: %q", caFile)
 	}
+	logrus.Debugf("Trusting %d certs", len(certPool.Subjects()))
 	return certPool, nil
 }
 

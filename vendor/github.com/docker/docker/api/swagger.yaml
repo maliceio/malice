@@ -19,10 +19,10 @@ produces:
 consumes:
   - "application/json"
   - "text/plain"
-basePath: "/v1.28"
+basePath: "/v1.29"
 info:
   title: "Docker Engine API"
-  version: "1.28"
+  version: "1.29"
   x-logo:
     url: "https://docs.docker.com/images/logo-docker-main.png"
   description: |
@@ -44,7 +44,7 @@ info:
 
     The API is usually changed in each release of Docker, so API calls are versioned to ensure that clients don't break.
 
-    For Docker Engine 17.04, the API version is 1.28. To lock to this version, you prefix the URL with `/v1.28`. For example, calling `/info` is the same as calling `/v1.28/info`.
+    For Docker Engine 17.05, the API version is 1.29. To lock to this version, you prefix the URL with `/v1.29`. For example, calling `/info` is the same as calling `/v1.29/info`.
 
     Engine releases in the near future should support this version of the API, so your client will continue to work even if it is talking to a newer Engine.
 
@@ -52,10 +52,11 @@ info:
 
     The API uses an open schema model, which means server may add extra properties to responses. Likewise, the server will ignore any extra query parameters and request body properties. When you write clients, you need to ignore additional properties in responses to ensure they do not break when talking to newer Docker daemons.
 
-    This documentation is for version 1.28 of the API, which was introduced with Docker 17.04. Use this table to find documentation for previous versions of the API:
+    This documentation is for version 1.29 of the API, which was introduced with Docker 17.05. Use this table to find documentation for previous versions of the API:
 
     Docker version  | API version | Changes
     ----------------|-------------|---------
+    17.04.x | [1.28](https://docs.docker.com/engine/api/v1.28/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-28-api-changes)
     17.03.1 | [1.27](https://docs.docker.com/engine/api/v1.27/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-27-api-changes)
     1.13.1 & 17.03.0 | [1.26](https://docs.docker.com/engine/api/v1.26/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-26-api-changes)
     1.13.0 | [1.25](https://docs.docker.com/engine/api/v1.25/) | [API changes](https://docs.docker.com/engine/api/version-history/#v1-25-api-changes)
@@ -244,6 +245,9 @@ definitions:
       ReadOnly:
         description: "Whether the mount should be read-only."
         type: "boolean"
+      Consistency:
+        description: "The consistency requirement for the mount: `default`, `consistent`, `cached`, or `delegated`."
+        type: "string"
       BindOptions:
         description: "Optional configuration for the `bind` type."
         type: "object"
@@ -502,6 +506,9 @@ definitions:
       Retries:
         description: "The number of consecutive failures needed to consider a container as unhealthy. 0 means inherit."
         type: "integer"
+      StartPeriod:
+        description: "Start period for the container to initialize before starting health-retries countdown in nanoseconds. 0 means inherit."
+        type: "integer"
 
   HostConfig:
     description: "Container configuration that depends on the host we are running on"
@@ -750,7 +757,7 @@ definitions:
         default: false
       Env:
         description: |
-          A list of environment variables to set inside the container in the form `["VAR=value", ...]`
+          A list of environment variables to set inside the container in the form `["VAR=value", ...]`. A variable without `=` is removed from the environment, rather than to have an empty value.
         type: "array"
         items:
           type: "string"
@@ -1113,6 +1120,8 @@ definitions:
         type: "boolean"
       Attachable:
         type: "boolean"
+      Ingress:
+        type: "boolean"
       Containers:
         type: "object"
         additionalProperties:
@@ -1141,6 +1150,7 @@ definitions:
           foo: "bar"
       Internal: false
       Attachable: false
+      Ingress: false
       Containers:
         19a4d5d687db25203351ed79d478946f861258f018fe384f229f2efa4b23513c:
           Name: "test"
@@ -1444,11 +1454,17 @@ definitions:
           - WorkDir
           - Network
           - Linux
+          - PidHost
           - PropagatedMount
+          - IpcHost
           - Mounts
           - Env
           - Args
         properties:
+          DockerVersion:
+            description: "Docker Version used to create the plugin"
+            type: "string"
+            x-nullable: false
           Description:
             type: "string"
             x-nullable: false
@@ -1511,6 +1527,12 @@ definitions:
                   $ref: "#/definitions/PluginDevice"
           PropagatedMount:
             type: "string"
+            x-nullable: false
+          IpcHost:
+            type: "boolean"
+            x-nullable: false
+          PidHost:
+            type: "boolean"
             x-nullable: false
           Mounts:
             type: "array"
@@ -2274,6 +2296,12 @@ definitions:
             description: "The fraction of tasks that may fail during an update before the failure action is invoked, specified as a floating point number between 0 and 1."
             type: "number"
             default: 0
+          Order:
+            description: "The order of operations when rolling out an updated task. Either the old task is shut down before the new task is started, or the new task is started before the old task is shut down."
+            type: "string"
+            enum:
+              - "stop-first"
+              - "start-first"
       RollbackConfig:
         description: "Specification for the rollback strategy of the service."
         type: "object"
@@ -2300,6 +2328,12 @@ definitions:
             description: "The fraction of tasks that may fail during a rollback before the failure action is invoked, specified as a floating point number between 0 and 1."
             type: "number"
             default: 0
+          Order:
+            description: "The order of operations when rolling back a task. Either the old task is shut down before the new task is started, or the new task is started before the old task is shut down."
+            type: "string"
+            enum:
+              - "stop-first"
+              - "start-first"
       Networks:
         description: "Array of network names or IDs to attach the service to."
         type: "array"
@@ -6195,6 +6229,7 @@ paths:
                 EnableIPv6: false
                 Internal: false
                 Attachable: false
+                Ingress: false
                 IPAM:
                   Driver: "default"
                   Config:
@@ -6221,6 +6256,7 @@ paths:
                 EnableIPv6: false
                 Internal: false
                 Attachable: false
+                Ingress: false
                 IPAM:
                   Driver: "default"
                   Config: []
@@ -6234,6 +6270,7 @@ paths:
                 EnableIPv6: false
                 Internal: false
                 Attachable: false
+                Ingress: false
                 IPAM:
                   Driver: "default"
                   Config: []
@@ -6253,6 +6290,7 @@ paths:
             - `id=<network-id>` Matches all or part of a network ID.
             - `label=<key>` or `label=<key>=<value>` of a network label.
             - `name=<network-name>` Matches all or part of a network name.
+            - `scope=["swarm"|"global"|"local"]` Filters networks by scope (`swarm`, `global`, or `local`).
             - `type=["custom"|"builtin"]` Filters networks by type. The `custom` keyword returns all user-defined networks.
           type: "string"
       tags: ["Network"]
@@ -6366,6 +6404,9 @@ paths:
               Attachable:
                 description: "Globally scoped network is manually attachable by regular containers from workers in swarm mode."
                 type: "boolean"
+              Ingress:
+                description: "Ingress network is the network which provides the routing-mesh in swarm mode."
+                type: "boolean"
               IPAM:
                 description: "Optional custom IP scheme for the network."
                 $ref: "#/definitions/IPAM"
@@ -6399,6 +6440,7 @@ paths:
                   foo: "bar"
               Internal: true
               Attachable: false
+              Ingress: false
               Options:
                 com.docker.network.bridge.default_bridge: "true"
                 com.docker.network.bridge.enable_icc: "true"
@@ -7398,6 +7440,7 @@ paths:
 
             - `id=<service id>`
             - `label=<service label>`
+            - `mode=["replicated"|"global"]`
             - `name=<service name>`
       tags: ["Service"]
   /services/create:
@@ -7466,6 +7509,7 @@ paths:
                             DriverConfig: {}
                             Labels:
                               com.example.something: "something-value"
+                      Hosts: ["10.10.10.10 host1", "ABCD:EF01:2345:6789:ABCD:EF01:2345:6789 host2"]
                       User: "33"
                       DNSConfig:
                         Nameservers: ["8.8.8.8"]
@@ -7540,6 +7584,11 @@ paths:
           description: "ID or name of service."
           required: true
           type: "string"
+        - name: "insertDefaults"
+          in: "query"
+          description: "Fill empty fields with default values."
+          type: "boolean"
+          default: false
       tags: ["Service"]
     delete:
       summary: "Delete a service"
@@ -7685,12 +7734,12 @@ paths:
           schema:
             type: "string"
         404:
-          description: "no such container"
+          description: "no such service"
           schema:
             $ref: "#/definitions/ErrorResponse"
           examples:
             application/json:
-              message: "No such container: c2ada9df5af8"
+              message: "No such service: c2ada9df5af8"
         500:
           description: "server error"
           schema:
@@ -7703,11 +7752,11 @@ paths:
         - name: "id"
           in: "path"
           required: true
-          description: "ID or name of the container"
+          description: "ID or name of the service"
           type: "string"
         - name: "details"
           in: "query"
-          description: "Show extra details provided to logs."
+          description: "Show service context and extra details provided to logs."
           type: "boolean"
           default: false
         - name: "follow"
@@ -7920,6 +7969,86 @@ paths:
           required: true
           type: "string"
       tags: ["Task"]
+  /tasks/{id}/logs:
+    get:
+      summary: "Get task logs"
+      description: |
+        Get `stdout` and `stderr` logs from a task.
+
+        **Note**: This endpoint works only for services with the `json-file` or `journald` logging drivers.
+      operationId: "TaskLogs"
+      produces:
+        - "application/vnd.docker.raw-stream"
+        - "application/json"
+      responses:
+        101:
+          description: "logs returned as a stream"
+          schema:
+            type: "string"
+            format: "binary"
+        200:
+          description: "logs returned as a string in response body"
+          schema:
+            type: "string"
+        404:
+          description: "no such task"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+          examples:
+            application/json:
+              message: "No such task: c2ada9df5af8"
+        500:
+          description: "server error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        503:
+          description: "node is not part of a swarm"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          description: "ID of the task"
+          type: "string"
+        - name: "details"
+          in: "query"
+          description: "Show task context and extra details provided to logs."
+          type: "boolean"
+          default: false
+        - name: "follow"
+          in: "query"
+          description: |
+            Return the logs as a stream.
+
+            This will return a `101` HTTP response with a `Connection: upgrade` header, then hijack the HTTP connection to send raw output. For more information about hijacking and the stream format, [see the documentation for the attach endpoint](#operation/ContainerAttach).
+          type: "boolean"
+          default: false
+        - name: "stdout"
+          in: "query"
+          description: "Return logs from `stdout`"
+          type: "boolean"
+          default: false
+        - name: "stderr"
+          in: "query"
+          description: "Return logs from `stderr`"
+          type: "boolean"
+          default: false
+        - name: "since"
+          in: "query"
+          description: "Only return logs since this time, as a UNIX timestamp"
+          type: "integer"
+          default: 0
+        - name: "timestamps"
+          in: "query"
+          description: "Add timestamps to every log line"
+          type: "boolean"
+          default: false
+        - name: "tail"
+          in: "query"
+          description: "Only return this number of log lines from the end of the logs. Specify as an integer or `all` to output all log lines."
+          type: "string"
+          default: "all"
   /secrets:
     get:
       summary: "List secrets"
@@ -7956,6 +8085,9 @@ paths:
           description: |
             A JSON encoded value of the filters (a `map[string][]string`) to process on the secrets list. Available filters:
 
+            - `id=<secret id>`
+            - `label=<key> or label=<key>=value`
+            - `name=<secret name>`
             - `names=<secret name>`
       tags: ["Secret"]
   /secrets/create:

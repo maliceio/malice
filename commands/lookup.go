@@ -6,6 +6,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/database/elasticsearch"
+	db "github.com/maliceio/malice/malice/database/elasticsearch"
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"
 	er "github.com/maliceio/malice/malice/errors"
@@ -33,7 +34,7 @@ func cmdLookUp(hash string, logs bool) error {
 		"image":   dbInfo.Config.Image,
 	}).Debug("Elasticsearch is running.")
 
-	elasticsearch.InitElasticSearch(dbInfo.NetworkSettings.IPAddress)
+	db.InitElasticSearch(dbInfo.NetworkSettings.IPAddress)
 
 	if plugins.InstalledPluginsCheck(docker) {
 		log.Debug("All enabled plugins are installed.")
@@ -48,7 +49,7 @@ func cmdLookUp(hash string, logs bool) error {
 
 	/////////////////////////////
 	// Write hash to the Database
-	resp := elasticsearch.WriteHashToDatabase(hash)
+	resp := db.WriteHashToDatabase(hash)
 
 	plugins.RunIntelPlugins(docker, hash, resp.Id, true)
 

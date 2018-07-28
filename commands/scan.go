@@ -9,6 +9,7 @@ import (
 	"github.com/fatih/structs"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/database/elasticsearch"
+	db "github.com/maliceio/malice/malice/database/elasticsearch"
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"
 	er "github.com/maliceio/malice/malice/errors"
@@ -55,7 +56,7 @@ func ScanSample(path string) {
 			"image":   dbInfo.Config.Image,
 		}).Debug("Elasticsearch is running.")
 
-		elasticsearch.InitElasticSearch(dbInfo.NetworkSettings.IPAddress)
+		db.InitElasticSearch(dbInfo.NetworkSettings.IPAddress)
 
 		if plugins.InstalledPluginsCheck(docker) {
 			log.Debug("All enabled plugins are installed.")

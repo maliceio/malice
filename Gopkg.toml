@@ -29,18 +29,6 @@
   name = "github.com/crackcomm/go-clitable"
 
 [[constraint]]
-  name = "github.com/docker/distribution"
-  version = "2.6.2"
-
-[[constraint]]
-  name = "github.com/docker/docker"
-  version = "17.4.0-ce"
-
-[[constraint]]
-  name = "github.com/docker/go-units"
-  version = "0.3.2"
-
-[[constraint]]
   branch = "master"
   name = "github.com/dustin/go-jsonpointer"
 
@@ -68,6 +56,27 @@
   name = "gopkg.in/natefinch/lumberjack.v2"
   version = "2.0.0"
 
-[[constraint]]
+[[override]]
   name = "github.com/olivere/elastic"
   version = "^6.0.0"
+
+[[override]]
+  name = "github.com/docker/distribution"
+  revision = "b38e5838b7b2f2ad48e06ec4b500011976080621"
+
+[[override]]
+  name = "github.com/docker/go-connections"
+  revision = "e15c02316c12de00874640cd76311849de2aeed5"
+
+[[override]]
+  name = "github.com/docker/go-metrics"
+  revision = "86138d05f285fd9737a99bee2d9be30866b59d72"
+
+[[constraint]]
+  name = "github.com/docker/docker"
+  version = "v17.05.0-ce"
+  source = "github.com/moby/moby"
+
+[prune]
+  go-tests = true
+  unused-packages = true

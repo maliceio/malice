@@ -7,30 +7,26 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/fatih/structs"
+	"github.com/maliceio/go-plugin-utils/database/elasticsearch"
 	"github.com/maliceio/malice/config"
-	"github.com/maliceio/malice/malice/database/elasticsearch"
+	"github.com/maliceio/malice/malice/database"
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"
-	er "github.com/maliceio/malice/malice/errors"
 	"github.com/maliceio/malice/malice/persist"
 	"github.com/maliceio/malice/plugins"
 	"github.com/maliceio/malice/utils"
+	"github.com/pkg/errors"
 )
 
+// cmdScan scans a sample with all appropriate malice plugins
 func cmdScan(path string, logs bool) error {
 
-	ScanSample(path)
+	es := elasticsearch.Database{
+		Host:  config.Conf.DB.Server,
+		Index: "malice",
+		Type:  "samples",
+	}
 
-	return nil
-}
-
-// APIScan is an API wrapper for cmdScan
-func APIScan(file string) error {
-	return cmdScan(file, false)
-}
-
-// ScanSample scans a sample with all appropreiate malice plugins
-func ScanSample(path string) {
 	if len(path) > 0 {
 		// Check that file exists
 		if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -39,24 +35,18 @@ func ScanSample(path string) {
 
 		docker := client.NewDockerClient()
 
-		// Check that ElasticSearch is running
+		// Check that database is running
 		if _, running, _ := container.Running(docker, config.Conf.DB.Name); !running {
-			log.Error("Elasticsearch is NOT running, starting now...")
-			_, err := elasticsearch.Start(docker, false)
-			er.CheckError(err)
+			log.Error("database is NOT running, starting now...")
+			err := database.Start(docker, es, logs)
+			if err != nil {
+				return errors.Wrap(err, "failed to start to database")
+			}
+			// Initialize the malice database
+			es.Init()
 		}
 
-		// Setup ElasticSearch
-		dbInfo, err := container.Inspect(docker, config.Conf.DB.Name)
-		er.CheckError(err)
-		log.WithFields(log.Fields{
-			"ip":      dbInfo.NetworkSettings.IPAddress,
-			"network": dbInfo.HostConfig.NetworkMode,
-			"image":   dbInfo.Config.Image,
-		}).Debug("Elasticsearch is running.")
-
-		elasticsearch.InitElasticSearch(dbInfo.NetworkSettings.IPAddress)
-
+		// Check Plugin Status
 		if plugins.InstalledPluginsCheck(docker) {
 			log.Debug("All enabled plugins are installed.")
 		} else {
@@ -67,6 +57,8 @@ func ScanSample(path string) {
 				plugins.UpdateEnabledPlugins(docker)
 			}
 		}
+
+		es.Plugins = database.GetPluginsByCategory()
 
 		file := persist.File{Path: path}
 		file.Init()
@@ -81,7 +73,11 @@ func ScanSample(path string) {
 
 		//////////////////////////////////////
 		// Write all file data to the Database
-		resp := elasticsearch.WriteFileToDatabase(structs.Map(file))
+		resp, err := es.StoreFileInfo(structs.Map(file))
+		if err != nil {
+			return errors.Wrap(err, "scan cmd failed to store file info")
+		}
+
 		scanID := resp.Id
 
 		/////////////////////////////////////////////////////////////////
@@ -90,20 +86,22 @@ func ScanSample(path string) {
 
 		// Get file's mime type
 		mimeType, err := persist.GetMimeType(docker, file.SHA256)
-		er.CheckError(err)
+		if err != nil {
+			return errors.Wrap(err, "failed to get file's mime type")
+		}
 
-		log.Debug("Looking for plugins that will run on: ", mimeType)
+		log.Debug("looking for plugins that will run on: ", mimeType)
 		// Iterate over all applicable installed plugins
-		plugins := plugins.GetPluginsForMime(mimeType, true)
-		log.Debug("Found these plugins: ")
-		for _, plugin := range plugins {
+		pluginsForMime := plugins.GetPluginsForMime(mimeType, true)
+		log.Debug("found these plugins: ")
+		for _, plugin := range pluginsForMime {
 			log.Debugf(" - %v", plugin.Name)
 		}
 
 		var wg sync.WaitGroup
-		wg.Add(len(plugins))
+		wg.Add(len(pluginsForMime))
 
-		for _, plugin := range plugins {
+		for _, plugin := range pluginsForMime {
 			log.Debugf(">>>>> RUNNING Plugin: %s >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", plugin.Name)
 			// Start Plugin Container
 			// TODO: don't use the default of true for --logs
@@ -113,6 +111,13 @@ func ScanSample(path string) {
 		wg.Wait() // this waits for the counter to be 0
 		log.Debug("Done with plugins.")
 	} else {
-		log.Error("Please supply a valid file to scan.")
+		log.Error("please supply a valid file to scan")
 	}
+
+	return nil
+}
+
+// APIScan is an API wrapper for cmdScan
+func APIScan(file string) error {
+	return cmdScan(file, false)
 }

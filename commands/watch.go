@@ -48,7 +48,10 @@ func NewWatcher(folder string) {
 				if event.Op&fsnotify.Create == fsnotify.Create {
 					log.Println("modified file:", event.Name)
 					// Scan new sample in watch folder
-					ScanSample(event.Name)
+					err = cmdScan(event.Name, false)
+					if err != nil {
+						log.Error(err)
+					}
 				}
 			case err := <-watcher.Errors:
 				log.Error("error:", err)

@@ -209,7 +209,7 @@ title = "Malice Plugin Configurations"
   env = ["MALICE_TIMEOUT"]
 
 [[plugin]]
-  enabled = false
+  enabled = true
   name = "windows-defender"
   description = "Windows Defender AntiVirus"
   category = "av"
@@ -220,7 +220,7 @@ title = "Malice Plugin Configurations"
   env = ["MALICE_TIMEOUT"]
 
 [[plugin]]
-  enabled = true
+  enabled = false
   name = "zoner"
   description = "ZonerAntiVirus"
   category = "av"

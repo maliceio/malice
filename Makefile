@@ -23,7 +23,7 @@ bindata: ## Embed binary data in malice program
 	mv bindata.go plugins/bindata.go
 
 docker: ## Build docker image
-	cd .docker; docker build -t $(REPO)/$(NAME):$(VERSION) .
+	cd .docker; docker build --build-arg VERSION=$(VERSION) -t $(REPO)/$(NAME):$(VERSION) .
 
 size: docker ## Add docker image size to READMEs
 	sed -i.bu 's/docker%20image-.*-blue/docker%20image-$(shell docker images --format "{{.Size}}" $(REPO)/$(NAME):$(VERSION)| cut -d' ' -f1)%20MB-blue/' README.md

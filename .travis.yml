@@ -1,7 +1,7 @@
 sudo: required
 
 language: go
-go: 1.8
+go: 1.10
 
 services:
   - docker
@@ -12,11 +12,13 @@ before_install:
   - sudo apt-get update
   - sudo apt-get -y install docker-ce
   - docker --version
-  - docker pull blacktop/elasticsearch
+  - docker pull malice/elasticsearch:6.3
   - sudo sysctl -w vm.max_map_count=262144
 
 install:
   - make setup
+  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+  - dep ensure
   - go build -o malice-travis
 
 script:

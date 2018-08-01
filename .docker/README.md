@@ -46,4 +46,4 @@ See [`CHANGELOG.md`](https://github.com/maliceio/malice/blob/master/CHANGELOG.md
 ### License
 
 Apache License (Version 2.0)
-Copyright (c) 2013 - 2017 **blacktop** Joshua Maine
+Copyright (c) 2013 - 2018 **blacktop** Joshua Maine

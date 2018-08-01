@@ -89,7 +89,7 @@ $ malice elk
 
 ![kibana-scan](docs/images/kibana-scan.png)
 
-## Getting Started (_Docker in Docker_) :construction: :warning: **[currently broken]**
+## Getting Started (_Docker in Docker_)
 
 [![CircleCI](https://circleci.com/gh/maliceio/malice.png?style=shield)](https://circleci.com/gh/maliceio/malice) [![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)](https://hub.docker.com/r/malice/engine/) [![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)](https://hub.docker.com/r/malice/engine/) [![Docker Image](https://img.shields.io/badge/docker%20image-30.6%20MB-blue.svg)](https://hub.docker.com/r/malice/engine/)
 
@@ -145,4 +145,4 @@ See [`CHANGELOG.md`](https://github.com/maliceio/malice/blob/master/CHANGELOG.md
 ### License
 
 Apache License (Version 2.0)<br>
-Copyright (c) 2013 - 2017 **blacktop** Joshua Maine
+Copyright (c) 2013 - 2018 **blacktop** Joshua Maine

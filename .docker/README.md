@@ -1,5 +1,4 @@
-![malice logo](https://raw.githubusercontent.com/maliceio/malice/master/docs/images/logo/malice.png)
-=============================================================================================
+# ![malice logo](https://raw.githubusercontent.com/maliceio/malice/master/docs/images/logo/malice.png)
 
 [![CircleCI](https://circleci.com/gh/maliceio/malice.png?style=shield)](https://circleci.com/gh/maliceio/malice) [![License](https://img.shields.io/badge/licence-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Docker Stars](https://img.shields.io/docker/stars/malice/engine.svg)](https://hub.docker.com/r/malice/engine/) [![Docker Pulls](https://img.shields.io/docker/pulls/malice/engine.svg)](https://hub.docker.com/r/malice/engine/) [![Docker Image](https://img.shields.io/badge/docker%20image-30.6%20MB-blue.svg)](https://hub.docker.com/r/malice/engine/)
 
@@ -7,13 +6,13 @@ This repository contains a **Dockerfile** of the [Malice Engine](https://github.
 
 ### Dependencies
 
--	[alpine:3.5](https://hub.docker.com/r/_/alpine/)
+- [alpine:3.8](https://hub.docker.com/r/_/alpine/)
 
 ### Installation
 
-1.	Install [Docker](https://docs.docker.com).
-2.	Install [docker-compose](https://docs.docker.com/compose/install/)
-3.	Download [trusted build](https://hub.docker.com/r/malice/engine/) from public [Docker Registry](https://hub.docker.com/): `docker pull malice/engine`
+1.  Install [Docker](https://docs.docker.com).
+2.  Install [docker-compose](https://docs.docker.com/compose/install/)
+3.  Download [trusted build](https://hub.docker.com/r/malice/engine/) from public [Docker Registry](https://hub.docker.com/): `docker pull malice/engine`
 
 ### Getting Started
 
@@ -46,5 +45,5 @@ See [`CHANGELOG.md`](https://github.com/maliceio/malice/blob/master/CHANGELOG.md
 
 ### License
 
-Apache License (Version 2.0)  
+Apache License (Version 2.0)
 Copyright (c) 2013 - 2017 **blacktop** Joshua Maine

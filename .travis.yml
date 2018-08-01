@@ -1,7 +1,8 @@
 sudo: required
 
 language: go
-go: 1.10
+go:
+  - "1.10.x"
 
 services:
   - docker
@@ -16,7 +17,6 @@ before_install:
   - sudo sysctl -w vm.max_map_count=262144
 
 install:
-  - make setup
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
   - dep ensure
   - go build -o malice-travis

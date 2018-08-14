@@ -1,16 +1,12 @@
 ![malice logo](https://raw.githubusercontent.com/maliceio/malice/master/docs/images/logo/malice.png)
 
-:warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning:
-
-# I will be presenting `malice` at the Blackhat USA Arsenal on August 9th @ 1pm
-
-:warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning:
-
-# malice
+# malice _(as seen at this years Blackhat USA Arsenal)_
 
 [![Release](https://img.shields.io/github/release/maliceio/malice.svg)](https://github.com/gmaliceio/malice/releases/latest) [![License](https://img.shields.io/badge/licence-Apache%202.0-blue.svg)](LICENSE) [![Build Status](https://travis-ci.org/maliceio/malice.svg?branch=master)](https://travis-ci.org/maliceio/malice) [![GoDoc](https://godoc.org/github.com/maliceio/malice?status.svg)](https://godoc.org/github.com/maliceio/malice) [![codecov](https://codecov.io/gh/maliceio/malice/branch/master/graph/badge.svg)](https://codecov.io/gh/maliceio/malice) [![Gitter](https://badges.gitter.im/maliceio/malice.svg)](https://gitter.im/maliceio/malice)
 
-Malice's mission is to be a free open source version of VirusTotal that anyone can use at any scale from an independent researcher to a fortune 500 company.
+> Malice's mission is to be a free open source version of VirusTotal that anyone can use at any scale from an independent researcher to a fortune 500 company.
+
+---
 
 ## Setup Docker (OSX)
 

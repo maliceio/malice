@@ -1,0 +1,83 @@
+version: "3"
+
+services:
+  avg:
+    image: malice/avg
+    links:
+      - rethink
+    command: -t befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
+    volumes:
+      - ../data/samples:/malware:ro
+    networks:
+      - malice
+  bitdefender:
+    image: malice/bitdefender
+    links:
+      - rethink
+    command: -t befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
+    volumes:
+      - ../data/samples:/malware:ro
+    networks:
+      - malice
+  clamav:
+    image: malice/clamav
+    links:
+      - rethink
+    command: -t befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
+    volumes:
+      - ../data/samples:/malware:ro
+    networks:
+      - malice
+  comodo:
+    image: malice/comodo
+    links:
+      - rethink
+    command: -t befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
+    volumes:
+      - ../data/samples:/malware:ro
+    networks:
+      - malice
+  fprot:
+    image: malice/fprot
+    links:
+      - rethink
+    command: -t befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
+    volumes:
+      - ../data/samples:/malware:ro
+    networks:
+      - malice
+  # ELK
+  elk:
+    image: blacktop/elk
+    ports:
+      - "9200:9200"
+      - "80:80"
+    networks:
+      - malice
+  # LOGSTASH
+  logstash:
+    build: ./logstash
+    links:
+      - rethink
+      - elk:elasticsearch
+    networks:
+      - malice
+  # RETHINKDB
+  rethink:
+    container_name: rethink
+    image: rethinkdb
+    ports:
+      - "28015:28015"
+      - "8081:8080"
+    volumes:
+      - malice:/data
+    networks:
+      - malice
+
+volumes:
+  ? malice
+  ? es_data
+
+networks:
+  malice:
+    driver: bridge

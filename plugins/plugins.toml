@@ -231,14 +231,15 @@ title = "Malice Plugin Configurations"
   env = ["MALICE_TIMEOUT"]
 
 [[plugin]]
-  enabled = false
-  name = "exe"
+  enabled = true
+  name = "pescan"
   description = "PE - tool to triage portable executables"
   category = "exe"
-  image = "malice/exe"
-  repository = "https://github.com/malice-plugins/exe.git"
+  image = "malice/pescan"
+  repository = "https://github.com/malice-plugins/pescan.git"
   build = false
   mime = "application/x-dosexec"
+  cmd = "scan"
   env = ["MALICE_TIMEOUT"]
 
 [[plugin]]

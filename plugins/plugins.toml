@@ -220,7 +220,7 @@ title = "Malice Plugin Configurations"
   env = ["MALICE_TIMEOUT"]
 
 [[plugin]]
-  enabled = false
+  enabled = true
   name = "zoner"
   description = "ZonerAntiVirus"
   category = "av"

@@ -39,10 +39,10 @@ To use the required version of Elastic in your application, it is strongly
 advised to use a tool like
 [dep](https://github.com/golang/dep)
 or
-[Glide](https://glide.sh/)
-to manage that dependency. Make sure to use a version such as `^6.0.0`.
+[Go modules](https://github.com/golang/go/wiki/Modules)
+to manage dependencies. Make sure to use a version such as `^6.0.0`.
 
-To use Elastic, simply import:
+To use Elastic, import:
 
 ```go
 import "github.com/olivere/elastic"
@@ -52,7 +52,7 @@ import "github.com/olivere/elastic"
 
 Elastic 6.0 targets Elasticsearch 6.x which was [released on 14th November 2017](https://www.elastic.co/blog/elasticsearch-6-0-0-released).
 
-Notice that there are will be a lot of [breaking changes in Elasticsearch 6.0](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/breaking-changes-6.0.html)
+Notice that there are a lot of [breaking changes in Elasticsearch 6.0](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/breaking-changes-6.0.html)
 and we used this as an opportunity to [clean up and refactor Elastic](https://github.com/olivere/elastic/blob/release-branch.v6/CHANGELOG-6.0.md)
 as we did in the transition from earlier versions of Elastic.
 

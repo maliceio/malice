@@ -459,10 +459,26 @@ func (a Aggregations) Histogram(name string) (*AggregationBucketHistogramItems, 
 }
 
 // DateHistogram returns date histogram aggregation results.
-// See: https://www.elastic.co/guide/en/elasticsearch/reference/6.2/search-aggregations-bucket-datehistogram-aggregation.html
+// See: https://www.elastic.co/guide/en/elasticsearch/reference/6.4/search-aggregations-bucket-datehistogram-aggregation.html
 func (a Aggregations) DateHistogram(name string) (*AggregationBucketHistogramItems, bool) {
 	if raw, found := a[name]; found {
 		agg := new(AggregationBucketHistogramItems)
+		if raw == nil {
+			return agg, true
+		}
+		if err := json.Unmarshal(*raw, agg); err == nil {
+			return agg, true
+		}
+	}
+	return nil, false
+}
+
+// KeyedDateHistogram returns date histogram aggregation results for keyed responses.
+//
+// See: https://www.elastic.co/guide/en/elasticsearch/reference/6.4/search-aggregations-bucket-datehistogram-aggregation.html#_keyed_response_3
+func (a Aggregations) KeyedDateHistogram(name string) (*AggregationBucketKeyedHistogramItems, bool) {
+	if raw, found := a[name]; found {
+		agg := new(AggregationBucketKeyedHistogramItems)
 		if raw == nil {
 			return agg, true
 		}
@@ -624,8 +640,25 @@ func (a Aggregations) MinBucket(name string) (*AggregationPipelineBucketMetricVa
 }
 
 // MovAvg returns moving average pipeline aggregation results.
-// See https://www.elastic.co/guide/en/elasticsearch/reference/6.2/search-aggregations-pipeline-movavg-aggregation.html
+// See https://www.elastic.co/guide/en/elasticsearch/reference/6.4/search-aggregations-pipeline-movavg-aggregation.html
+//
+// Deprecated: The MovAvgAggregation has been deprecated in 6.4.0. Use the more generate MovFnAggregation instead.
 func (a Aggregations) MovAvg(name string) (*AggregationPipelineSimpleValue, bool) {
+	if raw, found := a[name]; found {
+		agg := new(AggregationPipelineSimpleValue)
+		if raw == nil {
+			return agg, true
+		}
+		if err := json.Unmarshal(*raw, agg); err == nil {
+			return agg, true
+		}
+	}
+	return nil, false
+}
+
+// MovFn returns moving function pipeline aggregation results.
+// See https://www.elastic.co/guide/en/elasticsearch/reference/6.4/search-aggregations-pipeline-movfn-aggregation.html
+func (a Aggregations) MovFn(name string) (*AggregationPipelineSimpleValue, bool) {
 	if raw, found := a[name]; found {
 		agg := new(AggregationPipelineSimpleValue)
 		if raw == nil {
@@ -1347,6 +1380,31 @@ func (a *AggregationBucketHistogramItems) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// AggregationBucketKeyedHistogramItems is a bucket aggregation that is returned
+// with a (keyed) date histogram aggregation.
+type AggregationBucketKeyedHistogramItems struct {
+	Aggregations
+
+	Buckets map[string]*AggregationBucketHistogramItem //`json:"buckets"`
+	Meta    map[string]interface{}                     // `json:"meta,omitempty"`
+}
+
+// UnmarshalJSON decodes JSON data and initializes an AggregationBucketKeyedHistogramItems structure.
+func (a *AggregationBucketKeyedHistogramItems) UnmarshalJSON(data []byte) error {
+	var aggs map[string]*json.RawMessage
+	if err := json.Unmarshal(data, &aggs); err != nil {
+		return err
+	}
+	if v, ok := aggs["buckets"]; ok && v != nil {
+		json.Unmarshal(*v, &a.Buckets)
+	}
+	if v, ok := aggs["meta"]; ok && v != nil {
+		json.Unmarshal(*v, &a.Meta)
+	}
+	a.Aggregations = aggs
+	return nil
+}
+
 // AggregationBucketHistogramItem is a single bucket of an AggregationBucketHistogramItems structure.
 type AggregationBucketHistogramItem struct {
 	Aggregations
@@ -1578,8 +1636,9 @@ func (a *AggregationPipelinePercentilesMetric) UnmarshalJSON(data []byte) error 
 type AggregationBucketCompositeItems struct {
 	Aggregations
 
-	Buckets []*AggregationBucketCompositeItem //`json:"buckets"`
-	Meta    map[string]interface{}            // `json:"meta,omitempty"`
+	Buckets  []*AggregationBucketCompositeItem //`json:"buckets"`
+	Meta     map[string]interface{}            // `json:"meta,omitempty"`
+	AfterKey map[string]interface{}            // `json:"after_key,omitempty"`
 }
 
 // UnmarshalJSON decodes JSON data and initializes an AggregationBucketCompositeItems structure.
@@ -1593,6 +1652,9 @@ func (a *AggregationBucketCompositeItems) UnmarshalJSON(data []byte) error {
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
 		json.Unmarshal(*v, &a.Meta)
+	}
+	if v, ok := aggs["after_key"]; ok && v != nil {
+		json.Unmarshal(*v, &a.AfterKey)
 	}
 	a.Aggregations = aggs
 	return nil

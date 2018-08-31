@@ -11,56 +11,55 @@ const mapping = `{
         "file": {
           "properties": {
             "md5": {
-              "type": "string"
+              "type": "keyword"
             },
             "mime": {
-              "type": "string"
+              "type": "keyword"
             },
             "name": {
-              "type": "string"
+              "type": "keyword"
             },
             "path": {
-              "type": "string"
+              "type": "text"
             },
             "sha1": {
-              "type": "string"
+              "type": "keyword"
             },
             "sha256": {
-              "type": "string"
+              "type": "keyword"
             },
             "sha512": {
-              "type": "string"
+              "type": "keyword"
             },
             "size": {
-              "type": "string"
+              "type": "keyword"
             }
           }
         },
         "plugins": {
           "properties": {
             "archive": {
-              "type": "object"
+              "properties": {}
             },
             "av": {
-              "type": "object"
+              "properties": {}
             },
             "document": {
-              "type": "object"
+              "properties": {}
             },
             "exe": {
-              "type": "object"
+              "properties": {}
             },
             "intel": {
-              "type": "object",
               "properties": {
                 "virustotal": {
                   "dynamic": false,
-                  "type": "object"
+                  "properties": {}
                 }
               }
             },
             "metadata": {
-              "type": "object"
+              "properties": {}
             }
           }
         },
@@ -84,28 +83,28 @@ const mapping = `{
 //           "file": {
 //             "properties": {
 //               "md5": {
-//                 "type": "string"
+//                 "type": "text"
 //               },
 //               "mime": {
-//                 "type": "string"
+//                 "type": "text"
 //               },
 //               "name": {
-//                 "type": "string"
+//                 "type": "text"
 //               },
 //               "path": {
-//                 "type": "string"
+//                 "type": "text"
 //               },
 //               "sha1": {
-//                 "type": "string"
+//                 "type": "text"
 //               },
 //               "sha256": {
-//                 "type": "string"
+//                 "type": "text"
 //               },
 //               "sha512": {
-//                 "type": "string"
+//                 "type": "text"
 //               },
 //               "size": {
-//                 "type": "string"
+//                 "type": "text"
 //               }
 //             }
 //           },

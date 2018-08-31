@@ -18,7 +18,7 @@ title = "Malice Plugin Configurations"
   cmd = "lookup"
   mime = "hash"
   hashtypes = [ "sha1" ]
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -33,7 +33,7 @@ title = "Malice Plugin Configurations"
   cmd = "lookup"
   mime = "hash"
   hashtypes = [ "md5", "sha1", "sha256" ]
-  env = ["MALICE_VT_API", "MALICE_TIMEOUT"]
+  env = ["MALICE_VT_API", "MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = false
@@ -48,7 +48,7 @@ title = "Malice Plugin Configurations"
   key = ""
   mime = "hash"
   hashtypes = [ "sha1" ]
-  env = ["MALICE_TH_USER", "MALICE_TH_KEY", "MALICE_TIMEOUT"]
+  env = ["MALICE_TH_USER", "MALICE_TH_KEY", "MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -60,7 +60,7 @@ title = "Malice Plugin Configurations"
   build = false
   mime = "hash"
   hashtypes = [ "md5", "sha1" ]
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = false
@@ -72,7 +72,7 @@ title = "Malice Plugin Configurations"
   build = false
   mime = "hash"
   hashtypes = [ "md5", "sha1" ]
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -83,7 +83,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/fileinfo.git"
   build = false
   mime = "*"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -94,7 +94,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/yara.git"
   build = false
   mime = "*"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -105,7 +105,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/avast.git"
   build = false
   mime = "*"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -116,7 +116,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/avg.git"
   build = false
   mime = "*"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = false
@@ -127,7 +127,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/avira.git"
   build = false
   mime = "*"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
   keysrc = "~/.malice/plugins/avira/hbedv.key"
   keydst = "/opt/avira/hbedv.key"
 
@@ -140,7 +140,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/bitdefender.git"
   build = false
   mime = "*"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -151,7 +151,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/clamav.git"
   build = false
   mime = "*"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -162,7 +162,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/comodo.git"
   build = false
   mime = "*"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -173,7 +173,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/escan.git"
   build = false
   mime = "*"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -184,7 +184,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/fprot.git"
   build = false
   mime = "*"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -195,7 +195,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/fsecure.git"
   build = false
   mime = "*"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -206,7 +206,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/sophos.git"
   build = false
   mime = "*"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -217,7 +217,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/windows-defender.git"
   build = false
   mime = "*"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -228,7 +228,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/zoner.git"
   build = false
   mime = "*"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -240,7 +240,7 @@ title = "Malice Plugin Configurations"
   build = false
   mime = "application/x-dosexec"
   cmd = "scan"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -251,7 +251,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/floss.git"
   build = false
   mime = "application/x-dosexec"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = false
@@ -262,7 +262,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/office.git"
   build = false
   mime = "*"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = true
@@ -274,7 +274,7 @@ title = "Malice Plugin Configurations"
   build = false
   mime = "application/pdf"
   cmd = "scan"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = false
@@ -285,7 +285,7 @@ title = "Malice Plugin Configurations"
   repository = "https://github.com/malice-plugins/javascript.git"
   build = false
   mime = "application/javascript"
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]
 
 [[plugin]]
   enabled = false
@@ -297,4 +297,4 @@ title = "Malice Plugin Configurations"
   build = false
   mime = "archive"
   ziptypes = [ "tar", "gz", "p7z" ]
-  env = ["MALICE_TIMEOUT"]
+  env = ["MALICE_TIMEOUT", "MALICE_ELASTICSEARCH_URL",  "MALICE_ELASTICSEARCH_USERNAME", "MALICE_ELASTICSEARCH_PASSWORD"]

@@ -5,12 +5,12 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/maliceio/go-plugin-utils/database/elasticsearch"
+	"github.com/maliceio/go-plugin-utils/utils"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/database"
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"
 	"github.com/maliceio/malice/plugins"
-	"github.com/maliceio/malice/utils"
 	"github.com/pkg/errors"
 )
 
@@ -18,8 +18,8 @@ func cmdLookUp(hash string, logs bool) error {
 
 	docker := client.NewDockerClient()
 	es := elasticsearch.Database{
-		Host:  config.Conf.DB.Server,
-		Index: "malice",
+		URL:   config.Conf.DB.URL,
+		Index: utils.Getopt("MALICE_ELASTICSEARCH_INDEX", "malice"),
 		Type:  "samples",
 	}
 

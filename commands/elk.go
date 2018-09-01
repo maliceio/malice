@@ -16,7 +16,7 @@ func cmdELK(logs bool) error {
 	docker := client.NewDockerClient()
 
 	if _, running, _ := container.Running(docker, config.Conf.DB.Name); !running {
-		err := database.Start(docker, elasticsearch.Database{Host: config.Conf.DB.Server}, logs)
+		err := database.Start(docker, elasticsearch.Database{URL: config.Conf.DB.URL}, logs)
 		if err != nil {
 			return errors.Wrap(err, "failed to start to database")
 		}

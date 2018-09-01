@@ -6,7 +6,7 @@
 #######################################################################
 
 title = "Malice Runtime Configuration"
-version = "v0.3.17"
+version = "v0.3.18"
 
 [author]
   name = "blacktop"
@@ -25,7 +25,8 @@ version = "v0.3.17"
 [database]
   name = "malice-elastic"
   image = "malice/elasticsearch:6.4"
-  url = "http://elasticsearch:9200"
+  url = "http://localhost:9200"
+  # url = "http://elasticsearch:9200"
   username = ""
   password = ""
   ports = [9200]

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -34,7 +35,10 @@ func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID strin
 	env := plugin.getPluginEnv()
 
 	env = append(env, "MALICE_SCANID="+scanID)
-	env = append(env, "MALICE_ELASTICSEARCH=elasticsearch")
+	env = append(env, "MALICE_TIMEOUT="+utils.Getopt("MALICE_TIMEOUT", strconv.Itoa(config.Conf.Docker.Timeout)))
+	env = append(env, "MALICE_ELASTICSEARCH_URL="+utils.Getopt("MALICE_ELASTICSEARCH_URL", config.Conf.DB.URL))
+	env = append(env, "MALICE_ELASTICSEARCH_USERNAME="+utils.Getopt("MALICE_ELASTICSEARCH_USERNAME", config.Conf.DB.Username))
+	env = append(env, "MALICE_ELASTICSEARCH_PASSWORD="+utils.Getopt("MALICE_ELASTICSEARCH_PASSWORD", config.Conf.DB.Password))
 
 	log.WithFields(log.Fields{
 		"name": plugin.Name,
@@ -43,15 +47,15 @@ func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID strin
 	// env = append(env, "MALICE_ELASTICSEARCH="+utils.Getopt("MALICE_ELASTICSEARCH", getDbAddr()))
 
 	contJSON, err := container.Start(
-		docker,       // docker *client.Docker,
-		cmd,          // cmd strslice.StrSlice,
-		plugin.Name,  // name string,
-		plugin.Image, // image string,
-		logs,         // logs bool,
-		binds,        // binds []string,
-		nil,          // portBindings nat.PortMap,
+		docker,                             // docker *client.Docker,
+		cmd,                                // cmd strslice.StrSlice,
+		plugin.Name,                        // name string,
+		plugin.Image,                       // image string,
+		logs,                               // logs bool,
+		binds,                              // binds []string,
+		nil,                                // portBindings nat.PortMap,
 		[]string{config.Conf.Docker.Links}, // links []string,
-		env, // env []string,
+		env,                                // env []string,
 	)
 	log.WithFields(log.Fields{
 		"name": contJSON.Name,

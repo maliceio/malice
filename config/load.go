@@ -6,7 +6,6 @@ import (
 	"os"
 	"path"
 	"strings"
-	"time"
 
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
@@ -49,12 +48,14 @@ type userInterfaceConfig struct {
 }
 
 type databaseConfig struct {
-	Name    string `toml:"name"`
-	Image   string `toml:"image"`
-	Server  string `toml:"server"`
-	Ports   []int  `toml:"ports"`
-	Timeout int    `toml:"timeout"`
-	Enabled bool   `toml:"enabled"`
+	Name     string `toml:"name"`
+	Image    string `toml:"image"`
+	URL      string `toml:"url"`
+	Username string `toml:"username"`
+	Password string `toml:"password"`
+	Ports    []int  `toml:"ports"`
+	Timeout  int    `toml:"timeout"`
+	Enabled  bool   `toml:"enabled"`
 }
 
 type emailConfig struct {
@@ -69,13 +70,13 @@ type envConfig struct {
 }
 
 type dockerConfig struct {
-	Name     string        `toml:"machine-name"`
-	EndPoint string        `toml:"endpoint"`
-	Timeout  time.Duration `toml:"timeout"`
-	Binds    string        `toml:"binds"`
-	Links    string        `toml:"links"`
-	CPU      int64         `toml:"cpu"`
-	Memory   int64         `toml:"memory"`
+	Name     string `toml:"machine-name"`
+	EndPoint string `toml:"endpoint"`
+	Timeout  int    `toml:"timeout"`
+	Binds    string `toml:"binds"`
+	Links    string `toml:"links"`
+	CPU      int64  `toml:"cpu"`
+	Memory   int64  `toml:"memory"`
 }
 
 type loggerConfig struct {

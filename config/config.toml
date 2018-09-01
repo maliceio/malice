@@ -25,7 +25,9 @@ version = "v0.3.17"
 [database]
   name = "malice-elastic"
   image = "malice/elasticsearch:6.4"
-  server = "localhost"
+  url = "http://elasticsearch:9200"
+  username = ""
+  password = ""
   ports = [9200]
   timeout = 20
   enabled = true

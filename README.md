@@ -8,6 +8,13 @@
 
 ---
 
+## Try It Out
+
+> **DEMO:** [demo.malice.io](https://demo.malice.io)
+
+- **username**: `malice`
+- **password**: `ecilam`
+
 ## Setup Docker (OSX)
 
 Install [Docker for Mac](https://docs.docker.com/docker-for-mac/)

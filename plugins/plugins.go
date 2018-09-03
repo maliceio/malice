@@ -15,7 +15,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/docker/api/types/strslice"
 	runconfigopts "github.com/docker/docker/runconfig/opts"
-	"github.com/maliceio/go-plugin-utils/utils"
+	"github.com/malice-plugins/pkgs/utils"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"

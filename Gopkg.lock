@@ -322,26 +322,16 @@
   revision = "60711f1a8329503b04e1c88535f419d0bb440bff"
 
 [[projects]]
-  digest = "1:f960ee99af09fb9d035da5a7bc99ab1b52c6b99f1e6f7bfb38f82f211b1ba5d4"
-  name = "github.com/malice-plugins/go-plugin-utils"
+  branch = "master"
+  digest = "1:1d495dace08d0462cac180cd80ffb8712bdedf7ce4a01898c7d332b5dcc27c35"
+  name = "github.com/malice-plugins/pkgs"
   packages = [
     "database",
-    "utils",
-  ]
-  pruneopts = "UT"
-  revision = "b36f32401f48ad1629a2a2d0b30a9ee0dc237e2f"
-  version = "0.1.3"
-
-[[projects]]
-  digest = "1:a6efb4dfc4c2faca529bc93d6ae4cb511b4ef7f8b55d6e2289c6a6c17f87d3b5"
-  name = "github.com/maliceio/go-plugin-utils"
-  packages = [
     "database/elasticsearch",
     "utils",
   ]
   pruneopts = "UT"
-  revision = "b36f32401f48ad1629a2a2d0b30a9ee0dc237e2f"
-  version = "0.1.3"
+  revision = "8b60ba5208b1f40281d09751d83dafd0e7db6e15"
 
 [[projects]]
   digest = "1:cdb899c199f907ac9fb50495ec71212c95cb5b0e0a8ee0800da0238036091033"
@@ -543,7 +533,7 @@
     "windows",
   ]
   pruneopts = "UT"
-  revision = "fa5fdf94c78965f1aa8423f0cc50b8b8d728b05a"
+  revision = "2b024373dcd9800f0cae693839fac6ede8d64a8c"
 
 [[projects]]
   digest = "1:a2ab62866c75542dd18d2b069fec854577a20211d7c0ea6ae746072a1dccdd18"
@@ -689,8 +679,8 @@
     "github.com/fsnotify/fsnotify",
     "github.com/gorilla/mux",
     "github.com/jordan-wright/email",
-    "github.com/maliceio/go-plugin-utils/database/elasticsearch",
-    "github.com/maliceio/go-plugin-utils/utils",
+    "github.com/malice-plugins/pkgs/database/elasticsearch",
+    "github.com/malice-plugins/pkgs/utils",
     "github.com/mattn/go-runewidth",
     "github.com/parnurzeal/gorequest",
     "github.com/pkg/errors",

@@ -2,7 +2,7 @@ package commands
 
 import (
 	log "github.com/Sirupsen/logrus"
-	"github.com/maliceio/go-plugin-utils/database/elasticsearch"
+	"github.com/malice-plugins/pkgs/database/elasticsearch"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/database"
 	"github.com/maliceio/malice/malice/docker/client"

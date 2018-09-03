@@ -7,8 +7,8 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/fatih/structs"
-	"github.com/maliceio/go-plugin-utils/database/elasticsearch"
-	"github.com/maliceio/go-plugin-utils/utils"
+	"github.com/malice-plugins/pkgs/database/elasticsearch"
+	"github.com/malice-plugins/pkgs/utils"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/database"
 	"github.com/maliceio/malice/malice/docker/client"
@@ -22,9 +22,11 @@ import (
 func cmdScan(path string, logs bool) error {
 
 	es := elasticsearch.Database{
-		URL:   config.Conf.DB.URL,
-		Index: utils.Getopt("MALICE_ELASTICSEARCH_INDEX", "malice"),
-		Type:  "samples",
+		URL:      utils.Getopt("MALICE_ELASTICSEARCH_URL", config.Conf.DB.URL),
+		Index:    utils.Getopt("MALICE_ELASTICSEARCH_INDEX", "malice"),
+		Type:     utils.Getopt("MALICE_ELASTICSEARCH_TYPE", "samples"),
+		Username: utils.Getopt("MALICE_ELASTICSEARCH_USERNAME", config.Conf.DB.Username),
+		Password: utils.Getopt("MALICE_ELASTICSEARCH_PASSWORD", config.Conf.DB.Password),
 	}
 
 	if len(path) > 0 {

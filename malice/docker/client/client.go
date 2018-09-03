@@ -7,7 +7,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/docker/client"
-	"github.com/maliceio/go-plugin-utils/utils"
+	"github.com/malice-plugins/pkgs/utils"
 	"github.com/maliceio/malice/config"
 	"golang.org/x/net/context"
 )

@@ -49,16 +49,12 @@
   version = "1.0.2"
 
 [[constraint]]
-  name = "gopkg.in/dancannon/gorethink.v2"
-  version = "2.2.2"
+  branch = "master"
+  name = "github.com/malice-plugins/pkgs"
 
 [[constraint]]
   name = "gopkg.in/natefinch/lumberjack.v2"
   version = "2.0.0"
-
-[[override]]
-  name = "github.com/olivere/elastic"
-  version = "^6.0.0"
 
 [[override]]
   name = "github.com/docker/distribution"

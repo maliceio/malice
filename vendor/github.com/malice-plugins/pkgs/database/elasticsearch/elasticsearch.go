@@ -8,8 +8,8 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/malice-plugins/go-plugin-utils/database"
-	"github.com/malice-plugins/go-plugin-utils/utils"
+	"github.com/malice-plugins/pkgs/database"
+	"github.com/malice-plugins/pkgs/utils"
 	"github.com/olivere/elastic"
 	"github.com/pkg/errors"
 )
@@ -27,15 +27,18 @@ type Database struct {
 }
 
 var (
-	defaultHost string
-	defaultPort string
-	defaultURL  string
+	defaultIndex string
+	defaultType  string
+	defaultHost  string
+	defaultPort  string
+	defaultURL   string
 )
 
 func init() {
+	defaultIndex = utils.Getopt("MALICE_ELASTICSEARCH_INDEX", "malice")
+	defaultType = utils.Getopt("MALICE_ELASTICSEARCH_TYPE", "samples")
 	defaultHost = utils.Getopt("MALICE_ELASTICSEARCH_HOST", "localhost")
 	defaultPort = utils.Getopt("MALICE_ELASTICSEARCH_PORT", "9200")
-	defaultURL = utils.Getopt("MALICE_ELASTICSEARCH_URL", fmt.Sprintf("http://%s:%s", defaultHost, defaultPort))
 }
 
 // getURL with the following order of precedence
@@ -45,6 +48,12 @@ func init() {
 func (db *Database) getURL() {
 
 	// If not set use defaults
+	if len(strings.TrimSpace(db.Index)) == 0 {
+		db.Index = defaultIndex
+	}
+	if len(strings.TrimSpace(db.Type)) == 0 {
+		db.Type = defaultType
+	}
 	if len(strings.TrimSpace(db.Host)) == 0 {
 		db.Host = defaultHost
 	}
@@ -54,18 +63,15 @@ func (db *Database) getURL() {
 
 	// If user set URL param use it
 	if len(strings.TrimSpace(db.URL)) == 0 {
-		db.URL = defaultURL
-	}
+		// If running in docker use `elasticsearch`
+		if _, exists := os.LookupEnv("MALICE_IN_DOCKER"); exists {
+			db.URL = utils.Getopt("MALICE_ELASTICSEARCH_URL", fmt.Sprintf("%s:%s", "elasticsearch", db.Port))
+			log.WithField("elasticsearch_url", db.URL).Debug("running malice in docker")
+			return
+		}
 
-	// If running in docker use `elasticsearch`
-	if _, exists := os.LookupEnv("MALICE_IN_DOCKER"); exists {
-		log.WithField("elasticsearch", db.URL).Debug("running malice in docker")
-		// TODO: change MALICE_ELASTICSEARCH to MALICE_ELASTICSEARCH_HOST
-		db.URL = utils.Getopt("MALICE_ELASTICSEARCH_URL", fmt.Sprintf("http://%s:%s", "elasticsearch", db.Port))
-		return
+		db.URL = utils.Getopt("MALICE_ELASTICSEARCH_URL", fmt.Sprintf("%s:%s", db.Host, db.Port))
 	}
-
-	db.URL = fmt.Sprintf("http://%s:%s", db.Host, db.Port)
 }
 
 // Init initalizes ElasticSearch for use with malice

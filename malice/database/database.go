@@ -9,7 +9,7 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/go-connections/nat"
 	"github.com/docker/go-units"
-	"github.com/maliceio/go-plugin-utils/database/elasticsearch"
+	"github.com/malice-plugins/pkgs/database/elasticsearch"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/docker/client"
 	"github.com/maliceio/malice/malice/docker/client/container"

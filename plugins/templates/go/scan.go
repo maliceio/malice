@@ -11,8 +11,8 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/fatih/structs"
-	"github.com/maliceio/go-plugin-utils/database/elasticsearch"
-	"github.com/maliceio/go-plugin-utils/utils"
+	"github.com/malice-plugins/pkgs/database/elasticsearch"
+	"github.com/malice-plugins/pkgs/utils"
 	"github.com/urfave/cli"
 )
 

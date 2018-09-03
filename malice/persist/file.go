@@ -26,7 +26,7 @@ import (
 	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/docker/go-units"
 	"github.com/dustin/go-jsonpointer"
-	"github.com/maliceio/go-plugin-utils/utils"
+	"github.com/malice-plugins/pkgs/utils"
 	"github.com/maliceio/malice/config"
 	"github.com/maliceio/malice/malice/docker/client"
 	er "github.com/maliceio/malice/malice/errors"

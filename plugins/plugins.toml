@@ -186,7 +186,7 @@ title = "Malice Plugin Configurations"
   mime = "*"
 
 [[plugin]]
-  enabled = false
+  enabled = true
   name = "mcafee"
   description = "McAfee AntiVirus"
   category = "av"

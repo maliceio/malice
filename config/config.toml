@@ -6,7 +6,7 @@
 #######################################################################
 
 title = "Malice Runtime Configuration"
-version = "v0.3.20"
+version = "v0.3.21"
 
 [author]
   name = "blacktop"

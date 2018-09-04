@@ -25,8 +25,8 @@ version = "v0.3.20"
 [database]
   name = "malice-elastic"
   image = "malice/elasticsearch:6.4"
-  # url = "http://localhost:9200"
-  url = "http://elasticsearch:9200"
+  url = "http://localhost:9200"
+  # url = "http://elasticsearch:9200"
   username = ""
   password = ""
   ports = [9200]

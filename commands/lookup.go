@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"strings"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/malice-plugins/pkgs/database/elasticsearch"
@@ -17,22 +18,31 @@ import (
 func cmdLookUp(hash string, logs bool) error {
 
 	docker := client.NewDockerClient()
+
+	elasticsearchInDocker := false
 	es := elasticsearch.Database{
-		URL:   config.Conf.DB.URL,
-		Index: utils.Getopt("MALICE_ELASTICSEARCH_INDEX", "malice"),
-		Type:  "samples",
+		Index:    utils.Getopt("MALICE_ELASTICSEARCH_INDEX", "malice"),
+		Type:     utils.Getopt("MALICE_ELASTICSEARCH_TYPE", "samples"),
+		URL:      utils.Getopt("MALICE_ELASTICSEARCH_URL", config.Conf.DB.URL),
+		Username: utils.Getopt("MALICE_ELASTICSEARCH_USERNAME", config.Conf.DB.Username),
+		Password: utils.Getopt("MALICE_ELASTICSEARCH_PASSWORD", config.Conf.DB.Password),
 	}
 
-	// Check that database is running
-	if _, running, _ := container.Running(docker, config.Conf.DB.Name); !running {
-		log.Error("database is NOT running, starting now...")
-		err := database.Start(docker, es, logs)
-		if err != nil {
-			return errors.Wrap(err, "failed to start to database")
+	// This assumes you haven't set up an elasticsearch instance and that malice should create one
+	if strings.EqualFold(es.URL, "http://localhost:9200") {
+		elasticsearchInDocker = true
+		// Check that database is running
+		if _, running, _ := container.Running(docker, config.Conf.DB.Name); !running {
+			log.Error("database is NOT running, starting now...")
+			err := database.Start(docker, es, logs)
+			if err != nil {
+				return errors.Wrap(err, "failed to start to database")
+			}
 		}
-		// Initialize the malice database
-		es.Init()
 	}
+
+	// Initialize the malice database
+	es.Init()
 
 	if plugins.InstalledPluginsCheck(docker) {
 		log.Debug("All enabled plugins are installed.")
@@ -52,7 +62,7 @@ func cmdLookUp(hash string, logs bool) error {
 		return errors.Wrap(err, "cmd lookup failed to store hash")
 	}
 
-	plugins.RunIntelPlugins(docker, hash, resp.Id, true)
+	plugins.RunIntelPlugins(docker, hash, resp.Id, true, elasticsearchInDocker)
 
 	return nil
 }

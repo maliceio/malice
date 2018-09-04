@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"os"
+	"strings"
 	"sync"
 
 	log "github.com/Sirupsen/logrus"
@@ -21,14 +22,6 @@ import (
 // cmdScan scans a sample with all appropriate malice plugins
 func cmdScan(path string, logs bool) error {
 
-	es := elasticsearch.Database{
-		URL:      utils.Getopt("MALICE_ELASTICSEARCH_URL", config.Conf.DB.URL),
-		Index:    utils.Getopt("MALICE_ELASTICSEARCH_INDEX", "malice"),
-		Type:     utils.Getopt("MALICE_ELASTICSEARCH_TYPE", "samples"),
-		Username: utils.Getopt("MALICE_ELASTICSEARCH_USERNAME", config.Conf.DB.Username),
-		Password: utils.Getopt("MALICE_ELASTICSEARCH_PASSWORD", config.Conf.DB.Password),
-	}
-
 	if len(path) > 0 {
 		// Check that file exists
 		if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -37,16 +30,44 @@ func cmdScan(path string, logs bool) error {
 
 		docker := client.NewDockerClient()
 
-		// Check that database is running
-		if _, running, _ := container.Running(docker, config.Conf.DB.Name); !running {
-			log.Error("database is NOT running, starting now...")
-			err := database.Start(docker, es, logs)
-			if err != nil {
-				return errors.Wrap(err, "failed to start to database")
-			}
-			// Initialize the malice database
-			es.Init()
+		// clean stale containers from previous runs
+		containers, err := container.List(docker, true)
+		if err != nil {
+			return errors.Wrap(err, "failed to list containers")
 		}
+
+		for _, contr := range containers {
+			if utils.StringInSlice("malice", contr.Names) {
+				err = container.Remove(docker, contr.ID, true, true, true)
+				if err != nil {
+					return errors.Wrapf(err, "failed to remove container: %s", contr.Names[0])
+				}
+			}
+		}
+		elasticsearchInDocker := false
+		es := elasticsearch.Database{
+			Index:    utils.Getopt("MALICE_ELASTICSEARCH_INDEX", "malice"),
+			Type:     utils.Getopt("MALICE_ELASTICSEARCH_TYPE", "samples"),
+			URL:      utils.Getopt("MALICE_ELASTICSEARCH_URL", config.Conf.DB.URL),
+			Username: utils.Getopt("MALICE_ELASTICSEARCH_USERNAME", config.Conf.DB.Username),
+			Password: utils.Getopt("MALICE_ELASTICSEARCH_PASSWORD", config.Conf.DB.Password),
+		}
+
+		// This assumes you haven't set up an elasticsearch instance and that malice should create one
+		if strings.EqualFold(es.URL, "http://localhost:9200") {
+			elasticsearchInDocker = true
+			// Check that database is running
+			if _, running, _ := container.Running(docker, config.Conf.DB.Name); !running {
+				log.Error("database is NOT running, starting now...")
+				err := database.Start(docker, es, logs)
+				if err != nil {
+					return errors.Wrap(err, "failed to start to database")
+				}
+			}
+		}
+
+		// Initialize the malice database
+		es.Init()
 
 		// Check Plugin Status
 		if plugins.InstalledPluginsCheck(docker) {
@@ -84,7 +105,7 @@ func cmdScan(path string, logs bool) error {
 
 		/////////////////////////////////////////////////////////////////
 		// Run all Intel Plugins on the md5 hash associated with the file
-		plugins.RunIntelPlugins(docker, file.SHA1, scanID, true)
+		plugins.RunIntelPlugins(docker, file.SHA1, scanID, true, elasticsearchInDocker)
 
 		// Get file's mime type
 		mimeType, err := persist.GetMimeType(docker, file.SHA256)
@@ -107,7 +128,7 @@ func cmdScan(path string, logs bool) error {
 			log.Debugf(">>>>> RUNNING Plugin: %s >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", plugin.Name)
 			// Start Plugin Container
 			// TODO: don't use the default of true for --logs
-			go plugin.StartPlugin(docker, file.SHA256, scanID, true, &wg)
+			go plugin.StartPlugin(docker, file.SHA256, scanID, true, elasticsearchInDocker, &wg)
 		}
 
 		wg.Wait() // this waits for the counter to be 0

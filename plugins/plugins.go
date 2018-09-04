@@ -26,19 +26,26 @@ import (
 )
 
 // StartPlugin starts plugin
-func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID string, logs bool, wg *sync.WaitGroup) {
+func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID string, logs, elasticsearchInDocker bool, wg *sync.WaitGroup) {
 
 	defer wg.Done()
 
+	var links []string
 	cmd := plugin.buildCmd(arg, logs)
 	binds := []string{config.Conf.Docker.Binds} // []string{maldirs.GetSampledsDir() + ":/malware:ro"},
 	env := plugin.getPluginEnv()
 
 	env = append(env, "MALICE_SCANID="+scanID)
 	env = append(env, "MALICE_TIMEOUT="+utils.Getopt("MALICE_TIMEOUT", strconv.Itoa(config.Conf.Docker.Timeout)))
-	env = append(env, "MALICE_ELASTICSEARCH_URL="+utils.Getopt("MALICE_ELASTICSEARCH_URL", config.Conf.DB.URL))
-	env = append(env, "MALICE_ELASTICSEARCH_USERNAME="+utils.Getopt("MALICE_ELASTICSEARCH_USERNAME", config.Conf.DB.Username))
-	env = append(env, "MALICE_ELASTICSEARCH_PASSWORD="+utils.Getopt("MALICE_ELASTICSEARCH_PASSWORD", config.Conf.DB.Password))
+	if elasticsearchInDocker {
+		env = append(env, "MALICE_ELASTICSEARCH_URL=http://elasticsearch:9200")
+		links = []string{config.Conf.Docker.Links}
+	} else {
+		env = append(env, "MALICE_ELASTICSEARCH_URL="+utils.Getopt("MALICE_ELASTICSEARCH_URL", config.Conf.DB.URL))
+		env = append(env, "MALICE_ELASTICSEARCH_USERNAME="+utils.Getopt("MALICE_ELASTICSEARCH_USERNAME", config.Conf.DB.Username))
+		env = append(env, "MALICE_ELASTICSEARCH_PASSWORD="+utils.Getopt("MALICE_ELASTICSEARCH_PASSWORD", config.Conf.DB.Password))
+		links = nil
+	}
 
 	log.WithFields(log.Fields{
 		"name": plugin.Name,
@@ -47,15 +54,15 @@ func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID strin
 	// env = append(env, "MALICE_ELASTICSEARCH="+utils.Getopt("MALICE_ELASTICSEARCH", getDbAddr()))
 
 	contJSON, err := container.Start(
-		docker,                             // docker *client.Docker,
-		cmd,                                // cmd strslice.StrSlice,
-		plugin.Name,                        // name string,
-		plugin.Image,                       // image string,
-		logs,                               // logs bool,
-		binds,                              // binds []string,
-		nil,                                // portBindings nat.PortMap,
-		[]string{config.Conf.Docker.Links}, // links []string,
-		env,                                // env []string,
+		docker,       // docker *client.Docker,
+		cmd,          // cmd strslice.StrSlice,
+		plugin.Name,  // name string,
+		plugin.Image, // image string,
+		logs,         // logs bool,
+		binds,        // binds []string,
+		nil,          // portBindings nat.PortMap,
+		links,        // links []string,
+		env,          // env []string,
 	)
 	log.WithFields(log.Fields{
 		"name": contJSON.Name,
@@ -97,7 +104,7 @@ func (plugin Plugin) buildCmd(args string, logs bool) strslice.StrSlice {
 }
 
 // RunIntelPlugins run all Intel plugins
-func RunIntelPlugins(docker *client.Docker, hash string, scanID string, logs bool) {
+func RunIntelPlugins(docker *client.Docker, hash string, scanID string, logs, elasticsearchInDocker bool) {
 
 	hashType, _ := utils.GetHashType(hash)
 
@@ -112,7 +119,7 @@ func RunIntelPlugins(docker *client.Docker, hash string, scanID string, logs boo
 	wg.Add(len(intelPlugins))
 
 	for _, plugin := range intelPlugins {
-		go plugin.StartPlugin(docker, hash, scanID, logs, &wg)
+		go plugin.StartPlugin(docker, hash, scanID, logs, elasticsearchInDocker, &wg)
 	}
 	wg.Wait()
 }

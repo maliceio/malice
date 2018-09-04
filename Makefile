@@ -77,6 +77,9 @@ lint: ## Run all the linters
 	markdownfmt -w CHANGELOG.md
 	markdownfmt -w .release/RELEASE.md
 
+build: bindata
+	goreleaser --skip-publish --rm-dist --skip-validate
+
 release: ## Create a new release from the VERSION
 	@echo "===> Creating Release"
 	git tag -a $(VERSION) -m ${MESSAGE}
@@ -91,10 +94,6 @@ destroy: ## Remove release from the VERSION
 	git push origin :refs/tags/$(VERSION)
 
 ci: lint test ## Run all the tests and code checks
-
-build: bindata size ## Build a beta version of malice
-	@echo "===> Building Binaries"
-	go build -ldflags "-X main.version=$(VERSION)-beta" -o malice-beta
 
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:

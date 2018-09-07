@@ -4,7 +4,7 @@ LABEL maintainer "https://github.com/blacktop"
 
 ARG VERSION
 
-RUN apk add --no-cache file tini
+RUN apk add --no-cache file tini ca-certificates
 RUN apk add --no-cache -t build-deps go git mercurial build-base gcc file-dev libc-dev dep \
   && set -x \
   && echo "Building malice Go binary..." \

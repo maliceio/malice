@@ -54,15 +54,15 @@ func (plugin Plugin) StartPlugin(docker *client.Docker, arg string, scanID strin
 	// env = append(env, "MALICE_ELASTICSEARCH="+utils.Getopt("MALICE_ELASTICSEARCH", getDbAddr()))
 
 	contJSON, err := container.Start(
-		docker,       // docker *client.Docker,
-		cmd,          // cmd strslice.StrSlice,
-		plugin.Name,  // name string,
-		plugin.Image, // image string,
-		logs,         // logs bool,
-		binds,        // binds []string,
-		nil,          // portBindings nat.PortMap,
-		links,        // links []string,
-		env,          // env []string,
+		docker,             // docker *client.Docker,
+		cmd,                // cmd strslice.StrSlice,
+		plugin.Name+scanID, // name string,
+		plugin.Image,       // image string,
+		logs,               // logs bool,
+		binds,              // binds []string,
+		nil,                // portBindings nat.PortMap,
+		links,              // links []string,
+		env,                // env []string,
 	)
 	log.WithFields(log.Fields{
 		"name": contJSON.Name,

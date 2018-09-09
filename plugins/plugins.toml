@@ -157,6 +157,16 @@ title = "Malice Plugin Configurations"
 
 [[plugin]]
   enabled = true
+  name = "drweb"
+  description = "Dr.Web AntiVirus"
+  category = "av"
+  image = "malice/drweb"
+  repository = "https://github.com/malice-plugins/drweb.git"
+  build = false
+  mime = "*"
+
+[[plugin]]
+  enabled = true
   name = "escan"
   description = "eScan AntiVirus"
   category = "av"

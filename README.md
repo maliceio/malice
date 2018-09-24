@@ -1,8 +1,8 @@
 ![malice logo](https://raw.githubusercontent.com/maliceio/malice/master/docs/images/logo/malice.png)
 
-# malice [![bh-arsenal](https://github.com/toolswatch/badges/blob/master/arsenal/usa/2018.svg)](https://www.blackhat.com/us-18/arsenal/schedule/index.html#maliceio-12000)
+# malice
 
-[![Circle CI](https://circleci.com/gh/maliceio/malice.png?style=shield)](https://circleci.com/gh/maliceio/malice) [![License](https://img.shields.io/badge/licence-Apache%202.0-blue.svg)](LICENSE) [![Release](https://img.shields.io/github/release/maliceio/malice.svg)](https://github.com/gmaliceio/malice/releases/latest) [![GoDoc](https://godoc.org/github.com/maliceio/malice?status.svg)](https://godoc.org/github.com/maliceio/malice) [![Gitter](https://badges.gitter.im/maliceio/malice.svg)](https://gitter.im/maliceio/malice)
+[![Circle CI](https://circleci.com/gh/maliceio/malice.png?style=shield)](https://circleci.com/gh/maliceio/malice) [![License](https://img.shields.io/badge/licence-Apache%202.0-blue.svg)](LICENSE) [![Release](https://img.shields.io/github/release/maliceio/malice.svg)](https://github.com/gmaliceio/malice/releases/latest) [![GoDoc](https://godoc.org/github.com/maliceio/malice?status.svg)](https://godoc.org/github.com/maliceio/malice) [![bh-arsenal](https://github.com/toolswatch/badges/blob/master/arsenal/usa/2018.svg)](https://www.blackhat.com/us-18/arsenal/schedule/index.html#maliceio-12000) [![Gitter](https://badges.gitter.im/maliceio/malice.svg)](https://gitter.im/maliceio/malice)
 
 > Malice's mission is to be a free open source version of VirusTotal that anyone can use at any scale from an independent researcher to a fortune 500 company.
 

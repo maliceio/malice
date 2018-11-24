@@ -121,13 +121,15 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
 
 ### Known Issues :warning:
 
+#### If you are having issues with `malice` connecting/writting to `elasticsearch` please see the following:
+
 I have noticed when running the new **5.0+** version of [malice/elasticsearch](https://github.com/maliceio/elasticsearch) on a linux host you need to increase the memory map areas with the following command
 
 ```bash
 sudo sysctl -w vm.max_map_count=262144
 ```
 
-Elasticsearch requires at least **4GB** of RAM to run. You can lower it to **2GB** by running the following _(**before running a scan**)_:
+Elasticsearch requires a **LOT** of RAM to run smoothly. You can lower it to **2GB** by running the following _(**before running a scan**)_:
 
 ```bash
 $ docker run -d \

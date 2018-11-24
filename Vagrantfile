@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "ubuntu/xenial64"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -69,7 +69,7 @@ Vagrant.configure("2") do |config|
     echo "Installing Docker================================"
     sudo apt-get install apt-transport-https ca-certificates
     sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-    echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" | sudo tee -a /etc/apt/sources.list.d/docker.list
+    echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" | sudo tee -a /etc/apt/sources.list.d/docker.list
     sudo apt-get update -q
     sudo apt-get install -y linux-image-extra-$(uname -r)
     sudo apt-get install -y docker-engine
@@ -81,7 +81,7 @@ Vagrant.configure("2") do |config|
     curl -s https://raw.githubusercontent.com/ZZROTDesign/docker-clean/v2.0.4/docker-clean | sudo tee /usr/local/bin/docker-clean > /dev/null
     sudo chmod +x /usr/local/bin/docker-clean
     echo "Installing Golang ==============================="
-    export GO_VERSION=1.8.1
+    export GO_VERSION=1.11.2
     export ARCH="$(dpkg --print-architecture)"
     wget https://storage.googleapis.com/golang/go$GO_VERSION.linux-$ARCH.tar.gz -O /tmp/go.tar.gz
     tar -C /usr/local -xzf /tmp/go.tar.gz
@@ -92,6 +92,7 @@ Vagrant.configure("2") do |config|
     echo 'export PATH=$PATH:/home/vagrant/go/bin' >> /home/vagrant/.bashrc
     echo "Installing Malice ==============================="
     sudo apt-get install -y libmagic-dev build-essential
-    sudo -H -u vagrant bash -c 'GOPATH=/home/vagrant/go /usr/local/go/bin/go get -v github.com/maliceio/malice'
+    wget https://github.com/maliceio/malice/releases/download/v0.3.24/malice_0.3.24_linux_amd64.deb -O /tmp/malice_0.3.24_linux_amd64.deb
+    sudo dpkg -i /tmp/malice_0.3.24_linux_amd64.deb
   SHELL
 end

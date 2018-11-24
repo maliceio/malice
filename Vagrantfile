@@ -93,9 +93,6 @@ Vagrant.configure("2") do |config|
     echo 'export PATH=$PATH:/usr/local/go/bin' >> /home/vagrant/.bashrc
     echo 'export GOPATH=/home/vagrant/go' >> /home/vagrant/.bashrc
     echo 'export PATH=$PATH:/home/vagrant/go/bin' >> /home/vagrant/.bashrc
-    go get -u github.com/derekparker/delve/cmd/dlv
-    go get -u github.com/golang/dep/cmd/dep
-    go get -v github.com/maliceio/malice
     cd /home/vagrant/go/src/github.com/maliceio/malice
     /home/vagrant/go/bin/dep ensure
     echo "Installing Malice ==============================="
@@ -104,5 +101,9 @@ Vagrant.configure("2") do |config|
     wget https://github.com/maliceio/malice/releases/download/v${MALICE_VERSION}/malice_${MALICE_VERSION}_linux_amd64.deb -O /tmp/malice_${MALICE_VERSION}_linux_amd64.deb
     sudo dpkg -i /tmp/malice_${MALICE_VERSION}_linux_amd64.deb
     echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
+    sudo -H -u vagrant bash -c 'GOPATH=/home/vagrant/go /usr/local/go/bin/go get -u github.com/derekparker/delve/cmd/dlv'
+    sudo -H -u vagrant bash -c 'GOPATH=/home/vagrant/go /usr/local/go/bin/go get -u github.com/golang/dep/cmd/dep'
+    sudo -H -u vagrant bash -c 'GOPATH=/home/vagrant/go /usr/local/go/bin/go get -v github.com/maliceio/malice'
+    sudo -H -u vagrant bash -c 'GOPATH=/home/vagrant/go /usr/local/go/bin/dep ensure github.com/maliceio/malice'
   SHELL
 end

@@ -6,7 +6,7 @@
 #######################################################################
 
 title = "Malice Runtime Configuration"
-version = "v0.3.25"
+version = "v0.3.26"
 
 [author]
   name = "blacktop"
@@ -24,7 +24,7 @@ version = "v0.3.25"
 
 [database]
   name = "malice-elastic"
-  image = "malice/elasticsearch:6.4"
+  image = "malice/elasticsearch:6.5"
   url = "http://localhost:9200"
   # url = "http://elasticsearch:9200"
   username = ""
@@ -35,7 +35,7 @@ version = "v0.3.25"
 
 [ui]
   name = "malice-kibana"
-  image = "malice/kibana:6.4"
+  image = "malice/kibana:6.5"
   server = "localhost"
   ports = [443]
   enabled = true

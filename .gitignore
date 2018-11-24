@@ -51,3 +51,4 @@ data/befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408
 data/output.md
 .helpers/
 _vendor-20180727160245/
+*.log

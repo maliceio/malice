@@ -13,7 +13,8 @@ Vagrant.configure("2") do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.box = "ubuntu/xenial64"
-
+  # vagrant plugin install vagrant-disksize
+  config.disksize.size = '25GB'
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
@@ -23,6 +24,8 @@ Vagrant.configure("2") do |config|
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   config.vm.network "forwarded_port", guest: 2345, host: 2345
+  config.vm.network "forwarded_port", guest: 9200, host: 9200
+  config.vm.network "forwarded_port", guest: 80, host: 8080
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -46,10 +49,10 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
     # Display the VirtualBox GUI when booting the machine
     vb.gui = false
-
+    vb.name = "malice-box"
     # Customize the amount of memory on the VM:
-    vb.memory = "8192"
-    vb.cpus = 4
+    vb.memory = "4096"
+    vb.cpus = 2
   end
 
   # View the documentation for the provider you are using for more
@@ -90,9 +93,16 @@ Vagrant.configure("2") do |config|
     echo 'export PATH=$PATH:/usr/local/go/bin' >> /home/vagrant/.bashrc
     echo 'export GOPATH=/home/vagrant/go' >> /home/vagrant/.bashrc
     echo 'export PATH=$PATH:/home/vagrant/go/bin' >> /home/vagrant/.bashrc
+    go get -u github.com/derekparker/delve/cmd/dlv
+    go get -u github.com/golang/dep/cmd/dep
+    go get -v github.com/maliceio/malice
+    cd /home/vagrant/go/src/github.com/maliceio/malice
+    /home/vagrant/go/bin/dep ensure
     echo "Installing Malice ==============================="
+    export MALICE_VERSION=0.3.25
     sudo apt-get install -y libmagic-dev build-essential
-    wget https://github.com/maliceio/malice/releases/download/v0.3.24/malice_0.3.24_linux_amd64.deb -O /tmp/malice_0.3.24_linux_amd64.deb
-    sudo dpkg -i /tmp/malice_0.3.24_linux_amd64.deb
+    wget https://github.com/maliceio/malice/releases/download/v${MALICE_VERSION}/malice_${MALICE_VERSION}_linux_amd64.deb -O /tmp/malice_${MALICE_VERSION}_linux_amd64.deb
+    sudo dpkg -i /tmp/malice_${MALICE_VERSION}_linux_amd64.deb
+    echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
   SHELL
 end

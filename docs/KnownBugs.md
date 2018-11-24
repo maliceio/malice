@@ -42,6 +42,10 @@ $ docker run --init -d \
                       malice/elasticsearch:6.5
 ```
 
+=OR=
+
+Increase the disk size of your VM :wink:
+
 ### 3) they don't have enough RAM
 
 #### Detect

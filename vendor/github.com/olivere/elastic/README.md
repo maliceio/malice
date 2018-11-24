@@ -287,7 +287,7 @@ The cat APIs are not implemented as of now. We think they are better suited for 
 - [x] Cluster State
 - [x] Cluster Stats
 - [ ] Pending Cluster Tasks
-- [ ] Cluster Reroute
+- [x] Cluster Reroute
 - [ ] Cluster Update Settings
 - [x] Nodes Stats
 - [x] Nodes Info
@@ -358,7 +358,8 @@ The cat APIs are not implemented as of now. We think they are better suited for 
 
 - Snapshot and Restore
   - [x] Repositories
-  - [x] Snapshot
+  - [x] Snapshot create
+  - [x] Snapshot delete
   - [ ] Restore
   - [ ] Snapshot status
   - [ ] Monitoring snapshot/restore status

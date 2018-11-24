@@ -10,7 +10,7 @@
 
 ## Try It Out
 
-> **DEMO:** [demo.malice.io](https://demo.malice.io/app/kibana#/discover?_g=(refreshInterval:(pause:!t,value:0),time:(from:'2018-09-03T04:00:00.000Z',mode:absolute,to:'2018-09-10T04:00:00.000Z'))&_a=(columns:!(_source),index:afe16d30-b234-11e8-84d2-4fddc6da27ff,interval:auto,query:(language:lucene,query:''),sort:!(scan_date,desc)))
+> **DEMO:** [demo.malice.io](<https://demo.malice.io/app/kibana#/discover?_g=(refreshInterval:(pause:!t,value:0),time:(from:'2018-09-03T04:00:00.000Z',mode:absolute,to:'2018-09-10T04:00:00.000Z'))&_a=(columns:!(_source),index:afe16d30-b234-11e8-84d2-4fddc6da27ff,interval:auto,query:(language:lucene,query:''),sort:!(scan_date,desc))>)
 
 - **username**: `malice`
 - **password**: `ecilam`
@@ -136,6 +136,8 @@ $ docker run -d \
          -e ES_JAVA_OPTS="-Xms2g -Xmx2g" \
          malice/elasticsearch
 ```
+
+#### See here for more details on [Known Issues/FAQs](https://github.com/maliceio/malice/blob/master/docs/KnownBugs.md) :warning:
 
 ### Issues
 

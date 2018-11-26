@@ -197,6 +197,16 @@ title = "Malice Plugin Configurations"
 
 [[plugin]]
   enabled = true
+  name = "kaspersky"
+  description = "Kaspersky AntiVirus"
+  category = "av"
+  image = "malice/kaspersky"
+  repository = "https://github.com/malice-plugins/kaspersky.git"
+  build = false
+  mime = "*"
+
+[[plugin]]
+  enabled = true
   name = "mcafee"
   description = "McAfee AntiVirus"
   category = "av"

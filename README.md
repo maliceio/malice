@@ -15,22 +15,16 @@
 - **username**: `malice`
 - **password**: `ecilam`
 
-## Setup Docker (OSX)
+## Requirements
 
-Install [Docker for Mac](https://docs.docker.com/docker-for-mac/)
+### Hardware
 
--Or-
+- ~16GB disk space
+- ~4GB RAM
 
-Install with [homebrew](http://brew.sh).
+### Software
 
-```bash
-$ brew install caskroom/cask/brew-cask
-$ brew cask install virtualbox
-$ brew install docker
-$ brew install docker-machine
-$ docker-machine create --driver virtualbox --engine-storage-driver overlay malice
-$ eval $(docker-machine env malice)
-```
+- [Docker](https://docs.docker.com)
 
 ## Getting Started (OSX)
 

@@ -1,16 +1,17 @@
-Installation on Linux (**Ubuntu 14.04.5**\)
+Installation on Linux (**Ubuntu 18.10**\)
 ===========================================
 
 #### Install Docker
 
 ```bash
+$ sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - # Adding GPG Docker's keys
+$ sudo apt-key fingerprint 0EBFCD88
+$ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" # Adding Docker's repository in Ubuntu repository list
 $ sudo apt-get update
-$ sudo apt-get install apt-transport-https ca-certificates
-$ sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-$ echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" > sudo tee -a /etc/apt/sources.list.d/docker.list
-$ sudo apt-get update
-$ sudo apt-get install docker-engine
-$ sudo usermod -aG docker $USER  # You might have to logout for change to take effect
+$ sudo apt-get install docker docker.io
+$ sudo usermod -aG docker $USER # Ading Docker as a user
+$ sudo reboot now # Ubuntu will restart, save your work
 ```
 
 #### Fix Elasticsearch
@@ -18,6 +19,7 @@ $ sudo usermod -aG docker $USER  # You might have to logout for change to take e
 ```bash
 echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
 sudo sysctl -w vm.max_map_count=262144
+sudo docker rm -f malice
 ```
 
 Download Pre-Compiled Binary
@@ -30,6 +32,10 @@ Download Pre-Compiled Binary
 ```bash
 $ wget https://github.com/maliceio/malice/releases/download/v0.3.11/malice_0.3.11_linux_amd64.tar.gz -O /tmp/malice.tar.gz
 $ sudo tar -xzf /tmp/malice.tar.gz -C /usr/local/bin/
+```
+#### Update Malice
+```bash
+$ malice plugin update --all # Updating plugins
 ```
 
 #### Uninstall Malice

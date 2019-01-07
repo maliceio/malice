@@ -82,9 +82,9 @@ $ malice elk
 
 - Type in **malice** as the `Index name or pattern` and click **Create**.
 
-- Now click on the `Discover Tab` and **behold!!!**
+- Now click on the `Malice Tab` and **behold!!!**
 
-![kibana-scan](docs/images/kibana-scan.png)
+![kibana-plugin](docs/images/new-screen.png)
 
 ## Getting Started (_Docker in Docker_)
 

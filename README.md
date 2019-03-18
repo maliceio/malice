@@ -129,7 +129,7 @@ Elasticsearch requires a **LOT** of RAM to run smoothly. You can lower it to **2
 ```bash
 $ docker run -d \
          -p 9200:9200 \
-         -name malice-elastic \
+         --name malice-elastic \
          -e ES_JAVA_OPTS="-Xms2g -Xmx2g" \
          malice/elasticsearch
 ```

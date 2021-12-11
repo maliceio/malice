@@ -147,6 +147,6 @@ See [`CHANGELOG.md`](https://github.com/maliceio/malice/blob/master/CHANGELOG.md
 ### License
 
 Apache License (Version 2.0)<br>
-Copyright (c) 2013 - 2018 **blacktop** Joshua Maine
+Copyright (c) 2013 - 2018 **blacktop**
 
  <!-- [![Slack](https://malice-slack.herokuapp.com/badge.svg)](https://malice-slack.herokuapp.com) -->

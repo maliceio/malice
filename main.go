@@ -72,7 +72,7 @@ func main() {
 	app.CommandNotFound = commands.CmdNotFound
 	app.Usage = "Open Source Malware Analysis Framework"
 	app.Version = fmt.Sprintf("%v, commit %v, built at %v", version, commit, date)
-	app.Copyright = "Copyright (c) 2013 - 2016 'blacktop' Joshua Maine"
+	app.Copyright = "Copyright (c) 2013 - 2023 'blacktop'"
 	// app.EnableBashCompletion = true
 
 	log.Debug("Malice Version: ", app.Version)

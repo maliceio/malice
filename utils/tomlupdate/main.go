@@ -19,7 +19,7 @@ var (
 	buildtime string
 )
 
-var header = `# Copyright (c) 2013 - 2017 blacktop Joshua Maine, All Rights Reserved.
+var header = `# Copyright (c) 2013 - 2023 blacktop, All Rights Reserved.
 # See LICENSE for license information.
 
 #######################################################################
